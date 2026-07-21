@@ -6,6 +6,21 @@ import { navCategories } from "./navData";
 import type { NavCategory } from "./types";
 import MegaMenu from "./MegaMenu";
 
+/* Gradient bottom-border shown on hover, pinned to the header's bottom edge */
+const GRADIENT_BORDER = "linear-gradient(97.37deg, #8BC34A 1.29%, #1AA179 88.53%)";
+
+function HoverBorder({ active }: { active?: boolean }) {
+  return (
+    <span
+      aria-hidden
+      className={`pointer-events-none absolute -bottom-[25px] left-0 h-0.5 w-full origin-left transition-transform duration-300 ease-in-out ${
+        active ? "scale-x-100" : "scale-x-0 group-hover/navitem:scale-x-100"
+      }`}
+      style={{ background: GRADIENT_BORDER }}
+    />
+  );
+}
+
 /* ─── Nav item ─── */
 function NavItem({ category }: { category: NavCategory }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,10 +46,10 @@ function NavItem({ category }: { category: NavCategory }) {
     return (
       <Link
         href={category.href}
-        className="text-xs font-medium uppercase cursor-pointer text-[var(--text-primary)] transition-colors duration-200 ease-in-out font-neue-montreal
-        "
+        className="group/navitem relative px-2 text-base font-medium uppercase text-nowrap cursor-pointer text-[var(--text-primary)] transition-colors duration-200 ease-in-out font-neue-montreal"
       >
         {category.label}
+        <HoverBorder />
       </Link>
     );
   }
@@ -44,20 +59,22 @@ function NavItem({ category }: { category: NavCategory }) {
 
   return (
     <div
-      className="relative"
+      className="group/navitem relative"
       onMouseEnter={hasDropdown ? handleMouseEnter : undefined}
       onMouseLeave={hasDropdown ? handleMouseLeave : undefined}
     >
       <button
         type="button"
-        className="text-xs font-medium uppercase cursor-pointer text-[var(--text-primary)] transition-colors duration-200 ease-in-out font-neue-montreal"
+        className="px-2 text-base font-medium uppercase text-nowrap cursor-pointer text-[var(--text-primary)] transition-colors duration-200 ease-in-out font-neue-montreal"
       >
         {category.label}
       </button>
 
+      <HoverBorder active={isOpen} />
+
       {/* Mega menu */}
       {category.megaMenu && category.megaItems && (
-        <MegaMenu items={category.megaItems} isOpen={isOpen} />
+        <MegaMenu items={category.megaItems} isOpen={isOpen} variant={category.megaVariant} />
       )}
 
       {/* Simple dropdown */}
@@ -83,7 +100,7 @@ function NavItem({ category }: { category: NavCategory }) {
 /* ─── Main Navigation ─── */
 export default function Navigation() {
   return (
-    <nav className="flex items-center gap-6">
+    <nav className="flex items-center gap-4">
       {navCategories.map((category) => (
         <NavItem key={category.label} category={category} />
       ))}

@@ -1,6 +1,39 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import Header from "@/components/layout/header/Header";
 import "./globals.css";
+
+const neueMontreal = localFont({
+  src: [
+    { path: "../public/fonts/neue-montreal/NeueMontreal-Light.otf", weight: "300", style: "normal" },
+    { path: "../public/fonts/neue-montreal/NeueMontreal-LightItalic.otf", weight: "300", style: "italic" },
+    { path: "../public/fonts/neue-montreal/NeueMontreal-Regular.otf", weight: "400", style: "normal" },
+    { path: "../public/fonts/neue-montreal/NeueMontreal-Italic.otf", weight: "400", style: "italic" },
+    { path: "../public/fonts/neue-montreal/NeueMontreal-Medium.otf", weight: "500", style: "normal" },
+    { path: "../public/fonts/neue-montreal/NeueMontreal-MediumItalic.otf", weight: "500", style: "italic" },
+    { path: "../public/fonts/neue-montreal/NeueMontreal-Bold.otf", weight: "700", style: "normal" },
+    { path: "../public/fonts/neue-montreal/NeueMontreal-BoldItalic.otf", weight: "700", style: "italic" },
+  ],
+  variable: "--font-neue-montreal",
+});
+
+const tiemposFine = localFont({
+  src: [
+    { path: "../public/fonts/tiempos/TestTiemposFine-Light-BF66457a5102792.otf", weight: "300", style: "normal" },
+    { path: "../public/fonts/tiempos/TestTiemposFine-LightItalic-BF66457a50eb132.otf", weight: "300", style: "italic" },
+    { path: "../public/fonts/tiempos/TestTiemposFine-Regular-BF66457a50e8bc9.otf", weight: "400", style: "normal" },
+    { path: "../public/fonts/tiempos/TestTiemposFine-RegularItalic-BF66457a50e36f9.otf", weight: "400", style: "italic" },
+    { path: "../public/fonts/tiempos/TestTiemposFine-Medium-BF66457a50e62cd.otf", weight: "500", style: "normal" },
+    { path: "../public/fonts/tiempos/TestTiemposFine-MediumItalic-BF66457a511be83.otf", weight: "500", style: "italic" },
+    { path: "../public/fonts/tiempos/TestTiemposFine-Semibold-BF66457a50f016a.otf", weight: "600", style: "normal" },
+    { path: "../public/fonts/tiempos/TestTiemposFine-SemiboldItalic-BF66457a50b0e18.otf", weight: "600", style: "italic" },
+    { path: "../public/fonts/tiempos/TestTiemposFine-Bold-BF66457a510211b.otf", weight: "700", style: "normal" },
+    { path: "../public/fonts/tiempos/TestTiemposFine-BoldItalic-BF66457a50b8568.otf", weight: "700", style: "italic" },
+    { path: "../public/fonts/tiempos/TestTiemposFine-Black-BF66457a508fe8f.otf", weight: "900", style: "normal" },
+    { path: "../public/fonts/tiempos/TestTiemposFine-BlackItalic-BF66457a510424a.otf", weight: "900", style: "italic" },
+  ],
+  variable: "--font-test-tiempos-fine",
+});
 
 export const metadata: Metadata = {
   title: "ASG - Amanat Shah Group",
@@ -14,17 +47,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full antialiased">
-      <head>
-        <link
-          href="https://fonts.cdnfonts.com/css/pp-neue-montreal"
-          rel="stylesheet"
-        />
-        <link
-          href="https://cdn.msar.me/fonts/Tiempos/font.css"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="h-screen min-h-full flex flex-col font-neue-montreal bg-blue-500">
+      <body className={`${neueMontreal.variable} ${tiemposFine.variable} h-screen min-h-screen flex flex-col font-neue-montreal`}>
         <Header />
         {children}
       </body>

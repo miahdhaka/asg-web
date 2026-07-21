@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import { Search as SearchIcon, X } from "lucide-react";
 
 export default function Search() {
@@ -26,10 +27,16 @@ export default function Search() {
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="flex items-center justify-center rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+        className="cursor-pointer text-muted-foreground p-1"
         aria-label="Open search"
       >
-        <SearchIcon className="size-5" />
+        <Image
+          src="/icon/search.png"
+          alt="Search"
+          width={20}
+          height={20}
+          className="h-6 w-6"
+        />
       </button>
     );
   }

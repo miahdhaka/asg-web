@@ -134,9 +134,14 @@
 
 @layer utilities {
   .font-neue-montreal {
-    font-family: 'PP Neue Montreal', sans-serif;
+    font-family: var(--font-neue-montreal), sans-serif;
   }
   .font-test-tiempos-fine {
-    font-family: 'Tiempos', serif;
+    font-family: var(--font-test-tiempos-fine), serif;
   }
+}
+
+
+.overlay-image-hover {
+  background: linear-gradient(360deg, #0C0C0C 0%, rgba(0, 0, 0, 0) 36.51%);
 }
