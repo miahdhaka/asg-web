@@ -21,7 +21,7 @@ export default function MegaMenu({ items, isOpen, variant = "photo" }: MegaMenuP
       style={{ top: "var(--header-height, 4.55rem)" }}
     >
           <div className="px-6 py-8">
-            <div className={`grid grid-cols-5 ${isLogo ? "gap-x-4 gap-y-8" : "gap-4"}`}>
+            <div className={`grid ${isLogo ? "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-4 gap-y-8" : "grid-cols-6 gap-4"}`}>
               {items.map((item) => (
                 <Link
                   key={item.href}
@@ -31,24 +31,25 @@ export default function MegaMenu({ items, isOpen, variant = "photo" }: MegaMenuP
                   <div
                     className={`relative aspect-[5/3] w-full overflow-hidden ${
                       isLogo ? "bg-gray-100" : "bg-gray-100"
-                    }`}
+                    }`} 
                   >
                     <Image
                       src={item.image}
                       alt={item.label}
                       fill
-                      className={isLogo ? "object-contain p-14" : "object-cover"}
-                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className={`${isLogo ? "object-contain p-[20%]" : "object-cover"} opacity-100 transition-opacity duration-600 ease-in-out group-hover:opacity-0`}
+                      sizes={isLogo ? "(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw" : "(max-width: 768px) 100vw, 33vw"}
+                      quality={90}
                     />
+
                     {item.hoverImage && (
                       <Image
                         src={item.hoverImage}
                         alt={item.label}
                         fill
-                        className={`${
-                          isLogo ? "object-contain p-14" : "object-cover"
-                        } opacity-0 transition-opacity duration-600 ease-in-out group-hover:opacity-100`}
-                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className={`${isLogo ? "object-contain p-[20%]" : "object-cover"} opacity-0 transition-opacity duration-600 ease-in-out group-hover:opacity-100`}
+                        sizes={isLogo ? "(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw" : "(max-width: 768px) 100vw, 33vw"}                        
+                        quality={90}
                       />
                     )}
                     {!isLogo && (
@@ -56,7 +57,7 @@ export default function MegaMenu({ items, isOpen, variant = "photo" }: MegaMenuP
                     )}
                   </div>
                   {item.label && (
-                    <span className="relative inline-block text-sm text-gray-900 tracking-wider mt-3 after:absolute after:-bottom-1 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-in-out group-hover:after:scale-x-100">
+                    <span className="relative inline-block text-sm tracking-wider text-[var(--neutral-800)] gradient-text-hover mt-3">
                       {item.label}
                     </span>
                   )}

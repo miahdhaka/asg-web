@@ -1,11 +1,27 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Navigation from "./Navigation";
 import Search from "./Search";
 
 export default function Header() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className={`fixed top-0 left-0 right-0 z-50 w-full border-b border-border backdrop-blur transition-colors duration-500 ease-in-out ${
+      scrolled ? "bg-white" : "bg-background/60"
+    }`}>
       <div className="grid grid-cols-3 items-center px-6">
         {/* Navigation - left */}
         <div className="h-full flex items-center py-5">
@@ -18,8 +34,8 @@ export default function Header() {
             <Image
               src="/logo/ASG-logo.png"
               alt="Amanat Shah Group"
-              width={90}
-              height={50}
+              width={104}
+              height={64}
               priority
               className="w-26 h-16 object-contain"
             />

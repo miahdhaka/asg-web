@@ -46,7 +46,7 @@ function NavItem({ category }: { category: NavCategory }) {
     return (
       <Link
         href={category.href}
-        className="group/navitem relative px-2 text-base font-medium uppercase text-nowrap cursor-pointer text-[var(--text-primary)] transition-colors duration-200 ease-in-out font-neue-montreal"
+        className="group/navitem relative px-2 text-base font-medium uppercase text-nowrap cursor-pointer text-[var(--neutral-800)] transition-colors duration-200 ease-in-out font-neue-montreal"
       >
         {category.label}
         <HoverBorder />
@@ -65,7 +65,7 @@ function NavItem({ category }: { category: NavCategory }) {
     >
       <button
         type="button"
-        className="px-2 text-base font-medium uppercase text-nowrap cursor-pointer text-[var(--text-primary)] transition-colors duration-200 ease-in-out font-neue-montreal"
+        className="px-2 text-base font-medium uppercase text-nowrap cursor-pointer text-[var(--neutral-800)] transition-colors duration-200 ease-in-out font-neue-montreal"
       >
         {category.label}
       </button>
