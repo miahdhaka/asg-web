@@ -16,25 +16,25 @@ const panels: SustainabilityPanel[] = [
     label: "Sustainability",
     description:
       "Driving eco-conscious manufacturing through renewable energy and closed-loop water systems, we minimize environmental impact to shape a cleaner, greener tomorrow for global fashion.",
-    image: "/images/navbar/sustainability-clr-1.png",
+    image: "/images/sustainability/sustainability.png",
   },
   {
     label: "Innovation",
     description:
       "Embracing digitalization, we are transforming the fashion industry to be future-ready. By integrating advanced technologies, we enhance design, production, and customer experiences. ",
-    image: "/images/navbar/sustainability-clr-2.png",
+    image: "/images/sustainability/innovation.png",
   },
   {
     label: "Quality & Compliance",
     description:
       "Upholding rigorous international standards and ethical practices, we guarantee premium product integrity, complete transparency, and flawless compliance for world-class brands.",
-    image: "/images/navbar/sustainability-clr-3.png",
+    image: "/images/sustainability/quality-&-compliance.png",
   },
   {
     label: "Social Business Commitment",
     description:
       "By optimizing raw material consumption and minimizing waste across our supply chain, we maximize output while reducing our overall environmental impact and promoting responsible production.",
-    image: "/images/navbar/group-clr-1.png",
+    image: "/images/sustainability/social-business-commitment.png",
   },
 ];
 
@@ -135,7 +135,7 @@ export default function Sustainability() {
                   isActive ? "opacity-0 delay-0" : "opacity-100 delay-[400ms]"
                 }`}
               >
-                <span className="font-neue-montreal text-xl tracking-wider font-bold whitespace-nowrap text-white [writing-mode:vertical-rl] rotate-180">
+                <span className="font-neue-montreal text-2xl tracking-wider font-bold whitespace-nowrap text-white [writing-mode:vertical-rl] rotate-180">
                   {panel.label}
                 </span>
               </div>
