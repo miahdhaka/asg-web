@@ -27,7 +27,7 @@ export default function AboutSection() {
           src="/logo/ASG-logo-mixed.png"
           alt="Amanat Shah Group"
           width={300}
-          height={90}
+          height={120}
           quality={100}
           className="w-[300px] h-[120px] object-contain"
         />

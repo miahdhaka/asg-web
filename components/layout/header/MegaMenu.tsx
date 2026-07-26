@@ -24,7 +24,7 @@ export default function MegaMenu({ items, isOpen, variant = "photo" }: MegaMenuP
             <div className={`grid ${isLogo ? "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-4 gap-y-8" : "grid-cols-6 gap-4"}`}>
               {items.map((item) => (
                 <Link
-                  key={item.href}
+                  key={item.label}
                   href={item.href}
                   className="group flex flex-col items-start text-left"
                 >

@@ -85,22 +85,17 @@ export default function OurBusiness() {
   };
 
   return (
-    <section 
-        className="relative w-full h-screen bg-gray-50 overflow-hidden"
-        style={{ 
-            paddingTop: "var(--header-height, 4.55rem)",
-        }}
-    >
-      {/* Header row — title left, desc ription right */}
-      <div className="mx-auto max-w-[1440px] px-[60px] pt-[112px] pb-12">
-        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8">
+    <section className="relative flex h-screen w-full flex-col overflow-hidden pb-10">
+      {/* Header row — title left, description right */}
+      <div className="pt-40 px-20 pb-18">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8 max-w-[90%]">
           {/* Title */}
-          <h2 className="font-serif text-[48px] leading-[48px] font-normal text-neutral-800 shrink-0">
+          <h2 className="font-serif text-[64px] leading-[48px] font-normal text-neutral-800 shrink-0">
             Our Business
           </h2>
 
           {/* Description */}
-          <p className="max-w-[440px] text-sm leading-[20px] font-normal text-neutral-800">
+          <p className="max-w-[620px] text-lg tracking-wider text-neutral-800">
             With a 130-year legacy, Amanat Shah Group is a premier, multi-sector
             conglomerate. We drive sustainable growth across textiles, finance,
             and technology by integrating innovation, integrity.
@@ -110,7 +105,7 @@ export default function OurBusiness() {
 
       {/* Full-bleed infinite carousel — drag with the mouse to scroll */}
       <div
-        className="relative pb-[112px]"
+        className="relative min-h-0 flex-1"
         onMouseEnter={() => {
           isHoveredRef.current = true;
         }}
@@ -121,7 +116,7 @@ export default function OurBusiness() {
         {/* Draggable track */}
         <div
           ref={scrollRef}
-          className="no-scrollbar flex cursor-grab touch-pan-y overflow-x-auto select-none active:cursor-grabbing"
+          className="no-scrollbar flex h-full cursor-grab touch-pan-y items-start overflow-x-auto select-none active:cursor-grabbing"
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={endDrag}
@@ -129,9 +124,9 @@ export default function OurBusiness() {
         >
           {loopedCards.map((card, index) => (
             <div
-              key={index}
+              key={`${card.image}-${index}`}
               data-card
-              className="relative h-[520px] w-[calc((100vw-32px)/2.5)] flex-shrink-0 overflow-hidden"
+              className="relative aspect-[3/2] max-h-full w-[calc((100vw-30px)/2.3)] flex-shrink-0 overflow-hidden"
               style={{ marginRight: `${GAP}px` }}
             >
               {/* Background image */}
@@ -139,6 +134,7 @@ export default function OurBusiness() {
                 src={card.image}
                 alt={card.label}
                 fill
+                sizes="40vw"
                 draggable={false}
                 className="pointer-events-none object-cover"
                 quality={80}

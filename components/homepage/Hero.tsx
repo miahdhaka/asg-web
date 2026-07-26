@@ -36,7 +36,7 @@ export default function Hero() {
           width={110}
           height={90}
           quality={100}
-          className="mb-6"
+          className="mb-6 w-[110px] h-[90px] object-contain"
         />
 
         <h1 className="font-test-tiempos-fine uppercase text-6xl font-medium mb-4">
@@ -56,6 +56,7 @@ export default function Hero() {
           width={28}
           height={38}
           quality={100}
+          className="w-[28px] h-[38px] object-contain"
         />
         <span className="font-neue-montreal font-light uppercase tracking-widest">
           Scroll Down

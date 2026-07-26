@@ -330,3 +330,31 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
+
+/* Dual-direction infinite marquee animations */
+@keyframes marquee-left {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes marquee-right {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee-left {
+  animation: marquee-left 30s linear infinite;
+}
+.animate-marquee-right {
+  animation: marquee-right 30s linear infinite;
+}
+.animate-marquee-left:hover,
+.animate-marquee-right:hover {
+  animation-play-state: paused;
+}

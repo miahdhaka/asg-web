@@ -83,7 +83,7 @@ function NavItem({ category }: { category: NavCategory }) {
           <div className="rounded-lg border border-border bg-background p-2 shadow-lg">
             {category.children.map((child) => (
               <Link
-                key={child.href}
+                key={child.label}
                 href={child.href}
                 className="block rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
               >
