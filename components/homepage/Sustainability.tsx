@@ -97,7 +97,7 @@ export default function Sustainability() {
 
               {/* Arrow button — only on the expanded panel */}
               <div
-                className={`absolute top-3 right-3 flex h-24 w-24 items-center justify-center bg-[image:var(--primary-gradient)] transition-opacity duration-500 ${
+                className={`absolute top-3 right-3 flex h-20 w-22 items-center justify-center bg-[image:var(--primary-gradient)] transition-opacity duration-500 ${
                   isActive ? "opacity-100 delay-[400ms]" : "opacity-0 delay-0"
                 }`}
               >
@@ -135,7 +135,7 @@ export default function Sustainability() {
                   isActive ? "opacity-0 delay-0" : "opacity-100 delay-[400ms]"
                 }`}
               >
-                <span className="font-neue-montreal text-2xl tracking-wider font-bold whitespace-nowrap text-white [writing-mode:vertical-rl] rotate-180">
+                <span className="font-neue-montreal text-xl tracking-wider font-bold whitespace-nowrap text-white [writing-mode:vertical-rl] rotate-180">
                   {panel.label}
                 </span>
               </div>
