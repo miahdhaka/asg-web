@@ -3,6 +3,7 @@ import AboutSection from "@/components/homepage/IntroSection";
 import OurBusiness from "@/components/homepage/OurBusiness";
 import GlobalFootprint from "@/components/homepage/GlobalFootprint";
 import Sustainability from "@/components/homepage/Sustainability";
+import Certifications from "@/components/homepage/Certifications";
 
 export default function HomePage() {
   return (
@@ -12,6 +13,7 @@ export default function HomePage() {
       <OurBusiness />
       <GlobalFootprint />
       <Sustainability />
+      <Certifications />
     </main>
   );
 }

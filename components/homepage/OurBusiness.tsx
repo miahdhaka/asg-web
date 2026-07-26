@@ -9,16 +9,16 @@ interface BusinessCard {
 }
 
 const businessCards: BusinessCard[] = [
-  { label: "Retail", image: "/images/our-business/retail.png" },
-  { label: "Textile", image: "/images/our-business/spinning-mills.png" },
-  { label: "Textile", image: "/images/our-business/fabric.png" },
-  { label: "Textile", image: "/images/our-business/weaving.png" },
-  { label: "Germane", image: "/images/our-business/trust.png" },
-  { label: "Ecommerce", image: "/images/our-business/miah.png" },
-  { label: "Agriculture", image: "/images/our-business/agriculture.png" },
-  { label: "Finance", image: "/images/our-business/finance.png" },
+  { label: "Retail", image: "/images/our-business/img-1.png " },
+  { label: "Textile", image: "/images/our-business/img-2.png" },
+  { label: "Textile", image: "/images/our-business/img-3.png" },
+  { label: "Textile", image: "/images/our-business/img-4.png" },
+  { label: "Germane", image: "/images/our-business/img-5.png" },
+  { label: "Ecommerce", image: "/images/our-business/img-6.png" },
+  { label: "Agriculture", image: "/images/our-business/img-7.png" },
+  { label: "Finance", image: "/images/our-business/img-8.png" },
 ];
-
+ 
 const GAP = 16; // px gap between cards
 const SCROLL_SPEED = 0.5; // Slider speed control
 

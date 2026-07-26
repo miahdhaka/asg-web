@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   ComposableMap,
   Geographies,
@@ -25,20 +26,11 @@ const mapPins: MapPin[] = [
   { label: "China", coordinates: [104.1954, 35.8617] },
 ];
 
-// Brand logo tiles — swap the styled text for <Image> once logo assets land
-// in /public/images/global-footprint/brands/.
-const brands: { label: string; className: string }[] = [
-  { label: "Walmart", className: "font-sans text-2xl font-semibold" },
-  { label: "LC WAIKIKI", className: "font-sans text-xl font-bold tracking-wide" },
-  { label: "GAP", className: "font-serif text-2xl tracking-[0.2em]" },
-  { label: "UNIQLO", className: "font-sans text-xl font-bold tracking-[0.15em]" },
-  { label: "PULL&BEAR", className: "font-sans text-xl font-bold tracking-widest" },
-  { label: "ZARA", className: "font-serif text-3xl tracking-[0.25em]" },
-  { label: "Target", className: "font-sans text-2xl font-semibold" },
-  { label: "leftie", className: "font-sans text-2xl font-bold lowercase" },
-  { label: "RALPH LAUREN", className: "font-serif text-xl tracking-[0.3em]" },
-  { label: "BERSHKA", className: "font-sans text-xl font-bold tracking-[0.2em]" },
-];
+// Brand logo tiles rendered from /public/images/global-footprint/.
+const brands: string[] = Array.from(
+  { length: 16 },
+  (_, i) => `/images/global-footprint/img${i + 1}.png`
+);
 
 export default function GlobalFootprint() {
   // Render the list twice so we can loop seamlessly.
@@ -176,10 +168,18 @@ export default function GlobalFootprint() {
           <div className="animate-marquee-left flex w-max gap-4">
             {loopedBrands.map((brand, index) => (
               <div
-                key={`left-${brand.label}-${index}`}
-                className="flex h-24 w-[280px] flex-shrink-0 items-center justify-center bg-[#10161a] text-white"
+                key={`left-${brand}-${index}`}
+                className="flex h-24 w-[280px] flex-shrink-0 items-center justify-center bg-[#10161a]"
               >
-                <span className={brand.className}>{brand.label}</span>
+                <Image
+                  src={brand}
+                  alt=""
+                  width={160}
+                  height={40}
+                  draggable={false}
+                  className="pointer-events-none h-10 w-36 object-contain"
+                  quality={90}
+                />
               </div>
             ))}
           </div>
@@ -190,10 +190,18 @@ export default function GlobalFootprint() {
           <div className="animate-marquee-right flex w-max gap-4">
             {loopedBrands.map((brand, index) => (
               <div
-                key={`right-${brand.label}-${index}`}
-                className="flex h-24 w-[280px] flex-shrink-0 items-center justify-center bg-[#10161a] text-white"
+                key={`right-${brand}-${index}`}
+                className="flex h-24 w-[280px] flex-shrink-0 items-center justify-center bg-[#10161a]"
               >
-                <span className={brand.className}>{brand.label}</span>
+                <Image
+                  src={brand}
+                  alt=""
+                  width={160}
+                  height={40}
+                  draggable={false}
+                  className="pointer-events-none h-10 w-36 object-contain"
+                  quality={90}
+                />
               </div>
             ))}
           </div>
