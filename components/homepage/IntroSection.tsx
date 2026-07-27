@@ -6,8 +6,8 @@ export default function AboutSection() {
     <section
       className="relative w-full bg-[var(--primary-black)] flex flex-col items-center justify-center overflow-hidden"
       style={{ 
-        height: "calc(100vh - var(--header-height, 4.55rem))",
-        paddingTop: "var(--header-height, 4.55rem)",
+        height: "calc(100vh - var(--header-height, 4rem))",
+        paddingTop: "var(--header-height, 4rem)",
       }}
     >
       {/* Brand gradient glow — top center, behind content */}

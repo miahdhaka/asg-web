@@ -36,7 +36,7 @@ export default function Hero() {
           width={110}
           height={90}
           quality={100}
-          className="mb-6 w-[110px] h-[90px] object-contain"
+          className="mb-6 w-[130px] h-[110px] object-contain"
         />
 
         <h1 className="font-test-tiempos-fine uppercase text-6xl font-medium mb-4">

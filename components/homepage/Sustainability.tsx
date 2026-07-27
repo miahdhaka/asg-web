@@ -45,12 +45,12 @@ export default function Sustainability() {
 
   return (
     <section
-      className="relative flex w-full flex-col overflow-hidden bg-white pb-12"
+      className="relative flex w-full flex-col overflow-hidden bg-white pb-16"
       style={{ height: "calc(100vh - var(--header-height, 4.55rem))" }}
     >
       {/* Header row — title left, description right */}
-      <div className="pt-14 px-20 pb-10">
-        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8 max-w-[90%]">
+      <div className="pt-18 px-20 pb-12">
+        <div className="flex flex-col lg:flex-row items-center lg:justify-between gap-8 max-w-[90%]">
           {/* Title */}
           <h2 className="font-serif text-[64px] leading-[1] text-neutral-800 shrink-0">
             Shaping a Greener
@@ -59,7 +59,7 @@ export default function Sustainability() {
           </h2>
 
           {/* Description */}
-          <p className="max-w-[620px] text-xl leading-[1.6] tracking-wide text-neutral-800">
+          <p className="max-w-[620px] text-xl leading-[1.5] tracking-wide text-neutral-800">
             Amanat Shah Group integrates eco-conscious manufacturing tailored
             to the compliance demands of global fashion. From renewable energy
             to closed-loop water systems.
@@ -68,7 +68,7 @@ export default function Sustainability() {
       </div>
 
       {/* Expandable accordion panels */}
-      <div className="flex min-h-0 flex-1 gap-5 px-18 w-[92%] mx-auto">
+      <div className="flex min-h-0 flex-1 gap-5 px-18 w-[90%] mx-auto">
         {panels.map((panel, index) => {
           const isActive = index === activeIndex;
           return (

@@ -116,14 +116,14 @@ export default function WeAreASG() {
             >
               {/* Top part — icon + label, own padding */}
               <div className="flex flex-1 flex-col justify-between p-5">
-                <div className="relative size-[70px] transition-transform duration-500 ease-in-out group-hover:scale-110">
+                <div className="relative size-[75px] transition-transform duration-500 ease-in-out group-hover:scale-110">
                   <Image
                     src={stat.icon}
                     alt=""
-                    width={70}
-                    height={70}
+                    width={75}
+                    height={75}
                     draggable={false}
-                    className="size-[70px] object-contain transition-opacity duration-500 ease-in-out group-hover:opacity-0"
+                    className="size-[75px] object-contain transition-opacity duration-500 ease-in-out group-hover:opacity-0"
                   />
                   <span
                     aria-hidden
@@ -141,7 +141,7 @@ export default function WeAreASG() {
                   />
                 </div>
 
-                <span className="font-neue-montreal text-sm font-medium tracking-widest text-neutral-800 uppercase">
+                <span className="font-neue-montreal text-xl tracking-wider text-neutral-800 uppercase">
                   {stat.label}
                 </span>
               </div>
@@ -153,7 +153,7 @@ export default function WeAreASG() {
               />
 
               {/* Bottom part — count pinned to the card bottom, own padding */}
-              <p className="p-5 font-serif text-[56px] leading-none text-neutral-900">
+              <p className="font-serif text-7xl font-semibold leading-none text-neutral-900 px-5 py-10">
                 <span data-count={stat.value}>0</span>
                 {stat.suffix}
               </p>
