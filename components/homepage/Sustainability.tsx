@@ -44,19 +44,22 @@ export default function Sustainability() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   return (
-    <section className="relative flex h-screen w-full flex-col overflow-hidden bg-white pb-10">
+    <section
+      className="relative flex w-full flex-col overflow-hidden bg-white pb-12"
+      style={{ height: "calc(100vh - var(--header-height, 4.55rem))" }}
+    >
       {/* Header row — title left, description right */}
-      <div className="pt-30 px-20 pb-12">
+      <div className="pt-14 px-20 pb-10">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8 max-w-[90%]">
           {/* Title */}
-          <h2 className="font-serif text-[64px] leading-[1] font-normal text-neutral-800 shrink-0">
+          <h2 className="font-serif text-[64px] leading-[1] text-neutral-800 shrink-0">
             Shaping a Greener
             <br />
             Future in Textiles
           </h2>
 
           {/* Description */}
-          <p className="max-w-[620px] text-lg tracking-wider text-neutral-800">
+          <p className="max-w-[620px] text-xl leading-[1.6] tracking-wide text-neutral-800">
             Amanat Shah Group integrates eco-conscious manufacturing tailored
             to the compliance demands of global fashion. From renewable energy
             to closed-loop water systems.
@@ -65,34 +68,40 @@ export default function Sustainability() {
       </div>
 
       {/* Expandable accordion panels */}
-      <div className="flex min-h-0 flex-1 gap-4 px-20 w-[92%] mx-auto">
+      <div className="flex min-h-0 flex-1 gap-5 px-18 w-[92%] mx-auto">
         {panels.map((panel, index) => {
           const isActive = index === activeIndex;
           return (
             <div
               key={panel.label}
               onClick={() => setActiveIndex(index)}
-              className={`relative h-full min-w-0 shrink-0 basis-[130px] overflow-hidden select-none transition-[flex-grow] duration-700 ease-in-out ${
+              className={`group relative h-full min-w-0 shrink-0 basis-[120px] overflow-hidden select-none transition-[flex-grow] duration-700 ease-in-out ${
                 isActive ? "grow cursor-default" : "grow-0 cursor-pointer"
               }`}
             >
-              {/* Background image */}
-              <Image
-                src={panel.image}
-                alt={panel.label}
-                fill
-                sizes="(max-width: 1024px) 100vw, 60vw"
-                draggable={false}
-                className="pointer-events-none object-cover"
-                quality={80}
-              />
+              {/* Background image — fixed at the expanded-panel width (inner row
+                  width minus 3 collapsed strips + gaps) so opening only reveals
+                  more of it; no object-cover rescale/zoom while the width animates */}
+              <div className="pointer-events-none absolute inset-y-0 left-1/2 w-[calc(92vw-550px)] -translate-x-1/2">
+                <Image
+                  src={panel.image}
+                  alt={panel.label}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 60vw"
+                  draggable={false}
+                  className={`object-cover ${
+                    isActive
+                      ? ""
+                      : "transition-transform duration-700 ease-in-out group-hover:scale-110"
+                  }`}
+                  quality={80}
+                />
+              </div>
 
-              {/* Gradient overlay — stronger when expanded so copy stays legible */}
+              {/* Gradient overlay — always on so collapsed strips share the same tint */}
               <div
                 aria-hidden
-                className={`pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent from-40% to-black/65 transition-opacity duration-700 ${
-                  isActive ? "opacity-100" : "opacity-40"
-                }`}
+                className="overlay-linear-subtle pointer-events-none absolute inset-0"
               />
 
               {/* Arrow button — only on the expanded panel */}
@@ -117,14 +126,14 @@ export default function Sustainability() {
 
               {/* Expanded content — title + description, bottom left */}
               <div
-                className={`pointer-events-none absolute bottom-4 left-4 max-w-[640px] p-8 transition-opacity duration-500 ${
+                className={`pointer-events-none absolute bottom-5 left-5 max-w-[640px] p-8 transition-opacity duration-500 ${
                   isActive ? "opacity-100 delay-300" : "opacity-0 delay-0"
                 }`}
               >
-                <h3 className="font-neue-montreal text-[26px] font-bold text-white tracking-wider">
+                <h3 className="font-neue-montreal text-2xl font-bold text-white tracking-wider">
                   {panel.label}
                 </h3>
-                <p className="mt-3 text-xl leading-[1.6] text-white/90">
+                <p className="mt-4 text-lg leading-[1.5] tracking-wider text-white/90">
                   {panel.description}
                 </p>
               </div>
@@ -135,7 +144,7 @@ export default function Sustainability() {
                   isActive ? "opacity-0 delay-0" : "opacity-100 delay-[400ms]"
                 }`}
               >
-                <span className="font-neue-montreal text-2xl tracking-wider font-bold whitespace-nowrap text-white [writing-mode:vertical-rl] rotate-180">
+                <span className="font-neue-montreal text-[22px] tracking-widest font-bold whitespace-nowrap text-white [writing-mode:vertical-rl] rotate-180">
                   {panel.label}
                 </span>
               </div>
