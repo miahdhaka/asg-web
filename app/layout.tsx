@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import Header from "@/components/layout/header/Header";
+import Footer from "@/components/layout/footer/Footer";
 import "./globals.css";
 
 const neueMontreal = localFont({
@@ -50,6 +51,7 @@ export default function RootLayout({
       <body className={`${neueMontreal.variable} ${tiemposFine.variable} h-screen min-h-screen flex flex-col font-neue-montreal`}>
         <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );
