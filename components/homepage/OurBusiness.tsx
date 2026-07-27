@@ -87,15 +87,15 @@ export default function OurBusiness() {
   return (
     <section className="relative flex h-screen w-full flex-col overflow-hidden pb-10">
       {/* Header row — title left, description right */}
-      <div className="pt-40 px-20 pb-18">
+      <div className="pt-14 px-20 pb-10">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8 max-w-[90%]">
           {/* Title */}
-          <h2 className="font-serif text-[64px] leading-[48px] font-normal text-neutral-800 shrink-0">
+          <h2 className="font-serif text-[64px] leading-[1] text-neutral-800 shrink-0">
             Our Business
           </h2>
 
           {/* Description */}
-          <p className="max-w-[620px] text-lg tracking-wider text-neutral-800">
+          <p className="max-w-[620px] text-xl leading-[1.6] tracking-wide text-neutral-800">
             With a 130-year legacy, Amanat Shah Group is a premier, multi-sector
             conglomerate. We drive sustainable growth across textiles, finance,
             and technology by integrating innovation, integrity.
@@ -116,7 +116,7 @@ export default function OurBusiness() {
         {/* Draggable track */}
         <div
           ref={scrollRef}
-          className="no-scrollbar flex h-full cursor-grab touch-pan-y items-start overflow-x-auto select-none active:cursor-grabbing"
+          className="no-scrollbar flex h-full cursor-grab touch-pan-y items-stretch overflow-x-auto select-none active:cursor-grabbing"
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={endDrag}
@@ -126,7 +126,7 @@ export default function OurBusiness() {
             <div
               key={`${card.image}-${index}`}
               data-card
-              className="relative aspect-[3/2] max-h-full w-[calc((100vw-30px)/2.3)] flex-shrink-0 overflow-hidden"
+              className="relative h-full w-[calc((100vw-30px)/2.3)] flex-shrink-0 overflow-hidden"
               style={{ marginRight: `${GAP}px` }}
             >
               {/* Background image */}

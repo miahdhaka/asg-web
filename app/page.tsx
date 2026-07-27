@@ -4,6 +4,7 @@ import OurBusiness from "@/components/homepage/OurBusiness";
 import GlobalFootprint from "@/components/homepage/GlobalFootprint";
 import Sustainability from "@/components/homepage/Sustainability";
 import Certifications from "@/components/homepage/Certifications";
+import WeAreASG from "@/components/homepage/WeAreASG";
 
 export default function HomePage() {
   return (
@@ -14,6 +15,7 @@ export default function HomePage() {
       <GlobalFootprint />
       <Sustainability />
       <Certifications />
+      <WeAreASG />
     </main>
   );
 }

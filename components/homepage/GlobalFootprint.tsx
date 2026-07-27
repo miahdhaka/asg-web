@@ -37,7 +37,10 @@ export default function GlobalFootprint() {
   const loopedBrands = [...brands, ...brands];
 
   return (
-    <section className="relative flex h-screen w-full flex-col overflow-hidden bg-[var(--color-primary-black)] pb-10">
+    <section
+      className="relative flex w-full flex-col overflow-hidden bg-[var(--color-primary-black)] pb-10"
+      style={{ height: "calc(100vh - var(--header-height, 4.55rem))" }}
+    >
       {/* Content row — copy left, map right */}
       <div className="relative flex min-h-0 flex-1 items-end px-20">
         {/* Left copy */}

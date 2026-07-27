@@ -4,8 +4,9 @@ import Link from "next/link";
 export default function AboutSection() {
   return (
     <section
-      className="relative w-full h-screen bg-[var(--primary-black)] flex flex-col items-center justify-center overflow-hidden"
+      className="relative w-full bg-[var(--primary-black)] flex flex-col items-center justify-center overflow-hidden"
       style={{ 
+        height: "calc(100vh - var(--header-height, 4.55rem))",
         paddingTop: "var(--header-height, 4.55rem)",
       }}
     >
