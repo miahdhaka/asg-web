@@ -35,13 +35,17 @@ export default function AboutSection() {
           className="w-[300px] h-[120px] object-contain"
         />
 
-        {/* Description */}
-        <p className="max-w-[900px] text-center text-[32px] leading-11 text-white mt-12">
+        {/* Description — rises from the bottom during the Hero's circle-reveal */}
+        <p
+          id="intro-copy"
+          className="max-w-[900px] text-center text-[32px] leading-11 text-white mt-12"
+        >
           Amanat Shah Group is a diversified business group with strong concentration in the Textile-to-Fashion value chain supported by Finance, Chemicals, Technology, Agriculture.
         </p>
 
-        {/* About Us button */}
+        {/* About Us button — rises from the bottom during the Hero's circle-reveal */}
         <Link
+          id="intro-cta"
           href="/about-us"
           data-label="About Us"
           className="primary-btn-flip-gradient text-lg px-8 py-4.5 mt-11"

@@ -1,5 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(useGSAP);
 
 interface LinkColumn {
   title: string;
@@ -99,8 +106,52 @@ const socials = [
 ];
 
 export default function Footer() {
+  const footerRef = useRef<HTMLElement>(null);
+  const wordmarkRef = useRef<HTMLParagraphElement>(null);
+
+  /* The oversized wordmark hides parked down behind the opaque offices
+     block and slides up into place when the footer scrolls into view —
+     deliberately unhurried (1.4s) — and drops back behind the block a
+     bit quicker (0.8s) when the footer leaves. Mid-flight reversals
+     (fast scrolling) scale the duration to the distance left, so the
+     tween redirects at a consistent speed instead of crawling. */
+  useGSAP(
+    () => {
+      const wordmark = wordmarkRef.current;
+      const footer = footerRef.current;
+      if (!wordmark || !footer) return;
+
+      // Park it fully under the offices block (which paints above it)
+      const PARKED = 140;
+      gsap.set(wordmark, { yPercent: PARKED });
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          const target = entry.isIntersecting ? 0 : PARKED;
+          const base = entry.isIntersecting ? 1.4 : 0.8;
+          // Fraction of the full travel still ahead of us (1 = full run)
+          const current = Number(gsap.getProperty(wordmark, "yPercent"));
+          const dist = Math.abs(current - target) / PARKED;
+          gsap.to(wordmark, {
+            yPercent: target,
+            duration: Math.max(0.3, base * dist),
+            ease: "power2.inOut",
+            overwrite: "auto",
+          });
+        },
+        { threshold: 0.35 }
+      );
+      observer.observe(footer);
+      return () => observer.disconnect();
+    },
+    { scope: footerRef }
+  );
+
   return (
-    <footer className="relative w-full shrink-0 overflow-hidden bg-primary-black text-white">
+    <footer
+      ref={footerRef}
+      className="relative w-full shrink-0 overflow-hidden bg-primary-black text-white"
+    >
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_70%_at_100%_100%,rgba(139,195,74,0.28),transparent_65%)]"
@@ -130,16 +181,18 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* Oversized gradient wordmark */}
+        {/* Oversized gradient wordmark — rises from behind the offices
+            block below when the footer enters the viewport */}
         <p
+          ref={wordmarkRef}
           aria-hidden
           className="pointer-events-none my-0 text-center font-serif font-medium text-[clamp(32px,4.5vw,72px)] leading-[0.8] tracking-[1.4rem] whitespace-nowrap uppercase bg-[image:var(--primary-gradient)] bg-clip-text text-transparent opacity-50 px-20"
         >
           Amanat Shah Group
         </p>
 
-        {/* Office addresses */}
-        <div className="grid grid-cols-7 gap-8 bg-[var(--neutral-900)] border-t border-white/10 px-20 py-10">
+        {/* Office addresses — kept above the wordmark so it can hide behind */}
+        <div className="relative z-10 grid grid-cols-7 gap-8 bg-[var(--neutral-900)] border-t border-white/10 px-20 py-10">
           {offices.map((office) => (
             <div key={`${office.title}-${office.address}`}>
               <h3 className="font-neue-montreal text-lg font-medium tracking-wider text-white uppercase">

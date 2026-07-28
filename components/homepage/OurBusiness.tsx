@@ -95,8 +95,11 @@ export default function OurBusiness() {
       {/* Header row — title left, description right */}
       <div className="pt-18 px-20 pb-12">
         <div className="flex flex-col lg:flex-row items-center lg:justify-between gap-8 max-w-[90%]">
-          {/* Title */}
-          <h2 className="font-serif text-[64px] leading-[1] text-neutral-800 shrink-0">
+          {/* Title — drops in from above via the Hero's phase-5 timeline */}
+          <h2
+            id="our-business-title"
+            className="font-serif text-[64px] leading-[1] text-neutral-800 shrink-0"
+          >
             Our Business
           </h2>
 

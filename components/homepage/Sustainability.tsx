@@ -45,14 +45,18 @@ export default function Sustainability() {
 
   return (
     <section
+      id="sustainability"
       className="relative flex w-full flex-col overflow-hidden bg-white pb-16"
       style={{ height: "calc(100vh - var(--header-height, 4.55rem))" }}
     >
       {/* Header row — title left, description right */}
       <div className="pt-18 px-20 pb-12">
         <div className="flex flex-col lg:flex-row items-center lg:justify-between gap-8 max-w-[90%]">
-          {/* Title */}
-          <h2 className="font-serif text-[64px] leading-[1] text-neutral-800 shrink-0">
+          {/* Title — drops in from above via the Hero's fade-chain reveal */}
+          <h2
+            id="sustainability-title"
+            className="font-serif text-[64px] leading-[1] text-neutral-800 shrink-0"
+          >
             Shaping a Greener
             <br />
             Future in Textiles
@@ -67,8 +71,12 @@ export default function Sustainability() {
         </div>
       </div>
 
-      {/* Expandable accordion panels */}
-      <div className="flex min-h-0 flex-1 gap-5 px-18 w-[90%] mx-auto">
+      {/* Expandable accordion panels — each panel rises in with a slight
+          stagger via the Hero's fade-chain reveal */}
+      <div
+        id="sustainability-panels"
+        className="flex min-h-0 flex-1 gap-5 px-18 w-[90%] mx-auto"
+      >
         {panels.map((panel, index) => {
           const isActive = index === activeIndex;
           return (
