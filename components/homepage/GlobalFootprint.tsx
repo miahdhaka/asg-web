@@ -38,6 +38,7 @@ export default function GlobalFootprint() {
 
   return (
     <section
+      id="global-footprint"
       className="relative flex w-full flex-col overflow-hidden bg-[var(--color-primary-black)] pb-10"
       style={{ height: "calc(100vh - var(--header-height, 4.55rem))" }}
     >

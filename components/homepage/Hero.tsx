@@ -21,6 +21,8 @@ export default function Hero() {
   const introFlyRef = useRef<HTMLDivElement>(null);
   const flyDarkRef = useRef<HTMLImageElement>(null);
   const flyMixedRef = useRef<HTMLImageElement>(null);
+  const waaCapsuleRef = useRef<HTMLDivElement>(null);
+  const waaWhiteRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
@@ -315,6 +317,21 @@ export default function Hero() {
         tl4.set(introLogo, { autoAlpha: 1 }, 1.0);
       }
 
+      /* While the logo flies down from the top, the intro's paragraph and
+         About Us button rise from the bottom — same duration, same ease, so
+         both motions land together (reversing tl4 plays the exact mirror) */
+      const introCopy = document.getElementById("intro-copy");
+      const introCta = document.getElementById("intro-cta");
+      const introRisers = [introCopy, introCta].filter(Boolean) as HTMLElement[];
+      if (intro && introRisers.length) {
+        tl4.fromTo(
+          introRisers,
+          { y: 120, autoAlpha: 0 },
+          { y: 0, autoAlpha: 1, duration: 0.98, ease: "power2.inOut" },
+          0.02
+        );
+      }
+
       /* ── Phase 5 (5th scroll): the intro cross-fades away over the pinned
          OurBusiness section, then the page settles on it seamlessly ── */
       const ourBusiness = document.getElementById("our-business");
@@ -408,6 +425,348 @@ export default function Hero() {
         tl5.set(introLogo, { autoAlpha: 1 }, 1.0);
       }
 
+      /* Mirror of the phase-4 entrance: while the logo flies back up to the
+         navbar, the paragraph and About Us button sink down and fade out —
+         same duration, same ease (reversing tl5 brings them back up) */
+      if (intro && introRisers.length) {
+        tl5.fromTo(
+          introRisers,
+          { y: 0, autoAlpha: 1 },
+          { y: 120, autoAlpha: 0, duration: 0.98, ease: "power2.inOut" },
+          0.02
+        );
+      }
+
+      /* The "Our Business" title drops in from a bit above while the intro
+         dissolves, growing from small to its actual size — same duration,
+         same ease (reversing tl5 sends it back up, shrinking again) */
+      const obTitle = document.getElementById("our-business-title");
+      if (ourBusiness && obTitle) {
+        tl5.fromTo(
+          obTitle,
+          { y: -80, scale: 0.6, autoAlpha: 0 },
+          {
+            y: 0,
+            scale: 1,
+            autoAlpha: 1,
+            transformOrigin: "left center",
+            duration: 0.98,
+            ease: "power2.inOut",
+          },
+          0.02
+        );
+      }
+
+      /* ── Fade chain (6th+ scrolls): each settled section dissolves into
+         the next one pinned beneath it — same fade as phase 5, but scroll
+         position never moves, so the navbar (and its logo) stay untouched ── */
+      const globalFootprint = document.getElementById("global-footprint");
+      const sustainability = document.getElementById("sustainability");
+      const certifications = document.getElementById("certifications");
+      const weAreASG = document.getElementById("we-are-asg");
+      const newsroom = document.getElementById("newsroom");
+
+      // The scroll position where a settled section sits below the navbar
+      const topY = (el: HTMLElement) => el.offsetTop - headerH();
+
+      /* Pin the next section under the fading one (z-30 by default), solid
+         from the start, in the exact geometry it has in flow below the
+         navbar. A custom z lets a reveal ride ON TOP instead. */
+      const pinUnder = (el: HTMLElement, z = 30) => {
+        gsap.set(el, {
+          position: "fixed",
+          top: headerH(),
+          left: 0,
+          width: "100%",
+          zIndex: z,
+          autoAlpha: 1,
+        });
+      };
+      // Drop it back into normal document flow, fully visible
+      const releasePin = (el: HTMLElement) => {
+        gsap.set(el, {
+          clearProps: "position,top,left,width,zIndex,opacity,visibility",
+        });
+      };
+
+      /* Each link: at `step`, a down-gesture on the settled `from` section
+         dissolves it into `to` (6th scroll → GlobalFootprint, 7th →
+         Sustainability, 8th → Certifications, 9th → WeAreASG capsule
+         reveal); an up-gesture at settled `to` reverses it */
+      type FadeLink = {
+        step: number;
+        from: HTMLElement | null;
+        to: HTMLElement | null;
+        tl: gsap.core.Timeline;
+        /** Pin `to` at this z-index (default 30 = beneath the fading
+            section; 50 = reveal riding on top of a static `from`) */
+        pinZ?: number;
+        /** Skip the default `from` dissolve (custom reveal owns the tl) */
+        noFade?: boolean;
+        /** Optional hook run right before the fade plays/reverses (fresh
+            measurements for extra per-section tweens) */
+        onPrep?: () => void;
+        /** Optional extra cleanup once the swap lands (either direction) */
+        onSettle?: () => void;
+        onUnsettle?: () => void;
+      };
+      const fadeChain: FadeLink[] = [
+        { step: 5, from: ourBusiness, to: globalFootprint, tl: gsap.timeline({ paused: true }) },
+        { step: 6, from: globalFootprint, to: sustainability, tl: gsap.timeline({ paused: true }) },
+        { step: 7, from: sustainability, to: certifications, tl: gsap.timeline({ paused: true }) },
+        { step: 8, from: certifications, to: weAreASG, tl: gsap.timeline({ paused: true }), pinZ: 50, noFade: true },
+        { step: 9, from: weAreASG, to: newsroom, tl: gsap.timeline({ paused: true }) },
+      ];
+      for (const link of fadeChain) {
+        if (!link.from || !link.to || link.noFade) continue;
+        /* The `from` section stays in flow (it already fills the viewport at
+           its settled spot) — raised above the pinned `to` section, it simply
+           dissolves over it: same top-layer-only fade as phase 5 */
+        link.tl.to(
+          link.from,
+          { autoAlpha: 0, duration: 1, ease: "power2.inOut" },
+          0
+        );
+      }
+
+      /* 7th-scroll extra: as GlobalFootprint dissolves into Sustainability
+         its title drops in from a bit above, growing small → actual size —
+         same 1s power2.inOut as the fade; reversing the fade sends it back
+         up, shrinking again (same choreography as the OurBusiness title) */
+      const susTitle = document.getElementById("sustainability-title");
+      const susLink = fadeChain.find((l) => l.to === sustainability);
+      if (susLink && susTitle) {
+        susLink.tl.fromTo(
+          susTitle,
+          { y: -80, scale: 0.6, autoAlpha: 0 },
+          {
+            y: 0,
+            scale: 1,
+            autoAlpha: 1,
+            transformOrigin: "left center",
+            duration: 1,
+            ease: "power2.inOut",
+          },
+          0
+        );
+        // Once landed (either direction) drop the leftovers so the in-flow
+        // title is always clean
+        const resetSusTitle = () =>
+          gsap.set(susTitle, { clearProps: "transform,opacity,visibility" });
+        susLink.onSettle = resetSusTitle;
+        susLink.onUnsettle = resetSusTitle;
+      }
+
+      /* 7th-scroll extra: the accordion panels rise from below one after
+         another (a light left→right stagger) while the fade reveals the
+         section — mirroring the title dropping in from above. Reversing
+         the fade sinks them back down in the opposite order. */
+      const susPanels = document.getElementById("sustainability-panels");
+      if (susLink && susPanels && susPanels.children.length > 0) {
+        const panelEls = Array.from(susPanels.children) as HTMLElement[];
+        susLink.tl.fromTo(
+          panelEls,
+          { y: 160, autoAlpha: 0 },
+          {
+            y: 0,
+            autoAlpha: 1,
+            duration: 1,
+            ease: "power2.inOut",
+            stagger: 0.08,
+          },
+          0
+        );
+        // Compose with the title cleanup so both run on settle/unsettle
+        const prevSettle = susLink.onSettle;
+        const prevUnsettle = susLink.onUnsettle;
+        const resetSusPanels = () =>
+          gsap.set(panelEls, { clearProps: "transform,opacity,visibility" });
+        susLink.onSettle = () => {
+          prevSettle?.();
+          resetSusPanels();
+        };
+        susLink.onUnsettle = () => {
+          prevUnsettle?.();
+          resetSusPanels();
+        };
+      }
+
+      /* 8th-scroll extra: the certification tiles start stacked on the
+         bottom-right tile and scatter out to their grid spots in sync with
+         the fade (same 1s power2.inOut) — reversing the fade pulls them all
+         back into that corner. onPrep measures and stacks the tiles right
+         before each play so the deltas are always fresh. */
+      const certGrid = document.getElementById("cert-grid");
+      const certLink = fadeChain.find((l) => l.to === certifications);
+      if (certGrid && certLink && certGrid.children.length > 0) {
+        const tiles = Array.from(certGrid.children) as HTMLElement[];
+        const anchor = tiles[tiles.length - 1];
+        certLink.onPrep = () => {
+          // Stack every tile on the anchor's corner spot (delta measured
+          // transform-free so repeated preps stay accurate)
+          gsap.set(tiles, { clearProps: "transform" });
+          const a = anchor.getBoundingClientRect();
+          tiles.forEach((tile) => {
+            const r = tile.getBoundingClientRect();
+            gsap.set(tile, { x: a.left - r.left, y: a.top - r.top });
+          });
+        };
+        // Timeline just travels back to identity — reverse restacks them
+        certLink.tl.to(
+          tiles,
+          { x: 0, y: 0, duration: 1, ease: "power2.inOut" },
+          0
+        );
+        // Once landed (either direction) drop the leftover transforms so
+        // the in-flow grid is always clean
+        const resetTiles = () => gsap.set(tiles, { clearProps: "transform" });
+        certLink.onSettle = resetTiles;
+        certLink.onUnsettle = resetTiles;
+      }
+
+      /* 8th-scroll extra: as Sustainability dissolves into Certifications
+         its eyebrow ("Certification .") and title drop in together from a
+         bit above, growing small → actual size — same 1s power2.inOut as
+         the fade; reversing the fade sends them back up, shrinking again
+         (same choreography as the other titles). Wraps the tile callbacks
+         so both cleanups run on settle/unsettle. */
+      const certTitle = document.getElementById("certifications-title");
+      const certEyebrow = document.getElementById("certifications-eyebrow");
+      const certHeading = [certEyebrow, certTitle].filter(Boolean) as HTMLElement[];
+      if (certLink && certHeading.length) {
+        certLink.tl.fromTo(
+          certHeading,
+          { y: -80, scale: 0.6, autoAlpha: 0 },
+          {
+            y: 0,
+            scale: 1,
+            autoAlpha: 1,
+            transformOrigin: "left center",
+            duration: 1,
+            ease: "power2.inOut",
+          },
+          0
+        );
+        const prevSettle = certLink.onSettle;
+        const prevUnsettle = certLink.onUnsettle;
+        const resetCertTitle = () =>
+          gsap.set(certHeading, { clearProps: "transform,opacity,visibility" });
+        certLink.onSettle = () => {
+          prevSettle?.();
+          resetCertTitle();
+        };
+        certLink.onUnsettle = () => {
+          prevUnsettle?.();
+          resetCertTitle();
+        };
+      }
+
+      /* 9th-scroll custom reveal: a proper capsule showing ONLY WeAreASG's
+         bg image (a fixed pill "window" onto the full-bleed aerial shot)
+         rises from bottom-center to screen-center (1s) while the page
+         behind it fades to full white, holds there a moment, then the
+         capsule fades away while the full section — with "WE ARE" nudging
+         in from the right and "ASG" from the left — cross-fades in (1s).
+         Reversing plays the exact mirror: section fades out to the white
+         backdrop, capsule reappears, holds, sinks down as the page returns. */
+      const waaLink = fadeChain.find((l) => l.to === weAreASG);
+      const waaCapsule = waaCapsuleRef.current;
+      const waaWhite = waaWhiteRef.current;
+      if (waaLink && weAreASG && waaCapsule && waaWhite) {
+        const weAreTxt = document.getElementById("waa-we-are");
+        const asgTxt = document.getElementById("waa-asg");
+        const texts = [weAreTxt, asgTxt].filter(Boolean) as HTMLElement[];
+        waaLink.onPrep = () => {
+          // Stage the start frame: capsule parked below the viewport, white
+          // backdrop transparent over cert, the section itself invisible on
+          // top, headline halves offset
+          gsap.set(waaCapsule, {
+            display: "block",
+            autoAlpha: 1,
+            xPercent: -50,
+            yPercent: -50,
+            y: window.innerHeight,
+          });
+          gsap.set(waaWhite, { display: "block", autoAlpha: 0 });
+          gsap.set(weAreASG, { autoAlpha: 0 });
+          if (weAreTxt) gsap.set(weAreTxt, { x: 90 });
+          if (asgTxt) gsap.set(asgTxt, { x: -90 });
+        };
+        // Stage 1 — the bg-image capsule glides bottom-center → screen-center
+        // while the page behind it dissolves to full white
+        waaLink.tl.to(
+          waaCapsule,
+          { y: 0, duration: 1, ease: "power2.inOut" },
+          0
+        );
+        waaLink.tl.to(
+          waaWhite,
+          { autoAlpha: 1, duration: 1, ease: "power2.inOut" },
+          0
+        );
+        // …stays a little bit at the center (0.35s hold)…
+        // Stage 2 — the capsule fades away while the full section fades in
+        waaLink.tl.to(
+          waaCapsule,
+          { autoAlpha: 0, duration: 1, ease: "power2.inOut" },
+          1.35
+        );
+        waaLink.tl.to(
+          weAreASG,
+          { autoAlpha: 1, duration: 1, ease: "power2.inOut" },
+          1.35
+        );
+        // …while the two headline halves slide into place
+        if (weAreTxt) {
+          waaLink.tl.to(weAreTxt, { x: 0, duration: 1, ease: "power2.inOut" }, 1.35);
+        }
+        if (asgTxt) {
+          waaLink.tl.to(asgTxt, { x: 0, duration: 1, ease: "power2.inOut" }, 1.35);
+        }
+        // Landing (either direction) — park the capsule and the white
+        // backdrop away and drop the leftover values so the in-flow
+        // section is always clean
+        const resetWaa = () => {
+          gsap.set(waaCapsule, { display: "none", clearProps: "opacity,visibility,transform" });
+          gsap.set(waaWhite, { display: "none", clearProps: "opacity,visibility" });
+          gsap.set(weAreASG, { clearProps: "opacity,visibility" });
+          if (texts.length) gsap.set(texts, { clearProps: "transform" });
+        };
+        waaLink.onSettle = resetWaa;
+        waaLink.onUnsettle = resetWaa;
+      }
+
+      /* 10th-scroll extra: as WeAreASG dissolves into Newsroom its eyebrow
+         ("Newsroom .") and title drop in together from a bit above, growing
+         small → actual size — same 1s power2.inOut as the fade; reversing
+         the fade sends them back up, shrinking again (same choreography as
+         the Certifications heading). */
+      const newsTitle = document.getElementById("newsroom-title");
+      const newsEyebrow = document.getElementById("newsroom-eyebrow");
+      const newsHeading = [newsEyebrow, newsTitle].filter(Boolean) as HTMLElement[];
+      const newsLink = fadeChain.find((l) => l.to === newsroom);
+      if (newsLink && newsHeading.length) {
+        newsLink.tl.fromTo(
+          newsHeading,
+          { y: -80, scale: 0.6, autoAlpha: 0 },
+          {
+            y: 0,
+            scale: 1,
+            autoAlpha: 1,
+            transformOrigin: "left center",
+            duration: 1,
+            ease: "power2.inOut",
+          },
+          0
+        );
+        // Once landed (either direction) drop the leftovers so the in-flow
+        // heading is always clean
+        const resetNewsHeading = () =>
+          gsap.set(newsHeading, { clearProps: "transform,opacity,visibility" });
+        newsLink.onSettle = resetNewsHeading;
+        newsLink.onUnsettle = resetNewsHeading;
+      }
+
       /* ── Discrete scroll stepping ──
          While the page sits at the very top, scrolling is locked and each
          downward gesture plays exactly one phase (1st scroll → phase 1,
@@ -461,6 +820,24 @@ export default function Hero() {
         releaseOurBusiness();
         step = 4;
       });
+      for (const link of fadeChain) {
+        link.tl.eventCallback("onComplete", () => {
+          animating = false;
+          // Swap the pinned overlay for the real in-flow section
+          settleOnNext(link);
+          link.onSettle?.();
+        });
+        link.tl.eventCallback("onReverseComplete", () => {
+          animating = false;
+          // Back on the settled `from` section — drop the `to` overlay
+          if (link.to) releasePin(link.to);
+          if (link.from) {
+            gsap.set(link.from, { clearProps: "zIndex,opacity,visibility" });
+          }
+          step = link.step;
+          link.onUnsettle?.();
+        });
+      }
 
       const stepForward = () => {
         if (animating || step >= 5) return;
@@ -530,6 +907,46 @@ export default function Hero() {
         tl5.progress(1).reverse(); // onReverseComplete lands on step 4
       };
 
+      /* Next gesture down a chain link: raise the in-flow `from` section
+         above the freshly pinned `to` section and dissolve it — scroll
+         position never moves, so the navbar (and its logo) stay untouched */
+      const fadeToNext = (link: FadeLink) => {
+        if (animating || !link.from || !link.to) return;
+        animating = true;
+        gsap.set(link.from, { zIndex: 40 }); // top layer during the fade
+        pinUnder(link.to, link.pinZ);
+        link.onPrep?.(); // stage extra per-section tweens (fresh measures)
+        link.tl.invalidate().play(0);
+      };
+
+      /* Swap the pinned overlay for the real in-flow section — same visual
+         frame — then native scrolling takes over from there */
+      const settleOnNext = (link: FadeLink) => {
+        if (animating || !link.to) return;
+        releasePin(link.to);
+        if (link.from) {
+          // Restore the faded section (off-screen above) for future replays
+          gsap.set(link.from, { autoAlpha: 1, clearProps: "zIndex" });
+        }
+        window.scrollTo({ top: topY(link.to), behavior: "auto" });
+        step = link.step + 1;
+      };
+
+      /* Mirror: scrolling up from the settled `to` section re-pins it, the
+         page silently jumps back to `from` behind it, and the dissolve
+         plays in reverse */
+      const unsettleToPrev = (link: FadeLink) => {
+        if (animating || !link.from || !link.to) return;
+        animating = true;
+        pinUnder(link.to, link.pinZ);
+        gsap.set(link.from, { zIndex: 40 });
+        window.scrollTo({ top: topY(link.from), behavior: "auto" });
+        // Re-stage extra tweens, re-record start values, jump to the end
+        // frame (identical to the settled view) and play backwards
+        link.onPrep?.();
+        link.tl.invalidate().progress(1).reverse(); // lands on link.step
+      };
+
       const atTop = () => window.scrollY <= 2;
 
       const onWheel = (e: WheelEvent) => {
@@ -538,6 +955,43 @@ export default function Hero() {
         const isNewGesture = now - lastWheelTime > 250;
         lastWheelTime = now;
 
+        // A phase is playing — swallow everything so the page can't drift
+        // (the phase-6 fade runs away from the top, so this must come first)
+        if (animating) {
+          e.preventDefault();
+          return;
+        }
+
+        /* Fade-chain zones: scrolling down on a settled section dissolves
+           it into the next; scrolling up at (or overshooting past) the next
+           settled section holds the page and reverses the dissolve */
+        for (const link of fadeChain) {
+          if (
+            e.deltaY > 0 &&
+            step === link.step &&
+            link.from &&
+            Math.abs(window.scrollY - topY(link.from)) <= 4
+          ) {
+            e.preventDefault();
+            if (isNewGesture) fadeToNext(link);
+            return;
+          }
+          if (e.deltaY < 0 && step === link.step + 1 && link.to) {
+            const target = topY(link.to);
+            const y = window.scrollY;
+            if (y <= target + 4 && y >= target - 300) {
+              e.preventDefault();
+              if (y < target - 1) {
+                // The arriving gesture overshot above the section — clamp back
+                window.scrollTo({ top: target, behavior: "auto" });
+              } else if (isNewGesture) {
+                unsettleToPrev(link);
+              }
+              return;
+            }
+          }
+        }
+
         /* Scrolling up at (or overshooting past) the settled OurBusiness:
            hold the page there, and a fresh up-gesture reverses the fade */
         if (e.deltaY < 0 && step === 5 && !atTop() && ourBusiness) {
@@ -545,7 +999,6 @@ export default function Hero() {
           const y = window.scrollY;
           if (y <= target + 4 && y >= target - 300) {
             e.preventDefault();
-            if (animating) return;
             if (y < target - 1) {
               // The arriving gesture overshot above the section — clamp back
               window.scrollTo({ top: target, behavior: "auto" });
@@ -557,12 +1010,6 @@ export default function Hero() {
         }
 
         if (!atTop()) return;
-
-        // Swallow inertia while a phase is playing so the page can't drift
-        if (animating) {
-          e.preventDefault();
-          return;
-        }
 
         if (e.deltaY > 0) {
           if (step < 5) {
@@ -578,6 +1025,36 @@ export default function Hero() {
       const onKeyDown = (e: KeyboardEvent) => {
         const target = e.target as HTMLElement | null;
         if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) return;
+
+        // A phase is playing — swallow everything so the page can't drift
+        if (animating) {
+          e.preventDefault();
+          return;
+        }
+
+        // Keyboard equivalents of the fade-chain wheel zones
+        for (const link of fadeChain) {
+          if (
+            ["ArrowDown", "PageDown", " "].includes(e.key) &&
+            step === link.step &&
+            link.from &&
+            Math.abs(window.scrollY - topY(link.from)) <= 4
+          ) {
+            e.preventDefault();
+            fadeToNext(link);
+            return;
+          }
+          if (
+            ["ArrowUp", "PageUp"].includes(e.key) &&
+            step === link.step + 1 &&
+            link.to &&
+            Math.abs(window.scrollY - topY(link.to)) <= 4
+          ) {
+            e.preventDefault();
+            unsettleToPrev(link);
+            return;
+          }
+        }
 
         // Keyboard equivalent of scrolling up out of settled OurBusiness
         if (
@@ -626,9 +1103,15 @@ export default function Hero() {
       };
 
       // Page loaded already scrolled (e.g. refresh mid-page): jump to end state
-      // (step 5 — everything lives in normal flow, native scrolling active)
+      // (everything lives in normal flow, native scrolling active; land on the
+      // deepest chain step whose section the page has reached, else step 5)
       if (!atTop()) {
         step = 5;
+        for (const link of fadeChain) {
+          if (link.to && window.scrollY >= topY(link.to) - 4) {
+            step = link.step + 1;
+          }
+        }
         tl.progress(1);
         tl2.progress(1);
         tl3.progress(1);
@@ -769,6 +1252,36 @@ export default function Hero() {
           quality={100}
           className="absolute inset-0 w-full h-full object-contain opacity-0"
         />
+      </div>
+
+      {/* 9th-scroll white backdrop — sits between Certifications (z-40) and
+          the WeAreASG reveal (z-50): the page behind the rising capsule
+          dissolves into this full-white layer, leaving only the capsule
+          visible. GSAP fades it in/out around the capsule's travel. */}
+      <div
+        ref={waaWhiteRef}
+        className="pointer-events-none fixed inset-0 z-45 hidden bg-white"
+      />
+
+      {/* 9th-scroll capsule — a fixed tall pill that acts as a "window"
+          showing only WeAreASG's full-bleed bg image (the viewport-sized
+          image is centered inside, the pill crops it). GSAP raises it from
+          below the screen, holds it at the center, then fades it away. */}
+      <div
+        ref={waaCapsuleRef}
+        className="pointer-events-none fixed left-1/2 top-1/2 z-60 hidden h-[52vh] w-[14vw] min-w-55 overflow-hidden rounded-full"
+      >
+        <div className="absolute left-1/2 top-1/2 h-screen w-screen -translate-x-1/2 -translate-y-1/2">
+          <Image
+            src="/images/we-are-asg.png"
+            alt=""
+            fill
+            sizes="100vw"
+            draggable={false}
+            className="pointer-events-none object-cover"
+            quality={80}
+          />
+        </div>
       </div>
     </>
   );

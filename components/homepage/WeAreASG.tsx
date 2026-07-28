@@ -75,6 +75,7 @@ export default function WeAreASG() {
   return (
     <section
       ref={sectionRef}
+      id="we-are-asg"
       className="relative flex w-full flex-col overflow-hidden"
       style={{ height: "calc(100vh - var(--header-height, 4.55rem))" }}
     >
@@ -92,14 +93,17 @@ export default function WeAreASG() {
       {/* Soft dark tint so the cards and type stay legible */}
       <div aria-hidden className="pointer-events-none absolute inset-0 bg-black/25" />
 
-      {/* Oversized gradient type — behind the cards */}
+      {/* Oversized gradient type — behind the cards. The Hero's 9th-scroll
+          reveal nudges "WE ARE" in from the right and "ASG" from the left. */}
       <span
+        id="waa-we-are"
         aria-hidden
         className="pointer-events-none absolute top-[10%] left-[10%] z-10 font-serif text-[160px] leading-none uppercase bg-[image:var(--primary-gradient)] bg-clip-text text-transparent"
       >
         We Are
       </span>
       <span
+        id="waa-asg"
         aria-hidden
         className="pointer-events-none absolute bottom-[10%] right-[19%] z-10 font-serif text-[160px] leading-none uppercase bg-[image:var(--primary-gradient)] bg-clip-text text-transparent"
       >

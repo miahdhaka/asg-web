@@ -32,21 +32,26 @@ const news: NewsItem[] = [
 export default function Newsroom() {
   return (
     <section
+      id="newsroom"
       className="relative flex w-full flex-col overflow-hidden bg-white py-8"
       style={{ height: "calc(100vh - var(--header-height, 4.55rem))" }}
     >
       {/* Header — eyebrow + title left, button right */}
       <div className="flex items-end justify-between px-20 mb-10">
         <div className="mt-2">
-          {/* Eyebrow */}
-          <div className="flex items-center gap-3">
+          {/* Eyebrow — drops in together with the title below */}
+          <div id="newsroom-eyebrow" className="flex items-center gap-3">
             <span className="font-neue-montreal text-base font-medium tracking-widest text-neutral-800 uppercase">
               Newsroom
             </span>
             <span aria-hidden className="h-1.5 w-1.5 bg-neutral-800" />
           </div>
 
-          <h2 className="mt-3 font-serif text-[64px] leading-[1] font-normal text-neutral-800">
+          {/* Title — drops in from above via the Hero's fade-chain reveal */}
+          <h2
+            id="newsroom-title"
+            className="mt-3 font-serif text-[64px] leading-[1] font-normal text-neutral-800"
+          >
             Latest from ASG <br />newsroom
           </h2>
         </div>
