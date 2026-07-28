@@ -3,19 +3,33 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import Navigation from "./Navigation";
 import Search from "./Search";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
+  // On the homepage the center logo starts hidden — the Hero scroll timeline
+  // reveals it once the hero logo finishes its flight into the navbar.
+  const isHome = usePathname() === "/";
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 0);
     };
 
+    // Hero plays its phases while the page is scroll-locked at the top,
+    // so it broadcasts its state for the navbar background to follow
+    const handleHeroPhase = (e: Event) => {
+      setScrolled((e as CustomEvent).detail === true || window.scrollY > 0);
+    };
+
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("hero-phase", handleHeroPhase);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("hero-phase", handleHeroPhase);
+    };
   }, []);
 
   return (
@@ -28,9 +42,14 @@ export default function Header() {
           <Navigation />
         </div>
 
-        {/* Logo - center */}
+        {/* Logo - center (hidden on homepage load; revealed by the Hero scroll timeline) */}
         <div className="flex items-center justify-center">
-          <Link href="/" className="flex items-center">
+          <Link
+            href="/"
+            id="header-logo"
+            className="flex items-center"
+            style={isHome ? { opacity: 0 } : undefined}
+          >
             <Image
               src="/logo/ASG-logo.png"
               alt="Amanat Shah Group"

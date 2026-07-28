@@ -88,7 +88,8 @@ export default function OurBusiness() {
 
   return (
     <section
-      className="relative flex w-full flex-col overflow-hidden pb-18"
+      id="our-business"
+      className="bg-background relative flex w-full flex-col overflow-hidden pb-18"
       style={{ height: "calc(100vh - var(--header-height, 4.55rem))" }}
     >
       {/* Header row — title left, description right */}
