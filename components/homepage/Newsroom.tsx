@@ -32,12 +32,12 @@ const news: NewsItem[] = [
 export default function Newsroom() {
   return (
     <section
-      className="relative flex w-full flex-col overflow-hidden bg-white"
+      className="relative flex w-full flex-col overflow-hidden bg-white py-12"
       style={{ height: "calc(100vh - var(--header-height, 4.55rem))" }}
     >
-      {/* Header row — eyebrow + title left, button right */}
-      <div className="flex items-end justify-between pt-14 px-20 pb-6">
-        <div>
+      {/* Header — eyebrow + title left, button right */}
+      <div className="flex items-end justify-between px-20 mb-10">
+        <div className="mt-2">
           {/* Eyebrow */}
           <div className="flex items-center gap-3">
             <span className="font-neue-montreal text-base font-medium tracking-widest text-neutral-800 uppercase">
@@ -47,14 +47,14 @@ export default function Newsroom() {
           </div>
 
           <h2 className="mt-3 font-serif text-[64px] leading-[1] font-normal text-neutral-800">
-            Latest from ASG newsroom
+            Latest from ASG <br />newsroom
           </h2>
         </div>
 
         <Link
           href="/newsroom"
           data-label="More news"
-          className="primary-btn-flip-gradient text-sm px-6 py-3"
+          className="primary-btn-flip-gradient text-lg px-10 py-5"
         >
           More news
         </Link>
@@ -62,7 +62,7 @@ export default function Newsroom() {
 
       {/* News cards */}
       <div className="flex min-h-0 flex-1 items-start px-20">
-        <div className="grid w-full grid-cols-3 gap-4">
+        <div className="grid w-full grid-cols-3 gap-5">
           {news.map((item, index) => (
             <article key={index} className="group flex flex-col gap-3">
               {/* Image */}

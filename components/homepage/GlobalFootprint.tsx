@@ -20,7 +20,7 @@ const mapPins: MapPin[] = [
   { label: "USA", coordinates: [-95.7129, 37.0902] },
   { label: "Brazil", coordinates: [-51.9253, -14.235] },
   { label: "UK", coordinates: [-3.436, 55.3781] },
-  { label: "Germany", coordinates: [10.4515, 51.1657] },
+  { label: "Germany", coordinates: [16.6, 45.9] },
   { label: "UAE / Dubai", coordinates: [53.8478, 23.4241] },
   { label: "South Africa", coordinates: [22.9375, -30.5595] },
   { label: "China", coordinates: [104.1954, 35.8617] },
@@ -42,9 +42,9 @@ export default function GlobalFootprint() {
       style={{ height: "calc(100vh - var(--header-height, 4.55rem))" }}
     >
       {/* Content row — copy left, map right */}
-      <div className="relative flex min-h-0 flex-1 items-end px-20">
-        {/* Left copy */}
-        <div className="w-[38%] shrink-0 mb-[5%]">
+      <div className="relative flex min-h-0 flex-1 items-center px-20">
+        {/* Left copy — pinned to the bottom while the map stays centered */}
+        <div className="w-[38%] shrink-0 self-end mb-[5%]">
           {/* Eyebrow */}
           <div className="flex items-center gap-3">
             <span className="font-neue-montreal text-sm font-normal tracking-[0.25em] text-white uppercase"
@@ -71,13 +71,13 @@ export default function GlobalFootprint() {
 
         {/* Map with location pins */}
         <div className="relative min-w-0 flex-1">
-          {/* Green gradient drop shadow above the map */}
+          {/* Green gradient blur centered behind the map */}
           <div
             aria-hidden
-            className="pointer-events-none absolute -top-20 left-1/2 h-40 w-[80%] -translate-x-1/2"
+            className="pointer-events-none absolute top-1/2 left-1/2 h-[85%] w-[95%] -translate-x-1/2 -translate-y-1/2"
             style={{
-              background: "radial-gradient(ellipse at center, rgba(34, 197, 94, 0.4) 0%, rgba(34, 197, 94, 0) 70%)",
-              filter: "blur(40px)",
+              background: "radial-gradient(circle at center, rgba(34, 197, 94, 0.06) 0%, rgba(34, 197, 94, 0) 70%)",
+              filter: "blur(60px)",
             }}
           />
 
@@ -87,21 +87,28 @@ export default function GlobalFootprint() {
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                "radial-gradient(ellipse 60% 70% at 50% 50%, rgba(34, 197, 94, 0.15) 0%, rgba(4, 7, 10, 0) 70%)",
+                "radial-gradient(ellipse 60% 70% at 50% 50%, rgba(34, 197, 94, 0.1) 0%, rgba(4, 7, 10, 0) 70%)",
             }}
           />
 
           <ComposableMap
             projection="geoMercator"
+            // Cropped viewBox: tall enough for Greenland at the top but
+            // ends just below South Africa, skipping the Antarctica zone
+            width={800}
+            height={360}
             projectionConfig={{
               scale: 85,
-              center: [20, 20],
+              center: [20, 50],
             }}
             style={{ width: "100%", height: "auto" }}
           >
             <Geographies geography={GEO_URL}>
               {({ geographies }) =>
-                geographies.map((geo) => (
+                geographies
+                  // Hide Antarctica — the bottom landmass adds no value here
+                  .filter((geo) => geo.properties.name !== "Antarctica")
+                  .map((geo) => (
                   <Geography
                     key={geo.rsmKey}
                     geography={geo}
@@ -119,10 +126,9 @@ export default function GlobalFootprint() {
             </Geographies>
 
             {mapPins.map((pin) => {
-              // Offset labels for UK and Germany to avoid overlap
-              const labelOffset = pin.label === "UK" ? { x: -15, y: -10 } :
-                                  pin.label === "Germany" ? { x: 15, y: -10 } :
-                                  { x: 0, y: -12 };
+              // Frosted badge below the pointer, sized to the label text
+              const badgeWidth = pin.label.length * 6 + 18;
+              const badge = { x: 0, y: 12 };
               return (
               <Marker key={pin.label} coordinates={pin.coordinates}>
                 {/* Red dot with pulse */}
@@ -143,20 +149,33 @@ export default function GlobalFootprint() {
                     repeatCount="indefinite"
                   />
                 </circle>
-                {/* Label */}
-                <text
-                  textAnchor="middle"
-                  x={labelOffset.x}
-                  y={labelOffset.y}
-                  style={{
-                    fontFamily: "var(--font-neue-montreal)",
-                    fontSize: "10px",
-                    fill: "white",
-                    fontWeight: 500,
-                  }}
-                >
-                  {pin.label}
-                </text>
+                {/* Country name badge — dark translucent pill with a subtle
+                    light border, like frosted glass over the map */}
+                <g>
+                  <rect
+                    x={badge.x - badgeWidth / 2}
+                    y={badge.y}
+                    width={badgeWidth}
+                    height={19}
+                    rx={4}
+                    fill="rgba(35, 42, 48, 0.78)"
+                    stroke="rgba(255, 255, 255, 0.18)"
+                    strokeWidth={0.75}
+                  />
+                  <text
+                    textAnchor="middle"
+                    x={badge.x}
+                    y={badge.y + 13}
+                    style={{
+                      fontFamily: "var(--font-neue-montreal)",
+                      fontSize: "11px",
+                      fill: "white",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {pin.label}
+                  </text>
+                </g>
               </Marker>
               );
             })}
