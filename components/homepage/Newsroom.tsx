@@ -13,26 +13,26 @@ const news: NewsItem[] = [
     date: "3 June, 2026",
     category: "Corporate",
     title: "President's industrial development award -2024",
-    image: "/images/newsroom/news-1.png",
+    image: "/images/newsroom/news_1.png",
   },
   {
     date: "3 June, 2026",
     category: "Corporate",
     title: "President's industrial development award -2024",
-    image: "/images/newsroom/news-2.png",
+    image: "/images/newsroom/news_2.png",
   },
   {
     date: "3 June, 2026",
     category: "Corporate",
     title: "President's industrial development award -2024",
-    image: "/images/newsroom/news-3.png",
+    image: "/images/newsroom/news_3.png",
   },
 ];
 
 export default function Newsroom() {
   return (
     <section
-      className="relative flex w-full flex-col overflow-hidden bg-white py-12"
+      className="relative flex w-full flex-col overflow-hidden bg-white py-8"
       style={{ height: "calc(100vh - var(--header-height, 4.55rem))" }}
     >
       {/* Header — eyebrow + title left, button right */}
@@ -64,7 +64,7 @@ export default function Newsroom() {
       <div className="flex min-h-0 flex-1 items-start px-20">
         <div className="grid w-full grid-cols-3 gap-5">
           {news.map((item, index) => (
-            <article key={index} className="group flex flex-col gap-3">
+            <Link key={index} href="/newsroom" className="group flex flex-col gap-3">
               {/* Image */}
               <div className="relative aspect-[431/329] w-full overflow-hidden bg-[#D9D9D9]">
                 <Image
@@ -79,24 +79,24 @@ export default function Newsroom() {
               </div>
 
               {/* Meta — date / category */}
-              <div className="flex items-center gap-2">
-                <span className="font-neue-montreal text-sm text-neutral-600">
+              <div className="flex items-center gap-2 mt-1">
+                <span className="font-neue-montreal text-xl text-neutral-600">
                   {item.date}
                 </span>
                 <span
                   aria-hidden
-                  className="h-3 w-px rotate-[30deg] bg-neutral-600"
+                  className="h-5 w-px rotate-[30deg] bg-neutral-600"
                 />
-                <span className="font-neue-montreal text-sm text-neutral-600">
+                <span className="font-neue-montreal text-xl text-neutral-600">
                   {item.category}
                 </span>
               </div>
 
               {/* Title */}
-              <h3 className="max-w-[345px] font-serif text-2xl leading-8 text-neutral-800">
+              <h3 className="max-w-[345px] font-serif text-3xl leading-10 text-neutral-800">
                 {item.title}
               </h3>
-            </article>
+            </Link>
           ))}
         </div>
       </div>

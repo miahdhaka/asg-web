@@ -4,6 +4,7 @@ import Link from "next/link";
 export default function AboutSection() {
   return (
     <section
+      id="intro-section"
       className="relative w-full bg-[var(--primary-black)] flex flex-col items-center justify-center overflow-hidden"
       style={{ 
         height: "calc(100vh - var(--header-height, 4rem))",
@@ -23,8 +24,9 @@ export default function AboutSection() {
       />
 
       <div className="relative z-20 flex flex-col items-center justify-center px-4 text-center">
-        {/* Logo */}
+        {/* Logo — receives the navbar logo via the Hero's circle-reveal handoff */}
         <Image
+          id="intro-logo"
           src="/logo/ASG-logo-mixed.png"
           alt="Amanat Shah Group"
           width={300}
