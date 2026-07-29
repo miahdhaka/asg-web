@@ -28,6 +28,13 @@ export default function Hero() {
     () => {
       const headerLogo = document.getElementById("header-logo");
 
+      /* Current root font size — the whole layout is scaled through it (see
+         the fluid scale in globals.css), so the hard gaps below are read as
+         multiples of it instead of raw pixels and stay proportional on
+         laptops and big screens alike. */
+      const rootPx = () =>
+        parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+
       /* The flying logo lives outside the section (fixed, above the navbar).
          Pin it onto its invisible slot in the hero's centered content. */
       const placeLogo = () => {
@@ -144,8 +151,8 @@ export default function Hero() {
          heading up / video down only as much as needed so "Legacy For" sits
          tightly under "Family Business" with a small gap to the video.
          Evaluated lazily on the 2nd gesture, when both are at rest. */
-      const GAP_TEXT = 4; // between the two headings
-      const GAP_VIDEO = 40; // between "Legacy For" and the video card
+      const GAP_TEXT = () => rootPx() * 0.25; // 4px @1920 — between the two headings
+      const GAP_VIDEO = () => rootPx() * 2.5; // 40px @1920 — heading ↔ video card
       const metrics = () => {
         const fbBottom =
           familyRef.current?.getBoundingClientRect().bottom ?? 0;
@@ -154,11 +161,11 @@ export default function Hero() {
         const lfH = legacyRef.current?.offsetHeight ?? 80;
         const extra = Math.max(
           0,
-          lfH + GAP_TEXT + GAP_VIDEO - (videoTop - fbBottom)
+          lfH + GAP_TEXT() + GAP_VIDEO() - (videoTop - fbBottom)
         );
         const rise = extra * 0.45;
         const drop = extra * 0.55;
-        const lfTop = fbBottom - rise + GAP_TEXT;
+        const lfTop = fbBottom - rise + GAP_TEXT();
         return { rise, drop, lfTop };
       };
 
@@ -208,7 +215,7 @@ export default function Hero() {
         {
           top: () =>
             (videoWrapRef.current?.getBoundingClientRect().bottom ?? 0) +
-            GAP_VIDEO,
+            GAP_VIDEO(),
         },
         0
       );
@@ -1020,6 +1027,17 @@ export default function Hero() {
 
       const atTop = () => window.scrollY <= 2;
 
+      /* The scroll position the page is anchored to at the current step — the
+         top of the section currently settled below the navbar. Every section
+         above it is a pinned overlay, so this doubles as a hard floor: while
+         the chain is engaged the page must never travel above it. Returns
+         null during the opening phases, which hold the page at the very top. */
+      const anchorY = () => {
+        if (step === 5) return ourBusiness ? ourBusinessTopY() : null;
+        const link = fadeChain.find((l) => step === l.step + 1);
+        return link?.to ? topY(link.to) : null;
+      };
+
       /* ── Shared gesture routing (wheel + keyboard + touch) ──
          Given a direction, decide whether the input must be blocked (the
          page is holding at a locked spot) and — when `fire` is true — play
@@ -1029,9 +1047,8 @@ export default function Hero() {
       const routeGesture = (dir: number, fire: boolean): boolean => {
         if (!dir) return false;
 
-        /* Fade-chain zones: a down-gesture on a settled section dissolves
-           it into the next; an up-gesture at (or overshooting past) the
-           next settled section holds the page and reverses the dissolve */
+        /* Fade-chain zone: a down-gesture on a settled section dissolves it
+           into the next one pinned beneath it */
         for (const link of fadeChain) {
           if (
             dir > 0 &&
@@ -1042,32 +1059,28 @@ export default function Hero() {
             if (fire) fadeToNext(link);
             return true;
           }
-          if (dir < 0 && step === link.step + 1 && link.to) {
-            const target = topY(link.to);
-            const y = window.scrollY;
-            if (y <= target + 4 && y >= target - 300) {
-              if (y < target - 1) {
-                // The arriving gesture overshot above the section — clamp back
-                window.scrollTo({ top: target, behavior: "auto" });
-              } else if (fire) {
-                unsettleToPrev(link);
-              }
-              return true;
-            }
-          }
         }
 
-        /* Up-gesture at (or overshooting past) the settled OurBusiness:
-           hold the page there, and a fresh gesture reverses the fade */
-        if (dir < 0 && step === 5 && !atTop() && ourBusiness) {
-          const target = ourBusinessTopY();
-          const y = window.scrollY;
-          if (y <= target + 4 && y >= target - 300) {
-            if (y < target - 1) {
+        /* Up-gesture on the settled section: hold the page at its anchor and
+           let a fresh gesture reverse the dissolve. Capture is deliberately
+           unbounded above the anchor — a fast flick up from the footer clears
+           hundreds of px between two wheel events, and a bounded window let
+           the gesture slip through, stranding `step` deep in the chain while
+           the page ran on to the top (the next gesture then replayed a hero
+           phase from the wrong state). Anything at or past the anchor is ours. */
+        if (dir < 0 && step >= 5 && !atTop()) {
+          const anchor = anchorY();
+          if (anchor !== null && window.scrollY <= anchor + 4) {
+            if (window.scrollY < anchor - 1) {
               // The arriving gesture overshot above the section — clamp back
-              window.scrollTo({ top: target, behavior: "auto" });
+              window.scrollTo({ top: anchor, behavior: "auto" });
             } else if (fire) {
-              unsettleFromOurBusiness();
+              if (step === 5) {
+                unsettleFromOurBusiness();
+              } else {
+                const link = fadeChain.find((l) => step === l.step + 1);
+                if (link) unsettleToPrev(link);
+              }
             }
             return true;
           }
@@ -1171,6 +1184,21 @@ export default function Hero() {
          hide it again when we return to the pinned states at the top */
       let navLogoBack = false;
       const onScroll = () => {
+        /* Anchor floor — the last line of defence for the settled sections.
+           A hard flick up can outrun the wheel handler (the browser's own
+           smooth-scroll momentum keeps moving the page after the events are
+           swallowed), and scrollbar drags, Home and autoscroll never fire a
+           wheel event at all. Any of those could carry the page above the
+           settled section while `step` stayed deep in the chain, which broke
+           the animation and left plain native scrolling behind. Re-clamping
+           here holds the page at its anchor until a real gesture reverses. */
+        if (!animating && step >= 5) {
+          const anchor = anchorY();
+          if (anchor !== null && window.scrollY < anchor - 1) {
+            window.scrollTo({ top: anchor, behavior: "auto" });
+          }
+        }
+
         if (!headerLogo || tl4.progress() < 1) return;
         const past = window.scrollY > 2;
         if (past !== navLogoBack) {
@@ -1197,6 +1225,13 @@ export default function Hero() {
         tl2.progress(1);
         tl3.progress(1);
         syncHeader(true);
+
+        /* Start out exactly on that step's anchor, so the floor the router
+           and the scroll guard both rely on holds from the very first frame */
+        const anchor = anchorY();
+        if (anchor !== null && window.scrollY < anchor) {
+          window.scrollTo({ top: anchor, behavior: "auto" });
+        }
       }
 
       window.addEventListener("wheel", onWheel, { passive: false });
@@ -1241,7 +1276,7 @@ export default function Hero() {
       {/* "Family Business" heading — revealed by the scroll timeline */}
       <h2
         ref={familyRef}
-        className="absolute top-[20%] z-20 font-test-tiempos-fine text-[65px] leading-20 text-[var(--primary-black)] whitespace-nowrap opacity-0"
+        className="absolute top-[20%] z-20 font-test-tiempos-fine text-[4.0625rem] leading-20 text-[var(--primary-black)] whitespace-nowrap opacity-0"
       >
         Family Business
       </h2>
@@ -1250,7 +1285,7 @@ export default function Hero() {
           right-aligned to the video's right edge */}
       <h2
         ref={legacyRef}
-        className="absolute top-[24%] right-[33.3vw] z-20 font-test-tiempos-fine text-[65px] leading-16 text-[var(--primary-black)] whitespace-nowrap opacity-0"
+        className="absolute top-[24%] right-[33.3vw] z-20 font-test-tiempos-fine text-[4.0625rem] leading-16 text-[var(--primary-black)] whitespace-nowrap opacity-0"
       >
         Legacy For
       </h2>
@@ -1259,7 +1294,7 @@ export default function Hero() {
           centred with the same gap as above the video */}
       <h2
         ref={moreRef}
-        className="absolute top-[60%] z-20 font-test-tiempos-fine text-[65px] leading-16 text-[var(--primary-black)] whitespace-nowrap opacity-0"
+        className="absolute top-[60%] z-20 font-test-tiempos-fine text-[4.0625rem] leading-16 text-[var(--primary-black)] whitespace-nowrap opacity-0"
       >
         More Then 130 Years
       </h2>
@@ -1267,7 +1302,7 @@ export default function Hero() {
       {/* Centered content */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
         {/* Invisible slot marking where the flying logo starts from */}
-        <div ref={logoSlotRef} className="mb-6 w-[130px] h-[110px]" />
+        <div ref={logoSlotRef} className="mb-6 w-[8.125rem] h-[6.875rem]" />
 
         <div ref={textRef}>
           <h1 className="font-test-tiempos-fine uppercase text-6xl font-medium mb-4">
@@ -1291,7 +1326,7 @@ export default function Hero() {
           width={28}
           height={38}
           quality={100}
-          className="w-[28px] h-[38px] object-contain"
+          className="w-[1.75rem] h-[2.375rem] object-contain"
         />
         <span className="font-neue-montreal font-light uppercase tracking-widest">
           Scroll Down
@@ -1309,7 +1344,7 @@ export default function Hero() {
         height={90}
         quality={100}
         priority
-        className="pointer-events-none invisible fixed left-0 top-0 z-60 w-[130px] h-[110px] object-contain"
+        className="pointer-events-none invisible fixed left-0 top-0 z-60 w-[8.125rem] h-[6.875rem] object-contain"
       />
 
       {/* Flying intro logo — carries the navbar logo down onto the intro
@@ -1358,7 +1393,7 @@ export default function Hero() {
       >
         <div className="absolute left-1/2 top-1/2 h-screen w-screen -translate-x-1/2 -translate-y-1/2">
           <Image
-            src="/images/we-are-asg.png"
+            src="/images/we-are-asg.webp"
             alt=""
             fill
             sizes="100vw"

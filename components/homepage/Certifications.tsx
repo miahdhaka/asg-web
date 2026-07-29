@@ -33,7 +33,7 @@ export default function Certifications() {
     <section
       id="certifications"
       className="relative flex w-full flex-col overflow-hidden bg-[#f5f4ef] py-16"
-      style={{ height: "calc(100vh - var(--header-height, 4.55rem))" }}
+      style={{ height: "calc(100vh - var(--header-height))" }}
     >
       <div className="flex min-h-0 flex-1 justify-between px-20">
         {/* Left copy — pinned to the top of the section */}
@@ -49,7 +49,7 @@ export default function Certifications() {
           {/* Title — drops in from above via the Hero's fade-chain reveal */}
           <h2
             id="certifications-title"
-            className="mt-3 font-serif text-[64px] leading-[1] font-normal text-neutral-800"
+            className="mt-3 font-serif text-[4rem] leading-[1] font-normal text-neutral-800"
           >
             Certifications and
             <br />
@@ -67,7 +67,7 @@ export default function Certifications() {
             of the bottom-right corner during the 8th-scroll fade. */}
         <div
           id="cert-grid"
-          className="grid w-full max-w-[1200px] grid-cols-5 gap-5.5 self-end"
+          className="grid w-full max-w-[75rem] grid-cols-5 gap-5.5 self-end"
         >
           {certifications.map((cert) => (
             <div

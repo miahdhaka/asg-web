@@ -170,7 +170,7 @@ export default function Footer() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="font-neue-montreal text-[15px] tracking-wider text-neutral-400 transition-colors duration-300 hover:text-white hover:underline"
+                      className="font-neue-montreal text-[0.9375rem] tracking-wider text-neutral-400 transition-colors duration-300 hover:text-white hover:underline"
                     >
                       {link.label}
                     </Link>
@@ -186,7 +186,7 @@ export default function Footer() {
         <p
           ref={wordmarkRef}
           aria-hidden
-          className="pointer-events-none my-0 text-center font-serif font-medium text-[clamp(32px,4.5vw,72px)] leading-[0.8] tracking-[1.4rem] whitespace-nowrap uppercase bg-[image:var(--primary-gradient)] bg-clip-text text-transparent opacity-50 px-20"
+          className="pointer-events-none my-0 text-center font-serif font-medium text-[clamp(2rem,4.5vw,4.5rem)] leading-[0.8] tracking-[0.19em] whitespace-nowrap uppercase bg-[image:var(--primary-gradient)] bg-clip-text text-transparent opacity-50 px-20"
         >
           Amanat Shah Group
         </p>
@@ -208,7 +208,7 @@ export default function Footer() {
         {/* Copyright + socials */}
         <div className="relative flex items-center justify-between px-20 py-6">
           <Image
-            src="/images/footer-copywrite-bg.png"
+            src="/images/footer-copywrite-bg.webp"
             alt=""
             fill
             sizes="100vw"
@@ -235,7 +235,7 @@ export default function Footer() {
                   height={20}
                   quality={100}
                   draggable={false}
-                  className="object-contain brightness-0 invert"
+                  className="size-5 object-contain brightness-0 invert"
                 />
               </Link>
             ))}

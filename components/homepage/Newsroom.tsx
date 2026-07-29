@@ -13,19 +13,19 @@ const news: NewsItem[] = [
     date: "3 June, 2026",
     category: "Corporate",
     title: "President's industrial development award -2024",
-    image: "/images/newsroom/news_1.png",
+    image: "/images/newsroom/news_1.webp",
   },
   {
     date: "3 June, 2026",
     category: "Corporate",
     title: "President's industrial development award -2024",
-    image: "/images/newsroom/news_2.png",
+    image: "/images/newsroom/news_2.webp",
   },
   {
     date: "3 June, 2026",
     category: "Corporate",
     title: "President's industrial development award -2024",
-    image: "/images/newsroom/news_3.png",
+    image: "/images/newsroom/news_3.webp",
   },
 ];
 
@@ -34,7 +34,7 @@ export default function Newsroom() {
     <section
       id="newsroom"
       className="relative flex w-full flex-col overflow-hidden bg-white py-8"
-      style={{ height: "calc(100vh - var(--header-height, 4.55rem))" }}
+      style={{ height: "calc(100vh - var(--header-height))" }}
     >
       {/* Header — eyebrow + title left, button right */}
       <div className="flex items-end justify-between px-20 mb-10">
@@ -50,7 +50,7 @@ export default function Newsroom() {
           {/* Title — drops in from above via the Hero's fade-chain reveal */}
           <h2
             id="newsroom-title"
-            className="mt-3 font-serif text-[64px] leading-[1] font-normal text-neutral-800"
+            className="mt-3 font-serif text-[4rem] leading-[1] font-normal text-neutral-800"
           >
             Latest from ASG <br />newsroom
           </h2>
@@ -98,7 +98,7 @@ export default function Newsroom() {
               </div>
 
               {/* Title */}
-              <h3 className="max-w-[345px] font-serif text-3xl leading-10 text-neutral-800">
+              <h3 className="max-w-[21.5625rem] font-serif text-3xl leading-10 text-neutral-800">
                 {item.title}
               </h3>
             </Link>

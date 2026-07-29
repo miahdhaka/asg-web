@@ -40,7 +40,7 @@ export default function GlobalFootprint() {
     <section
       id="global-footprint"
       className="relative flex w-full flex-col overflow-hidden bg-[var(--color-primary-black)] pb-10"
-      style={{ height: "calc(100vh - var(--header-height, 4.55rem))" }}
+      style={{ height: "calc(100vh - var(--header-height))" }}
     >
       {/* Content row — copy left, map right */}
       <div className="relative flex min-h-0 flex-1 items-center px-20">
@@ -56,12 +56,12 @@ export default function GlobalFootprint() {
           </div>
 
           {/* Title */}
-          <h2 className="mt-2 font-serif text-[64px] leading-[1.1] font-normal text-white">
+          <h2 className="mt-2 font-serif text-[4rem] leading-[1.1] font-normal text-white">
             Our Global Footprint
           </h2>
 
           {/* Description */}
-          <p className="mt-6 max-w-[620px] text-[17px] leading-[1.6] tracking-wider text-neutral-400">
+          <p className="mt-6 max-w-[38.75rem] text-[1.0625rem] leading-[1.6] tracking-wider text-neutral-400">
             Amanat Shah Group operates a robust international supply chain,
             delivering world-class textile products to major apparel hubs
             worldwide. Driven by an expert workforce, our footprint connects
@@ -78,7 +78,7 @@ export default function GlobalFootprint() {
             className="pointer-events-none absolute top-1/2 left-1/2 h-[85%] w-[95%] -translate-x-1/2 -translate-y-1/2"
             style={{
               background: "radial-gradient(circle at center, rgba(34, 197, 94, 0.06) 0%, rgba(34, 197, 94, 0) 70%)",
-              filter: "blur(60px)",
+              filter: "blur(3.75rem)",
             }}
           />
 
@@ -192,7 +192,7 @@ export default function GlobalFootprint() {
             {loopedBrands.map((brand, index) => (
               <div
                 key={`left-${brand}-${index}`}
-                className="flex h-24 w-[280px] flex-shrink-0 items-center justify-center bg-[#10161a]"
+                className="flex h-24 w-[17.5rem] flex-shrink-0 items-center justify-center bg-[#10161a]"
               >
                 <Image
                   src={brand}
@@ -214,7 +214,7 @@ export default function GlobalFootprint() {
             {loopedBrands.map((brand, index) => (
               <div
                 key={`right-${brand}-${index}`}
-                className="flex h-24 w-[280px] flex-shrink-0 items-center justify-center bg-[#10161a]"
+                className="flex h-24 w-[17.5rem] flex-shrink-0 items-center justify-center bg-[#10161a]"
               >
                 <Image
                   src={brand}

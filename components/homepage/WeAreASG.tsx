@@ -77,12 +77,12 @@ export default function WeAreASG() {
       ref={sectionRef}
       id="we-are-asg"
       className="relative flex w-full flex-col overflow-hidden"
-      style={{ height: "calc(100vh - var(--header-height, 4.55rem))" }}
+      style={{ height: "calc(100vh - var(--header-height))" }}
     >
       {/* Aerial background — swap with the real asset once it lands in
           /public/images/we-are-asg/. */}
       <Image
-        src="/images/we-are-asg.png"
+        src="/images/we-are-asg.webp"
         alt=""
         fill
         sizes="100vw"
@@ -98,14 +98,14 @@ export default function WeAreASG() {
       <span
         id="waa-we-are"
         aria-hidden
-        className="pointer-events-none absolute top-[10%] left-[10%] z-10 font-serif text-[160px] leading-none uppercase bg-[image:var(--primary-gradient)] bg-clip-text text-transparent"
+        className="pointer-events-none absolute top-[10%] left-[10%] z-10 font-serif text-[10rem] leading-none uppercase bg-[image:var(--primary-gradient)] bg-clip-text text-transparent"
       >
         We Are
       </span>
       <span
         id="waa-asg"
         aria-hidden
-        className="pointer-events-none absolute bottom-[10%] right-[19%] z-10 font-serif text-[160px] leading-none uppercase bg-[image:var(--primary-gradient)] bg-clip-text text-transparent"
+        className="pointer-events-none absolute bottom-[10%] right-[19%] z-10 font-serif text-[10rem] leading-none uppercase bg-[image:var(--primary-gradient)] bg-clip-text text-transparent"
       >
         ASG
       </span>
@@ -116,18 +116,18 @@ export default function WeAreASG() {
           {stats.map((stat) => (
             <div
               key={stat.label}
-              className="group flex h-[min(46vh,420px)] flex-col bg-white"
+              className="group flex h-[min(46vh,26.25rem)] flex-col bg-white"
             >
               {/* Top part — icon + label, own padding */}
               <div className="flex flex-1 flex-col justify-between p-5">
-                <div className="relative size-[75px] transition-transform duration-500 ease-in-out group-hover:scale-110">
+                <div className="relative size-[4.6875rem] transition-transform duration-500 ease-in-out group-hover:scale-110">
                   <Image
                     src={stat.icon}
                     alt=""
                     width={75}
                     height={75}
                     draggable={false}
-                    className="size-[75px] object-contain transition-opacity duration-500 ease-in-out group-hover:opacity-0"
+                    className="size-[4.6875rem] object-contain transition-opacity duration-500 ease-in-out group-hover:opacity-0"
                   />
                   <span
                     aria-hidden

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -8,10 +8,32 @@ import Navigation from "./Navigation";
 import Search from "./Search";
 
 export default function Header() {
+  const headerRef = useRef<HTMLElement>(null);
   const [scrolled, setScrolled] = useState(false);
   // On the homepage the center logo starts hidden — the Hero scroll timeline
   // reveals it once the hero logo finishes its flight into the navbar.
   const isHome = usePathname() === "/";
+
+  /* Publish the navbar's real height as --header-height. Every full-height
+     section sizes itself with calc(100vh - var(--header-height)), and the
+     header grows/shrinks with the fluid root font size, so a hard-coded
+     value would leave the sections a few pixels off on every screen. */
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+
+    const publish = () => {
+      document.documentElement.style.setProperty(
+        "--header-height",
+        `${el.getBoundingClientRect().height}px`
+      );
+    };
+    publish();
+
+    const observer = new ResizeObserver(publish);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,7 +55,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 w-full border-b border-border backdrop-blur transition-colors duration-500 ease-in-out ${
+    <header ref={headerRef} className={`fixed top-0 left-0 right-0 z-50 w-full border-b border-border backdrop-blur transition-colors duration-500 ease-in-out ${
       scrolled ? "bg-white" : "bg-background/60"
     }`}>
       <div className="grid grid-cols-3 items-center px-6">

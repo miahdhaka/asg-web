@@ -13,7 +13,7 @@ function HoverBorder({ active }: { active?: boolean }) {
   return (
     <span
       aria-hidden
-      className={`pointer-events-none absolute -bottom-[25px] left-0 h-0.5 w-full origin-left transition-transform duration-300 ease-in-out ${
+      className={`pointer-events-none absolute -bottom-[1.5625rem] left-0 h-0.5 w-full origin-left transition-transform duration-300 ease-in-out ${
         active ? "scale-x-100" : "scale-x-0 group-hover/navitem:scale-x-100"
       }`}
       style={{ background: GRADIENT_BORDER }}

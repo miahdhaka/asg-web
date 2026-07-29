@@ -144,6 +144,10 @@
 
 
   --primary-black: #020412;
+
+  /* Real navbar height — Header.tsx overwrites this with the measured
+     value on mount/resize; the rem default keeps the first paint close. */
+  --header-height: 4.0625rem;
   
   /* Gray scale */
   --gray-50: #F9FAFB;
@@ -223,6 +227,20 @@
     @apply border-border outline-ring/50;
   }
   html {
+    /* --- Fluid desktop scale -------------------------------------------
+       The site is laid out against a 1920px-wide viewport with 16px as the
+       base unit, and every homepage section is exactly one viewport tall.
+       Tailwind's spacing / type / gap / size utilities all compile to rem,
+       so scaling the root font size scales the whole layout at once: the
+       identical composition simply grows or shrinks with the screen
+       instead of cramping on a laptop or floating on a big display.
+         0.8333vw → 16px on a 1920px-wide viewport
+         1.75vh   → 16px on a  914px-tall viewport; taking the smaller of
+                    the two keeps each section's content inside its 100vh
+                    on short laptop and ultrawide viewports
+       Clamped so it never falls below 10.5px or grows past 20px.
+       Desktop-only pass — mobile / tablet breakpoints come later. */
+    font-size: clamp(10.5px, min(0.8333vw, 1.75vh), 20px);
     overflow-x: clip;
     /* Kill the Mac/iOS elastic rubber-band bounce — it overshoots the
        scroll position and breaks the discrete section-stepping logic */
@@ -266,10 +284,23 @@
 }
 /* Site Overlays End */
 
+/* Gradient wash on hover — About page cards.
+   `.card-gradient-hover` triggers on the element itself;
+   `.card-gradient-target` triggers when the parent .group is hovered. */
+.card-gradient-hover,
+.card-gradient-target {
+  transition: background 0.3s ease-in-out;
+}
+.card-gradient-hover:hover,
+.group:hover .card-gradient-target {
+  background: linear-gradient(97.37deg, rgba(139, 195, 74, 0.2) 1.29%, rgba(26, 161, 121, 0.2) 88.53%);
+}
+
 .gradient-text-hover {
   transition: background 0.3s ease-in-out, -webkit-text-fill-color 0.3s ease-in-out, color 0.3s ease-in-out;
 }
-.group:hover .gradient-text-hover {
+.group:hover .gradient-text-hover,
+.gradient-text-hover:hover {
   background: var(--primary-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -323,7 +354,7 @@
 
 
 .word-space-4 {
-  word-spacing: 4px;
+  word-spacing: 0.25rem;
 }
 
 /* Hide scrollbar for carousel */
