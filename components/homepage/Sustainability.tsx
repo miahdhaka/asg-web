@@ -16,29 +16,29 @@ const panels: SustainabilityPanel[] = [
     label: "Sustainability",
     description:
       "Driving eco-conscious manufacturing through renewable energy and closed-loop water systems, we minimize environmental impact to shape a cleaner, greener tomorrow for global fashion.",
-    image: "/images/sustainability/sustainability.png",
+    image: "/images/sustainability/sustainability.webp",
   },
   {
     label: "Innovation",
     description:
       "Embracing digitalization, we are transforming the fashion industry to be future-ready. By integrating advanced technologies, we enhance design, production, and customer experiences. ",
-    image: "/images/sustainability/innovation.png",
+    image: "/images/sustainability/innovation.webp",
   },
   {
     label: "Quality & Compliance",
     description:
       "Upholding rigorous international standards and ethical practices, we guarantee premium product integrity, complete transparency, and flawless compliance for world-class brands.",
-    image: "/images/sustainability/quality-&-compliance.png",
+    image: "/images/sustainability/quality-&-compliance.webp",
   },
   {
     label: "Social Business Commitment",
     description:
       "By optimizing raw material consumption and minimizing waste across our supply chain, we maximize output while reducing our overall environmental impact and promoting responsible production.",
-    image: "/images/sustainability/social-business-commitment.png",
+    image: "/images/sustainability/social-business-commitment.webp",
   },
 ];
 
-// Width of a collapsed strip is set via `basis-[130px]` on each panel.
+// Width of a collapsed strip is set via `basis-[7.5rem]` on each panel.
 
 export default function Sustainability() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -47,7 +47,7 @@ export default function Sustainability() {
     <section
       id="sustainability"
       className="relative flex w-full flex-col overflow-hidden bg-white pb-16"
-      style={{ height: "calc(100vh - var(--header-height, 4.55rem))" }}
+      style={{ height: "calc(100vh - var(--header-height))" }}
     >
       {/* Header row — title left, description right */}
       <div className="pt-18 px-20 pb-12">
@@ -55,7 +55,7 @@ export default function Sustainability() {
           {/* Title — drops in from above via the Hero's fade-chain reveal */}
           <h2
             id="sustainability-title"
-            className="font-serif text-[64px] leading-[1] text-neutral-800 shrink-0"
+            className="font-serif text-[4rem] leading-[1] text-neutral-800 shrink-0"
           >
             Shaping a Greener
             <br />
@@ -63,7 +63,7 @@ export default function Sustainability() {
           </h2>
 
           {/* Description */}
-          <p className="max-w-[620px] text-xl leading-[1.5] tracking-wide text-neutral-800">
+          <p className="max-w-[38.75rem] text-xl leading-[1.5] tracking-wide text-neutral-800">
             Amanat Shah Group integrates eco-conscious manufacturing tailored
             to the compliance demands of global fashion. From renewable energy
             to closed-loop water systems.
@@ -83,14 +83,14 @@ export default function Sustainability() {
             <div
               key={panel.label}
               onClick={() => setActiveIndex(index)}
-              className={`group relative h-full min-w-0 shrink-0 basis-[120px] overflow-hidden select-none transition-[flex-grow] duration-700 ease-in-out ${
+              className={`group relative h-full min-w-0 shrink-0 basis-[7.5rem] overflow-hidden select-none transition-[flex-grow] duration-700 ease-in-out ${
                 isActive ? "grow cursor-default" : "grow-0 cursor-pointer"
               }`}
             >
               {/* Background image — fixed at the expanded-panel width (inner row
                   width minus 3 collapsed strips + gaps) so opening only reveals
                   more of it; no object-cover rescale/zoom while the width animates */}
-              <div className="pointer-events-none absolute inset-y-0 left-1/2 w-[calc(92vw-550px)] -translate-x-1/2">
+              <div className="pointer-events-none absolute inset-y-0 left-1/2 w-[calc(92vw-34.375rem)] -translate-x-1/2">
                 <Image
                   src={panel.image}
                   alt={panel.label}
@@ -126,6 +126,7 @@ export default function Sustainability() {
                   stroke="white"
                   strokeWidth="2"
                   strokeLinecap="square"
+                  className="size-7"
                 >
                   <path d="M7 17 17 7" />
                   <path d="M9 7h8v8" />
@@ -134,7 +135,7 @@ export default function Sustainability() {
 
               {/* Expanded content — title + description, bottom left */}
               <div
-                className={`pointer-events-none absolute bottom-5 left-5 max-w-[640px] p-8 transition-opacity duration-500 ${
+                className={`pointer-events-none absolute bottom-5 left-5 max-w-[40rem] p-8 transition-opacity duration-500 ${
                   isActive ? "opacity-100 delay-300" : "opacity-0 delay-0"
                 }`}
               >
@@ -152,7 +153,7 @@ export default function Sustainability() {
                   isActive ? "opacity-0 delay-0" : "opacity-100 delay-[400ms]"
                 }`}
               >
-                <span className="font-neue-montreal text-[22px] tracking-widest font-bold whitespace-nowrap text-white [writing-mode:vertical-rl] rotate-180">
+                <span className="font-neue-montreal text-[1.375rem] tracking-widest font-bold whitespace-nowrap text-white [writing-mode:vertical-rl] rotate-180">
                   {panel.label}
                 </span>
               </div>

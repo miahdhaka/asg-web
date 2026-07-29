@@ -18,7 +18,7 @@ export default function MegaMenu({ items, isOpen, variant = "photo" }: MegaMenuP
       className={`fixed left-0 z-50 w-screen bg-white shadow-lg transition-all duration-150 ease-out ${
         isOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 pointer-events-none"
       }`}
-      style={{ top: "var(--header-height, 4.55rem)" }}
+      style={{ top: "var(--header-height)" }}
     >
           <div className="px-6 py-8">
             <div className={`grid ${isLogo ? "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-4 gap-y-8" : "grid-cols-6 gap-4"}`}>

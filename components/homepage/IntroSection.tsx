@@ -7,19 +7,19 @@ export default function AboutSection() {
       id="intro-section"
       className="relative w-full bg-[var(--primary-black)] flex flex-col items-center justify-center overflow-hidden"
       style={{ 
-        height: "calc(100vh - var(--header-height, 4rem))",
-        paddingTop: "var(--header-height, 4rem)",
+        height: "calc(100vh - var(--header-height))",
+        paddingTop: "var(--header-height)",
       }}
     >
       {/* Brand gradient glow — top center, behind content */}
       <div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-[10%] z-10 -translate-x-1/2 w-[500px] h-[400px]"
+        className="pointer-events-none absolute left-1/2 top-[10%] z-10 -translate-x-1/2 w-[31.25rem] h-[25rem]"
         style={{
           opacity: 0.8,
           background:
             "linear-gradient(97.37deg, #8BC34A 1.29%, #1AA179 92.01%)",
-          filter: "blur(250px)",
+          filter: "blur(15.625rem)",
         }}
       />
 
@@ -32,13 +32,13 @@ export default function AboutSection() {
           width={300}
           height={120}
           quality={100}
-          className="w-[300px] h-[120px] object-contain"
+          className="w-[18.75rem] h-[7.5rem] object-contain"
         />
 
         {/* Description — rises from the bottom during the Hero's circle-reveal */}
         <p
           id="intro-copy"
-          className="max-w-[900px] text-center text-[32px] leading-11 text-white mt-12"
+          className="max-w-[56.25rem] text-center text-[2rem] leading-[1.375] text-white mt-12"
         >
           Amanat Shah Group is a diversified business group with strong concentration in the Textile-to-Fashion value chain supported by Finance, Chemicals, Technology, Agriculture.
         </p>

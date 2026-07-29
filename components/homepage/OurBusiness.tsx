@@ -11,17 +11,17 @@ interface BusinessCard {
 }
 
 const businessCards: BusinessCard[] = [
-  { label: "Retail", image: "/images/our-business/img-1.png ", logo: "/logo/sister-concern/helal-&-brothers.png" },
-  { label: "Textile", image: "/images/our-business/img-2.png", logo: "/logo/sister-concern/spinning-mills.png" },
-  { label: "Textile", image: "/images/our-business/img-3.png", logo: "/logo/sister-concern/fabrics.png" },
-  { label: "Textile", image: "/images/our-business/img-4.png", logo: "/logo/sister-concern/weaving.png" },
-  { label: "Germane", image: "/images/our-business/img-5.png", logo: "/logo/sister-concern/trust-knitwear.png" },
-  { label: "Ecommerce", image: "/images/our-business/img-6.png", logo: "/logo/sister-concern/miah-white.png" },
-  { label: "Agriculture", image: "/images/our-business/img-7.png", logo: "/logo/sister-concern/farm2farm.png" },
-  { label: "Finance", image: "/images/our-business/img-8.png", logo: "/logo/sister-concern/securities.png" },
+  { label: "Retail", image: "/images/our-business/img-1.webp", logo: "/logo/sister-concern/helal-&-brothers.png" },
+  { label: "Textile", image: "/images/our-business/img-2.webp", logo: "/logo/sister-concern/spinning-mills.png" },
+  { label: "Textile", image: "/images/our-business/img-3.webp", logo: "/logo/sister-concern/fabrics.png" },
+  { label: "Textile", image: "/images/our-business/img-4.webp", logo: "/logo/sister-concern/weaving.png" },
+  { label: "Germane", image: "/images/our-business/img-5.webp", logo: "/logo/sister-concern/trust-knitwear.png" },
+  { label: "Ecommerce", image: "/images/our-business/img-6.webp", logo: "/logo/sister-concern/miah-white.png" },
+  { label: "Agriculture", image: "/images/our-business/img-7.webp", logo: "/logo/sister-concern/farm2farm.png" },
+  { label: "Finance", image: "/images/our-business/img-8.webp", logo: "/logo/sister-concern/securities.png" },
 ];
  
-const GAP = 16; // px gap between cards
+const GAP = "1rem"; // gap between cards — rem so it rides the fluid scale
 const SCROLL_SPEED = 0.5; // Slider speed control
 
 export default function OurBusiness() {
@@ -90,7 +90,7 @@ export default function OurBusiness() {
     <section
       id="our-business"
       className="bg-background relative flex w-full flex-col overflow-hidden pb-18"
-      style={{ height: "calc(100vh - var(--header-height, 4.55rem))" }}
+      style={{ height: "calc(100vh - var(--header-height))" }}
     >
       {/* Header row — title left, description right */}
       <div className="pt-18 px-20 pb-12">
@@ -98,13 +98,13 @@ export default function OurBusiness() {
           {/* Title — drops in from above via the Hero's phase-5 timeline */}
           <h2
             id="our-business-title"
-            className="font-serif text-[64px] leading-[1] text-neutral-800 shrink-0"
+            className="font-serif text-[4rem] leading-[1] text-neutral-800 shrink-0"
           >
             Our Business
           </h2>
 
           {/* Description */}
-          <p className="max-w-[620px] text-xl leading-[1.5] tracking-wide text-neutral-800">
+          <p className="max-w-[38.75rem] text-xl leading-[1.5] tracking-wide text-neutral-800">
             With a 130-year legacy, Amanat Shah Group is a premier, multi-sector
             conglomerate. We drive sustainable growth across textiles, finance,
             and technology by integrating innovation, integrity.
@@ -135,8 +135,8 @@ export default function OurBusiness() {
             <div
               key={`${card.image}-${index}`}
               data-card
-              className="group relative h-full w-[calc((100vw-30px)/2.3)] flex-shrink-0 overflow-hidden"
-              style={{ marginRight: `${GAP}px` }}
+              className="group relative h-full w-[calc((100vw-1.875rem)/2.3)] flex-shrink-0 overflow-hidden"
+              style={{ marginRight: GAP }}
             >
               {/* Background image */}
               <Image
@@ -170,7 +170,7 @@ export default function OurBusiness() {
                   width={260}
                   height={100}
                   draggable={false}
-                  className="h-[100px] w-[260px] object-contain"
+                  className="h-[6.25rem] w-[16.25rem] object-contain"
                 />
               </div>
 
