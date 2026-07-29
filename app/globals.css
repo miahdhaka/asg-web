@@ -224,10 +224,14 @@
   }
   html {
     overflow-x: clip;
+    /* Kill the Mac/iOS elastic rubber-band bounce — it overshoots the
+       scroll position and breaks the discrete section-stepping logic */
+    overscroll-behavior-y: none;
   }
   body {
     @apply bg-background text-foreground;
     overflow-x: clip;
+    overscroll-behavior-y: none;
   }
 }
 
