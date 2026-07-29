@@ -775,7 +775,78 @@ export default function Hero() {
          Scrolling up at the top reverses one phase per gesture. */
       let step = 0; // 0 = full hero, 1/2/3/4 = phases done
       let animating = false;
+
+      /* ── Cross-device wheel gesture detection ──
+         Windows mice fire one big delta per notch, but Mac/Linux trackpads
+         and free-spinning wheels stream dozens of tiny deltas plus a long
+         inertia tail, so a fixed time gap alone misses real gestures.
+         Deltas are normalized across deltaMode, accumulated until they add
+         up to a deliberate gesture, and after each handled gesture the
+         rest of the stream is swallowed until it either goes quiet or
+         clearly re-accelerates (a fresh flick mid-tail). */
+      const INTENT_DISTANCE = 30; // accumulated px that count as a gesture
+      const STREAM_GAP = 200; // ms of silence that ends an event stream
+      let wheelAccum = 0;
       let lastWheelTime = 0;
+      let inertiaLock = false; // swallowing the tail of a handled stream
+      let wheelSamples: number[] = []; // recent |delta|s of the locked tail
+
+      // deltaMode: 0 = pixels, 1 = lines (Firefox), 2 = pages
+      const normalizeWheel = (e: WheelEvent) =>
+        e.deltaMode === 1
+          ? e.deltaY * 16
+          : e.deltaMode === 2
+            ? e.deltaY * window.innerHeight
+            : e.deltaY;
+
+      /* Feed one wheel event into the tracker; returns true when it
+         completes a deliberate gesture (the caller then plays exactly one
+         phase while the rest of the stream is ignored) */
+      const wheelIntent = (e: WheelEvent) => {
+        const now = performance.now();
+        const gap = now - lastWheelTime;
+        lastWheelTime = now;
+        const delta = normalizeWheel(e);
+        const abs = Math.abs(delta);
+        if (!abs) return false;
+
+        // A long-enough pause always starts a fresh gesture stream
+        if (gap > STREAM_GAP) {
+          inertiaLock = false;
+          wheelAccum = 0;
+          wheelSamples = [];
+        }
+
+        wheelSamples.push(abs);
+        if (wheelSamples.length > 12) wheelSamples.shift();
+
+        if (inertiaLock) {
+          // Inertia tails only ever decay — a clear re-acceleration means
+          // the user flicked again mid-tail, so unlock and start over
+          const n = wheelSamples.length;
+          if (n < 6) return false;
+          const avgNew =
+            (wheelSamples[n - 1] + wheelSamples[n - 2] + wheelSamples[n - 3]) / 3;
+          const avgOld =
+            (wheelSamples[n - 4] + wheelSamples[n - 5] + wheelSamples[n - 6]) / 3;
+          if (!(avgNew > avgOld * 1.5 && avgNew > 6)) return false;
+          inertiaLock = false;
+          wheelAccum = 0;
+        }
+
+        // A direction flip restarts the accumulation
+        if ((delta > 0 && wheelAccum < 0) || (delta < 0 && wheelAccum > 0)) {
+          wheelAccum = 0;
+        }
+        wheelAccum += delta;
+        if (Math.abs(wheelAccum) < INTENT_DISTANCE) return false;
+
+        // Gesture confirmed — swallow the rest of this stream
+        wheelAccum = 0;
+        wheelSamples = [];
+        inertiaLock = true;
+        return true;
+      };
 
       // Let the Header mirror its "scrolled" style while the page can't scroll
       const syncHeader = (active: boolean) =>
@@ -949,76 +1020,95 @@ export default function Hero() {
 
       const atTop = () => window.scrollY <= 2;
 
+      /* ── Shared gesture routing (wheel + keyboard + touch) ──
+         Given a direction, decide whether the input must be blocked (the
+         page is holding at a locked spot) and — when `fire` is true — play
+         exactly one step. One router keeps every input device perfectly
+         consistent across OSes. Returns true when the event should be
+         prevented. */
+      const routeGesture = (dir: number, fire: boolean): boolean => {
+        if (!dir) return false;
+
+        /* Fade-chain zones: a down-gesture on a settled section dissolves
+           it into the next; an up-gesture at (or overshooting past) the
+           next settled section holds the page and reverses the dissolve */
+        for (const link of fadeChain) {
+          if (
+            dir > 0 &&
+            step === link.step &&
+            link.from &&
+            Math.abs(window.scrollY - topY(link.from)) <= 4
+          ) {
+            if (fire) fadeToNext(link);
+            return true;
+          }
+          if (dir < 0 && step === link.step + 1 && link.to) {
+            const target = topY(link.to);
+            const y = window.scrollY;
+            if (y <= target + 4 && y >= target - 300) {
+              if (y < target - 1) {
+                // The arriving gesture overshot above the section — clamp back
+                window.scrollTo({ top: target, behavior: "auto" });
+              } else if (fire) {
+                unsettleToPrev(link);
+              }
+              return true;
+            }
+          }
+        }
+
+        /* Up-gesture at (or overshooting past) the settled OurBusiness:
+           hold the page there, and a fresh gesture reverses the fade */
+        if (dir < 0 && step === 5 && !atTop() && ourBusiness) {
+          const target = ourBusinessTopY();
+          const y = window.scrollY;
+          if (y <= target + 4 && y >= target - 300) {
+            if (y < target - 1) {
+              // The arriving gesture overshot above the section — clamp back
+              window.scrollTo({ top: target, behavior: "auto" });
+            } else if (fire) {
+              unsettleFromOurBusiness();
+            }
+            return true;
+          }
+        }
+
+        if (!atTop()) return false;
+
+        if (dir > 0 && step < 5) {
+          if (fire) stepForward();
+          return true;
+        }
+        if (dir < 0 && step > 0) {
+          if (fire) stepBack();
+          return true;
+        }
+        return false;
+      };
+
       const onWheel = (e: WheelEvent) => {
-        const now = performance.now();
-        // Trackpad/wheel inertia streams events — only a fresh gesture counts
-        const isNewGesture = now - lastWheelTime > 250;
-        lastWheelTime = now;
+        // Trackpad pinch-zoom arrives as ctrl+wheel — never a scroll gesture
+        if (e.ctrlKey) return;
 
         // A phase is playing — swallow everything so the page can't drift
         // (the phase-6 fade runs away from the top, so this must come first)
         if (animating) {
           e.preventDefault();
+          // Fold the stream into the handled gesture so its inertia tail
+          // can't re-trigger the moment the phase finishes
+          lastWheelTime = performance.now();
+          inertiaLock = true;
+          wheelAccum = 0;
+          wheelSamples = [];
           return;
         }
 
-        /* Fade-chain zones: scrolling down on a settled section dissolves
-           it into the next; scrolling up at (or overshooting past) the next
-           settled section holds the page and reverses the dissolve */
-        for (const link of fadeChain) {
-          if (
-            e.deltaY > 0 &&
-            step === link.step &&
-            link.from &&
-            Math.abs(window.scrollY - topY(link.from)) <= 4
-          ) {
-            e.preventDefault();
-            if (isNewGesture) fadeToNext(link);
-            return;
-          }
-          if (e.deltaY < 0 && step === link.step + 1 && link.to) {
-            const target = topY(link.to);
-            const y = window.scrollY;
-            if (y <= target + 4 && y >= target - 300) {
-              e.preventDefault();
-              if (y < target - 1) {
-                // The arriving gesture overshot above the section — clamp back
-                window.scrollTo({ top: target, behavior: "auto" });
-              } else if (isNewGesture) {
-                unsettleToPrev(link);
-              }
-              return;
-            }
-          }
-        }
+        // Trackpads/free wheels stream dozens of events per swipe — only a
+        // completed deliberate gesture counts as one scroll step
+        const isNewGesture = wheelIntent(e);
 
-        /* Scrolling up at (or overshooting past) the settled OurBusiness:
-           hold the page there, and a fresh up-gesture reverses the fade */
-        if (e.deltaY < 0 && step === 5 && !atTop() && ourBusiness) {
-          const target = ourBusinessTopY();
-          const y = window.scrollY;
-          if (y <= target + 4 && y >= target - 300) {
-            e.preventDefault();
-            if (y < target - 1) {
-              // The arriving gesture overshot above the section — clamp back
-              window.scrollTo({ top: target, behavior: "auto" });
-            } else if (isNewGesture) {
-              unsettleFromOurBusiness();
-            }
-            return;
-          }
-        }
-
-        if (!atTop()) return;
-
-        if (e.deltaY > 0) {
-          if (step < 5) {
-            e.preventDefault();
-            if (isNewGesture) stepForward();
-          }
-        } else if (e.deltaY < 0 && step > 0) {
+        if (routeGesture(Math.sign(e.deltaY), isNewGesture)) {
           e.preventDefault();
-          if (isNewGesture) stepBack();
         }
       };
 
@@ -1032,51 +1122,42 @@ export default function Hero() {
           return;
         }
 
-        // Keyboard equivalents of the fade-chain wheel zones
-        for (const link of fadeChain) {
-          if (
-            ["ArrowDown", "PageDown", " "].includes(e.key) &&
-            step === link.step &&
-            link.from &&
-            Math.abs(window.scrollY - topY(link.from)) <= 4
-          ) {
-            e.preventDefault();
-            fadeToNext(link);
-            return;
-          }
-          if (
-            ["ArrowUp", "PageUp"].includes(e.key) &&
-            step === link.step + 1 &&
-            link.to &&
-            Math.abs(window.scrollY - topY(link.to)) <= 4
-          ) {
-            e.preventDefault();
-            unsettleToPrev(link);
-            return;
-          }
-        }
-
-        // Keyboard equivalent of scrolling up out of settled OurBusiness
-        if (
-          ["ArrowUp", "PageUp"].includes(e.key) &&
-          step === 5 &&
-          !atTop() &&
-          ourBusiness &&
-          Math.abs(window.scrollY - ourBusinessTopY()) <= 4
-        ) {
+        // Keys are already discrete — every press is a deliberate gesture
+        const dir = ["ArrowDown", "PageDown", " "].includes(e.key)
+          ? 1
+          : ["ArrowUp", "PageUp"].includes(e.key)
+            ? -1
+            : 0;
+        if (dir && routeGesture(dir, true)) {
           e.preventDefault();
-          unsettleFromOurBusiness();
+        }
+      };
+
+      /* ── Touch (tablets, touchscreen laptops, mobile) ──
+         Wheel events never fire for touch scrolling, so swipes are tracked
+         directly: one swipe = one gesture. The first move that crosses the
+         threshold fires the step; the rest of the swipe is swallowed.
+         Native touch scrolling stays untouched wherever the wheel handler
+         wouldn't block either. */
+      const TOUCH_DISTANCE = 40; // swipe px that count as a gesture
+      let touchStartY = 0;
+      let touchHandled = false;
+      const onTouchStart = (e: TouchEvent) => {
+        touchStartY = e.touches[0].clientY;
+        touchHandled = false;
+      };
+      const onTouchMove = (e: TouchEvent) => {
+        if (e.touches.length !== 1) return; // pinch-zoom — not a scroll
+        if (animating) {
+          if (e.cancelable) e.preventDefault();
           return;
         }
-
-        if (!atTop()) return;
-
-        if (["ArrowDown", "PageDown", " "].includes(e.key) && step < 5) {
-          e.preventDefault();
-          stepForward();
-        } else if (["ArrowUp", "PageUp"].includes(e.key) && step > 0) {
-          e.preventDefault();
-          stepBack();
+        // Finger up = page down (matches wheel deltaY sign)
+        const dy = touchStartY - e.touches[0].clientY;
+        const fire = !touchHandled && Math.abs(dy) >= TOUCH_DISTANCE;
+        if (routeGesture(Math.sign(dy), fire)) {
+          if (e.cancelable) e.preventDefault();
+          if (fire) touchHandled = true;
         }
       };
 
@@ -1120,12 +1201,16 @@ export default function Hero() {
 
       window.addEventListener("wheel", onWheel, { passive: false });
       window.addEventListener("keydown", onKeyDown);
+      window.addEventListener("touchstart", onTouchStart, { passive: true });
+      window.addEventListener("touchmove", onTouchMove, { passive: false });
       window.addEventListener("resize", onResize);
       window.addEventListener("scroll", onScroll, { passive: true });
 
       return () => {
         window.removeEventListener("wheel", onWheel);
         window.removeEventListener("keydown", onKeyDown);
+        window.removeEventListener("touchstart", onTouchStart);
+        window.removeEventListener("touchmove", onTouchMove);
         window.removeEventListener("resize", onResize);
         window.removeEventListener("scroll", onScroll);
       };
