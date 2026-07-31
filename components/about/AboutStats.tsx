@@ -52,18 +52,18 @@ export default function AboutStats() {
   );
 
   return (
-    <section ref={sectionRef} id="about-stats" className="w-full bg-white px-[5em] pb-[5em]">
-      <div className="grid grid-cols-4 gap-5">
+    <section ref={sectionRef} id="about-stats" className="w-full bg-white px-4 sm:px-6 lg:px-[5em] pb-10 sm:pb-12 lg:pb-[5em]">
+      <div className="grid grid-cols-2 gap-2 sm:gap-4 lg:gap-5 lg:grid-cols-4">
         {stats.map((stat) => (
           <div key={stat.label} className="flex flex-col">
-            <div className="border-b border-gray-100 bg-gray-50 px-5.5 py-16">
-              <p className="font-serif text-6xl font-medium leading-none text-neutral-900">
+            <div className="border-b border-gray-100 bg-gray-50 px-3 sm:px-5 lg:px-5.5 py-4 sm:py-8 lg:py-16">
+              <p className="text-3xl sm:text-5xl lg:text-6xl text-neutral-900 font-serif font-medium leading-none">
                 <span data-count={stat.value}>0</span>
                 {stat.suffix}
               </p>
             </div>
-            <div className="bg-gray-50 px-6 py-7">
-              <span className="text-xl text-neutral-800">{stat.label}</span>
+            <div className="bg-gray-50 px-2.5 sm:px-5 lg:px-6 py-3 sm:py-5 lg:py-7">
+              <span className="text-[11px] sm:text-base lg:text-xl text-neutral-800 tracking-wide sm:tracking-wider">{stat.label}</span>
             </div>
           </div>
         ))}

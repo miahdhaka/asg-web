@@ -39,8 +39,8 @@ const linkColumns: LinkColumn[] = [
   {
     title: "Sistern Concern",
     links: [
-      { label: "M/s Helal & Brothers Ltd.", href: "#" },
-      { label: "Amanat Shah Fabrics Ltd.", href: "#" },
+      { label: "M/s Helal & Brothers Ltd.", href: "/concerns/helal-brothers" },
+      { label: "Amanat Shah Fabrics Ltd.", href: "/concerns/amanat-shah-fabrics" },
       { label: "Hazrat Amanat Shah Spinnings Mills Ltd.", href: "#" },
       { label: "Hazrat Amanat Shah Securities Ltd.", href: "#" },
       { label: "Amanat Shah Weaving Processing Ltd.", href: "#" },
