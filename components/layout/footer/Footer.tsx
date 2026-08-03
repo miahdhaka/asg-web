@@ -25,7 +25,7 @@ const linkColumns: LinkColumn[] = [
       { label: "About US", href: "#" },
       { label: "Brands", href: "#" },
       { label: "Sustainability", href: "#" },
-      { label: "FAQ's", href: "#" },
+      { label: "FAQ's", href: "/faqs" },
       { label: "Newsroom", href: "#" },
     ],
   },
@@ -41,7 +41,7 @@ const linkColumns: LinkColumn[] = [
     links: [
       { label: "M/s Helal & Brothers Ltd.", href: "/concerns/helal-brothers" },
       { label: "Amanat Shah Fabrics Ltd.", href: "/concerns/amanat-shah-fabrics" },
-      { label: "Hazrat Amanat Shah Spinnings Mills Ltd.", href: "#" },
+      { label: "Hazrat Amanat Shah Spinnings Mills Ltd.", href: "/concerns/hazrat-amanat-shah-spinning-mills" },
       { label: "Hazrat Amanat Shah Securities Ltd.", href: "#" },
       { label: "Amanat Shah Weaving Processing Ltd.", href: "#" },
       { label: "Miah & Miah Enterprise", href: "#" },

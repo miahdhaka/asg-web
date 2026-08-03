@@ -19,7 +19,7 @@ export const navCategories: NavCategory[] = [
       { label: "Miah & Miah Enterprise ", href: "/miahbd.com", image: "/images/navbar/concerns-b&w-2.webp", hoverImage: "/images/navbar/concerns-clr-2.webp" },
       { label: "Amanat Shah Weaving Processing Ltd. ", href: "", image: "/images/navbar/concerns-b&w-3.webp", hoverImage: "/images/navbar/concerns-clr-3.webp" },
       { label: "Amanat Shah Fabrics Ltd.", href: "/concerns/amanat-shah-fabrics", image: "/images/navbar/concerns-b&w-4.webp", hoverImage: "/images/navbar/concerns-clr-4.webp" },
-      { label: "Hazrat Amanat Shah Spinning Mils Ltd.", href: "", image: "/images/navbar/concerns-b&w-5.webp", hoverImage: "/images/navbar/concerns-clr-5.webp" },
+      { label: "Hazrat Amanat Shah Spinning Mils Ltd.", href: "/concerns/hazrat-amanat-shah-spinning-mills", image: "/images/navbar/concerns-b&w-5.webp", hoverImage: "/images/navbar/concerns-clr-5.webp" },
       { label: "Trust Knitwear Industries Ltd.", href: "", image: "/images/navbar/concerns-b&w-6.webp", hoverImage: "/images/navbar/concerns-clr-6.webp" },
       { label: "Hazrat Amanat Shah Securities Ltd.", href: "", image: "/images/navbar/concerns-b&w-7.webp", hoverImage: "/images/navbar/concerns-clr-7.webp" },
       { label: "Farm2Firm", href: "", image: "/images/navbar/concerns-b&w-8.webp", hoverImage: "/images/navbar/concerns-clr-8.webp" },

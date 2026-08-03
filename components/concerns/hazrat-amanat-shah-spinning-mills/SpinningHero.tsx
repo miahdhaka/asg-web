@@ -24,14 +24,14 @@ function LinkArrow() {
 }
 
 /**
- * Top band of the Amanat Shah Fabrics concern page — company logo, name,
- * tagline, a "Visit website" gradient-outline button, then the full-width
- * hero photograph (Figma node 2604-30541).
+ * Top band of the Hazrat Amanat Shah Spinning Mills concern page — company
+ * logo, name, tagline, a "Visit website" gradient-outline button, then the
+ * full-width hero photograph (Figma node 2604-30912).
  */
-export default function FabricsHero() {
+export default function SpinningHero() {
   return (
     <section
-      id="fabrics-hero"
+      id="spinning-hero"
       className="w-full bg-white"
       style={{ marginTop: "var(--header-height)" }}
     >
@@ -39,19 +39,19 @@ export default function FabricsHero() {
       <div className="flex flex-col gap-6 px-4 pt-8 pb-8 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-[5em] lg:pt-[3.33em] lg:pb-[3.33em]">
         <div>
           <Image
-            src="/images/concerns/amanat-shah-fabrics/logo-asf.svg"
-            alt="Amanat Shah Fabrics Ltd. logo"
-            width={130}
+            src="/images/concerns/hazrat-amanat-shah-spinning-mills/logo-hassml.svg"
+            alt="Hazrat Amanat Shah Spinning Mills Ltd. logo"
+            width={209}
             height={45}
             priority
             quality={100}
-            className="h-auto w-28 lg:w-[10.83em]"
+            className="h-auto w-40 lg:w-[17.36em]"
           />
           <h1 className="mt-2 font-test-tiempos-fine text-2xl text-neutral-800 sm:text-3xl lg:mt-[0.67em] lg:text-[2em] lg:leading-[1.33]">
-            Amanat Shah Fabrics Ltd.
+            Hazrat Amanat Shah Spinning Mills Ltd.
           </h1>
           <p className="mt-1 text-xs text-neutral-800 sm:text-sm lg:mt-0 lg:text-[1em] lg:leading-[1.33]">
-            Synonyms To Excellence
+            Unraveling the Art of Spinning
           </p>
         </div>
 
@@ -99,8 +99,8 @@ export default function FabricsHero() {
 
       {/* Full-bleed hero image */}
       <Image
-        src="/images/concerns/amanat-shah-fabrics/hero.webp"
-        alt="Digital textile printing at Amanat Shah Fabrics"
+        src="/images/concerns/hazrat-amanat-shah-spinning-mills/hero.webp"
+        alt="Precision spinning machinery at Hazrat Amanat Shah Spinning Mills"
         width={1440}
         height={609}
         priority
