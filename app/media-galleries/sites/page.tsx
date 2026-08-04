@@ -116,8 +116,8 @@ export default function SitesPhotoTourPage() {
       </section>
 
       {/* ── Photo grid ────────────────────────────────────────────── */}
-      <section className="flex w-full flex-col px-[3.75rem] py-[5rem]">
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-5 lg:gap-y-8">
+      <section className="flex w-full flex-col px-[5rem] py-[5rem]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-x-5 lg:gap-y-12">
           {sitePhotos.map((photo, i) => (
             <SitePhotoCard key={`site-${i}`} image={photo.image} label={photo.label} />
           ))}

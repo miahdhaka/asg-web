@@ -1427,7 +1427,7 @@ export default function Hero() {
         className="absolute bottom-15 left-1/2 -translate-x-1/2 z-10 flex items-center gap-3 text-white"
       >
         <Image
-          src="/icon/mouse-scroll-wheel.gif"
+          src="/icons/mouse-scroll-wheel.gif"
           alt="Scroll down"
           width={28}
           height={38}

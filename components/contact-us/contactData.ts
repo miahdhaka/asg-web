@@ -22,6 +22,46 @@ export interface OpeningHour {
 
 export const formTabs = ["Business", "Investor", "Media", "Employee"] as const;
 
+export type FormTab = (typeof formTabs)[number];
+
+/* ------------------------------------------------------------------ */
+/*  Per-tab form fields (placeholders per Figma tab variants)          */
+/* ------------------------------------------------------------------ */
+
+export interface FormTabFields {
+  namePlaceholder: string;
+  mobilePlaceholder: string;
+  dropdownPlaceholder: string;
+  messagePlaceholder: string;
+}
+
+export const formTabFields: Record<FormTab, FormTabFields> = {
+  Business: {
+    namePlaceholder: "Enter full name",
+    mobilePlaceholder: "Enter mobile number",
+    dropdownPlaceholder: "Select Product...",
+    messagePlaceholder: "Write down your message",
+  },
+  Investor: {
+    namePlaceholder: "Enter full name",
+    mobilePlaceholder: "Enter mobile number",
+    dropdownPlaceholder: "Select your invest choice...",
+    messagePlaceholder: "Write down your proposal",
+  },
+  Media: {
+    namePlaceholder: "Enter your media name",
+    mobilePlaceholder: "Enter mobile number",
+    dropdownPlaceholder: "Select your media type...",
+    messagePlaceholder: "Your offer for us",
+  },
+  Employee: {
+    namePlaceholder: "Enter full name",
+    mobilePlaceholder: "Enter mobile number",
+    dropdownPlaceholder: "Select your career goals...",
+    messagePlaceholder: "Write down your cover letter",
+  },
+};
+
 /* ------------------------------------------------------------------ */
 /*  Opening hours                                                      */
 /* ------------------------------------------------------------------ */

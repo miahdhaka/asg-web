@@ -5,43 +5,32 @@ const cards = [
     title: "Advanced Warping & Sizing",
     body: "We utilize state-of-the-art machinery sourced from Germany and Switzerland to ensure efficient, high-precision operations.",
     tall: true,
-    gradient: true,
   },
   {
     title: "High-Performance Weaving",
     body: "Operating state-of-the-art Rapier and Airjet looms from Belgium.",
     tall: false,
-    gradient: false,
   },
   {
     title: "Computerized Processing",
     body: "Featuring advanced dyeing and finishing lines equipped with computerized Color Kitchen and auto-dosing systems from Europe.",
     tall: true,
-    gradient: false,
   },
   {
     title: "Printing & Dyeing Excellence",
     body: "Implementing cutting-edge rotary screen and digital printing technology from Italy.",
     tall: false,
-    gradient: false,
   },
 ];
 
 function CapabilityCard({ card }: { card: (typeof cards)[number] }) {
   return (
     <div
-      className={`relative flex flex-col p-5 lg:w-[29.33em] lg:p-[2em] ${
+      className={`card-gradient-hover relative flex flex-col border border-[#F5F5F5] bg-white p-5 lg:w-[29.33em] lg:p-[2em] ${
         card.tall ? "lg:h-[19.83em]" : "lg:h-[18.17em]"
-      } ${card.gradient ? "" : "border border-[#F5F5F5] bg-white"}`}
+      }`}
     >
-      {card.gradient && (
-        <span
-          aria-hidden
-          className="absolute inset-0 opacity-20"
-          style={{ background: "var(--primary-gradient)" }}
-        />
-      )}
-      <div className="relative flex h-12 w-12 items-center justify-center bg-white lg:h-[4.17em] lg:w-[4.17em]">
+      <div className="relative flex h-12 w-12 items-center justify-center lg:h-[4.17em] lg:w-[4.17em]">
         <Image
           src="/images/concerns/amanat-shah-fabrics/icon-yarn.svg"
           alt=""

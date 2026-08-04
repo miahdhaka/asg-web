@@ -33,7 +33,7 @@ const linkColumns: LinkColumn[] = [
     title: "Contact",
     links: [
       { label: "Contact US", href: "#" },
-      { label: "ASG Career", href: "#" },
+      { label: "ASG Career", href: "/careers" },
     ],
   },
   {
@@ -50,8 +50,8 @@ const linkColumns: LinkColumn[] = [
   {
     title: "Legal",
     links: [
-      { label: "Terms of Use", href: "#" },
-      { label: "Privacy Policy", href: "#" },
+      { label: "Terms of Use", href: "/terms-of-use" },
+      { label: "Privacy Policy", href: "/privacy-policy" },
     ],
   },
 ];
@@ -91,17 +91,17 @@ const socials = [
   {
     label: "LinkedIn",
     href: "#",
-    icon: "/icon/social-icon/linkedin.png",
+    icon: "/icons/social-icon/linkedin.png",
   },
   {
     label: "Facebook",
     href: "#",
-    icon: "/icon/social-icon/facebook.png",
+    icon: "/icons/social-icon/facebook.png",
   },
   {
     label: "Instagram",
     href: "#",
-    icon: "/icon/social-icon/instagram.png",
+    icon: "/icons/social-icon/instagram.png",
   },
 ];
 

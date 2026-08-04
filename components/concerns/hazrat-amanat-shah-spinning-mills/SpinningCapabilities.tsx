@@ -4,39 +4,24 @@ const cards = [
   {
     title: "Advanced Infrastructure",
     body: "We utilize state-of-the-art machinery sourced from Germany and Switzerland to ensure efficient, high-precision operations.",
-    gradient: true,
   },
   {
     title: "Specialized Production",
     body: "Our facility excels in producing an exquisite range of Spandex and Slab yarns (6–150 Ne) through sophisticated processes like doubling, twisting, and singeing.",
-    gradient: false,
   },
   {
     title: "Operational Efficiency",
     body: "We optimize resource management and minimize waste by leveraging a harmonious blend of technology, including the use of larger packaging solutions.",
-    gradient: false,
   },
   {
     title: "Rigorous Quality Control",
     body: "Our USTER-equipped Innovations Lab ensures top-tier quality through precision instruments such as USTER AFIS Pro, HVI-1000, and comprehensive testers for count, CSP, and yarn uniformity.",
-    gradient: false,
   },
 ];
 
 function CapabilityCard({ card }: { card: (typeof cards)[number] }) {
   return (
-    <div
-      className={`relative flex flex-col p-5 lg:w-[29.33em] lg:p-[2em] ${
-        card.gradient ? "" : "border border-[#F5F5F5] bg-white"
-      }`}
-    >
-      {card.gradient && (
-        <span
-          aria-hidden
-          className="absolute inset-0 opacity-20"
-          style={{ background: "var(--primary-gradient)" }}
-        />
-      )}
+    <div className="card-gradient-hover relative flex flex-col border border-[#F5F5F5] bg-white p-5 lg:w-[29.33em] lg:p-[2em]">
       <Image
         src="/images/concerns/hazrat-amanat-shah-spinning-mills/icon-spinning.svg"
         alt=""

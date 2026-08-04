@@ -30,7 +30,7 @@ export const navCategories: NavCategory[] = [
     label: "Sustainability",
     megaMenu: true,
     megaItems: [
-      { label: "Environmental and Social Government Resources", href: "", image: "/images/navbar/sustainability-b&w-1.webp", hoverImage: "/images/navbar/sustainability-clr-1.webp" },
+      { label: "Environmental and Social Government Resources", href: "/sustainability", image: "/images/navbar/sustainability-b&w-1.webp", hoverImage: "/images/navbar/sustainability-clr-1.webp" },
       { label: "Corporate Social Responsibility", href: "", image: "/images/navbar/sustainability-b&w-2.webp", hoverImage: "/images/navbar/sustainability-clr-2.webp" },
       { label: "Women Empowerment", href: "", image: "/images/navbar/sustainability-b&w-3.webp", hoverImage: "/images/navbar/sustainability-clr-3.webp" },
     ],

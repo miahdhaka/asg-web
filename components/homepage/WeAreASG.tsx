@@ -21,23 +21,23 @@ const stats: StatCard[] = [
   {
     label: "Years Experience",
     value: 130,
-    icon: "/icon/employee_experience.png",
+    icon: "/icons/employee_experience.png",
   },
   {
     label: "Employee",
     value: 15000,
     suffix: "+",
-    icon: "/icon/employee.png",
+    icon: "/icons/employee.png",
   },
   {
     label: "Government Award",
     value: 15,
-    icon: "/icon/award.png",
+    icon: "/icons/award.png",
   },
   {
     label: "Countries Reached",
     value: 17,
-    icon: "/icon/fun-world.png",
+    icon: "/icons/fun-world.png",
   },
 ];
 

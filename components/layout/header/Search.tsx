@@ -31,7 +31,7 @@ export default function Search() {
         aria-label="Open search"
       >
         <Image
-          src="/icon/search.png"
+          src="/icons/search.png"
           alt="Search"
           width={20}
           height={20}

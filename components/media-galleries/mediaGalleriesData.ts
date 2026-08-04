@@ -43,15 +43,15 @@ export const siteCards: GalleryCard[] = [
 
 export const processCards: GalleryCard[] = [
   {
-    image: "/images/media-galleries/process-1.png",
+    image: "/images/media-galleries/process-1.webp",
     label: "Corporate Office & Facility",
   },
   {
-    image: "/images/media-galleries/process-2.png",
+    image: "/images/media-galleries/process-2.webp",
     label: "Amanat Shah Textile Complex",
   },
   {
-    image: "/images/media-galleries/process-3.png",
+    image: "/images/media-galleries/process-3.webp",
     label: "ASG Manufacturing Hub",
   },
 ];
@@ -62,16 +62,40 @@ export const processCards: GalleryCard[] = [
 
 export const logoCards: LogoCard[] = [
   {
-    image: "/images/media-galleries/logo-asg-group.svg",
-    label: "Amanat shah group",
+    image: "/logo/sister-concern/helal-&-brothers-clr.png",
+    label: "Helal & Brothers Ltd.",
   },
   {
-    image: "/images/media-galleries/logo-asg-fabrics.svg",
-    label: "Amanat shah fabrics LTD",
+    image: "/logo/sister-concern/miah-clr.png",
+    label: "Miah & Miah Enterprise",
   },
   {
-    image: "/images/media-galleries/logo-asg-spinning.svg",
-    label: "Hazrat amanat shah spinning mills LTd.",
+    image: "/logo/sister-concern/weaving-clr.png",
+    label: "Amanat Shah Weaving Processing Ltd.",
+  },
+  {
+    image: "/logo/sister-concern/fabrics-clr.png",
+    label: "Amanat Shah Fabrics Ltd.",
+  },
+  {
+    image: "/logo/sister-concern/spinning-mills-clr.png",
+    label: "Hazrat Amanat Shah Spinning Mills Ltd.",
+  },
+  {
+    image: "/logo/sister-concern/trust-knitwear-clr.png",
+    label: "Trust Knitwear Industries Ltd.",
+  },
+  {
+    image: "/logo/sister-concern/securities-clr.png",
+    label: "Hazrat Amanat Shah Securities Ltd.",
+  },
+  {
+    image: "/logo/sister-concern/farm2farm-clr.png",
+    label: "Farm2Firm",
+  },
+  {
+    image: "/logo/sister-concern/tex-solution-clr.png",
+    label: "Amanat Shah Text Solution",
   },
 ];
 
@@ -81,18 +105,38 @@ export const logoCards: LogoCard[] = [
 
 export const directorCards: DirectorCard[] = [
   {
-    image: "/images/media-galleries/director-1.png",
+    image: "/images/board-of-directors/chairman.png",
     name: "Mohammad Helal Miah",
     title: "Chairman",
   },
   {
-    image: "/images/media-galleries/director-2.png",
+    image: "/images/board-of-directors/managing-director.png",
     name: "Rezaul Karim",
     title: "Director",
   },
   {
-    image: "/images/media-galleries/director-3.png",
+    image: "/images/board-of-directors/rezawan-kabir-shihab.png",
     name: "Rezawan Kabir Shihab",
     title: "Director",
+  },
+  {
+    image: "/images/board-of-directors/md-jubayer-amin.png",
+    name: "Md. Jubayer Amin",
+    title: "Director",
+  },
+  {
+    image: "/images/board-of-directors/akm-azad.png",
+    name: "Akm Azad",
+    title: "Entrepreneur",
+  },
+  {
+    image: "/images/board-of-directors/mahamudul-hasan.png",
+    name: "Mahamudul Hasan",
+    title: "Entrepreneur",
+  },
+  {
+    image: "/images/board-of-directors/mohammad-kamrul-islam.png",
+    name: "Mohammad Kamrul Islam",
+    title: "Entrepreneur",
   },
 ];
