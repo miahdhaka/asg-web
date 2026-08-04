@@ -1,0 +1,128 @@
+import type { Metadata } from "next";
+import Image from "next/image";
+
+export const metadata: Metadata = {
+  title: "Sites Photo Tour | ASG - Amanat Shah Group",
+  description:
+    "Curated high-resolution visual assets from ASG Group — corporate offices, manufacturing facilities, and textile complexes.",
+};
+
+/* ------------------------------------------------------------------ */
+/*  Data                                                               */
+/* ------------------------------------------------------------------ */
+
+const sitePhotos = [
+  {
+    image: "/images/media-galleries/sites-photo-1.png",
+    label: "Corporate Office & Facility",
+  },
+  {
+    image: "/images/media-galleries/sites-photo-2.png",
+    label: "Amanat Shah Textile Complex",
+  },
+  {
+    image: "/images/media-galleries/sites-photo-3.png",
+    label: "ASG Manufacturing Hub",
+  },
+  {
+    image: "/images/media-galleries/sites-photo-4.png",
+    label: "Corporate Office & Facility",
+  },
+  {
+    image: "/images/media-galleries/sites-photo-5.png",
+    label: "Corporate Office & Facility",
+  },
+  {
+    image: "/images/media-galleries/sites-photo-6.png",
+    label: "Corporate Office & Facility",
+  },
+];
+
+/* ------------------------------------------------------------------ */
+/*  Site photo card                                                    */
+/* ------------------------------------------------------------------ */
+
+function SitePhotoCard({
+  image,
+  label,
+}: {
+  image: string;
+  label: string;
+}) {
+  return (
+    <div className="group flex flex-col gap-4">
+      <div className="relative aspect-[429/257] w-full overflow-hidden bg-[#D9D9D9]">
+        <Image
+          src={image}
+          alt={label}
+          fill
+          sizes="(min-width: 1024px) 33vw, 100vw"
+          draggable={false}
+          className="pointer-events-none object-cover"
+          quality={80}
+        />
+        {/* Hover overlay */}
+        <div
+          aria-hidden
+          className="absolute inset-0 overlay-image-hover opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100"
+        />
+      </div>
+      <p className="font-test-tiempos-fine text-[1.125rem] leading-[1.5rem] text-neutral-800 lg:text-[1.5rem] lg:leading-[1.75rem]">
+        {label}
+      </p>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Page                                                               */
+/* ------------------------------------------------------------------ */
+
+export default function SitesPhotoTourPage() {
+  return (
+    <main className="flex flex-col">
+      {/* ── Hero ──────────────────────────────────────────────────── */}
+      <section className="relative w-full lg:h-[41.5625rem]">
+        {/* Background image */}
+        <Image
+          src="/images/media-galleries/hero-bg.png"
+          alt="ASG Group sites photo tour"
+          fill
+          priority
+          quality={90}
+          sizes="100vw"
+          className="object-cover"
+        />
+
+        {/* Dark bottom overlay for text legibility */}
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(0deg, rgba(12,12,12,1) 6%, rgba(0,0,0,0) 92%)",
+          }}
+        />
+
+        {/* Title + subtitle */}
+        <div className="flex flex-col gap-1 lg:gap-0.5 absolute left-4 sm:left-8 lg:left-[5em] bottom-6 sm:bottom-10 lg:bottom-[5em] z-10">
+          <h1 className="text-2xl sm:text-4xl lg:text-6xl text-white font-test-tiempos-fine tracking-wider">
+            Sites Photo Tour
+          </h1>
+          <p className="text-xs sm:text-sm tracking-wider font-light text-white lg:text-base">
+            Curated high-resolution visual assets.
+          </p>
+        </div>
+      </section>
+
+      {/* ── Photo grid ────────────────────────────────────────────── */}
+      <section className="flex w-full flex-col px-[5rem] py-[5rem]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-x-5 lg:gap-y-12">
+          {sitePhotos.map((photo, i) => (
+            <SitePhotoCard key={`site-${i}`} image={photo.image} label={photo.label} />
+          ))}
+        </div>
+      </section>
+    </main>
+  );
+}

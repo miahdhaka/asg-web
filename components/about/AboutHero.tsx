@@ -22,7 +22,7 @@ export default function AboutHero() {
         height={1080}
         priority
         quality={90}
-        className="hidden lg:block lg:max-h-[41.5625rem] w-full h-auto obj@ect-cover object-[50%_40%]"
+        className="hidden lg:block lg:h-[41.5625rem] w-full object-cover object-[50%_40%]"
       />
 
       {/* Dark bottom overlay for text legibility */}

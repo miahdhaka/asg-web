@@ -78,8 +78,13 @@ export default function Newsroom() {
                   fill
                   sizes="(min-width: 1024px) 33vw, 100vw"
                   draggable={false}
-                  className="pointer-events-none object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
+                  className="pointer-events-none object-cover"
                   quality={80}
+                />
+                {/* Hover overlay */}
+                <div
+                  aria-hidden
+                  className="absolute inset-0 overlay-image-hover opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100"
                 />
               </div>
 

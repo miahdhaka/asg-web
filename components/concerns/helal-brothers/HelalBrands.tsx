@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import gsap from "gsap";
 
 type BrandRowProps = {
   title: string;
@@ -11,13 +12,33 @@ type BrandRowProps = {
   textSide: "left" | "right";
 };
 
+/* Three identical copies of the set keep the loop seamless — the track
+   teleports by one whole set whenever it nears either end. */
+const COPIES = [0, 1, 2];
+
 /* One brand row: a text column beside a windowed carousel that shows one full
-   547px card plus a peek of the next. Arrows step one card (wrapping at the
-   ends) and the counter below tracks the card nearest the window's left edge. */
+   547px card plus a peek of the next. The track loops infinitely in both
+   directions, scrolls by mouse drag, and the counter below tracks the card
+   nearest the window's left edge. */
 function BrandRow({ title, description, images, textSide }: BrandRowProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
   const count = images.length;
+
+  /* CSS snap must be off while dragging — snap-mandatory re-snaps every
+     scrollLeft assignment, which freezes the track under the cursor */
+  const [isDragging, setIsDragging] = useState(false);
+  const snapRestoreTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /* The GSAP tween currently gliding the track (native smooth-scroll fights
+     with snap-mandatory, so every slide is animated with GSAP instead) */
+  const slideTween = useRef<gsap.core.Tween | null>(null);
+  // Mouse-drag bookkeeping (refs — no re-render needed per move)
+  const drag = useRef({
+    active: false,
+    moved: false,
+    startX: 0,
+    startScrollLeft: 0,
+  });
 
   // Card width + flex gap = one slide step
   const cardStep = (track: HTMLDivElement) => {
@@ -27,35 +48,130 @@ function BrandRow({ title, description, images, textSide }: BrandRowProps) {
     return card.offsetWidth + gap;
   };
 
-  const step = (dir: 1 | -1) => {
+  // Teleport by one whole copy when nearing either end — content is
+  // identical one set away, so the jump is invisible
+  const normalizeLoop = useCallback(
+    (track: HTMLDivElement) => {
+      const step = cardStep(track);
+      const setWidth = step * count;
+      if (!setWidth) return;
+      const maxScroll = track.scrollWidth - track.clientWidth;
+      let delta = 0;
+      if (track.scrollLeft < step) delta = setWidth;
+      else if (track.scrollLeft > maxScroll - step) delta = -setWidth;
+      if (delta) {
+        track.scrollLeft += delta;
+        if (drag.current.active) drag.current.startScrollLeft += delta;
+      }
+    },
+    [count]
+  );
+
+  useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
-    const stepWidth = cardStep(track);
-    const maxScroll = track.scrollWidth - track.clientWidth;
-    const next = index + dir;
-    if (next < 0) {
-      track.scrollTo({ left: maxScroll, behavior: "smooth" });
-    } else if (next > count - 1) {
-      track.scrollTo({ left: 0, behavior: "smooth" });
-    } else {
-      track.scrollTo({
-        left: Math.min(next * stepWidth, maxScroll),
-        behavior: "smooth",
-      });
-    }
+    // Start at the middle copy so both directions have room immediately
+    track.scrollLeft = cardStep(track) * count;
+    const onScroll = () => normalizeLoop(track);
+    track.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      track.removeEventListener("scroll", onScroll);
+      slideTween.current?.kill();
+      if (snapRestoreTimer.current) clearTimeout(snapRestoreTimer.current);
+    };
+  }, [normalizeLoop, count]);
+
+  // GSAP glide to an absolute scrollLeft — smooth, interruptible, and immune
+  // to the snap-mandatory re-snap that stutters native smooth-scroll
+  const glideTo = (track: HTMLDivElement, left: number) => {
+    slideTween.current?.kill();
+    slideTween.current = gsap.to(track, {
+      scrollLeft: left,
+      duration: 0.6,
+      ease: "power2.inOut",
+      overwrite: true,
+    });
   };
+
+  const scrollByCard = (dir: 1 | -1) => {
+    const track = trackRef.current;
+    if (!track) return;
+    // Re-center first so there is always a full copy of room to scroll into
+    normalizeLoop(track);
+    // Snap off while the glide runs, then restore once it settles
+    if (snapRestoreTimer.current) clearTimeout(snapRestoreTimer.current);
+    setIsDragging(true);
+    glideTo(track, track.scrollLeft + dir * cardStep(track));
+    snapRestoreTimer.current = setTimeout(() => setIsDragging(false), 700);
+  };
+
+  // --- Mouse drag-to-scroll (touch keeps native scrolling + CSS snap) ---
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== "mouse" || e.button !== 0) return;
+    const track = trackRef.current;
+    if (!track) return;
+    slideTween.current?.kill();
+    if (snapRestoreTimer.current) clearTimeout(snapRestoreTimer.current);
+    normalizeLoop(track);
+    drag.current = {
+      active: true,
+      moved: false,
+      startX: e.clientX,
+      startScrollLeft: track.scrollLeft,
+    };
+    setIsDragging(true);
+  };
+
+  /* The rest of the drag is tracked on window rather than via
+     setPointerCapture: capturing the pointer retargets the follow-up click to
+     the track. Window listeners keep the drag alive when the cursor leaves
+     the track just the same. */
+  useEffect(() => {
+    if (!isDragging) return;
+
+    const onMove = (e: PointerEvent) => {
+      const track = trackRef.current;
+      if (!track || !drag.current.active) return;
+      const dx = e.clientX - drag.current.startX;
+      if (Math.abs(dx) > 5) drag.current.moved = true;
+      track.scrollLeft = drag.current.startScrollLeft - dx;
+      // Keep looping even mid-drag (adjusts startScrollLeft alongside)
+      normalizeLoop(track);
+    };
+
+    const onUp = () => {
+      const track = trackRef.current;
+      if (!track || !drag.current.active) return;
+      drag.current.active = false;
+      if (!drag.current.moved) {
+        // Plain click — nothing scrolled, restore snap right away
+        setIsDragging(false);
+        return;
+      }
+      // Glide to the nearest card, then re-enable CSS snap once settled
+      const step = cardStep(track);
+      const target = Math.round(track.scrollLeft / step) * step;
+      glideTo(track, target);
+      snapRestoreTimer.current = setTimeout(() => setIsDragging(false), 700);
+    };
+
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+    };
+  }, [isDragging, normalizeLoop]);
 
   const onScroll = () => {
     const track = trackRef.current;
     if (!track) return;
     const stepWidth = cardStep(track);
-    const maxScroll = track.scrollWidth - track.clientWidth;
-    // The final card never reaches the left edge — count a full scroll as it
-    const atEnd = maxScroll > 0 && track.scrollLeft >= maxScroll - 2;
-    const next = atEnd
-      ? count - 1
-      : Math.min(count - 1, Math.round(track.scrollLeft / stepWidth));
-    setIndex(next);
+    setIndex(
+      ((Math.round(track.scrollLeft / stepWidth) % count) + count) % count
+    );
   };
 
   const textCol = (
@@ -79,40 +195,46 @@ function BrandRow({ title, description, images, textSide }: BrandRowProps) {
         <div
           ref={trackRef}
           onScroll={onScroll}
-          className="flex snap-x snap-mandatory gap-3 overflow-x-auto no-scrollbar lg:gap-[1.33em]"
+          onPointerDown={onPointerDown}
+          className={`flex gap-3 overflow-x-auto no-scrollbar select-none cursor-grab active:cursor-grabbing lg:gap-[1.33em] ${
+            isDragging ? "snap-none" : "snap-x snap-mandatory"
+          }`}
         >
-          {images.map((image) => (
-            <Image
-              key={image.src}
-              src={image.src}
-              alt={image.alt}
-              width={547}
-              height={356}
-              quality={90}
-              draggable={false}
-              className="w-[85%] shrink-0 snap-start object-cover lg:h-[29.67em] lg:w-[45.58em]"
-            />
-          ))}
+          {COPIES.map((copy) =>
+            images.map((image) => (
+              <Image
+                key={`${copy}-${image.src}`}
+                src={image.src}
+                alt={copy === 0 ? image.alt : ""}
+                aria-hidden={copy === 0 ? undefined : true}
+                width={547}
+                height={356}
+                quality={90}
+                draggable={false}
+                className="pointer-events-none w-[85%] shrink-0 snap-start object-cover lg:h-[29.67em] lg:w-[45.58em]"
+              />
+            ))
+          )}
         </div>
 
         {/* Step arrows — pinned inside the window edges */}
         <button
           type="button"
           aria-label={`Previous ${title} image`}
-          onClick={() => step(-1)}
-          className="absolute left-2 top-1/2 z-10 -translate-y-1/2 p-1 text-white cursor-pointer lg:left-[0.58em]"
+          onClick={() => scrollByCard(-1)}
+          className="absolute left-2 top-1/2 z-10 -translate-y-1/2 p-2 text-white cursor-pointer lg:left-[0.58em]"
         >
-          <svg width="1.5em" height="1.5em" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <svg width="2.25em" height="2.25em" viewBox="0 0 24 24" fill="none" aria-hidden>
             <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
         <button
           type="button"
           aria-label={`Next ${title} image`}
-          onClick={() => step(1)}
-          className="absolute right-2 top-1/2 z-10 -translate-y-1/2 p-1 text-white cursor-pointer lg:right-[0.58em]"
+          onClick={() => scrollByCard(1)}
+          className="absolute right-2 top-1/2 z-10 -translate-y-1/2 p-2 text-white cursor-pointer lg:right-[0.58em]"
         >
-          <svg width="1.5em" height="1.5em" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <svg width="2.25em" height="2.25em" viewBox="0 0 24 24" fill="none" aria-hidden>
             <path d="M9 6L15 12L9 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>

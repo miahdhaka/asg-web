@@ -1,4 +1,27 @@
+import { SquareArrowOutUpRight } from "lucide-react";
 import Image from "next/image";
+
+/** External-link glyph shown beside the "Visit website" label */
+function LinkArrow() {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      fill="none"
+      aria-hidden
+      className="lg:h-[1em] lg:w-[1em]"
+    >
+      <path
+        d="M2.5 9.5L9.5 2.5M4 2.5H9.5V8"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 /**
  * Top band of the M/s Helal & Brothers concern page — company logo, name,
@@ -32,42 +55,45 @@ export default function HelalHero() {
           </p>
         </div>
 
-        {/* Gradient-outline button — fills with the brand gradient on hover */}
+        {/* Gradient-outline button — label and icon flip on hover, matching the
+            other primary buttons (see .primary-btn-flip-gradient) */}
         <a
           href="#"
-          className="group relative inline-flex w-fit items-center justify-center gap-1 self-start border px-6 py-3 text-sm font-medium lg:gap-[0.33em] lg:self-auto lg:px-[2em] lg:py-[1em] lg:text-[1.17em]"
+          className="group relative inline-flex w-fit items-center justify-center self-start overflow-hidden border px-6 py-3 text-sm font-medium leading-none lg:self-auto lg:px-[2em] lg:py-[1em] lg:text-[1.17em]"
           style={{
             borderImage: "var(--primary-gradient) 1",
             borderWidth: 1,
           }}
         >
+          {/* Invisible spacer — preserves the button's intrinsic width/height */}
+          <span className="invisible inline-flex items-center gap-1 whitespace-nowrap lg:gap-[0.33em]">
+            Visit website
+            <LinkArrow />
+          </span>
+
+          {/* Default: gradient text — slides down and out on hover */}
           <span
             aria-hidden
-            className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-            style={{ background: "var(--primary-gradient)" }}
-          />
+            className="absolute inset-0 flex items-center justify-center gap-1 whitespace-nowrap text-[#1AA179] transition-transform duration-500 ease-in-out group-hover:translate-y-full lg:gap-[0.33em]"
+          >
+            <span
+              className="bg-clip-text text-transparent"
+              style={{ backgroundImage: "var(--primary-gradient)" }}
+            >
+              Visit website
+            </span>
+            <SquareArrowOutUpRight className="w-4 h-4" />
+          </span>
+
+          {/* Hover: gradient fill + white text — slides in from the top */}
           <span
-            className="relative bg-clip-text leading-none text-transparent transition-colors duration-300 group-hover:text-white"
-            style={{ backgroundImage: "var(--primary-gradient)" }}
+            aria-hidden
+            className="absolute inset-0 flex -translate-y-full items-center justify-center gap-1 whitespace-nowrap text-white transition-transform duration-500 ease-in-out group-hover:translate-y-0 lg:gap-[0.33em]"
+            style={{ background: "var(--primary-gradient)" }}
           >
             Visit website
+            <SquareArrowOutUpRight className="w-4 h-4" />
           </span>
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 12 12"
-            fill="none"
-            aria-hidden
-            className="relative text-[#1AA179] transition-colors duration-300 group-hover:text-white lg:h-[1em] lg:w-[1em]"
-          >
-            <path
-              d="M2.5 9.5L9.5 2.5M4 2.5H9.5V8"
-              stroke="currentColor"
-              strokeWidth="1.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
         </a>
       </div>
 

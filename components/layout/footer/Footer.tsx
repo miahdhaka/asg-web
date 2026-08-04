@@ -25,7 +25,7 @@ const linkColumns: LinkColumn[] = [
       { label: "About US", href: "#" },
       { label: "Brands", href: "#" },
       { label: "Sustainability", href: "#" },
-      { label: "FAQ's", href: "#" },
+      { label: "FAQ's", href: "/faqs" },
       { label: "Newsroom", href: "#" },
     ],
   },
@@ -33,7 +33,7 @@ const linkColumns: LinkColumn[] = [
     title: "Contact",
     links: [
       { label: "Contact US", href: "#" },
-      { label: "ASG Career", href: "#" },
+      { label: "ASG Career", href: "/careers" },
     ],
   },
   {
@@ -41,7 +41,7 @@ const linkColumns: LinkColumn[] = [
     links: [
       { label: "M/s Helal & Brothers Ltd.", href: "/concerns/helal-brothers" },
       { label: "Amanat Shah Fabrics Ltd.", href: "/concerns/amanat-shah-fabrics" },
-      { label: "Hazrat Amanat Shah Spinnings Mills Ltd.", href: "#" },
+      { label: "Hazrat Amanat Shah Spinnings Mills Ltd.", href: "/concerns/hazrat-amanat-shah-spinning-mills" },
       { label: "Hazrat Amanat Shah Securities Ltd.", href: "#" },
       { label: "Amanat Shah Weaving Processing Ltd.", href: "#" },
       { label: "Miah & Miah Enterprise", href: "#" },
@@ -50,8 +50,8 @@ const linkColumns: LinkColumn[] = [
   {
     title: "Legal",
     links: [
-      { label: "Terms of Use", href: "#" },
-      { label: "Privacy Policy", href: "#" },
+      { label: "Terms of Use", href: "/terms-of-use" },
+      { label: "Privacy Policy", href: "/privacy-policy" },
     ],
   },
 ];
@@ -91,17 +91,17 @@ const socials = [
   {
     label: "LinkedIn",
     href: "#",
-    icon: "/icon/social-icon/linkedin.png",
+    icon: "/icons/social-icon/linkedin.png",
   },
   {
     label: "Facebook",
     href: "#",
-    icon: "/icon/social-icon/facebook.png",
+    icon: "/icons/social-icon/facebook.png",
   },
   {
     label: "Instagram",
     href: "#",
-    icon: "/icon/social-icon/instagram.png",
+    icon: "/icons/social-icon/instagram.png",
   },
 ];
 

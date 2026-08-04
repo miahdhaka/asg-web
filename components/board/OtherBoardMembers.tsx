@@ -173,8 +173,8 @@ export default function OtherBoardMembers({
           className="absolute left-2 lg:left-[2em] top-1/2 -translate-y-1/2 z-10 p-2 text-neutral-800 cursor-pointer"
         >
           <svg
-            width="1.5em"
-            height="1.5em"
+            width="3em"
+            height="3em"
             viewBox="0 0 24 24"
             fill="none"
             aria-hidden
@@ -195,8 +195,8 @@ export default function OtherBoardMembers({
           className="absolute right-2 lg:right-[2em] top-1/2 -translate-y-1/2 z-10 p-2 text-neutral-800 cursor-pointer"
         >
           <svg
-            width="1.5em"
-            height="1.5em"
+            width="3em"
+            height="3em"
             viewBox="0 0 24 24"
             fill="none"
             aria-hidden
