@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Amanat Shah Group's ESG commitments — 7MW renewable energy, water recycling, zero liquid discharge, and internationally certified sustainable manufacturing.",
 };
 
-export default function SustainabilityPage() {
+export default function EnvironmentalSocialGovernancePage() {
   return (
     <main>
       <SustainabilitySections />

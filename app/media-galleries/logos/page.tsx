@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { LogoCard } from "@/components/media-galleries/LogoGalleryGrid";
+import LogoGalleryGrid from "@/components/media-galleries/LogoGalleryGrid";
 import { logoCards } from "@/components/media-galleries/mediaGalleriesData";
 
 export const metadata: Metadata = {
@@ -52,11 +52,7 @@ export default function LogosGalleryPage() {
 
       {/* ── Logo grid ─────────────────────────────────────────────── */}
       <section className="flex w-full flex-col px-[5rem] py-[5rem]">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-x-5 lg:gap-y-12">
-          {logoCards.map((card, i) => (
-            <LogoCard key={`logo-${i}`} card={card} />
-          ))}
-        </div>
+        <LogoGalleryGrid cards={logoCards} />
       </section>
     </main>
   );

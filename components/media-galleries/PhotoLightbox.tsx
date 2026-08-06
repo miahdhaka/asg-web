@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, type PointerEvent as ReactPointerEvent } from "react";
 import gsap from "gsap";
 import { ChevronLeft, ChevronRight, Download, X } from "lucide-react";
 
@@ -35,6 +35,7 @@ export default function PhotoLightbox({
   const prevIndexRef = useRef(index);
   const closingRef = useRef(false);
   const mountedRef = useRef(false);
+  const dragStartXRef = useRef<number | null>(null);
 
   const goPrev = useCallback(
     () => onIndexChange((index - 1 + items.length) % items.length),
@@ -44,6 +45,28 @@ export default function PhotoLightbox({
     () => onIndexChange((index + 1) % items.length),
     [index, items.length, onIndexChange]
   );
+
+  /* Mouse drag on the image to switch slides — drag left for next,
+     right for previous. Anything shorter than the threshold is treated
+     as a non-gesture and ignored. */
+  const handlePointerDown = useCallback((e: ReactPointerEvent<HTMLImageElement>) => {
+    if (e.button !== 0) return;
+    dragStartXRef.current = e.clientX;
+  }, []);
+  const handlePointerUp = useCallback(
+    (e: ReactPointerEvent<HTMLImageElement>) => {
+      if (dragStartXRef.current === null) return;
+      const dx = e.clientX - dragStartXRef.current;
+      dragStartXRef.current = null;
+      if (Math.abs(dx) < 40) return;
+      if (dx < 0) goNext();
+      else goPrev();
+    },
+    [goNext, goPrev]
+  );
+  const cancelDrag = useCallback(() => {
+    dragStartXRef.current = null;
+  }, []);
 
   /* Close with a short exit animation before unmounting */
   const dismiss = useCallback(() => {
@@ -176,7 +199,7 @@ export default function PhotoLightbox({
     >
       <div
         ref={contentRef}
-        className="flex w-full max-w-[90vw] flex-col gap-4"
+        className="flex w-fit max-w-[90vw] flex-col gap-4"
         onClick={(e) => e.stopPropagation()}
       >
         {/* ── Top bar: download + close ─────────────────────────── */}
@@ -207,9 +230,12 @@ export default function PhotoLightbox({
           </button>
         </div>
 
-        {/* ── Image stage (image renders at its natural size — never
-               cropped or stretched; only capped so it fits the viewport) */}
-        <div className="relative">
+        {/* ── Image stage — a single fixed-size box for every slide so
+               photos, logos and PNGs all occupy the same frame; each
+               image is contained inside it, never cropped or stretched.
+               The top bar spans the same width, keeping the download and
+               close buttons aligned with the stage edges on every slide. */}
+        <div className="relative h-[min(62vh,46rem)] w-[58vw] max-w-[86vw] bg-white">
           <button
             type="button"
             onClick={goPrev}
@@ -219,7 +245,7 @@ export default function PhotoLightbox({
             <ChevronLeft className="h-6 w-6" strokeWidth={2} />
           </button>
 
-          <div className="flex w-full items-center justify-center">
+          <div className="flex h-full w-full items-center justify-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               ref={imgRef}
@@ -227,7 +253,10 @@ export default function PhotoLightbox({
               src={item.image}
               alt={item.caption}
               draggable={false}
-              className="h-auto w-auto max-w-full max-h-[calc(100vh-12.5rem)] select-none object-contain"
+              onPointerDown={handlePointerDown}
+              onPointerUp={handlePointerUp}
+              onPointerLeave={cancelDrag}
+              className="h-full w-full cursor-grab select-none object-contain active:cursor-grabbing"
             />
           </div>
 

@@ -31,27 +31,16 @@ export default function MegaMenu({ items, isOpen, variant = "photo" }: MegaMenuP
                   <div
                     className={`relative aspect-[5/3] w-full overflow-hidden ${
                       isLogo ? "bg-gray-100" : "bg-gray-100"
-                    }`} 
+                    }`}
                   >
                     <Image
-                      src={item.image}
+                      src={item.hoverImage || item.image}
                       alt={item.label}
                       fill
-                      className={`${isLogo ? "object-contain p-[20%]" : "object-cover"} opacity-100 transition-opacity duration-600 ease-in-out group-hover:opacity-0`}
+                      className={`${isLogo ? "object-contain p-[20%]" : "object-cover"} grayscale transition-[filter] duration-500 ease-in-out group-hover:grayscale-0`}
                       sizes={isLogo ? "(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw" : "(max-width: 768px) 100vw, 33vw"}
                       quality={90}
                     />
-
-                    {item.hoverImage && (
-                      <Image
-                        src={item.hoverImage}
-                        alt={item.label}
-                        fill
-                        className={`${isLogo ? "object-contain p-[20%]" : "object-cover"} opacity-0 transition-opacity duration-600 ease-in-out group-hover:opacity-100`}
-                        sizes={isLogo ? "(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw" : "(max-width: 768px) 100vw, 33vw"}                        
-                        quality={90}
-                      />
-                    )}
                     {!isLogo && (
                       <div className="overlay-image-hover pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700 ease-in-out group-hover:opacity-100" />
                     )}
