@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import PhotoGalleryGrid from "@/components/media-galleries/PhotoGalleryGrid";
+import type { GalleryCard } from "@/components/media-galleries/mediaGalleriesData";
 
 export const metadata: Metadata = {
   title: "Sites Photo Tour | ASG - Amanat Shah Group",
@@ -11,7 +13,7 @@ export const metadata: Metadata = {
 /*  Data                                                               */
 /* ------------------------------------------------------------------ */
 
-const sitePhotos = [
+const sitePhotos: GalleryCard[] = [
   {
     image: "/images/media-galleries/sites-photo-1.png",
     label: "Corporate Office & Facility",
@@ -37,42 +39,6 @@ const sitePhotos = [
     label: "Corporate Office & Facility",
   },
 ];
-
-/* ------------------------------------------------------------------ */
-/*  Site photo card                                                    */
-/* ------------------------------------------------------------------ */
-
-function SitePhotoCard({
-  image,
-  label,
-}: {
-  image: string;
-  label: string;
-}) {
-  return (
-    <div className="group flex flex-col gap-4">
-      <div className="relative aspect-[429/257] w-full overflow-hidden bg-[#D9D9D9]">
-        <Image
-          src={image}
-          alt={label}
-          fill
-          sizes="(min-width: 1024px) 33vw, 100vw"
-          draggable={false}
-          className="pointer-events-none object-cover"
-          quality={80}
-        />
-        {/* Hover overlay */}
-        <div
-          aria-hidden
-          className="absolute inset-0 overlay-image-hover opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100"
-        />
-      </div>
-      <p className="font-test-tiempos-fine text-[1.125rem] leading-[1.5rem] text-neutral-800 lg:text-[1.5rem] lg:leading-[1.75rem]">
-        {label}
-      </p>
-    </div>
-  );
-}
 
 /* ------------------------------------------------------------------ */
 /*  Page                                                               */
@@ -117,11 +83,7 @@ export default function SitesPhotoTourPage() {
 
       {/* ── Photo grid ────────────────────────────────────────────── */}
       <section className="flex w-full flex-col px-[5rem] py-[5rem]">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-x-5 lg:gap-y-12">
-          {sitePhotos.map((photo, i) => (
-            <SitePhotoCard key={`site-${i}`} image={photo.image} label={photo.label} />
-          ))}
-        </div>
+        <PhotoGalleryGrid cards={sitePhotos} />
       </section>
     </main>
   );

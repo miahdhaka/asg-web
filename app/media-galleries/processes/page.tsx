@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { PhotoCard } from "@/components/media-galleries/PhotoGalleryGrid";
+import PhotoGalleryGrid from "@/components/media-galleries/PhotoGalleryGrid";
 import { processCards } from "@/components/media-galleries/mediaGalleriesData";
 
 export const metadata: Metadata = {
@@ -52,11 +52,7 @@ export default function ProcessesGalleryPage() {
 
       {/* ── Photo grid ────────────────────────────────────────────── */}
       <section className="flex w-full flex-col px-[5rem] py-[5rem]">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-x-5 lg:gap-y-12">
-          {processCards.map((card, i) => (
-            <PhotoCard key={`process-${i}`} card={card} />
-          ))}
-        </div>
+        <PhotoGalleryGrid cards={processCards} />
       </section>
     </main>
   );
