@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
-import SustainabilitySections from "@/components/sustainability/SustainabilitySections";
+import EsgHero from "@/components/sustainability/EsgHero";
+import EsgIntro from "@/components/sustainability/EsgIntro";
+import EsgCertifications from "@/components/sustainability/EsgCertifications";
+import EsgInitiatives from "@/components/sustainability/EsgInitiatives";
 
 export const metadata: Metadata = {
   title: "Environmental & Social Governance | ASG - Amanat Shah Group",
@@ -10,7 +13,10 @@ export const metadata: Metadata = {
 export default function EnvironmentalSocialGovernancePage() {
   return (
     <main>
-      <SustainabilitySections />
+      <EsgHero />
+      <EsgIntro />
+      <EsgCertifications />
+      <EsgInitiatives />
     </main>
   );
 }

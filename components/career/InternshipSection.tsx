@@ -36,7 +36,7 @@ export default function InternshipSection() {
           <a
             href="#"
             data-label="Apply for Internship"
-            className="primary-btn-flip-gradient mt-6 w-fit px-8 py-3 text-sm font-medium lg:mt-[2rem] lg:px-[2rem] lg:py-[1rem] lg:text-[1.1667rem]"
+            className="primary-btn-flip-gradient mt-6 w-fit px-8 py-3 text-sm font-medium lg:mt-[2rem] lg:px-[2rem] lg:py-[1.4rem] lg:text-[1.1667rem]"
           >
             Apply for Internship
           </a>

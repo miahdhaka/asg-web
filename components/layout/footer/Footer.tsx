@@ -44,7 +44,7 @@ const linkColumns: LinkColumn[] = [
       { label: "Hazrat Amanat Shah Spinnings Mills Ltd.", href: "/concerns/hazrat-amanat-shah-spinning-mills" },
       { label: "Hazrat Amanat Shah Securities Ltd.", href: "/concerns/hazrat-amanat-shah-securities" },
       { label: "Amanat Shah Weaving Processing Ltd.", href: "/concerns/amanat-shah-weaving-processing" },
-      { label: "Miah & Miah Enterprise", href: "#" },
+      { label: "Miah & Miah Enterprise", href: "/concerns/miah" },
       { label: "Trust Knitwear Industries Ltd.", href: "/concerns/trust-knitwear-industries" },
       { label: "Farm2Firm Management Ltd.", href: "/concerns/farm2firm" },
     ],

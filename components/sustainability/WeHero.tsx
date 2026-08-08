@@ -1,12 +1,13 @@
 import Image from "next/image";
+import { weHeroTitle, weHeroSubtitle } from "./weData";
 
-export default function CareerHero() {
+export default function WeHero() {
   return (
-    <section id="career-hero" className="relative w-full lg:h-[41.5625rem]">
+    <section className="relative w-full lg:h-[41.5625rem]">
       {/* Background image */}
       <Image
-        src="/images/career/hero.webp"
-        alt="ASG Group team members at work"
+        src="/images/sustainability/we/hero.png"
+        alt="Women Empowerment — Amanat Shah Group"
         fill
         priority
         quality={90}
@@ -17,23 +18,24 @@ export default function CareerHero() {
       {/* Dark bottom overlay for text legibility */}
       <div aria-hidden className="absolute inset-0 overlay-linear-subtle" />
 
-      {/* ASG monogram — sits above the fixed navbar, centered */}
+      {/* Emblem — top center */}
       <Image
-        src="/logo/asg-monogram.png"
+        src="/images/sustainability/csr/hero-emblem.png"
         alt=""
+        aria-hidden
         width={34}
         height={35}
-        quality={100}
-        aria-hidden
-        className="absolute left-1/2 top-2 hidden h-[2.9167rem] w-[2.8333rem] -translate-x-1/2 lg:block"
+        quality={95}
+        className="absolute left-1/2 top-2 z-10 hidden -translate-x-1/2 lg:block"
       />
 
+      {/* Title + subtitle */}
       <div className="flex flex-col gap-1 lg:gap-0.5 absolute left-4 sm:left-8 lg:left-[5em] bottom-6 sm:bottom-10 lg:bottom-[5em] z-10">
         <h1 className="text-2xl sm:text-4xl lg:text-6xl text-white font-test-tiempos-fine tracking-wider">
-          Find Your<br />Opportunity
+          {weHeroTitle}
         </h1>
         <p className="text-xs sm:text-sm tracking-wider font-light text-white lg:text-base">
-          Family business legacy for more than 130 years.
+          {weHeroSubtitle}
         </p>
       </div>
     </section>

@@ -383,6 +383,31 @@
   transform: translateY(0);
 }
 
+/* Input/select gradient border on hover */
+.input-gradient-border-hover {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid oklch(0.961 0 0); /* neutral-100 */
+  transition: border-color 0.3s ease-in-out;
+}
+.input-gradient-border-hover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border: 1px solid transparent;
+  border-image: var(--primary-gradient) 1;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  pointer-events: none;
+}
+.input-gradient-border-hover:hover {
+  border-color: transparent;
+}
+.input-gradient-border-hover:hover::before {
+  opacity: 1;
+}
+
 
 .word-space-4 {
   word-spacing: 0.25rem;

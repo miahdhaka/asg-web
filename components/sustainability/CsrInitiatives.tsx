@@ -1,7 +1,7 @@
 import Image from "next/image";
-import { initiativeCards, type InitiativeCard } from "./esgData";
+import { csrInitiativeCards, type CsrInitiativeCard } from "./csrData";
 
-function InitiativeCardItem({ card }: { card: InitiativeCard }) {
+function InitiativeCardItem({ card }: { card: CsrInitiativeCard }) {
   return (
     <div className="group relative flex flex-col gap-2.5 overflow-hidden bg-gray-50 px-6 lg:px-8 py-8 lg:py-10">
       {/* Brand-green tint on hover (matches the design's hover state) */}
@@ -41,11 +41,11 @@ function InitiativeCardItem({ card }: { card: InitiativeCard }) {
   );
 }
 
-export default function EsgInitiatives() {
+export default function CsrInitiatives() {
   return (
     <section className="px-4 sm:px-8 lg:px-[5rem] py-12 lg:py-[3rem] mb-[2rem]">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-[1.4rem]">
-        {initiativeCards.map((card) => (
+        {csrInitiativeCards.map((card) => (
           <InitiativeCardItem key={card.title} card={card} />
         ))}
       </div>

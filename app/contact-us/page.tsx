@@ -17,9 +17,9 @@ export default function ContactUsPage() {
       <ContactHero />
 
       {/* Contact info + form section — split by a vertical divider */}
-      <section className="lg:grid lg:grid-cols-[27.1875rem_1fr]">
+      <section className="lg:grid lg:grid-cols-[36.4rem_1fr]">
         {/* Left column — HQ info + hours (divider runs full column height) */}
-        <div className="border-b lg:border-b-0 lg:border-r border-gray-100  px-4 sm:px-8 lg:px-[4.75rem] pt-10 lg:pt-[5.75rem] pb-16 lg:pb-[6.5rem]">
+        <div className="border-b lg:border-b-0 lg:border-r border-gray-100 px-4 sm:px-8 lg:px-[5rem] pt-10 lg:pt-[5rem] pb-16 lg:pb-[6.5rem]">
           <ContactInfo />
         </div>
 

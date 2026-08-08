@@ -16,7 +16,7 @@ export const navCategories: NavCategory[] = [
     megaVariant: "logo",
     megaItems: [
       { label: "Helal&Brothers Ltd.", href: "/concerns/helal-brothers", image: "/logo/sister-concern/helal-&-brothers-clr.png", hoverImage: "/logo/sister-concern/helal-&-brothers-clr.png" },
-      { label: "Miah & Miah Enterprise ", href: "/miahbd.com", image: "/logo/sister-concern/miah-clr.png", hoverImage: "/logo/sister-concern/miah-clr.png" },
+      { label: "Miah & Miah Enterprise ", href: "/concerns/miah", image: "/logo/sister-concern/miah-clr.png", hoverImage: "/logo/sister-concern/miah-clr.png" },
       { label: "Amanat Shah Weaving Processing Ltd. ", href: "/concerns/amanat-shah-weaving-processing", image: "/logo/sister-concern/weaving-clr.png", hoverImage: "/logo/sister-concern/weaving-clr.png" },
       { label: "Amanat Shah Fabrics Ltd.", href: "/concerns/amanat-shah-fabrics", image: "/logo/sister-concern/fabrics-clr.png", hoverImage: "/logo/sister-concern/fabrics-clr.png" },
       { label: "Hazrat Amanat Shah Spinning Mils Ltd.", href: "/concerns/hazrat-amanat-shah-spinning-mills", image: "/logo/sister-concern/spinning-mills-clr.png", hoverImage: "/logo/sister-concern/spinning-mills-clr.png" },

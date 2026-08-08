@@ -7,7 +7,7 @@ import {
 
 function SectionHeading({ children }: { children: string }) {
   return (
-    <h2 className="text-base font-medium leading-6 text-neutral-800">
+    <h2 className="text-base lg:text-[1.4rem] font-medium text-neutral-800">
       {children}
     </h2>
   );
@@ -15,14 +15,14 @@ function SectionHeading({ children }: { children: string }) {
 
 function PolicySectionBlock({ section }: { section: PolicySection }) {
   return (
-    <section className="flex flex-col gap-2">
+    <section className="flex flex-col gap-2.5">
       <SectionHeading>{section.heading}</SectionHeading>
 
       {section.kind === "paragraphs" &&
         section.paragraphs.map((paragraph) => (
           <p
             key={paragraph.slice(0, 40)}
-            className="text-justify text-sm leading-5 text-neutral-600"
+            className="text-justify text-sm lg:text-[1.1rem] leading-6.5 text-neutral-600"
           >
             {paragraph}
           </p>
@@ -32,7 +32,7 @@ function PolicySectionBlock({ section }: { section: PolicySection }) {
         section.clauses.map((clause) => (
           <p
             key={clause.lead}
-            className="text-justify text-sm leading-5 text-neutral-600"
+            className="text-justify text-sm lg:text-[1.1rem] leading-6.5 text-neutral-600"
           >
             <span className="font-medium text-neutral-800">{clause.lead}</span>
             <br />
@@ -43,14 +43,28 @@ function PolicySectionBlock({ section }: { section: PolicySection }) {
       {section.kind === "bullets" &&
         section.bullets.map((bullet, index) => (
           <div key={bullet.slice(0, 40) + index} className="flex items-center gap-[0.6875rem]">
-            <Image
-              src="/icons/terms-of-use/bullet-arrow.svg"
-              alt=""
-              width={14}
-              height={14}
-              className="size-3.5 shrink-0"
-            />
-            <p className="text-sm leading-5 text-neutral-800">{bullet}</p>
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 14 14"
+              fill="none"
+              aria-hidden
+              className="mt-[0.1875rem] shrink-0"
+            >
+              <path
+                d="M2.91797 7H11.0846"
+                stroke="#525252"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M7 2.91602L11.0833 6.99935L7 11.0827"
+                stroke="#525252"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <p className="text-justify text-sm lg:text-[1.1rem] leading-6.5 text-neutral-600">{bullet}</p>
           </div>
         ))}
     </section>
@@ -58,21 +72,20 @@ function PolicySectionBlock({ section }: { section: PolicySection }) {
 }
 
 const socials = [
-  { label: "LinkedIn", src: "/icons/privacy-policy/privacy-social-linkedin.svg" },
-  { label: "Facebook", src: "/icons/privacy-policy/privacy-social-facebook.svg" },
-  { label: "Instagram", src: "/icons/privacy-policy/privacy-social-instagram.svg" },
+  { label: "LinkedIn", src: "/icons/social-icon/linkedin.png", alt: "LinkedIn" },
+  { label: "Facebook", src: "/icons/social-icon/facebook.png", alt: "Facebook" },
+  { label: "Instagram", src: "/icons/social-icon/instagram.png", alt: "Instagram" },
 ];
 
 export default function PrivacyContent() {
   return (
-    <section className="bg-white px-4 pt-[calc(var(--header-height)+3.75rem)] pb-[3.75rem] sm:px-8">
-      {/* Centered 691px content column (375px inset on the 1440 design) */}
-      <div className="mx-auto flex w-full max-w-[43.1875rem] flex-col gap-6">
-        <h1 className="text-[2.25rem] leading-10 text-neutral-800 font-test-tiempos-fine">
+    <section className="mx-auto mt-[6rem] w-full max-w-[59rem] px-5 pt-[3.5rem] pb-16">
+      <div className="flex flex-col gap-6">
+        <h1 className="font-test-tiempos-fine text-2xl lg:text-[3rem] text-neutral-800">
           {policyTitle}
         </h1>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
           {policySections.map((section) => (
             <PolicySectionBlock key={section.heading} section={section} />
           ))}
@@ -82,13 +95,13 @@ export default function PrivacyContent() {
         <hr className="border-0 border-t border-gray-100" />
 
         <div className="flex flex-col gap-4">
-          <h2 className="font-test-tiempos-fine text-2xl font-medium leading-8 text-neutral-800">
+          <h2 className="font-test-tiempos-fine text-2xl lg:text-[3rem] text-neutral-800">
             Contact Us
           </h2>
-          <p className="text-sm leading-5 text-neutral-600">
+          <p className="text-justify text-sm lg:text-[1.1rem] leading-6.5 text-neutral-600">
             If you have any questions about this Privacy Policy, you can contact us:
           </p>
-          <p className="text-sm leading-5 text-neutral-600">
+          <p className="text-justify text-sm lg:text-[1.1rem] leading-6.5 text-neutral-600">
             By email:{" "}
             <a
               href="mailto:info@asg-bd.com"
@@ -98,22 +111,23 @@ export default function PrivacyContent() {
             </a>
           </p>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-3">
             {socials.map((social) => (
-              <a
+              <button
                 key={social.label}
-                href="#"
-                aria-label={social.label}
-                className="transition-opacity hover:opacity-80"
+                type="button"
+                aria-label={`Share on ${social.label}`}
+                className="group relative flex size-10 cursor-pointer items-center justify-center rounded-full bg-gray-100 transition-colors duration-500 ease-in-out hover:border-transparent before:absolute before:inset-0 before:rounded-full before:bg-[image:var(--primary-gradient)] before:opacity-0 before:transition-opacity before:duration-500 before:ease-in-out hover:before:opacity-100"
               >
                 <Image
                   src={social.src}
-                  alt=""
-                  width={28}
-                  height={28}
+                  alt={social.alt}
+                  width={20}
+                  height={20}
                   quality={100}
+                  className="relative z-10 size-5 object-contain brightness-0 transition-all duration-500 group-hover:invert"
                 />
-              </a>
+              </button>
             ))}
           </div>
         </div>
