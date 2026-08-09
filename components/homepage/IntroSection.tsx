@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default function AboutSection() {
+export default function IntroSection() {
   return (
     <section
       id="intro-section"

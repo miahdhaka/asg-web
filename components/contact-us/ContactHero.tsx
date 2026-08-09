@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function ContactHero() {
   return (
-    <section className="relative w-full">
+    <section className="snap-start relative w-full h-screen">
       {/* Background image — mobile-only below lg */}
       <Image
         src="/images/contact-us/hero-bg.png"

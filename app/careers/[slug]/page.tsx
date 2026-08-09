@@ -79,7 +79,7 @@ export default async function JobDetailPage({
 
         {/* Apply now — gradient flip button */}
         <a
-          href="#"
+          href={`/careers/${job.id}/apply`}
           className="group relative mt-6 inline-flex shrink-0 items-center justify-center overflow-hidden px-8 py-4 text-base lg:text-[1.125rem] leading-none"
           style={{
             borderImage: "var(--primary-gradient) 1",

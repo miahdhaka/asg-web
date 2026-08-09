@@ -22,17 +22,15 @@ const linkColumns: LinkColumn[] = [
   {
     title: "About",
     links: [
-      { label: "About US", href: "#" },
-      { label: "Brands", href: "#" },
-      { label: "Sustainability", href: "#" },
+      { label: "About US", href: "/about-us" },
       { label: "FAQ's", href: "/faqs" },
-      { label: "Newsroom", href: "#" },
+      { label: "Newsroom", href: "/newsroom" },
     ],
   },
   {
     title: "Contact",
     links: [
-      { label: "Contact US", href: "#" },
+      { label: "Contact US", href: "/contact-us" },
       { label: "ASG Career", href: "/careers" },
     ],
   },
@@ -42,11 +40,12 @@ const linkColumns: LinkColumn[] = [
       { label: "M/s Helal & Brothers Ltd.", href: "/concerns/helal-brothers" },
       { label: "Amanat Shah Fabrics Ltd.", href: "/concerns/amanat-shah-fabrics" },
       { label: "Hazrat Amanat Shah Spinnings Mills Ltd.", href: "/concerns/hazrat-amanat-shah-spinning-mills" },
-      { label: "Hazrat Amanat Shah Securities Ltd.", href: "/concerns/hazrat-amanat-shah-securities" },
-      { label: "Amanat Shah Weaving Processing Ltd.", href: "/concerns/amanat-shah-weaving-processing" },
       { label: "Miah & Miah Enterprise", href: "/concerns/miah" },
-      { label: "Trust Knitwear Industries Ltd.", href: "/concerns/trust-knitwear-industries" },
-      { label: "Farm2Firm Management Ltd.", href: "/concerns/farm2firm" },
+      // { label: "Farm2Firm Management Ltd.", href: "/concerns/farm2firm" },
+      // { label: "Hazrat Amanat Shah Securities Ltd.", href: "/concerns/hazrat-amanat-shah-securities" },
+      // { label: "Amanat Shah Weaving Processing Ltd.", href: "/concerns/amanat-shah-weaving-processing" },
+      // { label: "Trust Knitwear Industries Ltd.", href: "/concerns/trust-knitwear-industries" },
+      // { label: "Amanat Shah Tex Solution", href: "/concerns/amanat-shah-tex-solution" },
     ],
   },
   {

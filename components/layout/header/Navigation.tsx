@@ -74,7 +74,12 @@ function NavItem({ category }: { category: NavCategory }) {
 
       {/* Mega menu */}
       {category.megaMenu && category.megaItems && (
-        <MegaMenu items={category.megaItems} isOpen={isOpen} variant={category.megaVariant} />
+        <MegaMenu
+          items={category.megaItems}
+          isOpen={isOpen}
+          variant={category.megaVariant}
+          onNavigate={() => setIsOpen(false)}
+        />
       )}
 
       {/* Simple dropdown */}
@@ -85,6 +90,7 @@ function NavItem({ category }: { category: NavCategory }) {
               <Link
                 key={child.label}
                 href={child.href}
+                onClick={() => setIsOpen(false)}
                 className="block rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
               >
                 {child.label}

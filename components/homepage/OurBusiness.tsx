@@ -11,14 +11,14 @@ interface BusinessCard {
 }
 
 const businessCards: BusinessCard[] = [
-  { label: "Retail", image: "/images/our-business/img-1.webp", logo: "/logo/sister-concern/helal-&-brothers.png" },
-  { label: "Textile", image: "/images/our-business/img-2.webp", logo: "/logo/sister-concern/spinning-mills.png" },
-  { label: "Textile", image: "/images/our-business/img-3.webp", logo: "/logo/sister-concern/fabrics.png" },
-  { label: "Textile", image: "/images/our-business/img-4.webp", logo: "/logo/sister-concern/weaving.png" },
-  { label: "Germane", image: "/images/our-business/img-5.webp", logo: "/logo/sister-concern/trust-knitwear.png" },
+  { label: "Retail", image: "/images/our-business/img-1.webp", logo: "/logo/sister-concern/helal-&-brothers-white.png" },
+  { label: "Textile", image: "/images/our-business/img-2.webp", logo: "/logo/sister-concern/spinning-mills-white.png" },
+  { label: "Textile", image: "/images/our-business/img-3.webp", logo: "/logo/sister-concern/fabrics-white.png" },
+  { label: "Textile", image: "/images/our-business/img-4.webp", logo: "/logo/sister-concern/weaving-white.png" },
+  { label: "Germane", image: "/images/our-business/img-5.webp", logo: "/logo/sister-concern/trust-knitwear-white.png" },
   { label: "Ecommerce", image: "/images/our-business/img-6.webp", logo: "/logo/sister-concern/miah-white.png" },
-  { label: "Agriculture", image: "/images/our-business/img-7.webp", logo: "/logo/sister-concern/farm2farm.png" },
-  { label: "Finance", image: "/images/our-business/img-8.webp", logo: "/logo/sister-concern/securities.png" },
+  { label: "Agriculture", image: "/images/our-business/img-7.webp", logo: "/logo/sister-concern/farm2farm-white.png" },
+  { label: "Finance", image: "/images/our-business/img-8.webp", logo: "/logo/sister-concern/securities-white.png" },
 ];
  
 const GAP = "1rem"; // gap between cards — rem so it rides the fluid scale
@@ -167,10 +167,10 @@ export default function OurBusiness() {
                 <Image
                   src={card.logo}
                   alt=""
-                  width={260}
-                  height={100}
+                  width={320}
+                  height={120}
                   draggable={false}
-                  className="h-[6.25rem] w-[16.25rem] object-contain"
+                  className="h-[7.5rem] w-[20rem] object-contain"
                 />
               </div>
 

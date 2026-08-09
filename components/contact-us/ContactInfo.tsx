@@ -24,7 +24,9 @@ function InfoBlock({
           {label}
         </span>
       </div>
-      {children}
+      <span className="text-neutral-800">
+        {children}
+      </span>
     </div>
   );
 }
@@ -73,7 +75,7 @@ export default function ContactInfo() {
       <hr className="mt-4 lg:mt-8 border-t border-gray-100" />
 
       {/* Opening Hours */}
-      <div className="mt-6 lg:mt-8 flex w-full max-w-[17.9375rem] flex-col gap-5">
+      <div className="mt-6 lg:mt-8 flex w-full max-w-[18.9375rem] flex-col gap-5">
         <p className="text-lg lg:text-[1.5rem] leading-7 lg:leading-[2.3rem] text-neutral-800 font-test-tiempos-fine">
           OPENING HOURS
         </p>
@@ -82,7 +84,7 @@ export default function ContactInfo() {
           {openingHours.map((item) => (
             <div key={item.day} className="flex items-center gap-6">
               <span
-                className={`w-20 shrink-0 text-sm lg:text-[1.2rem] leading-8 font-medium ${
+                className={`w-20 lg:w-[6.5rem] shrink-0 text-sm lg:text-[1.2rem] leading-8 font-medium text-nowrap ${
                   item.closed ? "text-[#B61753]" : "text-gray-800"
                 }`}
               >

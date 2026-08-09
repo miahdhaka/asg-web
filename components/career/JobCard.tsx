@@ -48,7 +48,7 @@ export default function JobCard({ job }: { job: Job }) {
             Job Details
           </Link>
           <Link
-            href={`/careers/${job.id}`}
+            href={`/careers/${job.id}/apply`}
             data-label="Apply Now"
             className="primary-btn-flip-gradient w-[11.3333rem] shrink-0 cursor-pointer px-4 py-2 text-xs font-medium lg:px-[2rem] lg:py-[0.8rem] lg:text-[1rem]"
           >

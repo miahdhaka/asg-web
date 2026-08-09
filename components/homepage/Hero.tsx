@@ -1009,9 +1009,9 @@ export default function Hero() {
       ];
 
       const LAST = transitions.length; // deepest resting state
-      const TEMPO = 1.5; // > 1 → everything a touch slower than designed
-      const LAG_EXP = -0.35; // negative → further behind = shorter chase
-      const RATE_MAX = 3; // resting states per second — ceiling on a wild fling
+      const TEMPO = 2.8; // > 1 → everything a touch slower than designed
+      const LAG_EXP = -0.05; // negative → further behind = shorter chase
+      const RATE_MAX = 1.2; // resting states per second — ceiling on a wild fling
 
       const scrub = { pos: 0 }; // where the screen is
       let goal = 0; // where the gestures have asked it to be
@@ -1101,7 +1101,7 @@ export default function Hero() {
              then decays softly into the landing, instead of moving at one
              flat mechanical rate — that soft settle is what reads as an
              unhurried, expensive scroll */
-          ease: "power1.out",
+          ease: "power3.out",
           onUpdate: render,
           onComplete: () => {
             scrub.pos = goal;
@@ -1147,6 +1147,11 @@ export default function Hero() {
          prevented. */
       const routeGesture = (dir: number, fire: boolean): boolean => {
         if (!dir) return false;
+
+        // At the last step and scrolling down? Allow native scrolling to footer
+        if (dir > 0 && step === LAST) {
+          return false;
+        }
 
         /* Fade-chain zone: a down-gesture on a settled section dissolves it
            into the next one pinned beneath it */
