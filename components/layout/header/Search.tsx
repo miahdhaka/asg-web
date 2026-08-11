@@ -129,7 +129,7 @@ export default function Search({ onOpenChange }: SearchProps) {
           {/* Search bar — half the page width on desktop */}
           <div className="w-full lg:w-1/2">
             <div className="input-gradient-border-hover bg-gray-50">
-              <div className="flex h-11 items-stretch lg:h-[3.6667rem]">
+              <div className="flex h-12 items-stretch lg:h-[4rem]">
                 {/* Input area */}
                 <div className="flex flex-1 items-center gap-2 px-3.5 lg:gap-[0.6667rem] lg:px-[1.1667rem]">
                   <Image
@@ -165,7 +165,7 @@ export default function Search({ onOpenChange }: SearchProps) {
                 {/* Gradient search button */}
                 <button
                   type="button"
-                  className="group relative flex items-center justify-center gap-1 lg:gap-[0.3333rem] text-sm lg:text-[1.1667rem] text-white cursor-pointer bg-[image:var(--primary-gradient)] px-5 lg:px-[1.6667rem] transition-all duration-300 ease-out"
+                  className="group relative flex h-full shrink-0 items-center justify-center gap-1 lg:gap-[0.3333rem] text-sm lg:text-[1.1667rem] text-white cursor-pointer bg-[image:var(--primary-gradient)] px-5 lg:px-[1.6667rem] transition-all duration-300 ease-out"
                 >
                   {/* Shine sweep */}
                   <span

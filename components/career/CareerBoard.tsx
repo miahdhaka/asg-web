@@ -40,7 +40,7 @@ export default function CareerBoard() {
   return (
     <section id="career-board" className="bg-white">
       {/* Heading + search controls */}
-      <div className="w-full max-w-[70rem] mx-auto pt-10 lg:pt-[3.3333rem] px-4 sm:px-8">
+      <div className="relative z-10 w-full max-w-[70rem] mx-auto pt-10 lg:pt-[3.3333rem] px-4 sm:px-8">
         <h2 className="text-center font-test-tiempos-fine text-neutral-800 text-2xl sm:text-3xl lg:text-[2.5rem] lg:leading-[3rem]">
           AVAILABLE JOBS - {filtered.length}
         </h2>

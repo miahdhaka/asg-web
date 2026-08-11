@@ -1,51 +1,36 @@
 "use client";
 
-import React, { useState, useRef, useCallback } from "react";
-import { X, Upload as UploadIcon } from "lucide-react";
-
-/* ------------------------------------------------------------------ */
-/*  Data                                                               */
-/* ------------------------------------------------------------------ */
+import React, { useRef, useState, useCallback, useLayoutEffect } from "react";
+import Image from "next/image";
+import gsap from "gsap";
+import {
+  AlertCircle,
+  Building2,
+  CalendarDays,
+  GraduationCap,
+  Link2,
+  Pencil,
+  Plus,
+  Search,
+  Trash2,
+  UploadCloud,
+  UserRound,
+} from "lucide-react";
 
 const COUNTRIES = [
-  { name: "Afghanistan", code: "+93", flag: "🇦🇫" },
-  { name: "Australia", code: "+61", flag: "🇦🇺" },
   { name: "Bangladesh", code: "+880", flag: "🇧🇩" },
-  { name: "Brazil", code: "+55", flag: "🇧🇷" },
+  { name: "India", code: "+91", flag: "🇮🇳" },
+  { name: "United States", code: "+1", flag: "🇺🇸" },
+  { name: "United Kingdom", code: "+44", flag: "🇬🇧" },
   { name: "Canada", code: "+1", flag: "🇨🇦" },
-  { name: "China", code: "+86", flag: "🇨🇳" },
+  { name: "Australia", code: "+61", flag: "🇦🇺" },
   { name: "Germany", code: "+49", flag: "🇩🇪" },
   { name: "France", code: "+33", flag: "🇫🇷" },
-  { name: "India", code: "+91", flag: "🇮🇳" },
-  { name: "Indonesia", code: "+62", flag: "🇮🇩" },
-  { name: "Italy", code: "+39", flag: "🇮🇹" },
   { name: "Japan", code: "+81", flag: "🇯🇵" },
-  { name: "Malaysia", code: "+60", flag: "🇲🇾" },
-  { name: "Mexico", code: "+52", flag: "🇲🇽" },
-  { name: "Netherlands", code: "+31", flag: "🇳🇱" },
-  { name: "New Zealand", code: "+64", flag: "🇳🇿" },
-  { name: "Nigeria", code: "+234", flag: "🇳🇬" },
-  { name: "Pakistan", code: "+92", flag: "🇵🇰" },
-  { name: "Philippines", code: "+63", flag: "🇵🇭" },
-  { name: "Russia", code: "+7", flag: "🇷🇺" },
-  { name: "Saudi Arabia", code: "+966", flag: "🇸🇦" },
   { name: "Singapore", code: "+65", flag: "🇸🇬" },
-  { name: "South Africa", code: "+27", flag: "🇿🇦" },
-  { name: "South Korea", code: "+82", flag: "🇰🇷" },
-  { name: "Spain", code: "+34", flag: "🇪🇸" },
-  { name: "Sri Lanka", code: "+94", flag: "🇱🇰" },
-  { name: "Sweden", code: "+46", flag: "🇸🇪" },
-  { name: "Thailand", code: "+66", flag: "🇹🇭" },
-  { name: "Turkey", code: "+90", flag: "🇹🇷" },
+  { name: "Malaysia", code: "+60", flag: "🇲🇾" },
   { name: "UAE", code: "+971", flag: "🇦🇪" },
-  { name: "United Kingdom", code: "+44", flag: "🇬🇧" },
-  { name: "United States", code: "+1", flag: "🇺🇸" },
-  { name: "Vietnam", code: "+84", flag: "🇻🇳" },
 ];
-
-/* ------------------------------------------------------------------ */
-/*  Types                                                              */
-/* ------------------------------------------------------------------ */
 
 interface Experience {
   id: number;
@@ -56,24 +41,34 @@ interface Experience {
   from: string;
   to: string;
   currentlyWorking: boolean;
+  saved: boolean;
 }
 
 interface Education {
   id: number;
   degree: string;
   institution: string;
+  location: string;
+  description: string;
   from: string;
   to: string;
+  currentlyAttending: boolean;
+  saved: boolean;
 }
 
-/* ------------------------------------------------------------------ */
-/*  Component                                                          */
-/* ------------------------------------------------------------------ */
-
-export default function CareerApplicationForm({ jobTitle }: { jobTitle: string }) {
-  let nextId = useRef(1);
-
-  /* --- form state --- */
+export default function CareerApplicationForm({
+  jobTitle,
+}: {
+  jobTitle: string;
+}) {
+  const nextId = useRef(2);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const expContainerRef = useRef<HTMLDivElement>(null);
+  const prevExpIdsRef = useRef<Set<number>>(new Set([1]));
+  const prevSavedRef = useRef<Set<number>>(new Set());
+  const eduContainerRef = useRef<HTMLDivElement>(null);
+  const prevEduIdsRef = useRef<Set<number>>(new Set([100]));
+  const prevEduSavedRef = useRef<Set<number>>(new Set());
   const [personal, setPersonal] = useState({
     firstName: "",
     lastName: "",
@@ -82,599 +77,878 @@ export default function CareerApplicationForm({ jobTitle }: { jobTitle: string }
     country: "",
     city: "",
   });
-  const [experiences, setExperiences] = useState<Experience[]>([]);
-  const [education, setEducation] = useState<Education[]>([]);
+
+  const [phoneCountry, setPhoneCountry] = useState(COUNTRIES[0]);
+  const [submitted, setSubmitted] = useState(false);
+  const [touched, setTouched] = useState<Set<string>>(new Set());
+  const [experiences, setExperiences] = useState<Experience[]>([
+    {
+      id: 1,
+      title: "",
+      company: "Amanat Shah Group A&S",
+      organization: "Amanat Shah Group A&S",
+      description: "",
+      from: "",
+      to: "",
+      currentlyWorking: false,
+      saved: false,
+    },
+  ]);
+
+  const [education, setEducation] = useState<Education[]>([
+    {
+      id: 100,
+      degree: "",
+      institution: "",
+      location: "",
+      description: "",
+      from: "",
+      to: "",
+      currentlyAttending: false,
+      saved: false,
+    },
+  ]);
   const [linkedin, setLinkedin] = useState("");
   const [fileName, setFileName] = useState("");
   const [dragOver, setDragOver] = useState(false);
-  const fileRef = useRef<HTMLInputElement>(null);
 
-  /* --- handlers --- */
-  const handlePersonal = (field: string, value: string) =>
-    setPersonal((p) => ({ ...p, [field]: value }));
+  // Animate only newly added experience entries
+  useLayoutEffect(() => {
+    if (!expContainerRef.current) return;
+    const currentIds = new Set(experiences.map((e) => e.id));
+    const newIds = [...currentIds].filter((id) => !prevExpIdsRef.current.has(id));
+    prevExpIdsRef.current = currentIds;
+    if (newIds.length === 0) return;
+    const newEls = newIds
+      .map((id) => expContainerRef.current?.querySelector(`[data-exp-entry][data-exp-id="${id}"]`))
+      .filter(Boolean) as Element[];
+    if (newEls.length === 0) return;
+    gsap.fromTo(newEls, { opacity: 0, y: -24 }, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" });
+  }, [experiences]);
 
-  const addExperience = () =>
+  // Animate content transitions (form ↔ overview)
+  useLayoutEffect(() => {
+    if (!expContainerRef.current) return;
+    const currentSaved = new Set(experiences.filter((e) => e.saved).map((e) => e.id));
+    const newlySaved = [...currentSaved].filter((id) => !prevSavedRef.current.has(id));
+    const newlyUnsaved = [...prevSavedRef.current].filter((id) => !currentSaved.has(id));
+    prevSavedRef.current = currentSaved;
+    const idsToAnimate = new Set([...newlySaved, ...newlyUnsaved]);
+    if (idsToAnimate.size === 0) return;
+    idsToAnimate.forEach((id) => {
+      const entry = expContainerRef.current?.querySelector(`[data-exp-id="${id}"]`);
+      if (!entry) return;
+      const content = newlySaved.includes(id)
+        ? entry.querySelector("[data-exp-overview]")
+        : entry.querySelector("[data-exp-form]");
+      if (content) {
+        gsap.fromTo(content, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" });
+      }
+    });
+  }, [experiences]);
+
+  // Animate only newly added education entries
+  useLayoutEffect(() => {
+    if (!eduContainerRef.current) return;
+    const currentIds = new Set(education.map((e) => e.id));
+    const newIds = [...currentIds].filter((id) => !prevEduIdsRef.current.has(id));
+    prevEduIdsRef.current = currentIds;
+    if (newIds.length === 0) return;
+    const newEls = newIds
+      .map((id) => eduContainerRef.current?.querySelector(`[data-edu-entry][data-edu-id="${id}"]`))
+      .filter(Boolean) as Element[];
+    if (newEls.length === 0) return;
+    gsap.fromTo(newEls, { opacity: 0, y: -24 }, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" });
+  }, [education]);
+
+  // Animate education content transitions (form ↔ overview)
+  useLayoutEffect(() => {
+    if (!eduContainerRef.current) return;
+    const currentSaved = new Set(education.filter((e) => e.saved).map((e) => e.id));
+    const newlySaved = [...currentSaved].filter((id) => !prevEduSavedRef.current.has(id));
+    const newlyUnsaved = [...prevEduSavedRef.current].filter((id) => !currentSaved.has(id));
+    prevEduSavedRef.current = currentSaved;
+    const idsToAnimate = new Set([...newlySaved, ...newlyUnsaved]);
+    if (idsToAnimate.size === 0) return;
+    idsToAnimate.forEach((id) => {
+      const entry = eduContainerRef.current?.querySelector(`[data-edu-id="${id}"]`);
+      if (!entry) return;
+      const content = newlySaved.includes(id)
+        ? entry.querySelector("[data-edu-overview]")
+        : entry.querySelector("[data-edu-form]");
+      if (content) {
+        gsap.fromTo(content, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" });
+      }
+    });
+  }, [education]);
+
+  const updatePersonal = (
+    field: keyof typeof personal,
+    value: string
+  ) => {
+    setPersonal((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const addExperience = () => {
     setExperiences((prev) => [
       ...prev,
-      { id: nextId.current++, title: "", company: "", organization: "", description: "", from: "", to: "", currentlyWorking: false },
+      {
+        id: nextId.current++,
+        title: "",
+        company: "",
+        organization: "",
+        description: "",
+        from: "",
+        to: "",
+        currentlyWorking: false,
+        saved: false,
+      },
     ]);
+  };
 
-  const updateExperience = (id: number, field: keyof Experience, value: string | boolean) =>
-    setExperiences((prev) => prev.map((e) => (e.id === id ? { ...e, [field]: value } : e)));
+  const saveExperience = (id: number) => {
+    if (!expContainerRef.current) {
+      setExperiences((prev) => prev.map((item) => item.id === id ? { ...item, saved: true } : item));
+      return;
+    }
+    const entry = expContainerRef.current.querySelector(`[data-exp-id="${id}"]`);
+    const form = entry?.querySelector("[data-exp-form]");
+    if (!form) {
+      setExperiences((prev) => prev.map((item) => item.id === id ? { ...item, saved: true } : item));
+      return;
+    }
+    gsap.to(form, {
+      opacity: 0,
+      duration: 0.3,
+      ease: "power2.in",
+      onComplete: () =>
+        setExperiences((prev) => prev.map((item) => (item.id === id ? { ...item, saved: true } : item))),
+    });
+  };
 
-  const removeExperience = (id: number) =>
-    setExperiences((prev) => prev.filter((e) => e.id !== id));
+  const editExperience = (id: number) => {
+    if (!expContainerRef.current) {
+      setExperiences((prev) => prev.map((item) => item.id === id ? { ...item, saved: false } : item));
+      return;
+    }
+    const entry = expContainerRef.current.querySelector(`[data-exp-id="${id}"]`);
+    const overview = entry?.querySelector("[data-exp-overview]");
+    if (!overview) {
+      setExperiences((prev) => prev.map((item) => (item.id === id ? { ...item, saved: false } : item)));
+      return;
+    }
+    gsap.to(overview, {
+      opacity: 0,
+      duration: 0.3,
+      ease: "power2.in",
+      onComplete: () =>
+        setExperiences((prev) => prev.map((item) => (item.id === id ? { ...item, saved: false } : item))),
+    });
+  };
 
-  const addEducation = () =>
+  const updateExperience = (
+    id: number,
+    field: keyof Experience,
+    value: string | boolean
+  ) => {
+    setExperiences((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              [field]: value,
+            }
+          : item
+      )
+    );
+  };
+
+  const removeExperience = (id: number) => {
+    if (!expContainerRef.current) {
+      setExperiences((prev) => prev.filter((item) => item.id !== id));
+      return;
+    }
+    const el = expContainerRef.current.querySelector(`[data-exp-id="${id}"]`);
+    if (!el) {
+      setExperiences((prev) => prev.filter((item) => item.id !== id));
+      return;
+    }
+    gsap.to(el, {
+      opacity: 0,
+      height: 0,
+      marginTop: 0,
+      paddingTop: 0,
+      duration: 0.45,
+      ease: "power3.inOut",
+      onComplete: () => setExperiences((prev) => prev.filter((item) => item.id !== id)),
+    });
+  };
+
+  const addEducation = () => {
     setEducation((prev) => [
       ...prev,
-      { id: nextId.current++, degree: "", institution: "", from: "", to: "" },
+      {
+        id: nextId.current++,
+        degree: "",
+        institution: "",
+        location: "",
+        description: "",
+        from: "",
+        to: "",
+        currentlyAttending: false,
+        saved: false,
+      },
     ]);
-
-  const updateEducation = (id: number, field: keyof Education, value: string) =>
-    setEducation((prev) => prev.map((e) => (e.id === id ? { ...e, [field]: value } : e)));
-
-  const removeEducation = (id: number) =>
-    setEducation((prev) => prev.filter((e) => e.id !== id));
-
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setDragOver(false);
-    const file = e.dataTransfer.files[0];
-    if (file) setFileName(file.name);
-  }, []);
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) setFileName(file.name);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Submitting:", { personal, experiences, education, linkedin, fileName });
+  const saveEducation = (id: number) => {
+    if (!eduContainerRef.current) {
+      setEducation((prev) => prev.map((item) => item.id === id ? { ...item, saved: true } : item));
+      return;
+    }
+    const entry = eduContainerRef.current.querySelector(`[data-edu-id="${id}"]`);
+    const form = entry?.querySelector("[data-edu-form]");
+    if (!form) {
+      setEducation((prev) => prev.map((item) => item.id === id ? { ...item, saved: true } : item));
+      return;
+    }
+    gsap.to(form, {
+      opacity: 0,
+      duration: 0.3,
+      ease: "power2.in",
+      onComplete: () =>
+        setEducation((prev) => prev.map((item) => (item.id === id ? { ...item, saved: true } : item))),
+    });
   };
 
-  /* --- shared styles --- */
-  const inputCls =
-    "w-full bg-white border border-neutral-200 px-3 py-2 text-sm text-neutral-800 placeholder:text-neutral-400 focus:border-neutral-300 focus:outline-none";
-  const labelCls = "block text-sm font-medium text-neutral-700 mb-1";
+  const editEducation = (id: number) => {
+    if (!eduContainerRef.current) {
+      setEducation((prev) => prev.map((item) => item.id === id ? { ...item, saved: false } : item));
+      return;
+    }
+    const entry = eduContainerRef.current.querySelector(`[data-edu-id="${id}"]`);
+    const overview = entry?.querySelector("[data-edu-overview]");
+    if (!overview) {
+      setEducation((prev) => prev.map((item) => (item.id === id ? { ...item, saved: false } : item)));
+      return;
+    }
+    gsap.to(overview, {
+      opacity: 0,
+      duration: 0.3,
+      ease: "power2.in",
+      onComplete: () =>
+        setEducation((prev) => prev.map((item) => (item.id === id ? { ...item, saved: false } : item))),
+    });
+  };
 
-  /* ================================================================== */
-  /*  RENDER                                                            */
-  /* ================================================================== */
+  const updateEducation = (
+    id: number,
+    field: keyof Education,
+    value: string | boolean
+  ) => {
+    setEducation((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              [field]: value,
+            }
+          : item
+      )
+    );
+  };
+
+  const removeEducation = (id: number) => {
+    if (!eduContainerRef.current) {
+      setEducation((prev) => prev.filter((item) => item.id !== id));
+      return;
+    }
+    const el = eduContainerRef.current.querySelector(`[data-edu-id="${id}"]`);
+    if (!el) {
+      setEducation((prev) => prev.filter((item) => item.id !== id));
+      return;
+    }
+    gsap.to(el, {
+      opacity: 0,
+      height: 0,
+      marginTop: 0,
+      paddingTop: 0,
+      duration: 0.45,
+      ease: "power3.inOut",
+      onComplete: () => setEducation((prev) => prev.filter((item) => item.id !== id)),
+    });
+  };
+
+  const handleFile = (file: File | undefined) => {
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      alert("File size must be less than 10MB.");
+      return;
+    }
+
+    setFileName(file.name);
+  };
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      setDragOver(false);
+
+      handleFile(e.dataTransfer.files?.[0]);
+    },
+    []
+  );
+
+  const handleFileSelect = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    handleFile(e.target.files?.[0]);
+  };
+
+  const handleSubmit = (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
+    setSubmitted(true);
+
+    console.log({
+      personal,
+      phoneCountry,
+      experiences,
+      education,
+      linkedin,
+      fileName,
+    });
+  };
+
+  const hasUnsavedExp = experiences.some((e) => !e.saved);
+  const hasUnsavedEdu = education.some((e) => !e.saved);
+
+  const calcDuration = (from: string, to: string, currentlyWorking: boolean) => {
+    if (!from) return "";
+    const start = new Date(from);
+    const end = currentlyWorking ? new Date() : to ? new Date(to) : new Date();
+    const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+    const yrs = Math.floor(months / 12);
+    const mos = months % 12;
+    if (yrs === 0) return `${mos} mo`;
+    if (mos === 0) return `${yrs} yr`;
+    return `${yrs} yr ${mos} mo`;
+  };
+
+  const formatDate = (d: string) => {
+    if (!d) return "";
+    return new Date(d).toLocaleDateString("en-US", { month: "short", year: "numeric" });
+  };
+
+  const inputClass = "h-12 w-full bg-white px-4 text-sm text-[#555] outline-none placeholder:text-[#b5b7b9]";
+
+  const labelClass = "mb-1.5 block text-xs lg:text-[1.2rem] text-neutral-800";
+
+  const showError = (key: string, value: string, required = true) =>
+    required && (submitted || touched.has(key)) && !value.trim();
+
+  const renderField = (
+    key: string,
+    label: string,
+    value: string,
+    onChange: (val: string) => void,
+    opts?: { type?: string; placeholder?: string; required?: boolean; disabled?: boolean; children?: React.ReactNode }
+  ) => {
+    const isRequired = opts?.required ?? true;
+    const isDisabled = opts?.disabled ?? false;
+    const hasError = showError(key, value, isRequired);
+    return (
+      <div>
+        <label className={labelClass}>
+          {label} {isRequired && <span className="text-red-500">*</span>}
+        </label>
+        <div
+          className={`${!isDisabled ? "input-gradient-border-hover" : ""} bg-white ${
+            hasError ? "input-gradient-border-error" : ""
+          }`}
+        >
+          {opts?.children ?? (
+            <input
+              required={isRequired}
+              type={opts?.type ?? "text"}
+              value={value}
+              onChange={(e) => onChange(e.target.value)}
+              onBlur={() => setTouched((prev) => new Set(prev).add(key))}
+              placeholder={opts?.placeholder}
+              className={inputClass}
+            />
+          )}
+        </div>
+        {hasError && (
+          <p className="mt-1.5 flex items-center gap-1 text-xs lg:text-[1rem] text-red-500">
+            <AlertCircle className="size-3.5 lg:size-4" />
+            Please provide your {label.toLowerCase()}
+          </p>
+        )}
+      </div>
+    );
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col">
-      {/* ───────── PAGE TITLE ───────── */}
-      <h1 className="font-test-tiempos-fine text-2xl lg:text-[2rem] font-medium text-neutral-900">{jobTitle}</h1>
+    <div>
+      <form
+        onSubmit={handleSubmit}
+        className="w-full px-4 pb-[70px] md:px-0"
+      >
+        <h1 className="font-test-tiempos-fine text-xl lg:text-[2rem] font-medium text-neutral-800">{jobTitle}</h1>
 
-      {/* ───────── LINKEDIN BANNER ───────── */}
-      <div className="mt-8 flex items-center justify-between gap-4 rounded bg-blue-50 border border-blue-100 px-4 py-3">
-        <div className="flex items-center gap-3">
-          {/* LinkedIn icon */}
-          <svg className="size-6 shrink-0" viewBox="0 0 24 24" fill="#0A66C2">
-            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-          </svg>
+        <div className="flex items-center justify-between bg-[#EAF4FF] rounded px-4 lg:px-[1.5rem] py-[1.4rem] mt-[2rem]">
           <div>
-            <p className="text-sm font-medium text-neutral-800">Apply with LinkedIn</p>
-            <p className="text-xs text-neutral-500">
-              Fill your information automatically from your LinkedIn profile.
+            <p className="text-sm lg:text-[1.3rem] text-neutral-800 font-medium">
+              Autofill with LinkedIn
             </p>
+
+            <p className="mt-1 text-xs lg:text-[1rem] text-neutral-500">Fills your name, work history, and education. You can edit anything after.</p>
           </div>
-        </div>
-        <button
-          type="button"
-          className="shrink-0 rounded bg-[#0A66C2] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#004182]"
-        >
-          Apply With LinkedIn
-        </button>
-      </div>
 
-      {/* ════════════════════════════════════════════════════════════
-          PERSONAL INFORMATION
-         ════════════════════════════════════════════════════════════ */}
-      <div className="mt-8 border border-neutral-200">
-        {/* Section header */}
-        <div className="border-b border-neutral-200 bg-neutral-50 px-4 py-3">
-          <h2 className="text-sm font-semibold text-neutral-800">Personal Information</h2>
-        </div>
-
-        <div className="p-4">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {/* First Name */}
-            <div>
-              <label className={labelCls}>
-                First Name <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="First Name"
-                value={personal.firstName}
-                onChange={(e) => handlePersonal("firstName", e.target.value)}
-                className={inputCls}
-              />
-            </div>
-
-            {/* Last Name */}
-            <div>
-              <label className={labelCls}>
-                Last Name <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="Last Name"
-                value={personal.lastName}
-                onChange={(e) => handlePersonal("lastName", e.target.value)}
-                className={inputCls}
-              />
-            </div>
-
-            {/* Email */}
-            <div>
-              <label className={labelCls}>
-                Email address <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="email"
-                required
-                placeholder="Email address"
-                value={personal.email}
-                onChange={(e) => handlePersonal("email", e.target.value)}
-                className={inputCls}
-              />
-            </div>
-
-            {/* Phone */}
-            <div>
-              <label className={labelCls}>
-                Phone Number <span className="text-red-500">*</span>
-              </label>
-              <div className="flex">
-                <select
-                  value={personal.country}
-                  onChange={(e) => handlePersonal("phone", e.target.value)}
-                  className="w-20 shrink-0 rounded-l border border-neutral-200 bg-white py-2 pl-2 pr-1 text-sm text-neutral-700 focus:outline-none"
-                >
-                  <option value="">Code</option>
-                  {COUNTRIES.map((c) => (
-                    <option key={c.code + c.name} value={c.code}>
-                      {c.flag} {c.code}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  type="tel"
-                  required
-                  placeholder="Phone Number"
-                  value={personal.phone}
-                  onChange={(e) => handlePersonal("phone", e.target.value)}
-                  className={`${inputCls} rounded-l-none`}
-                />
-              </div>
-            </div>
-
-            {/* Country / Region */}
-            <div>
-              <label className={labelCls}>
-                Country/Region <span className="text-red-500">*</span>
-              </label>
-              <select
-                required
-                value={personal.country}
-                onChange={(e) => handlePersonal("country", e.target.value)}
-                className={inputCls}
-              >
-                <option value="">Select Country/Region</option>
-                {COUNTRIES.map((c) => (
-                  <option key={c.name} value={c.name}>
-                    {c.flag} {c.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* City */}
-            <div>
-              <label className={labelCls}>
-                City <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="City"
-                value={personal.city}
-                onChange={(e) => handlePersonal("city", e.target.value)}
-                className={inputCls}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ════════════════════════════════════════════════════════════
-          EXPERIENCE
-         ════════════════════════════════════════════════════════════ */}
-      <div className="mt-8 border border-neutral-200">
-        {/* Section header */}
-        <div className="flex items-center justify-between border-b border-neutral-200 bg-neutral-50 px-4 py-3">
-          <div className="flex items-center gap-2">
-            {/* Briefcase icon */}
-            <svg
-              className="size-4 text-neutral-500"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-            </svg>
-            <h2 className="text-sm font-semibold text-neutral-800">Experience</h2>
-          </div>
           <button
             type="button"
-            onClick={addExperience}
-            className="text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-900"
+            className="group relative flex h-12 items-center gap-1.5 bg-[#0A66C2] px-6 text-sm lg:text-[1.1667rem] text-white transition-all duration-300 ease-out cursor-pointer"
           >
-            + Add
+            {/* Shine sweep */}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-y-0 -left-[60%] w-[40%] -skew-x-[20deg] bg-white/30 blur-[6px] transition-transform duration-700 ease-out group-hover:translate-x-[460%]"
+            />
+
+            <span className="flex size-6 items-center justify-center rounded-lg bg-white">
+              <Image src="/icons/social-icon/linked-in-blue.png" alt="" width={12} height={12} quality={100} className="size-4" />
+            </span>
+
+            Apply With LinkedIn
           </button>
         </div>
 
-        {/* Experience entries */}
-        {experiences.length === 0 ? (
-          <div className="px-4 py-8 text-center text-sm text-neutral-400">
-            No experience added yet. Click &ldquo;+ Add&rdquo; to add your work experience.
+        {/* Personal Information */}
+        <section className=" bg-gray-50 px-8 py-8 mt-8">
+          <h2 className="font-test-tiempos-fine text-base lg:text-[1.5rem] font-medium text-neutral-800">Personal information</h2>
+
+          <div className="grid grid-cols-1 gap-x-4 gap-y-5 md:grid-cols-2 mt-12">
+            {renderField("firstName", "First name", personal.firstName, (v) => updatePersonal("firstName", v), { placeholder: "Enter your first name" })}
+            {renderField("lastName", "Last name", personal.lastName, (v) => updatePersonal("lastName", v), { placeholder: "Enter your last name" })}
+            {renderField("email", "Email address", personal.email, (v) => updatePersonal("email", v), { type: "email", placeholder: "Enter your email address" })}
+            {renderField("phone", "Phone Number", personal.phone, (v) => updatePersonal("phone", v), { type: "tel", placeholder: "01XXXXXXXXX" })}
+            {renderField("country", "Country/Region", personal.country, (v) => updatePersonal("country", v), { placeholder: "Bangladesh" })}
+            {renderField("city", "City", personal.city, (v) => updatePersonal("city", v), { placeholder: "Dhaka" })}
           </div>
-        ) : (
-          <div className="divide-y divide-neutral-100">
-            {experiences.map((exp) => (
-              <div key={exp.id} className="p-4">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  {/* Title */}
-                  <div>
-                    <label className={labelCls}>
-                      Title <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Title"
-                      value={exp.title}
-                      onChange={(e) => updateExperience(exp.id, "title", e.target.value)}
-                      className={inputCls}
-                    />
+        </section>
+
+        <section className="bg-gray-50 px-8 py-8 mt-8">
+          <div className="flex h-14 items-center justify-between border-b border-gray-200 pb-7">
+            <div className="flex items-center gap-2">
+              <Building2
+                size={24}
+                strokeWidth={1.4}
+                className="text-[#303438]"
+              />
+
+              <h2 className="font-test-tiempos-fine text-base lg:text-[1.5rem] font-medium text-neutral-800">Experience</h2>
+            </div>
+
+            <button
+              type="button"
+              onClick={addExperience}
+              disabled={hasUnsavedExp}
+              data-label="Add"
+              className={`flex h-8 cursor-pointer items-center gap-1.5 px-3 text-sm transition-all duration-300 ${
+                hasUnsavedExp
+                  ? "cursor-not-allowed bg-[#eef0f1] text-[#c8ccd0]"
+                  : "save-btn text-white"
+              }`}
+            >
+              <Plus size={14} />
+              Add
+            </button>
+          </div>
+
+          <div ref={expContainerRef}>
+          {[...experiences].sort((a, b) => Number(a.saved) - Number(b.saved)).map((experience, index) => (
+            <div
+              key={experience.id}
+              data-exp-entry
+              data-exp-id={experience.id}
+              className={`mt-6 ${index > 0 ? "border-t border-gray-200 pt-6" : ""}`}
+            >
+              {experience.saved ? (
+                /* ---- Overview (collapsed) ---- */
+                <div data-exp-overview className="relative">
+                  <div className="flex items-start justify-between">
+                    <div className="flex flex-col gap-1.5">
+                      <h3 className="font-test-tiempos-fine text-base lg:text-[1.3rem] font-medium text-neutral-800">
+                        {experience.title || "Untitled"}
+                      </h3>
+                      <p className="text-xs lg:text-[1rem] text-neutral-500">
+                        {experience.company || "Company"} <span className="mx-1 inline-block size-1.5 rounded-full bg-neutral-600 align-middle" /> {experience.from ? `${formatDate(experience.from)} – ${experience.currentlyWorking ? "Present" : formatDate(experience.to)}` : "Dates not set"}{experience.from ? ` (${calcDuration(experience.from, experience.to, experience.currentlyWorking)})` : ""}
+                      </p>
+                      {experience.organization && (
+                        <p className="text-xs lg:text-[1rem] text-neutral-500">{experience.organization}</p>
+                      )}
+                      {experience.description && (
+                        <p className="mt-1 text-xs lg:text-[1rem] text-neutral-400 line-clamp-2 max-w-[40rem]">{experience.description}</p>
+                      )}
+                    </div>
+                    <div className="flex shrink-0 items-center gap-2">
+                      <button type="button" onClick={() => editExperience(experience.id)} className="cursor-pointer text-neutral-400 transition-colors duration-300 hover:text-neutral-700">
+                        <Pencil size={16} />
+                      </button>
+                      <button type="button" onClick={() => removeExperience(experience.id)} className="cursor-pointer text-neutral-400 transition-colors duration-300 hover:text-red-500">
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                /* ---- Edit form (open) ---- */
+                <div data-exp-form>
+                  <div className="grid grid-cols-1 gap-x-4 gap-y-5 md:grid-cols-2">
+                    {renderField(`exp-${experience.id}-title`, "Title", experience.title, (v) => updateExperience(experience.id, "title", v), { placeholder: "UI" })}
+                    {renderField(`exp-${experience.id}-company`, "Company", experience.company, (v) => updateExperience(experience.id, "company", v), { placeholder: "Amanat Shah Group A&S" })}
+                    {renderField(`exp-${experience.id}-org`, "Office location", experience.organization, (v) => updateExperience(experience.id, "organization", v), { placeholder: "Amanat Shah Group A&S", required: false })}
+
+                    <div className="md:col-span-2">
+                      <label className={labelClass}>Description</label>
+                      <div className="input-gradient-border-hover bg-white">
+                        <textarea
+                          value={experience.description}
+                          onChange={(e) => updateExperience(experience.id, "description", e.target.value)}
+                          placeholder="Subject"
+                          className="h-20 w-full resize-none bg-white px-4 py-2 text-sm text-[#555] outline-none placeholder:text-[#b5b7b9]"
+                        />
+                      </div>
+                    </div>
+
+                    {renderField(`exp-${experience.id}-from`, "From", experience.from, (v) => updateExperience(experience.id, "from", v), {
+                      children: (
+                        <div className="relative">
+                          <CalendarDays size={14} strokeWidth={1.4} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#999]" />
+                          <input required type="date" value={experience.from} onChange={(e) => updateExperience(experience.id, "from", e.target.value)} onBlur={() => setTouched((prev) => new Set(prev).add(`exp-${experience.id}-from`))} className={`${inputClass} pl-7`} />
+                        </div>
+                      ),
+                    })}
+
+                    {renderField(`exp-${experience.id}-to`, "To", experience.to, (v) => updateExperience(experience.id, "to", v), {
+                      required: !experience.currentlyWorking,
+                      disabled: experience.currentlyWorking,
+                      children: (
+                        <div className="relative">
+                          <CalendarDays size={14} strokeWidth={1.4} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#999]" />
+                          <input required={!experience.currentlyWorking} disabled={experience.currentlyWorking} type="date" value={experience.to} onChange={(e) => updateExperience(experience.id, "to", e.target.value)} onBlur={() => setTouched((prev) => new Set(prev).add(`exp-${experience.id}-to`))} className={`${inputClass} pl-7 disabled:bg-[#f1f2f3] disabled:cursor-not-allowed`} />
+                        </div>
+                      ),
+                    })}
                   </div>
 
-                  {/* Company */}
-                  <div>
-                    <label className={labelCls}>
-                      Company <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Company"
-                      value={exp.company}
-                      onChange={(e) => updateExperience(exp.id, "company", e.target.value)}
-                      className={inputCls}
-                    />
-                  </div>
-
-                  {/* Organization */}
-                  <div className="sm:col-span-2">
-                    <label className={labelCls}>Organization</label>
-                    <input
-                      type="text"
-                      placeholder="Amanat Shah Group ASG"
-                      value={exp.organization}
-                      onChange={(e) => updateExperience(exp.id, "organization", e.target.value)}
-                      className={inputCls}
-                    />
-                  </div>
-
-                  {/* Description */}
-                  <div className="sm:col-span-2">
-                    <label className={labelCls}>Description</label>
-                    <textarea
-                      placeholder="Describe your role and responsibilities..."
-                      rows={3}
-                      value={exp.description}
-                      onChange={(e) => updateExperience(exp.id, "description", e.target.value)}
-                      className={`${inputCls} resize-none`}
-                    />
-                  </div>
-
-                  {/* From */}
-                  <div>
-                    <label className={labelCls}>
-                      From <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="date"
-                      required
-                      value={exp.from}
-                      onChange={(e) => updateExperience(exp.id, "from", e.target.value)}
-                      className={inputCls}
-                    />
-                  </div>
-
-                  {/* To */}
-                  <div>
-                    <label className={labelCls}>
-                      To <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="date"
-                      required
-                      disabled={exp.currentlyWorking}
-                      value={exp.to}
-                      onChange={(e) => updateExperience(exp.id, "to", e.target.value)}
-                      className={`${inputCls} disabled:cursor-not-allowed disabled:bg-neutral-50`}
-                    />
-                  </div>
-
-                  {/* Currently working checkbox */}
-                  <div className="flex items-center gap-2 sm:col-span-2">
-                    <input
-                      type="checkbox"
-                      id={`current-${exp.id}`}
-                      checked={exp.currentlyWorking}
-                      onChange={(e) =>
-                        updateExperience(exp.id, "currentlyWorking", e.target.checked)
-                      }
-                      className="size-4 rounded border-neutral-300 accent-neutral-700"
-                    />
-                    <label
-                      htmlFor={`current-${exp.id}`}
-                      className="text-sm text-neutral-600"
-                    >
+                  <div className="mt-5 flex items-center justify-between">
+                    <label className="flex cursor-pointer items-center gap-2 text-sm text-[#686c70]">
+                      <input type="checkbox" checked={experience.currentlyWorking} onChange={(e) => updateExperience(experience.id, "currentlyWorking", e.target.checked)} className="peer sr-only" />
+                      <span className={`flex size-4.5 items-center justify-center rounded-sm border-2 transition-all duration-300 ${experience.currentlyWorking ? "border-transparent [background-image:var(--primary-gradient)]" : "border-[#c8ccd0]"}`}>
+                        {experience.currentlyWorking && (
+                          <svg className="size-3 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        )}
+                      </span>
                       I currently work here
                     </label>
-                  </div>
 
-                  {/* Actions */}
-                  <div className="flex items-center justify-end gap-2 sm:col-span-2">
-                    <button
-                      type="button"
-                      onClick={() => removeExperience(exp.id)}
-                      className="rounded border border-neutral-200 bg-white px-4 py-1.5 text-sm text-neutral-600 transition-colors hover:bg-neutral-50"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      className="rounded bg-neutral-800 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-neutral-900"
-                    >
-                      Save
-                    </button>
+                    <div className="flex items-center gap-3">
+                      <button type="button" onClick={() => removeExperience(experience.id)} className="h-9 text-sm text-neutral-500 cursor-pointer bg-gray-200 hover:bg-gray-300 transition-all duration-300 ease-out px-6">
+                        Cancel
+                      </button>
+                      <button type="button" data-label="Save" onClick={() => saveExperience(experience.id)} className="save-btn h-9 text-sm cursor-pointer px-6">
+                        Save
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              )}
+            </div>
+          ))}
           </div>
-        )}
-      </div>
 
-      {/* ════════════════════════════════════════════════════════════
-          EDUCATION
-         ════════════════════════════════════════════════════════════ */}
-      <div className="mt-8 border border-neutral-200">
-        {/* Section header */}
-        <div className="flex items-center justify-between border-b border-neutral-200 bg-neutral-50 px-4 py-3">
-          <div className="flex items-center gap-2">
-            {/* Graduation cap icon */}
-            <svg
-              className="size-4 text-neutral-500"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
+        </section>
+
+        {/* ======================================================== */}
+        {/* EDUCATION                                                */}
+        {/* ======================================================== */}
+
+        <section className="bg-gray-50 px-8 py-8 mt-8">
+          <div className="flex h-14 items-center justify-between border-b border-gray-200 pb-7">
+            <div className="flex items-center gap-2">
+              <GraduationCap
+                size={24}
+                strokeWidth={1.4}
+                className="text-[#303438]"
+              />
+
+              <h2 className="font-test-tiempos-fine text-base lg:text-[1.5rem] font-medium text-neutral-800">Education</h2>
+            </div>
+
+            <button
+              type="button"
+              onClick={addEducation}
+              disabled={hasUnsavedEdu}
+              data-label="Add"
+              className={`flex h-8 cursor-pointer items-center gap-1.5 px-3 text-sm transition-all duration-300 ${
+                hasUnsavedEdu
+                  ? "cursor-not-allowed bg-[#eef0f1] text-[#c8ccd0]"
+                  : "save-btn text-white"
+              }`}
             >
-              <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-              <path d="M6 12v5c0 1.657 2.686 3 6 3s6-1.343 6-3v-5" />
-            </svg>
-            <h2 className="text-sm font-semibold text-neutral-800">Education</h2>
+              <Plus size={14} />
+              Add
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={addEducation}
-            className="text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-900"
-          >
-            + Add
-          </button>
-        </div>
 
-        {/* Education entries */}
-        {education.length === 0 ? (
-          <div className="px-4 py-8 text-center text-sm text-neutral-400">
-            No education added yet. Click &ldquo;+ Add&rdquo; to add your education.
-          </div>
-        ) : (
-          <div className="divide-y divide-neutral-100">
-            {education.map((edu) => (
-              <div key={edu.id} className="p-4">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  {/* Degree */}
-                  <div>
-                    <label className={labelCls}>
-                      Degree <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Degree"
-                      value={edu.degree}
-                      onChange={(e) => updateEducation(edu.id, "degree", e.target.value)}
-                      className={inputCls}
-                    />
-                  </div>
-
-                  {/* Institution */}
-                  <div>
-                    <label className={labelCls}>
-                      Institution <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Institution"
-                      value={edu.institution}
-                      onChange={(e) => updateEducation(edu.id, "institution", e.target.value)}
-                      className={inputCls}
-                    />
-                  </div>
-
-                  {/* From */}
-                  <div>
-                    <label className={labelCls}>
-                      From <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="date"
-                      required
-                      value={edu.from}
-                      onChange={(e) => updateEducation(edu.id, "from", e.target.value)}
-                      className={inputCls}
-                    />
-                  </div>
-
-                  {/* To */}
-                  <div>
-                    <label className={labelCls}>
-                      To <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="date"
-                      required
-                      value={edu.to}
-                      onChange={(e) => updateEducation(edu.id, "to", e.target.value)}
-                      className={inputCls}
-                    />
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex items-center justify-end gap-2 sm:col-span-2">
-                    <button
-                      type="button"
-                      onClick={() => removeEducation(edu.id)}
-                      className="rounded border border-neutral-200 bg-white px-4 py-1.5 text-sm text-neutral-600 transition-colors hover:bg-neutral-50"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      className="rounded bg-neutral-800 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-neutral-900"
-                    >
-                      Save
-                    </button>
+          <div ref={eduContainerRef}>
+          {[...education].sort((a, b) => Number(a.saved) - Number(b.saved)).map((edu, index) => (
+            <div
+              key={edu.id}
+              data-edu-entry
+              data-edu-id={edu.id}
+              className={`mt-6 ${index > 0 ? "border-t border-gray-200 pt-6" : ""}`}
+            >
+              {edu.saved ? (
+                /* ---- Overview (collapsed) ---- */
+                <div data-edu-overview className="relative">
+                  <div className="flex items-start justify-between">
+                    <div className="flex flex-col gap-1.5">
+                      <h3 className="font-test-tiempos-fine text-base lg:text-[1.3rem] font-medium text-neutral-800">
+                        {edu.institution || "Untitled"}
+                      </h3>
+                      <p className="text-xs lg:text-[1rem] text-neutral-500">
+                        {edu.degree || "Degree"} {edu.from && <span className="mx-1 inline-block size-1.5 rounded-full bg-neutral-600 align-middle" />} {edu.from ? `${formatDate(edu.from)} – ${edu.currentlyAttending ? "Present" : edu.to ? formatDate(edu.to) : "Present"}` : ""}{edu.from ? ` (${calcDuration(edu.from, edu.to, edu.currentlyAttending)})` : ""}
+                      </p>
+                      {edu.location && (
+                        <p className="text-xs lg:text-[1rem] text-neutral-500">{edu.location}</p>
+                      )}
+                      {edu.description && (
+                        <p className="mt-1 text-xs lg:text-[1rem] text-neutral-400 line-clamp-2 max-w-[40rem]">{edu.description}</p>
+                      )}
+                    </div>
+                    <div className="flex shrink-0 items-center gap-2">
+                      <button type="button" onClick={() => editEducation(edu.id)} className="cursor-pointer text-neutral-400 transition-colors duration-300 hover:text-neutral-700">
+                        <Pencil size={16} />
+                      </button>
+                      <button type="button" onClick={() => removeEducation(edu.id)} className="cursor-pointer text-neutral-400 transition-colors duration-300 hover:text-red-500">
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ) : (
+                /* ---- Edit form (open) ---- */
+                <div data-edu-form>
+                  <div className="grid grid-cols-1 gap-x-4 gap-y-5 md:grid-cols-2">
+                    {/* Institution — full width */}
+                    <div className="md:col-span-2">
+                      {renderField(`edu-${edu.id}-institution`, "Institution", edu.institution, (v) => updateEducation(edu.id, "institution", v), { placeholder: "University name" })}
+                    </div>
+
+                    {/* Degree + Location — same row */}
+                    {renderField(`edu-${edu.id}-degree`, "Degree", edu.degree, (v) => updateEducation(edu.id, "degree", v), { placeholder: "BSc in Computer Science" })}
+                    {renderField(`edu-${edu.id}-location`, "Location", edu.location, (v) => updateEducation(edu.id, "location", v), { placeholder: "City, Country", required: false })}
+
+                    {/* Description — full width */}
+                    <div className="md:col-span-2">
+                      <label className={labelClass}>Description</label>
+                      <div className="input-gradient-border-hover bg-white">
+                        <textarea
+                          value={edu.description}
+                          onChange={(e) => updateEducation(edu.id, "description", e.target.value)}
+                          placeholder="Brief description"
+                          className="h-20 w-full resize-none bg-white px-4 py-2 text-sm text-[#555] outline-none placeholder:text-[#b5b7b9]"
+                        />
+                      </div>
+                    </div>
+
+                    {renderField(`edu-${edu.id}-from`, "From", edu.from, (v) => updateEducation(edu.id, "from", v), {
+                      children: (
+                        <div className="relative">
+                          <CalendarDays size={14} strokeWidth={1.4} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#999]" />
+                          <input required type="date" value={edu.from} onChange={(e) => updateEducation(edu.id, "from", e.target.value)} onBlur={() => setTouched((prev) => new Set(prev).add(`edu-${edu.id}-from`))} className={`${inputClass} pl-7`} />
+                        </div>
+                      ),
+                    })}
+
+                    {renderField(`edu-${edu.id}-to`, "To", edu.to, (v) => updateEducation(edu.id, "to", v), {
+                      required: !edu.currentlyAttending,
+                      disabled: edu.currentlyAttending,
+                      children: (
+                        <div className="relative">
+                          <CalendarDays size={14} strokeWidth={1.4} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#999]" />
+                          <input required={!edu.currentlyAttending} disabled={edu.currentlyAttending} type="date" value={edu.to} onChange={(e) => updateEducation(edu.id, "to", e.target.value)} onBlur={() => setTouched((prev) => new Set(prev).add(`edu-${edu.id}-to`))} className={`${inputClass} pl-7 disabled:bg-[#f1f2f3] disabled:cursor-not-allowed`} />
+                        </div>
+                      ),
+                    })}
+                  </div>
+
+                  <div className="mt-5 flex items-center justify-between">
+                    <label className="flex cursor-pointer items-center gap-2 text-sm text-[#686c70]">
+                      <input type="checkbox" checked={edu.currentlyAttending} onChange={(e) => updateEducation(edu.id, "currentlyAttending", e.target.checked)} className="peer sr-only" />
+                      <span className={`flex size-4.5 items-center justify-center rounded-sm border-2 transition-all duration-300 ${edu.currentlyAttending ? "border-transparent [background-image:var(--primary-gradient)]" : "border-[#c8ccd0]"}`}>
+                        {edu.currentlyAttending && (
+                          <svg className="size-3 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        )}
+                      </span>
+                      I currently attend here
+                    </label>
+
+                    <div className="flex items-center gap-3">
+                      <button type="button" onClick={() => removeEducation(edu.id)} className="h-9 text-sm text-neutral-500 cursor-pointer bg-gray-200 hover:bg-gray-300 transition-all duration-300 ease-out px-6">
+                        Cancel
+                      </button>
+                      <button type="button" data-label="Save" onClick={() => saveEducation(edu.id)} className="save-btn h-9 text-sm cursor-pointer px-6">
+                        Save
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
           </div>
-        )}
-      </div>
+        </section>
 
-      {/* ════════════════════════════════════════════════════════════
-          YOUR PROFILES
-         ════════════════════════════════════════════════════════════ */}
-      <div className="mt-8 border border-neutral-200">
-        <div className="border-b border-neutral-200 bg-neutral-50 px-4 py-3">
-          <h2 className="text-sm font-semibold text-neutral-800">Your profiles</h2>
-        </div>
+        {/* ======================================================== */}
+        {/* PROFILES                                                   */}
+        {/* ======================================================== */}
 
-        <div className="p-4">
-          <label className={labelCls}>LinkedIn</label>
-          <input
-            type="url"
-            placeholder="https://www.linkedin.com/in/your-profile"
-            value={linkedin}
-            onChange={(e) => setLinkedin(e.target.value)}
-            className={inputCls}
-          />
-        </div>
-      </div>
+        <section className="mt-5 bg-[#f8f9fa] px-5 py-5">
 
-      {/* ════════════════════════════════════════════════════════════
-          CV / RESUME UPLOAD
-         ════════════════════════════════════════════════════════════ */}
-      <div className="mt-8">
+          <h2 className="mb-3 text-base font-semibold text-[#292c2f]">
+            Your profiles
+          </h2>
+
+          <label className={labelClass}>
+            LinkedIn
+          </label>
+
+          <div className="relative">
+
+            <Link2
+              size={14}
+              strokeWidth={1.4}
+              className="absolute left-3 top-2.5 text-[#9da1a4]"
+            />
+
+            <input
+              type="url"
+              value={linkedin}
+              onChange={(e) =>
+                setLinkedin(e.target.value)
+              }
+              placeholder="https://www.linkedin.com/in/..."
+              className={`${inputClass} pl-8`}
+            />
+
+          </div>
+        </section>
+
+        {/* ======================================================== */}
+        {/* CV UPLOAD                                                  */}
+        {/* ======================================================== */}
+
         <div
+          onClick={() =>
+            fileRef.current?.click()
+          }
           onDragOver={(e) => {
             e.preventDefault();
             setDragOver(true);
           }}
-          onDragLeave={() => setDragOver(false)}
+          onDragLeave={() =>
+            setDragOver(false)
+          }
           onDrop={handleDrop}
-          className={`flex flex-col items-center justify-center rounded border-2 border-dashed px-6 py-10 transition-colors ${
-            dragOver ? "border-neutral-400 bg-neutral-50" : "border-neutral-200 bg-neutral-50/50"
+          className={`mt-4 flex h-28 cursor-pointer flex-col items-center justify-center border border-dashed text-center transition ${
+            dragOver
+              ? "border-[#76c438] bg-[#f7fcf4]"
+              : "border-[#cce5b7] bg-[#fcfefd]"
           }`}
         >
-          <UploadIcon className="mb-3 size-8 text-neutral-400" strokeWidth={1.5} />
-          <p className="text-sm font-medium text-neutral-700">Upload your CV/Resume</p>
-          <p className="mt-1 text-xs text-neutral-500">
-            Drag and drop, or{" "}
-            <button
-              type="button"
-              onClick={() => fileRef.current?.click()}
-              className="font-medium text-neutral-700 underline underline-offset-2"
-            >
-              browse
-            </button>
-          </p>
-          <p className="mt-1 text-xs text-neutral-400">PDF, DOC, DOCX, JPG, PNG (Max 5MB)</p>
 
-          {fileName && (
-            <div className="mt-3 flex items-center gap-2 rounded bg-neutral-100 px-3 py-1.5 text-sm text-neutral-700">
-              <span className="truncate max-w-[16rem]">{fileName}</span>
+          <UploadCloud
+            size={22}
+            strokeWidth={1.3}
+            className="mb-2 text-[#00a889]"
+          />
+
+          {fileName ? (
+            <>
+              <p className="text-sm font-medium text-[#25282b]">
+                {fileName}
+              </p>
+
               <button
                 type="button"
-                onClick={() => setFileName("")}
-                className="text-neutral-400 hover:text-neutral-600"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setFileName("");
+                }}
+                className="mt-1.5 text-xs text-red-400"
               >
-                <X className="size-3.5" />
+                Remove
               </button>
-            </div>
+            </>
+          ) : (
+            <>
+              <p className="text-sm font-medium text-[#25282b]">
+                Upload your CV or resume
+              </p>
+
+              <p className="mt-1.5 text-xs text-[#96999c]">
+                Drag and drop, or browse · PDF, DOC,
+                DOCX, JPEG, PNG
+              </p>
+
+              <p className="mt-1 text-xs text-[#b1b3b5]">
+                10MB size limit
+              </p>
+            </>
           )}
 
           <input
             ref={fileRef}
+            hidden
             type="file"
             accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
             onChange={handleFileSelect}
-            className="hidden"
           />
         </div>
-      </div>
 
-      {/* ════════════════════════════════════════════════════════════
-          SUBMIT
-         ════════════════════════════════════════════════════════════ */}
-      <div className="mt-8 flex justify-end">
-        <button
-          type="submit"
-          className="inline-flex items-center gap-2 rounded bg-neutral-800 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-neutral-900"
-        >
-          Submit Application
-          <svg
-            className="size-4"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        {/* ======================================================== */}
+        {/* SUBMIT                                                     */}
+        {/* ======================================================== */}
+
+        <div className="mt-8 flex justify-end">
+
+          <button
+            type="submit"
+            className="flex h-11 items-center gap-2 bg-gradient-to-r from-[#82c63d] to-[#00a889] px-5 text-sm font-semibold text-white transition hover:brightness-105"
           >
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
-        </button>
-      </div>
-    </form>
+            Submit Application
+
+            <span className="text-base">
+              ↗
+            </span>
+          </button>
+
+        </div>
+
+      </form>
+    </div>
   );
 }

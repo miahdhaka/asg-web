@@ -29,7 +29,7 @@ export const jobs: Job[] = [
   },
   {
     id: "production-planning-executive",
-    title: "Production Planning Executive",
+    title: "Department Manager",
     department: "Production & Planning",
     location: "Gazipur, Bangladesh",
     workplace: "Factory",

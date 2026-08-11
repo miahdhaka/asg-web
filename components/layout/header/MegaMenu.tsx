@@ -47,6 +47,7 @@ export default function MegaMenu({ items, isOpen, variant = "photo", onNavigate 
                       <div className="overlay-image-hover pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700 ease-in-out group-hover:opacity-100" />
                     )}
                   </div>
+                  
                   {item.label && (
                     <span className="relative inline-block text-sm tracking-wider text-[var(--neutral-800)] gradient-text-hover mt-3">
                       {item.label}

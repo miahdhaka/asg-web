@@ -401,13 +401,74 @@
   transition: opacity 0.3s ease-in-out;
   pointer-events: none;
 }
-.input-gradient-border-hover:hover {
+.input-gradient-border-hover:hover,
+.input-gradient-border-hover:focus-within,
+.input-gradient-border-active {
   border-color: transparent;
 }
-.input-gradient-border-hover:hover::before {
+.input-gradient-border-hover:hover::before,
+.input-gradient-border-hover:focus-within::before,
+.input-gradient-border-active::before {
   opacity: 1;
 }
 
+/* Error state — red border overrides gradient */
+.input-gradient-border-hover.input-gradient-border-error,
+.input-gradient-border-hover.input-gradient-border-error:hover,
+.input-gradient-border-hover.input-gradient-border-error:focus-within,
+.input-gradient-border-hover.input-gradient-border-error.input-gradient-border-active {
+  border-color: #ef4444;
+}
+.input-gradient-border-hover.input-gradient-border-error::before,
+.input-gradient-border-hover.input-gradient-border-error:hover::before,
+.input-gradient-border-hover.input-gradient-border-error:focus-within::before,
+.input-gradient-border-hover.input-gradient-border-error.input-gradient-border-active::before {
+  opacity: 0;
+}
+
+/* Save button — reverse of primary-btn-flip-gradient (filled → outline on hover) */
+.save-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  line-height: 1;
+  color: transparent;
+  border: 1px solid transparent;
+  border-image: var(--primary-gradient) 1;
+}
+.save-btn::before,
+.save-btn::after {
+  content: attr(data-label);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.5s ease-in-out;
+}
+/* Default: gradient fill + white text — slides down and out on hover */
+.save-btn::before {
+  background: var(--primary-gradient);
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+  transform: translateY(0);
+}
+.save-btn:hover::before {
+  transform: translateY(100%);
+}
+/* Hover: gradient text — slides in from the top */
+.save-btn::after {
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transform: translateY(-100%);
+}
+.save-btn:hover::after {
+  transform: translateY(0);
+}
 
 .word-space-4 {
   word-spacing: 0.25rem;

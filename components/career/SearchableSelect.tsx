@@ -45,7 +45,7 @@ export default function SearchableSelect({
   return (
     <label className="flex w-full flex-col gap-2 sm:max-w-[32.3333rem]">
       <span className="text-sm text-neutral-800 lg:text-[1.1667rem]">{label}</span>
-      <div ref={containerRef} className="input-gradient-border-hover relative block bg-white">
+      <div ref={containerRef} className={`input-gradient-border-hover relative block bg-white ${open ? "input-gradient-border-active" : ""}`}>
         {/* Trigger button */}
         <button
           type="button"

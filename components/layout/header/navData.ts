@@ -7,6 +7,7 @@ export const navCategories: NavCategory[] = [
     megaItems: [
       { label: "About Us", href: "/about-us", image: "/images/navbar/group-clr-1.png", hoverImage: "/images/navbar/group-clr-1.png" },
       { label: "Management", href: "/board-of-directors", image: "/images/navbar/group-clr-2.png", hoverImage: "/images/navbar/group-clr-2.png" },
+      { label: "History", href: "/our-history", image: "/images/navbar/group-clr-3.png", hoverImage: "/images/navbar/group-clr-3.png" },
     ],
   },
   {
