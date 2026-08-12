@@ -98,16 +98,16 @@ export default function MiahHero() {
         </a>
       </div>
 
-      {/* Full-bleed hero image */}
-      <Image
-        src="/images/concerns/miah/hero.png"
-        alt="MIAH — contemporary fashion brand"
-        width={1440}
-        height={609}
-        priority
-        quality={90}
+      {/* Full-bleed hero video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
         className="h-56 w-full object-cover sm:h-80 lg:h-[50.75em]"
-      />
+      >
+        <source src="/videos/concerns/miah_out.webm" type="video/webm" />
+      </video>
     </section>
   );
 }

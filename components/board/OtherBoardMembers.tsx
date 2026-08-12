@@ -49,8 +49,10 @@ export default function OtherBoardMembers({
   // Teleport by one whole copy when nearing either end — content is
   // identical one set away, so the jump is invisible
   const memberCount = members.length;
+  const isNormalizing = useRef(false);
   const normalizeLoop = useCallback(
     (track: HTMLDivElement) => {
+      if (isNormalizing.current) return;
       const step = cardStep(track);
       const setWidth = step * memberCount;
       if (!setWidth) return;
@@ -59,8 +61,16 @@ export default function OtherBoardMembers({
       if (track.scrollLeft < step * 2) delta = setWidth;
       else if (track.scrollLeft > maxScroll - step * 2) delta = -setWidth;
       if (delta) {
+        isNormalizing.current = true;
+        // Disable snap during teleport to prevent jitter
+        track.style.scrollSnapType = "none";
         track.scrollLeft += delta;
         if (drag.current.active) drag.current.startScrollLeft += delta;
+        // Restore snap on next frame
+        requestAnimationFrame(() => {
+          track.style.scrollSnapType = "";
+          isNormalizing.current = false;
+        });
       }
     },
     [memberCount]
@@ -158,23 +168,23 @@ export default function OtherBoardMembers({
   return (
     <section
       id={id}
-      className="w-full bg-white px-4 sm:px-6 lg:px-[5em] py-10 sm:py-12 lg:py-[5em]"
+      className="w-full bg-white px-4 sm:px-6 lg:px-[5em] py-8 sm:py-12 lg:py-[5em]"
     >
-      <h2 className="font-test-tiempos-fine text-3xl sm:text-4xl lg:text-[4em] text-neutral-800">
+      <h2 className="font-test-tiempos-fine text-xl sm:text-3xl lg:text-[2.6em] text-neutral-800">
         {heading}
       </h2>
 
-      <div className="relative mt-8 lg:mt-[2.5em]">
+      <div className="relative mt-3 sm:mt-8 lg:mt-[2.5em]">
         {/* Prev / next chevrons — overlay the track edges */}
         <button
           type="button"
           aria-label="Previous board member"
           onClick={() => scrollByCard(-1)}
-          className="absolute left-2 lg:left-[2em] top-1/2 -translate-y-1/2 z-10 p-2 text-neutral-800 cursor-pointer"
+          className="absolute left-0 lg:left-[2em] top-1/2 -translate-y-1/2 z-10 p-1.5 text-neutral-800 cursor-pointer"
         >
           <svg
-            width="3em"
-            height="3em"
+            width="2em"
+            height="2em"
             viewBox="0 0 24 24"
             fill="none"
             aria-hidden
@@ -192,11 +202,11 @@ export default function OtherBoardMembers({
           type="button"
           aria-label="Next board member"
           onClick={() => scrollByCard(1)}
-          className="absolute right-2 lg:right-[2em] top-1/2 -translate-y-1/2 z-10 p-2 text-neutral-800 cursor-pointer"
+          className="absolute right-0 lg:right-[2em] top-1/2 -translate-y-1/2 z-10 p-1.5 text-neutral-800 cursor-pointer"
         >
           <svg
-            width="3em"
-            height="3em"
+            width="2em"
+            height="2em"
             viewBox="0 0 24 24"
             fill="none"
             aria-hidden
@@ -227,17 +237,15 @@ export default function OtherBoardMembers({
                    the layout — otherwise a shorter portrait leaves dead space
                    below it once the flex row stretches every card to match */
                 <div className="relative w-full aspect-[429/582]">
-                  <div className="absolute inset-x-0 top-0 z-10 flex flex-col items-center text-center px-4 pt-12 lg:pt-[6em]">
-                    <h3 className="font-test-tiempos-fine font-medium text-2xl lg:text-[2em] text-neutral-900">
+                  <div className="absolute inset-x-0 top-0 z-10 flex flex-col items-center text-center px-3 pt-5 sm:pt-10 lg:pt-[6em]">
+                    <h3 className="font-test-tiempos-fine font-medium text-base lg:text-[2em] text-neutral-900">
                       {member.name}
                     </h3>
-                    <p className="mt-1.5 text-sm lg:text-[1.2em] text-neutral-600 tracking-wide">
+                    <p className="sm:mt-1 text-xs sm:text-sm lg:text-[1.2em] text-neutral-600 tracking-wide">
                       {member.role}
                     </p>
                   </div>
 
-                  {/* Bottom-anchored and never cropped, so any portrait size
-                      sits flush to the card's bottom edge */}
                   <Image
                     src={member.image}
                     alt={`${member.name} — ${member.role}`}

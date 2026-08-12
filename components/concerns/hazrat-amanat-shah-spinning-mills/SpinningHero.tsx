@@ -97,16 +97,16 @@ export default function SpinningHero() {
         </a>
       </div>
 
-      {/* Full-bleed hero image */}
-      <Image
-        src="/images/concerns/hazrat-amanat-shah-spinning-mills/hero.webp"
-        alt="Precision spinning machinery at Hazrat Amanat Shah Spinning Mills"
-        width={1440}
-        height={609}
-        priority
-        quality={90}
+      {/* Full-bleed hero video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
         className="h-56 w-full object-cover sm:h-80 lg:h-[50.75em]"
-      />
+      >
+        <source src="/videos/concerns/spinning_out.webm" type="video/webm" />
+      </video>
     </section>
   );
 }

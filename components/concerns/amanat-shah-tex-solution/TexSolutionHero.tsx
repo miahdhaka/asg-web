@@ -93,16 +93,16 @@ export default function TexSolutionHero() {
         </a>
       </div>
 
-      {/* Full-bleed hero image */}
-      <Image
-        src="/images/concerns/amanat-shah-tex-solution/hero.webp"
-        alt="Textile chemical manufacturing at Amanat Shah Tex Solution"
-        width={1440}
-        height={609}
-        priority
-        quality={90}
+      {/* Full-bleed hero video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
         className="h-56 w-full object-cover sm:h-80 lg:h-[50.75em]"
-      />
+      >
+        <source src="/videos/concerns/amanat-shah-tex-solution/hero.mp4" type="video/mp4" />
+      </video>
     </section>
   );
 }

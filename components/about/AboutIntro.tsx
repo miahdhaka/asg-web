@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 
 const paragraphs = [
@@ -13,6 +16,10 @@ const quickLinks = [
 ];
 
 export default function AboutIntro() {
+  const [expanded, setExpanded] = useState(false);
+
+  const toggle = () => setExpanded((prev) => !prev);
+
   return (
     <section id="about-intro" className="w-full bg-white px-4 sm:px-6 lg:px-[5em] py-10 sm:py-12 lg:py-[5em]">
       {/* Lead statement */}
@@ -23,25 +30,63 @@ export default function AboutIntro() {
 
       {/* Body copy — indented column */}
       <div className="flex flex-col gap-6 w-full lg:w-[55rem] lg:mx-auto mt-6 sm:mt-8 lg:mt-11">
-        <div className="flex flex-col gap-4">
-          {paragraphs.map((text) => (
-            <p key={text.slice(0, 24)} className="text-sm sm:text-base lg:text-lg text-neutral-800 text-justify tracking-wide">
-              {text}
-            </p>
-          ))}
+        {/* Paragraphs — truncated on mobile, full on desktop */}
+        <div
+          className="overflow-hidden lg:overflow-visible"
+          style={{
+            maxHeight: expanded ? "none" : "11rem",
+            transition: "max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
+          }}
+        >
+          <div className="flex flex-col gap-4">
+            {paragraphs.map((text) => (
+              <p key={text.slice(0, 24)} className="text-sm sm:text-base lg:text-lg text-neutral-800 text-justify tracking-wide">
+                {text}
+              </p>
+            ))}
+          </div>
         </div>
 
-        {/* Quick links */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-x-6 gap-y-3 lg:gap-8">
-          {quickLinks.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              className="text-sm sm:text-base lg:text-lg text-neutral-800 tracking-wide underline underline-offset-2 gradient-text-hover"
-            >
-              {link.label}
-            </Link>
-          ))}
+        {/* "Show more" — mobile only, hidden on desktop via lg:hidden */}
+        {!expanded && (
+          <button
+            type="button"
+            onClick={toggle}
+            className="lg:hidden self-end cursor-pointer text-sm font-semibold gradient-text-showmore -mt-4"
+          >
+            Show more
+          </button>
+        )}
+
+        {/* Quick links — visible when expanded or on desktop */}
+        <div
+          className="overflow-hidden transition-all duration-500 ease-in-out lg:max-h-[10rem] lg:opacity-100"
+          style={{
+            maxHeight: expanded ? "10rem" : "0",
+            opacity: expanded ? 1 : 0,
+          }}
+        >
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-x-6 gap-y-3 lg:gap-8">
+            {quickLinks.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="text-sm sm:text-base lg:text-lg text-neutral-800 tracking-wide underline underline-offset-2 gradient-text-hover"
+              >
+                {link.label}
+              </Link>
+            ))}
+            {/* "Show less" — appears after quick links when expanded, mobile only */}
+            {expanded && (
+              <button
+                type="button"
+                onClick={toggle}
+                className="cursor-pointer text-sm font-semibold gradient-text-showmore"
+              >
+                Show less
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </section>

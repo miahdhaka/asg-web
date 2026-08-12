@@ -26,7 +26,7 @@ const achievements = [
 export default function Achievements() {
   return (
     <section id="about-achievements" className="w-full bg-white px-4 sm:px-6 lg:px-[5em] py-10 sm:py-12 lg:py-[5em]">
-      <h2 className="text-2xl lg:text-6xl text-neutral-800 font-test-tiempos-fine">
+      <h2 className="text-xl lg:text-6xl text-neutral-800 font-test-tiempos-fine">
         Achievement
       </h2>
 

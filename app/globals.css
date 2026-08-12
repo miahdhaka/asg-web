@@ -339,6 +339,22 @@
 }
 /* Gradient Text End */
 
+/* Show more / less gradient button with press animation */
+.gradient-text-showmore {
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+.gradient-text-showmore:hover {
+  opacity: 0.75;
+}
+.gradient-text-showmore:active {
+  transform: scale(0.92);
+}
+
 
 /* Primary Gradient flip button — gradient border + gradient text + flip hover */
 .primary-btn-flip-gradient {

@@ -97,16 +97,16 @@ export default function HelalHero() {
         </a>
       </div>
 
-      {/* Full-bleed hero image */}
-      <Image
-        src="/images/concerns/helal-brothers/hero.webp"
-        alt="Precision textile machinery at M/s Helal & Brothers"
-        width={1440}
-        height={609}
-        priority
-        quality={90}
+      {/* Full-bleed hero video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
         className="h-56 w-full object-cover sm:h-80 lg:h-[50.75em]"
-      />
+      >
+        <source src="/videos/concerns/h&b_out.webm" type="video/webm" />
+      </video>
     </section>
   );
 }

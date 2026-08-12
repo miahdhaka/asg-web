@@ -11,10 +11,9 @@ import {
   Link2,
   Pencil,
   Plus,
-  Search,
+  Send,
   Trash2,
   UploadCloud,
-  UserRound,
 } from "lucide-react";
 
 const COUNTRIES = [
@@ -629,8 +628,8 @@ export default function CareerApplicationForm({
 
                     {renderField(`exp-${experience.id}-from`, "From", experience.from, (v) => updateExperience(experience.id, "from", v), {
                       children: (
-                        <div className="relative">
-                          <CalendarDays size={14} strokeWidth={1.4} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#999]" />
+                        <div className="relative cursor-pointer" onClick={(e) => { const input = e.currentTarget.querySelector("input") as HTMLInputElement; if (input && !input.disabled && input.showPicker) { e.preventDefault(); input.showPicker(); } }}>
+                          <CalendarDays size={14} strokeWidth={1.4} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[#999]" />
                           <input required type="date" value={experience.from} onChange={(e) => updateExperience(experience.id, "from", e.target.value)} onBlur={() => setTouched((prev) => new Set(prev).add(`exp-${experience.id}-from`))} className={`${inputClass} pl-7`} />
                         </div>
                       ),
@@ -640,8 +639,8 @@ export default function CareerApplicationForm({
                       required: !experience.currentlyWorking,
                       disabled: experience.currentlyWorking,
                       children: (
-                        <div className="relative">
-                          <CalendarDays size={14} strokeWidth={1.4} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#999]" />
+                        <div className="relative cursor-pointer" onClick={(e) => { const input = e.currentTarget.querySelector("input") as HTMLInputElement; if (input && !input.disabled && input.showPicker) { e.preventDefault(); input.showPicker(); } }}>
+                          <CalendarDays size={14} strokeWidth={1.4} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[#999]" />
                           <input required={!experience.currentlyWorking} disabled={experience.currentlyWorking} type="date" value={experience.to} onChange={(e) => updateExperience(experience.id, "to", e.target.value)} onBlur={() => setTouched((prev) => new Set(prev).add(`exp-${experience.id}-to`))} className={`${inputClass} pl-7 disabled:bg-[#f1f2f3] disabled:cursor-not-allowed`} />
                         </div>
                       ),
@@ -774,8 +773,8 @@ export default function CareerApplicationForm({
 
                     {renderField(`edu-${edu.id}-from`, "From", edu.from, (v) => updateEducation(edu.id, "from", v), {
                       children: (
-                        <div className="relative">
-                          <CalendarDays size={14} strokeWidth={1.4} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#999]" />
+                        <div className="relative cursor-pointer" onClick={(e) => { const input = e.currentTarget.querySelector("input") as HTMLInputElement; if (input && !input.disabled && input.showPicker) { e.preventDefault(); input.showPicker(); } }}>
+                          <CalendarDays size={14} strokeWidth={1.4} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[#999]" />
                           <input required type="date" value={edu.from} onChange={(e) => updateEducation(edu.id, "from", e.target.value)} onBlur={() => setTouched((prev) => new Set(prev).add(`edu-${edu.id}-from`))} className={`${inputClass} pl-7`} />
                         </div>
                       ),
@@ -785,8 +784,8 @@ export default function CareerApplicationForm({
                       required: !edu.currentlyAttending,
                       disabled: edu.currentlyAttending,
                       children: (
-                        <div className="relative">
-                          <CalendarDays size={14} strokeWidth={1.4} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#999]" />
+                        <div className="relative cursor-pointer" onClick={(e) => { const input = e.currentTarget.querySelector("input") as HTMLInputElement; if (input && !input.disabled && input.showPicker) { e.preventDefault(); input.showPicker(); } }}>
+                          <CalendarDays size={14} strokeWidth={1.4} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[#999]" />
                           <input required={!edu.currentlyAttending} disabled={edu.currentlyAttending} type="date" value={edu.to} onChange={(e) => updateEducation(edu.id, "to", e.target.value)} onBlur={() => setTouched((prev) => new Set(prev).add(`edu-${edu.id}-to`))} className={`${inputClass} pl-7 disabled:bg-[#f1f2f3] disabled:cursor-not-allowed`} />
                         </div>
                       ),
@@ -822,22 +821,13 @@ export default function CareerApplicationForm({
           </div>
         </section>
 
-        {/* ======================================================== */}
-        {/* PROFILES                                                   */}
-        {/* ======================================================== */}
-
+        {/* PROFILES */}
         <section className="mt-5 bg-[#f8f9fa] px-5 py-5">
+          <h2 className="mb-3 font-test-tiempos-fine text-base lg:text-[1.5rem] font-medium text-neutral-800">Your profiles</h2>
 
-          <h2 className="mb-3 text-base font-semibold text-[#292c2f]">
-            Your profiles
-          </h2>
-
-          <label className={labelClass}>
-            LinkedIn
-          </label>
+          <label className={labelClass}>LinkedIn</label>
 
           <div className="relative">
-
             <Link2
               size={14}
               strokeWidth={1.4}
@@ -857,97 +847,98 @@ export default function CareerApplicationForm({
           </div>
         </section>
 
-        {/* ======================================================== */}
-        {/* CV UPLOAD                                                  */}
-        {/* ======================================================== */}
+        <section className="bg-gray-50 px-8 py-8 mt-8">
+          <h2 className="font-test-tiempos-fine text-base lg:text-[1.5rem] font-medium text-neutral-800">Upload your CV or resume</h2>
 
-        <div
-          onClick={() =>
-            fileRef.current?.click()
-          }
-          onDragOver={(e) => {
-            e.preventDefault();
-            setDragOver(true);
-          }}
-          onDragLeave={() =>
-            setDragOver(false)
-          }
-          onDrop={handleDrop}
-          className={`mt-4 flex h-28 cursor-pointer flex-col items-center justify-center border border-dashed text-center transition ${
-            dragOver
-              ? "border-[#76c438] bg-[#f7fcf4]"
-              : "border-[#cce5b7] bg-[#fcfefd]"
-          }`}
-        >
+          <div
+            onClick={() => fileRef.current?.click()}
+            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={handleDrop}
+            className={`group mt-6 flex h-48 lg:h-56 cursor-pointer flex-col items-center justify-center rounded border-2 border-dashed text-center transition-all duration-300 ease-in-out ${
+              dragOver
+                ? "border-[#76c438] bg-[#f7fcf4]"
+                : "border-[#cce5b7] bg-[#fcfefd] hover:border-[#76c438] hover:bg-[#f7fcf4]"
+            }`}
+          >
+            <UploadCloud
+              size={40}
+              strokeWidth={1.2}
+              className="mb-5 text-[#00a889] transition-transform duration-300 ease-in-out group-hover:scale-110"
+            />
 
-          <UploadCloud
-            size={22}
-            strokeWidth={1.3}
-            className="mb-2 text-[#00a889]"
-          />
+            {fileName ? (
+              <>
+                <p className="text-lg lg:text-xl font-medium text-[#25282b]">
+                  {fileName}
+                </p>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); setFileName(""); }}
+                  className="mt-2 text-base lg:text-lg text-red-400"
+                >
+                  Remove
+                </button>
+              </>
+            ) : (
+              <>
+                <p className="text-lg lg:text-xl font-medium text-neutral-800">Upload your CV or resume</p>
+                <p className="mt-2 text-base lg:text-lg text-neutral-500">Drag and drop, or browse · PDF, DOC, DOCX, JPEG, PNG</p>
+                <p className="mt-1 text-base lg:text-lg text-neutral-500">10MB size limit </p>
+              </>
+            )}
 
-          {fileName ? (
-            <>
-              <p className="text-sm font-medium text-[#25282b]">
-                {fileName}
-              </p>
+            <input
+              ref={fileRef}
+              hidden
+              type="file"
+              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+              onChange={handleFileSelect}
+            />
+          </div>
+        </section>
 
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setFileName("");
-                }}
-                className="mt-1.5 text-xs text-red-400"
-              >
-                Remove
-              </button>
-            </>
-          ) : (
-            <>
-              <p className="text-sm font-medium text-[#25282b]">
-                Upload your CV or resume
-              </p>
-
-              <p className="mt-1.5 text-xs text-[#96999c]">
-                Drag and drop, or browse · PDF, DOC,
-                DOCX, JPEG, PNG
-              </p>
-
-              <p className="mt-1 text-xs text-[#b1b3b5]">
-                10MB size limit
-              </p>
-            </>
-          )}
-
-          <input
-            ref={fileRef}
-            hidden
-            type="file"
-            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-            onChange={handleFileSelect}
-          />
-        </div>
-
-        {/* ======================================================== */}
-        {/* SUBMIT                                                     */}
-        {/* ======================================================== */}
-
+        {/* SUBMIT */}
         <div className="mt-8 flex justify-end">
-
           <button
             type="submit"
-            className="flex h-11 items-center gap-2 bg-gradient-to-r from-[#82c63d] to-[#00a889] px-5 text-sm font-semibold text-white transition hover:brightness-105"
+            className="group relative inline-flex shrink-0 items-center justify-center overflow-hidden px-16 py-5 text-lg lg:text-[1.25rem] leading-none cursor-pointer"
+            style={{
+              borderImage: "var(--primary-gradient) 1",
+              borderWidth: 2,
+            }}
           >
-            Submit Application
+            {/* Invisible spacer — preserves the button's intrinsic width/height */}
+            <span className="invisible inline-flex items-center gap-2 whitespace-nowrap">
+              Submit Application
+              <Send className="h-6 w-6" />
+            </span>
 
-            <span className="text-base">
-              ↗
+            {/* Default: gradient fill + white text + white icon — slides down and out on hover */}
+            <span
+              aria-hidden
+              className="absolute inset-0 flex items-center justify-center gap-2 whitespace-nowrap text-white transition-transform duration-500 ease-in-out group-hover:translate-y-full"
+              style={{ background: "var(--primary-gradient)" }}
+            >
+              Submit Application
+              <Send className="h-6 w-6 text-white" strokeWidth={1.5} />
+            </span>
+
+            {/* Hover: gradient text + gradient icon — slides in from the top */}
+            <span
+              aria-hidden
+              className="absolute inset-0 flex -translate-y-full items-center justify-center gap-2 whitespace-nowrap transition-transform duration-500 ease-in-out group-hover:translate-y-0"
+            >
+              <span
+                className="bg-clip-text text-transparent"
+                style={{ backgroundImage: "var(--primary-gradient)" }}
+              >
+                Submit Application
+              </span>
+              <Send className="h-6 w-6" style={{ color: '#1AA179' }} strokeWidth={1.5} />
             </span>
           </button>
-
         </div>
-
       </form>
     </div>
   );

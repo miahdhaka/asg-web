@@ -93,16 +93,16 @@ export default function Farm2FirmHero() {
         </a>
       </div>
 
-      {/* Full-bleed hero image */}
-      <Image
-        src="/images/concerns/farm2firm/hero.webp"
-        alt="Farm2Firm tea estate and sustainable agriculture"
-        width={1280}
-        height={542}
-        priority
-        quality={90}
+      {/* Full-bleed hero video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
         className="h-56 w-full object-cover sm:h-80 lg:h-[50.75em]"
-      />
+      >
+        <source src="/videos/concerns/farm2firm/hero.mp4" type="video/mp4" />
+      </video>
     </section>
   );
 }

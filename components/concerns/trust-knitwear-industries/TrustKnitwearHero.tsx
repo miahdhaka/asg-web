@@ -97,16 +97,16 @@ export default function TrustKnitwearHero() {
         </a>
       </div>
 
-      {/* Full-bleed hero image */}
-      <Image
-        src="/images/concerns/trust-knitwear-industries/hero.webp"
-        alt="Knitwear manufacturing at the Trust Knitwear Industries facility"
-        width={1280}
-        height={542}
-        priority
-        quality={90}
+      {/* Full-bleed hero video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
         className="h-56 w-full object-cover sm:h-80 lg:h-[50.75em]"
-      />
+      >
+        <source src="/videos/concerns/trust_out.webm" type="video/webm" />
+      </video>
     </section>
   );
 }

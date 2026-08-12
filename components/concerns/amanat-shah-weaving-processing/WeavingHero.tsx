@@ -97,16 +97,16 @@ export default function WeavingHero() {
         </a>
       </div>
 
-      {/* Full-bleed hero image */}
-      <Image
-        src="/images/concerns/amanat-shah-weaving-processing/hero.webp"
-        alt="Automated weaving looms at the Amanat Shah Weaving Processing facility"
-        width={1280}
-        height={542}
-        priority
-        quality={90}
+      {/* Full-bleed hero video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
         className="h-56 w-full object-cover sm:h-80 lg:h-[50.75em]"
-      />
+      >
+        <source src="/videos/concerns/amanat-shah-weaving-processing/hero.mp4" type="video/mp4" />
+      </video>
     </section>
   );
 }
