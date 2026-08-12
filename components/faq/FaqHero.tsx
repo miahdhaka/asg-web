@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function FaqHero() {
   return (
-    <section id="faq-hero" className="relative h-[20rem] w-full sm:h-[26rem] lg:h-[41.5625rem]">
+    <section id="faq-hero" className="relative w-full min-h-[28rem] sm:h-[26rem] lg:h-[41.5625rem]">
       {/* Background image */}
       <Image
         src="/images/faq/hero.webp"
@@ -11,7 +11,7 @@ export default function FaqHero() {
         priority
         quality={90}
         sizes="100vw"
-        className="object-cover object-[50%_40%]"
+        className="object-cover object-[70%_40%]"
       />
 
       {/* Dark bottom overlay for text legibility */}

@@ -2,27 +2,20 @@ import Image from "next/image";
 
 export default function EsgHero() {
   return (
-    <section className="relative w-full lg:h-[31.125rem]">
+    <section className="relative w-full lg:h-[41.5625rem]">
       {/* Background image */}
       <Image
         src="/images/sustainability/esg/hero.webp"
         alt="Aerial view of lush green forest near Amanat Shah Group premises"
         fill
         priority
-        quality={85}
+        quality={90}
         sizes="100vw"
         className="object-cover"
       />
 
       {/* Dark bottom overlay for text legibility */}
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(0deg, rgba(12,12,12,1) 6%, rgba(0,0,0,0) 92%)",
-        }}
-      />
+      <div aria-hidden className="absolute inset-0 overlay-linear-subtle" />
 
       {/* Emblem — top center */}
       <Image
@@ -36,11 +29,11 @@ export default function EsgHero() {
       />
 
       {/* Title + subtitle */}
-      <div className="absolute left-4 bottom-6 z-10 flex flex-col gap-2 sm:left-8 sm:bottom-10 lg:left-[3.75rem] lg:bottom-[3.125rem] lg:gap-0.5">
-        <h1 className="max-w-[26.875rem] font-test-tiempos-fine text-3xl tracking-wider text-white sm:text-4xl lg:text-5xl lg:leading-[3rem]">
-          Environmental &amp; Social Governance
+      <div className="flex flex-col gap-1 lg:gap-0.5 absolute left-4 sm:left-8 lg:left-[5em] bottom-6 sm:bottom-10 lg:bottom-[5em] z-10">
+        <h1 className="text-2xl sm:text-4xl lg:text-6xl text-white font-test-tiempos-fine tracking-wider">
+          Environmental &amp;<br />Social Governance
         </h1>
-        <p className="text-xs tracking-wider text-white lg:text-sm">
+        <p className="text-xs sm:text-sm tracking-wider font-light text-white lg:text-base">
           Family business legacy for more than 130 years.
         </p>
       </div>

@@ -8,14 +8,15 @@ interface MegaMenuProps {
   items: MegaMenuItem[];
   isOpen: boolean;
   variant?: "photo" | "logo";
+  onNavigate?: () => void;
 }
 
-export default function MegaMenu({ items, isOpen, variant = "photo" }: MegaMenuProps) {
+export default function MegaMenu({ items, isOpen, variant = "photo", onNavigate }: MegaMenuProps) {
   const isLogo = variant === "logo";
 
   return (
     <div
-      className={`fixed left-0 z-50 w-screen bg-white shadow-lg transition-all duration-150 ease-out ${
+      className={`fixed left-0 z-50 w-screen bg-white shadow-lg transition-[opacity,transform] duration-150 ease-out ${
         isOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 pointer-events-none"
       }`}
       style={{ top: "var(--header-height)" }}
@@ -26,6 +27,7 @@ export default function MegaMenu({ items, isOpen, variant = "photo" }: MegaMenuP
                 <Link
                   key={item.label}
                   href={item.href}
+                  onClick={onNavigate}
                   className="group flex flex-col items-start text-left"
                 >
                   <div
@@ -45,6 +47,7 @@ export default function MegaMenu({ items, isOpen, variant = "photo" }: MegaMenuP
                       <div className="overlay-image-hover pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700 ease-in-out group-hover:opacity-100" />
                     )}
                   </div>
+                  
                   {item.label && (
                     <span className="relative inline-block text-sm tracking-wider text-[var(--neutral-800)] gradient-text-hover mt-3">
                       {item.label}

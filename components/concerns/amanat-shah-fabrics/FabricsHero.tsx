@@ -97,16 +97,16 @@ export default function FabricsHero() {
         </a>
       </div>
 
-      {/* Full-bleed hero image */}
-      <Image
-        src="/images/concerns/amanat-shah-fabrics/hero.webp"
-        alt="Digital textile printing at Amanat Shah Fabrics"
-        width={1440}
-        height={609}
-        priority
-        quality={90}
+      {/* Full-bleed hero video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
         className="h-56 w-full object-cover sm:h-80 lg:h-[50.75em]"
-      />
+      >
+        <source src="/videos/concerns/farm to farm_out.webm" type="video/webm" />
+      </video>
     </section>
   );
 }

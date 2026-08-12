@@ -13,7 +13,7 @@ export default function FaqCategories() {
           <Link
             key={category.slug}
             href={`/faqs/${category.slug}`}
-            className="group relative flex h-[21.5rem] flex-col justify-between overflow-hidden bg-gray-50 p-4 lg:h-[28.6667rem] lg:p-[1.3333rem]"
+            className="group relative flex h-[15rem] sm:h-[21.5rem] lg:h-[28.6667rem] flex-col justify-between overflow-hidden bg-gray-50 p-4 lg:p-[1.3333rem]"
           >
             {/* Hover state layer — soft brand-gradient wash */}
             <div
@@ -53,7 +53,7 @@ export default function FaqCategories() {
                 width={125}
                 height={72}
                 quality={100}
-                className="h-[4.5rem] w-[7.8125rem] object-contain transition-opacity duration-500 ease-in-out group-hover:opacity-0"
+                className="h-[3rem] w-[5rem] object-contain transition-opacity duration-500 ease-in-out group-hover:opacity-0 lg:h-[4.5rem] lg:w-[7.8125rem]"
               />
               <span
                 aria-hidden
@@ -71,11 +71,11 @@ export default function FaqCategories() {
               />
             </div>
 
-            <div className="relative z-10 flex flex-col gap-3 lg:gap-4">
-              <h2 className="font-test-tiempos-fine text-2xl font-medium leading-8 text-neutral-800 lg:text-[2rem] lg:leading-[2.6667rem]">
+            <div className="relative z-10 flex flex-col gap-2 sm:gap-3 lg:gap-4">
+              <h2 className="font-test-tiempos-fine text-lg sm:text-2xl font-medium leading-8 text-neutral-800 lg:text-[2rem] lg:leading-[2.6667rem]">
                 {category.title}
               </h2>
-              <p className="text-base leading-6 text-neutral-800 lg:text-[1.3333rem] lg:leading-8">
+              <p className="text-sm sm:text-base lg:text-[1.3333rem] leading-6 text-neutral-800 lg:leading-8">
                 {category.description}
               </p>
             </div>

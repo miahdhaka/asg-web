@@ -3,7 +3,7 @@ import { initiativeCards, type InitiativeCard } from "./esgData";
 
 function InitiativeCardItem({ card }: { card: InitiativeCard }) {
   return (
-    <div className="group relative flex flex-col gap-2.5 overflow-hidden bg-gray-50 p-6">
+    <div className="group relative flex flex-col gap-2.5 overflow-hidden bg-gray-50 px-6 lg:px-8 py-8 lg:py-10">
       {/* Brand-green tint on hover (matches the design's hover state) */}
       <div
         aria-hidden
@@ -13,11 +13,11 @@ function InitiativeCardItem({ card }: { card: InitiativeCard }) {
             "linear-gradient(150deg, rgba(139, 195, 74, 0.2) 0%, rgba(26, 161, 121, 0.2) 81%)",
         }}
       />
-      <div className="relative flex flex-col gap-2">
-        <h3 className="font-test-tiempos-fine text-xl leading-[1.33] text-neutral-800 lg:text-2xl lg:leading-[2rem]">
+      <div className="relative flex flex-col gap-4">
+        <h3 className="font-test-tiempos-fine text-neutral-800 text-xl lg:text-[2rem] leading-[1.33] lg:leading-[2rem]">
           {card.title}
         </h3>
-        <p className="text-justify text-sm leading-[1.25rem] text-neutral-800">
+        <p className="text-sm lg:text-[1.15rem] leading-[1.25rem] lg:leading-[1.65rem] text-neutral-800">
           {card.description}
         </p>
       </div>
@@ -43,8 +43,8 @@ function InitiativeCardItem({ card }: { card: InitiativeCard }) {
 
 export default function EsgInitiatives() {
   return (
-    <section className="px-4 py-12 sm:px-8 lg:px-[3.75rem] lg:py-[3.75rem]">
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-[1.125rem]">
+    <section className="px-4 sm:px-8 lg:px-[5rem] py-12 lg:py-[3rem] mb-[2rem]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-[1.4rem]">
         {initiativeCards.map((card) => (
           <InitiativeCardItem key={card.title} card={card} />
         ))}

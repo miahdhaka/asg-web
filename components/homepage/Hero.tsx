@@ -786,25 +786,18 @@ export default function Hero() {
 
       /* ── Cross-device wheel gesture detection ──
          Mouse wheels fire one big delta per notch; trackpads stream dozens of
-         tiny deltas plus a long decaying inertia tail. They need different
-         rules, and the giveaway is the per-event magnitude *and* spacing:
-           • a big delta arriving after a real pause is a notch → it counts on
-             its own, every time, so spinning the wheel five times fast is
-             five steps (the tail heuristics below used to eat four of them:
-             repeated notches are flat, not decaying, so they never showed the
-             re-acceleration the unlock test was looking for)
-           • small, densely-streamed deltas are one swipe → accumulate to a
-             single step and swallow the tail, so one flick never fires a burst
+         tiny deltas plus a decaying inertia tail.  Two rules cover both:
+           • a big delta (≥ NOTCH_DELTA) is always a deliberate notch → fires
+             immediately, every time
+           • small deltas accumulate; once they cross INTENT_DISTANCE the
+             gesture fires and a short swallow window (SWALLOW_MS) eats the
+             rest of the stream so one flick = exactly one step
          Deltas are normalized across deltaMode first. */
-      const NOTCH_DELTA = 40; // |delta| at/above this can be a discrete notch
-      const NOTCH_MIN_GAP = 25; // ms — trackpad streams fire far tighter
+      const NOTCH_DELTA = 40; // |delta| at/above this is a discrete notch
       const INTENT_DISTANCE = 30; // accumulated px that count as a swipe
-      const TAIL_OVERRIDE = 150; // px of sustained (non-decaying) stream = 1 more step
-      const STREAM_GAP = 200; // ms of silence that ends an event stream
+      const SWALLOW_MS = 200; // ms to ignore after a gesture fires
       let wheelAccum = 0;
-      let lastWheelTime = 0;
-      let inertiaLock = false; // swallowing the tail of a handled stream
-      let wheelSamples: number[] = []; // recent |delta|s of the locked tail
+      let lastGestureTime = 0;
 
       // deltaMode: 0 = pixels, 1 = lines (Firefox), 2 = pages
       const normalizeWheel = (e: WheelEvent) =>
@@ -819,79 +812,37 @@ export default function Hero() {
          phase while the rest of the stream is ignored) */
       const wheelIntent = (e: WheelEvent) => {
         const now = performance.now();
-        const gap = now - lastWheelTime;
-        lastWheelTime = now;
         const delta = normalizeWheel(e);
         const abs = Math.abs(delta);
         if (!abs) return false;
 
-        // A long-enough pause always starts a fresh gesture stream
-        if (gap > STREAM_GAP) {
-          inertiaLock = false;
+        // Swallow the tail of a stream that already fired a gesture
+        if (now - lastGestureTime < SWALLOW_MS) {
           wheelAccum = 0;
-          wheelSamples = [];
-        }
-
-        /* Mouse notch — a deliberate gesture all by itself. Physical detents
-           can't fire as tightly as a trackpad stream, so the spacing test
-           keeps a fling's opening (which also carries big deltas) out. */
-        if (abs >= NOTCH_DELTA && gap >= NOTCH_MIN_GAP) {
-          inertiaLock = false;
-          wheelAccum = 0;
-          wheelSamples = [];
-          return true;
-        }
-
-        wheelSamples.push(abs);
-        if (wheelSamples.length > 12) wheelSamples.shift();
-
-        if (inertiaLock) {
-          /* Inertia tails only ever decay. A stream that holds its magnitude
-             is a sustained input instead — a wheel being spun, or notches
-             firing too tightly to pass the gap test above — and it has to keep
-             producing steps once it has covered enough ground, otherwise fast
-             scrolling silently stalls after the first step. */
-          const n = wheelSamples.length;
-          if (n < 6) {
-            wheelAccum += delta;
-            return false;
-          }
-          const avgNew =
-            (wheelSamples[n - 1] + wheelSamples[n - 2] + wheelSamples[n - 3]) / 3;
-          const avgOld =
-            (wheelSamples[n - 4] + wheelSamples[n - 5] + wheelSamples[n - 6]) / 3;
-          // A fresh flick mid-tail, or a stream that simply refuses to decay.
-          // Both need real magnitude behind them — the dying 1-3px end of a
-          // trackpad tail holds its size perfectly but means nothing.
-          const reaccelerated = avgNew > avgOld * 1.5 && avgNew > 6;
-          const sustained =
-            avgNew >= avgOld * 0.85 &&
-            avgNew >= 10 &&
-            Math.abs(wheelAccum) >= TAIL_OVERRIDE;
-          if (!reaccelerated && !sustained) {
-            wheelAccum += delta;
-            return false;
-          }
-          inertiaLock = false;
-          wheelAccum = 0;
+          return false;
         }
 
         // A direction flip restarts the accumulation
         if ((delta > 0 && wheelAccum < 0) || (delta < 0 && wheelAccum > 0)) {
           wheelAccum = 0;
         }
-        wheelAccum += delta;
-        if (Math.abs(wheelAccum) < INTENT_DISTANCE) return false;
 
-        /* Gesture confirmed — swallow the rest of this stream. The samples are
-           dropped with it so the decay analysis above starts clean on the tail:
-           keeping the ramp-up in the window makes the very first tail event
-           look like a re-acceleration, which fired a spurious second step out
-           of every single swipe. */
-        wheelAccum = 0;
-        wheelSamples = [];
-        inertiaLock = true;
-        return true;
+        // Mouse notch — big delta = deliberate gesture, fires immediately
+        if (abs >= NOTCH_DELTA) {
+          wheelAccum = 0;
+          lastGestureTime = now;
+          return true;
+        }
+
+        // Trackpad accumulation — small deltas add up to one gesture
+        wheelAccum += delta;
+        if (Math.abs(wheelAccum) >= INTENT_DISTANCE) {
+          wheelAccum = 0;
+          lastGestureTime = now;
+          return true;
+        }
+
+        return false;
       };
 
       // Let the Header mirror its "scrolled" style while the page can't scroll
@@ -1009,9 +960,9 @@ export default function Hero() {
       ];
 
       const LAST = transitions.length; // deepest resting state
-      const TEMPO = 1.5; // > 1 → everything a touch slower than designed
-      const LAG_EXP = -0.35; // negative → further behind = shorter chase
-      const RATE_MAX = 3; // resting states per second — ceiling on a wild fling
+      const TEMPO = 3.5; // > 1 → everything a touch slower than designed
+      const LAG_EXP = -0.06; // negative → further behind = shorter chase
+      const RATE_MAX = 1.2; // resting states per second — ceiling on a wild fling
 
       const scrub = { pos: 0 }; // where the screen is
       let goal = 0; // where the gestures have asked it to be
@@ -1084,16 +1035,20 @@ export default function Hero() {
         );
         const base = transitions[lead].tl.duration() || 1;
         /* Up to one unit the chase is simply proportional, so a single
-           deliberate gesture runs on that phase's own designed length. Past
-           one unit the hand is ahead of the screen, and the chase gets
-           shorter the further behind it is, which is what makes fast
-           scrolling finish fast. The rate ceiling keeps even a ten-notch
-           fling readable, and TEMPO stretches the whole thing a touch. */
+           deliberate gesture runs on that phase's own designed length,
+           stretched by TEMPO for a smooth, unhurried feel.  Past one unit
+           the hand is ahead of the screen, and the chase gets shorter the
+           further behind it is.  The rate ceiling (dist / RATE_MAX) is NOT
+           stretched by TEMPO — it caps how slow a multi-step sweep can get,
+           so a burst of scrolls sweeps through them at a readable pace
+           instead of leaving the user watching sections crawl by. */
         const duration =
-          TEMPO *
-          (dist <= 1
-            ? base * dist
-            : Math.max(base * Math.pow(dist, LAG_EXP), dist / RATE_MAX));
+          dist <= 1
+            ? TEMPO * base * dist
+            : Math.max(
+                TEMPO * base * Math.pow(dist, LAG_EXP),
+                dist / RATE_MAX
+              );
         sweep = gsap.to(scrub, {
           pos: goal,
           duration,
@@ -1101,7 +1056,7 @@ export default function Hero() {
              then decays softly into the landing, instead of moving at one
              flat mechanical rate — that soft settle is what reads as an
              unhurried, expensive scroll */
-          ease: "power1.out",
+          ease: "power4.out",
           onUpdate: render,
           onComplete: () => {
             scrub.pos = goal;
@@ -1147,6 +1102,11 @@ export default function Hero() {
          prevented. */
       const routeGesture = (dir: number, fire: boolean): boolean => {
         if (!dir) return false;
+
+        // At the last step and scrolling down? Allow native scrolling to footer
+        if (dir > 0 && step === LAST) {
+          return false;
+        }
 
         /* Fade-chain zone: a down-gesture on a settled section dissolves it
            into the next one pinned beneath it */

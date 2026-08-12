@@ -38,8 +38,8 @@ export default function MemberMessageHero({
         style={{ background: "var(--primary-gradient)" }}
       />
 
-      <div className="relative flex flex-col px-4 pt-10 sm:px-6 lg:block lg:h-[42.7em] lg:p-0">
-        {/* Quote watermark */}
+      <div className="relative flex flex-col px-4 pt-2 pb-4 sm:pb-0 sm:pt-10 sm:px-6 lg:block lg:h-[42.7em] lg:p-0">
+        {/* Quote watermark — hidden on mobile */}
         <Image
           src="/images/board-of-directors/green-qoutes.png"
           alt=""
@@ -47,29 +47,10 @@ export default function MemberMessageHero({
           width={320}
           height={320}
           quality={90}
-          className="h-24 w-24 sm:h-32 sm:w-32 lg:absolute lg:left-[28em] lg:top-[13.75em] lg:h-[13.35em] lg:w-[13.35em]"
+          className="hidden sm:block lg:absolute lg:left-[28em] lg:top-[13.75em] lg:h-[13.35em] lg:w-[13.35em]"
         />
 
-        {/* Name / role / divider / group */}
-        <div className="mt-6 lg:absolute lg:bottom-[1.67em] lg:left-[28em] lg:mt-0 lg:w-[51.25em]">
-          <h1 className="font-test-tiempos-fine font-medium text-3xl sm:text-4xl lg:text-[3em] lg:leading-[1.11] text-neutral-800">
-            {name}
-          </h1>
-          <p className="mt-1 text-sm sm:text-base lg:mt-[0.33em] lg:text-[1.33em] lg:leading-[1.5] text-neutral-800">
-            {role}
-          </p>
-          <div
-            aria-hidden
-            className="mt-4 border-b border-neutral-200 lg:mt-[1.33em]"
-          />
-          <p className="mt-4 text-sm sm:text-base lg:mt-[1.33em] lg:text-[1.33em] lg:leading-[1.5] text-neutral-800">
-            {org}
-          </p>
-        </div>
-
-        {/* Portrait — bottom-aligned, overlaps the divider line on desktop.
-            Always desaturated: the design calls for a black-and-white hero
-            portrait, so pages can reuse the colour source image as-is. */}
+        {/* Portrait — shows first on mobile, bottom-aligned on desktop */}
         <Image
           src={portrait.src}
           alt={`${name} — ${role}`}
@@ -77,8 +58,25 @@ export default function MemberMessageHero({
           height={portrait.height}
           priority
           quality={90}
-          className={`mx-auto mt-8 w-56 grayscale sm:w-72 lg:absolute lg:bottom-0 lg:mx-0 lg:mt-0 h-auto ${portraitClassName}`}
+          className={`mx-auto w-full sm:w-48  sm:mt-8 sm:w-72 lg:absolute lg:bottom-0 lg:mx-0 lg:mt-0 h-auto z-20 ${portraitClassName}`}
         />
+
+        {/* Name / role / divider / group — shows after portrait on mobile */}
+        <div className="mt-4 sm:mt-6 lg:absolute lg:bottom-[1.67em] lg:left-[28em] lg:mt-0 lg:w-[51.25em]">
+          <h1 className="font-test-tiempos-fine font-medium text-2xl sm:text-4xl lg:text-[3em] lg:leading-[1.11] text-neutral-800">
+            {name}
+          </h1>
+          <p className="mt-0.5 sm:mt-1 text-sm sm:text-base lg:mt-[0.33em] lg:text-[1.33em] lg:leading-[1.5] text-neutral-800">
+            {role}
+          </p>
+          <div
+            aria-hidden
+            className="mt-2 sm:mt-4 border-b border-neutral-200 lg:mt-[1.33em]"
+          />
+          <p className="mt-2 sm:mt-4 text-sm sm:text-base lg:mt-[1.33em] lg:text-[1.33em] lg:leading-[1.5] text-neutral-800">
+            {org}
+          </p>
+        </div>
       </div>
     </section>
   );

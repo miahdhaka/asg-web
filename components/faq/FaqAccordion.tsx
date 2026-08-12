@@ -32,14 +32,14 @@ export default function FaqAccordion({ title, items }: FaqAccordionProps) {
                   type="button"
                   onClick={() => setOpenIndex(isOpen ? null : index)}
                   aria-expanded={isOpen}
-                  className="group flex w-full cursor-pointer items-center gap-[0.8333rem] p-4 text-left lg:p-[2rem]"
+                  className="group flex w-full cursor-pointer items-center gap-[0.8333rem] px-0 sm:px-4 py-4 text-left lg:p-[2rem]"
                 >
                   <span className="flex shrink-0 items-center justify-center bg-gray-50 p-2 lg:p-[0.6667rem]">
                     <svg
                       viewBox="0 0 24 24"
                       fill="none"
                       aria-hidden
-                      className="size-5 text-neutral-800 lg:size-[2rem]"
+                      className="size-4 text-neutral-800 lg:size-[2rem]"
                     >
                       {/* Horizontal bar — always present */}
                       <path
@@ -60,7 +60,7 @@ export default function FaqAccordion({ title, items }: FaqAccordionProps) {
                       />
                     </svg>
                   </span>
-                  <span className="font-test-tiempos-fine text-lg font-normal text-neutral-800 lg:text-[2rem] lg:leading-[2.6667rem]">
+                  <span className="font-test-tiempos-fine text-base sm:text-lg font-normal text-neutral-800 lg:text-[2rem] lg:leading-[2.6667rem]">
                     {item.question}
                   </span>
                 </button>
@@ -74,7 +74,7 @@ export default function FaqAccordion({ title, items }: FaqAccordionProps) {
                   }`}
                 >
                   <div className="overflow-hidden">
-                    <p className="pb-4 pl-[3rem] pr-4 text-sm leading-6 text-neutral-800 lg:pb-[2rem] lg:pl-[5.6667rem] lg:pr-[2rem] lg:text-[1.3333rem] lg:leading-[2rem]">
+                    <p className="pb-4 pl-[3rem] pr-4 text-sm leading-5 sm:leading-6 text-neutral-800 lg:pb-[2rem] lg:pl-[5.6667rem] lg:pr-[2rem] lg:text-[1.3333rem] lg:leading-[2rem]">
                       {item.answer}
                     </p>
                   </div>

@@ -8,6 +8,7 @@ export interface OfficeCardData {
   address: string;
   phones: string[];
   email: string;
+  coordinates: { lat: number; lng: number };
 }
 
 export interface OpeningHour {
@@ -91,7 +92,7 @@ export const headquarters = {
 /*  Sister Concerns Office                                             */
 /* ------------------------------------------------------------------ */
 
-const OFFICE_IMG = "/images/contact-us/office-placeholder.png";
+const OFFICE_IMG = "/images/contact-us/office-location-placeholder.png";
 
 export const sisterConcernCards: OfficeCardData[] = [
   {
@@ -101,6 +102,7 @@ export const sisterConcernCards: OfficeCardData[] = [
       "Phoenix Bhaban (2nd Floor, Southeast Portion), 12 Dilkusha C/A, Dhaka-1000",
     phones: ["9512646", "9512647"],
     email: "info@amanatshahfabrics.com",
+    coordinates: { lat: 23.7330, lng: 90.4098 },
   },
   {
     title: "Farm 2 Firm (Baikanthapur Tea State)",
@@ -109,6 +111,7 @@ export const sisterConcernCards: OfficeCardData[] = [
       "Phoenix Bhaban (2nd Floor, Southeast Portion), 12 Dilkusha C/A, Dhaka-1000",
     phones: ["9512646", "9512647"],
     email: "info@amanatshahfabrics.com",
+    coordinates: { lat: 23.7330, lng: 90.4098 },
   },
   {
     title: "Factory",
@@ -117,6 +120,7 @@ export const sisterConcernCards: OfficeCardData[] = [
       "Phoenix Bhaban (2nd Floor, Southeast Portion), 12 Dilkusha C/A, Dhaka-1000",
     phones: ["9512646", "9512647"],
     email: "info@amanatshahfabrics.com",
+    coordinates: { lat: 23.7330, lng: 90.4098 },
   },
 ];
 
@@ -132,6 +136,7 @@ export const salesPointCards: OfficeCardData[] = [
       "Phoenix Bhaban (2nd Floor, Southeast Portion), 12 Dilkusha C/A, Dhaka-1000",
     phones: ["9512646", "9512647"],
     email: "info@amanatshahfabrics.com",
+    coordinates: { lat: 23.7330, lng: 90.4098 },
   },
   {
     title: "Showroom - 1",
@@ -140,6 +145,7 @@ export const salesPointCards: OfficeCardData[] = [
       "Phoenix Bhaban (2nd Floor, Southeast Portion), 12 Dilkusha C/A, Dhaka-1000",
     phones: ["9512646", "9512647"],
     email: "info@amanatshahfabrics.com",
+    coordinates: { lat: 23.7330, lng: 90.4098 },
   },
   {
     title: "Showroom - 2",
@@ -148,5 +154,6 @@ export const salesPointCards: OfficeCardData[] = [
       "Phoenix Bhaban (2nd Floor, Southeast Portion), 12 Dilkusha C/A, Dhaka-1000",
     phones: ["9512646", "9512647"],
     email: "info@amanatshahfabrics.com",
+    coordinates: { lat: 23.7330, lng: 90.4098 },
   },
 ];

@@ -23,7 +23,7 @@ export default function MessageBody({
   return (
     <section
       id={id}
-      className="w-full bg-white px-4 sm:px-6 lg:px-[5em] pt-10 sm:pt-12 lg:pt-[5em]"
+      className="w-full bg-white px-4 sm:px-6 lg:px-[5em] pt-6 sm:pt-12 lg:pt-[5em]"
     >
       <div className="mx-auto w-full max-w-full lg:w-[64.1em]">
         <h2 className="font-test-tiempos-fine font-medium text-xl sm:text-2xl lg:text-[2em] lg:leading-[1.33] text-neutral-800">
@@ -39,7 +39,7 @@ export default function MessageBody({
         {paragraphs.map((paragraph) => (
           <p
             key={paragraph.slice(0, 40)}
-            className="mt-4 lg:mt-[1.33em] text-sm sm:text-base lg:text-[1.17em] lg:leading-[1.43] text-justify text-neutral-700"
+            className="mt-4 lg:mt-[1.33em] text-sm sm:text-base lg:text-[1.17em] lg:leading-[1.43] text-justify text-neutral-500"
           >
             {paragraph}
           </p>

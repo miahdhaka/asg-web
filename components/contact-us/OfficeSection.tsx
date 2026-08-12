@@ -13,14 +13,14 @@ export default function OfficeSection({
   className?: string;
 }) {
   return (
-    <section className={`flex flex-col pt-[3.75rem] ${className}`}>
+    <section className={`flex flex-col px-4 sm:px-8 lg:px-[5rem] pt-10 lg:pt-[5rem] pb-16 lg:pb-[4.5rem] ${className}`}>
       {/* Section heading — aligned with the page's 60px left margin */}
-      <h2 className="mb-8 px-4 text-2xl leading-[2rem] text-neutral-800 font-test-tiempos-fine sm:px-8 lg:px-[3.75rem] lg:text-5xl lg:leading-[3rem]">
+      <h2 className="text-2xl lg:text-[4rem] leading-[2rem] lg:leading-[3rem] text-neutral-800 font-test-tiempos-fine mb-8 lg:mb-[3rem]">
         {heading}
       </h2>
 
       {/* Cards centered in a 1152px container, with dividers between rows */}
-      <div className="mx-auto flex w-full max-w-[72rem] flex-col px-4 sm:px-8 lg:px-0">
+      <div className="flex flex-col w-full max-w-[120rem] mx-auto px-4 sm:px-8 lg:px-0">
         {cards.map((card, i) => (
           <div key={card.title} className="flex flex-col">
             <OfficeCard card={card} />

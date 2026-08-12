@@ -11,7 +11,7 @@ export default function AboutHero() {
         height={290}
         priority
         quality={90}
-        className="block lg:hidden min-h-[20rem] w-full h-auto object-cover object-[50%_40%]"
+        className="block lg:hidden min-h-[28rem] w-full h-auto object-cover object-[50%_40%]"
       />
 
       {/* Background image — desktop only */}
