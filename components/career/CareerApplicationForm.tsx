@@ -444,7 +444,7 @@ export default function CareerApplicationForm({
     return new Date(d).toLocaleDateString("en-US", { month: "short", year: "numeric" });
   };
 
-  const inputClass = "h-12 w-full bg-white px-4 text-sm text-[#555] outline-none placeholder:text-[#b5b7b9]";
+  const inputClass = "h-9 sm:h-12 w-full bg-white px-2 sm:px-4 text-xs sm:text-sm text-[#555] outline-none placeholder:text-[#b5b7b9]";
 
   const labelClass = "mb-1.5 block text-xs lg:text-[1.2rem] text-neutral-800";
 
@@ -456,7 +456,7 @@ export default function CareerApplicationForm({
     label: string,
     value: string,
     onChange: (val: string) => void,
-    opts?: { type?: string; placeholder?: string; required?: boolean; disabled?: boolean; children?: React.ReactNode }
+    opts?: { type?: string; placeholder?: string; required?: boolean; disabled?: boolean; children?: React.ReactNode; errorLabel?: string }
   ) => {
     const isRequired = opts?.required ?? true;
     const isDisabled = opts?.disabled ?? false;
@@ -486,7 +486,7 @@ export default function CareerApplicationForm({
         {hasError && (
           <p className="mt-1.5 flex items-center gap-1 text-xs lg:text-[1rem] text-red-500">
             <AlertCircle className="size-3.5 lg:size-4" />
-            Please provide your {label.toLowerCase()}
+            Please provide your {opts?.errorLabel ?? label.toLowerCase()}
           </p>
         )}
       </div>
@@ -497,13 +497,13 @@ export default function CareerApplicationForm({
     <div>
       <form
         onSubmit={handleSubmit}
-        className="w-full px-4 pb-[70px] md:px-0"
+        className="w-full sm:pb-[70px] "
       >
         <h1 className="font-test-tiempos-fine text-xl lg:text-[2rem] font-medium text-neutral-800">{jobTitle}</h1>
 
-        <div className="flex items-center justify-between bg-[#EAF4FF] rounded px-4 lg:px-[1.5rem] py-[1.4rem] mt-[2rem]">
+        <div className="flex flex-col gap-2 sm:gap-4 rounded bg-[#EAF4FF] px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:mt-6 lg:mt-[2rem] lg:px-[1.5rem] lg:py-[1.4rem] mt-4">
           <div>
-            <p className="text-sm lg:text-[1.3rem] text-neutral-800 font-medium">
+            <p className="text-base lg:text-[1.3rem] text-neutral-800">
               Autofill with LinkedIn
             </p>
 
@@ -512,7 +512,7 @@ export default function CareerApplicationForm({
 
           <button
             type="button"
-            className="group relative flex h-12 items-center gap-1.5 bg-[#0A66C2] px-6 text-sm lg:text-[1.1667rem] text-white transition-all duration-300 ease-out cursor-pointer"
+            className="group relative flex h-9 sm:h-11 w-full sm:w-fit items-center justify-center gap-1.5 bg-[#0A66C2] px-5 text-sm lg:h-12 lg:px-6 lg:text-[1.1667rem] text-white transition-all duration-300 ease-out cursor-pointer"
           >
             {/* Shine sweep */}
             <span
@@ -529,10 +529,10 @@ export default function CareerApplicationForm({
         </div>
 
         {/* Personal Information */}
-        <section className=" bg-gray-50 px-8 py-8 mt-8">
-          <h2 className="font-test-tiempos-fine text-base lg:text-[1.5rem] font-medium text-neutral-800">Personal information</h2>
+        <section className="bg-gray-50 px-3 sm:px-4 py-5 sm:py-6 mt-8 sm:mt-10 sm:px-6 sm:py-8 lg:px-8 lg:mt-12">
+          <h2 className="font-test-tiempos-fine text-lg lg:text-[1.5rem] font-medium text-neutral-800">Personal information</h2>
 
-          <div className="grid grid-cols-1 gap-x-4 gap-y-5 md:grid-cols-2 mt-12">
+          <div className="grid grid-cols-1 gap-x-4 gap-y-5 md:grid-cols-2 mt-6 sm:mt-12">
             {renderField("firstName", "First name", personal.firstName, (v) => updatePersonal("firstName", v), { placeholder: "Enter your first name" })}
             {renderField("lastName", "Last name", personal.lastName, (v) => updatePersonal("lastName", v), { placeholder: "Enter your last name" })}
             {renderField("email", "Email address", personal.email, (v) => updatePersonal("email", v), { type: "email", placeholder: "Enter your email address" })}
@@ -542,8 +542,8 @@ export default function CareerApplicationForm({
           </div>
         </section>
 
-        <section className="bg-gray-50 px-8 py-8 mt-8">
-          <div className="flex h-14 items-center justify-between border-b border-gray-200 pb-7">
+        <section className="bg-gray-50 px-4 py-6 mt-8 sm:mt-10 sm:px-6 sm:py-8 lg:px-8 lg:mt-12">
+          <div className="flex h-12 items-center justify-between border-b border-gray-200 pb-5 sm:h-14 sm:pb-7 lg:h-14 lg:pb-7">
             <div className="flex items-center gap-2">
               <Building2
                 size={24}
@@ -551,7 +551,7 @@ export default function CareerApplicationForm({
                 className="text-[#303438]"
               />
 
-              <h2 className="font-test-tiempos-fine text-base lg:text-[1.5rem] font-medium text-neutral-800">Experience</h2>
+              <h2 className="font-test-tiempos-fine text-lg lg:text-[1.5rem] font-medium text-neutral-800">Experience</h2>
             </div>
 
             <button
@@ -627,32 +627,34 @@ export default function CareerApplicationForm({
                     </div>
 
                     {renderField(`exp-${experience.id}-from`, "From", experience.from, (v) => updateExperience(experience.id, "from", v), {
+                      errorLabel: "start date",
                       children: (
                         <div className="relative cursor-pointer" onClick={(e) => { const input = e.currentTarget.querySelector("input") as HTMLInputElement; if (input && !input.disabled && input.showPicker) { e.preventDefault(); input.showPicker(); } }}>
                           <CalendarDays size={14} strokeWidth={1.4} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[#999]" />
-                          <input required type="date" value={experience.from} onChange={(e) => updateExperience(experience.id, "from", e.target.value)} onBlur={() => setTouched((prev) => new Set(prev).add(`exp-${experience.id}-from`))} className={`${inputClass} pl-7`} />
+                          <input required type="date" value={experience.from} onChange={(e) => updateExperience(experience.id, "from", e.target.value)} onBlur={() => setTouched((prev) => new Set(prev).add(`exp-${experience.id}-from`))} className={`${inputClass} pl-8 sm:pl-7`} />
                         </div>
                       ),
                     })}
 
                     {renderField(`exp-${experience.id}-to`, "To", experience.to, (v) => updateExperience(experience.id, "to", v), {
+                      errorLabel: "end date",
                       required: !experience.currentlyWorking,
                       disabled: experience.currentlyWorking,
                       children: (
                         <div className="relative cursor-pointer" onClick={(e) => { const input = e.currentTarget.querySelector("input") as HTMLInputElement; if (input && !input.disabled && input.showPicker) { e.preventDefault(); input.showPicker(); } }}>
                           <CalendarDays size={14} strokeWidth={1.4} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[#999]" />
-                          <input required={!experience.currentlyWorking} disabled={experience.currentlyWorking} type="date" value={experience.to} onChange={(e) => updateExperience(experience.id, "to", e.target.value)} onBlur={() => setTouched((prev) => new Set(prev).add(`exp-${experience.id}-to`))} className={`${inputClass} pl-7 disabled:bg-[#f1f2f3] disabled:cursor-not-allowed`} />
+                          <input required={!experience.currentlyWorking} disabled={experience.currentlyWorking} type="date" value={experience.to} onChange={(e) => updateExperience(experience.id, "to", e.target.value)} onBlur={() => setTouched((prev) => new Set(prev).add(`exp-${experience.id}-to`))} className={`${inputClass} pl-8 sm:pl-7 disabled:bg-[#f1f2f3] disabled:cursor-not-allowed`} />
                         </div>
                       ),
                     })}
                   </div>
 
-                  <div className="mt-5 flex items-center justify-between">
-                    <label className="flex cursor-pointer items-center gap-2 text-sm text-[#686c70]">
+                  <div className="mt-3 sm:mt-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
+                    <label className="flex cursor-pointer items-center gap-2 text-xs sm:text-sm text-[#686c70]">
                       <input type="checkbox" checked={experience.currentlyWorking} onChange={(e) => updateExperience(experience.id, "currentlyWorking", e.target.checked)} className="peer sr-only" />
-                      <span className={`flex size-4.5 items-center justify-center rounded-sm border-2 transition-all duration-300 ${experience.currentlyWorking ? "border-transparent [background-image:var(--primary-gradient)]" : "border-[#c8ccd0]"}`}>
+                      <span className={`flex size-3.5 sm:size-4.5 items-center justify-center rounded-sm border-2 transition-all duration-300 ${experience.currentlyWorking ? "border-transparent [background-image:var(--primary-gradient)]" : "border-[#c8ccd0]"}`}>
                         {experience.currentlyWorking && (
-                          <svg className="size-3 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
+                          <svg className="size-2 sm:size-3 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
                             <polyline points="20 6 9 17 4 12" />
                           </svg>
                         )}
@@ -660,11 +662,11 @@ export default function CareerApplicationForm({
                       I currently work here
                     </label>
 
-                    <div className="flex items-center gap-3">
-                      <button type="button" onClick={() => removeExperience(experience.id)} className="h-9 text-sm text-neutral-500 cursor-pointer bg-gray-200 hover:bg-gray-300 transition-all duration-300 ease-out px-6">
+                    <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+                      <button type="button" onClick={() => removeExperience(experience.id)} className="h-9 flex-1 sm:flex-none text-sm text-neutral-500 cursor-pointer bg-gray-200 hover:bg-gray-300 transition-all duration-300 ease-out px-6">
                         Cancel
                       </button>
-                      <button type="button" data-label="Save" onClick={() => saveExperience(experience.id)} className="save-btn h-9 text-sm cursor-pointer px-6">
+                      <button type="button" data-label="Save" onClick={() => saveExperience(experience.id)} className="save-btn h-9 flex-1 sm:flex-none text-sm cursor-pointer px-6">
                         Save
                       </button>
                     </div>
@@ -681,8 +683,8 @@ export default function CareerApplicationForm({
         {/* EDUCATION                                                */}
         {/* ======================================================== */}
 
-        <section className="bg-gray-50 px-8 py-8 mt-8">
-          <div className="flex h-14 items-center justify-between border-b border-gray-200 pb-7">
+        <section className="bg-gray-50 px-4 py-6 mt-8 sm:mt-10 sm:px-6 sm:py-8 lg:px-8 lg:mt-12">
+          <div className="flex h-12 items-center justify-between border-b border-gray-200 pb-5 sm:h-14 sm:pb-7 lg:h-14 lg:pb-7">
             <div className="flex items-center gap-2">
               <GraduationCap
                 size={24}
@@ -690,7 +692,7 @@ export default function CareerApplicationForm({
                 className="text-[#303438]"
               />
 
-              <h2 className="font-test-tiempos-fine text-base lg:text-[1.5rem] font-medium text-neutral-800">Education</h2>
+              <h2 className="font-test-tiempos-fine text-lg lg:text-[1.5rem] font-medium text-neutral-800">Education</h2>
             </div>
 
             <button
@@ -772,32 +774,34 @@ export default function CareerApplicationForm({
                     </div>
 
                     {renderField(`edu-${edu.id}-from`, "From", edu.from, (v) => updateEducation(edu.id, "from", v), {
+                      errorLabel: "start date",
                       children: (
                         <div className="relative cursor-pointer" onClick={(e) => { const input = e.currentTarget.querySelector("input") as HTMLInputElement; if (input && !input.disabled && input.showPicker) { e.preventDefault(); input.showPicker(); } }}>
                           <CalendarDays size={14} strokeWidth={1.4} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[#999]" />
-                          <input required type="date" value={edu.from} onChange={(e) => updateEducation(edu.id, "from", e.target.value)} onBlur={() => setTouched((prev) => new Set(prev).add(`edu-${edu.id}-from`))} className={`${inputClass} pl-7`} />
+                          <input required type="date" value={edu.from} onChange={(e) => updateEducation(edu.id, "from", e.target.value)} onBlur={() => setTouched((prev) => new Set(prev).add(`edu-${edu.id}-from`))} className={`${inputClass} pl-8 sm:pl-7`} />
                         </div>
                       ),
                     })}
 
                     {renderField(`edu-${edu.id}-to`, "To", edu.to, (v) => updateEducation(edu.id, "to", v), {
+                      errorLabel: "end date",
                       required: !edu.currentlyAttending,
                       disabled: edu.currentlyAttending,
                       children: (
                         <div className="relative cursor-pointer" onClick={(e) => { const input = e.currentTarget.querySelector("input") as HTMLInputElement; if (input && !input.disabled && input.showPicker) { e.preventDefault(); input.showPicker(); } }}>
                           <CalendarDays size={14} strokeWidth={1.4} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[#999]" />
-                          <input required={!edu.currentlyAttending} disabled={edu.currentlyAttending} type="date" value={edu.to} onChange={(e) => updateEducation(edu.id, "to", e.target.value)} onBlur={() => setTouched((prev) => new Set(prev).add(`edu-${edu.id}-to`))} className={`${inputClass} pl-7 disabled:bg-[#f1f2f3] disabled:cursor-not-allowed`} />
+                          <input required={!edu.currentlyAttending} disabled={edu.currentlyAttending} type="date" value={edu.to} onChange={(e) => updateEducation(edu.id, "to", e.target.value)} onBlur={() => setTouched((prev) => new Set(prev).add(`edu-${edu.id}-to`))} className={`${inputClass} pl-8 sm:pl-7 disabled:bg-[#f1f2f3] disabled:cursor-not-allowed`} />
                         </div>
                       ),
                     })}
                   </div>
 
-                  <div className="mt-5 flex items-center justify-between">
-                    <label className="flex cursor-pointer items-center gap-2 text-sm text-[#686c70]">
+                  <div className="mt-3 sm:mt-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
+                    <label className="flex cursor-pointer items-center gap-2 text-xs sm:text-sm text-[#686c70]">
                       <input type="checkbox" checked={edu.currentlyAttending} onChange={(e) => updateEducation(edu.id, "currentlyAttending", e.target.checked)} className="peer sr-only" />
-                      <span className={`flex size-4.5 items-center justify-center rounded-sm border-2 transition-all duration-300 ${edu.currentlyAttending ? "border-transparent [background-image:var(--primary-gradient)]" : "border-[#c8ccd0]"}`}>
+                      <span className={`flex size-3.5 sm:size-4.5 items-center justify-center rounded-sm border-2 transition-all duration-300 ${edu.currentlyAttending ? "border-transparent [background-image:var(--primary-gradient)]" : "border-[#c8ccd0]"}`}>
                         {edu.currentlyAttending && (
-                          <svg className="size-3 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
+                          <svg className="size-2 sm:size-3 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
                             <polyline points="20 6 9 17 4 12" />
                           </svg>
                         )}
@@ -805,11 +809,11 @@ export default function CareerApplicationForm({
                       I currently attend here
                     </label>
 
-                    <div className="flex items-center gap-3">
-                      <button type="button" onClick={() => removeEducation(edu.id)} className="h-9 text-sm text-neutral-500 cursor-pointer bg-gray-200 hover:bg-gray-300 transition-all duration-300 ease-out px-6">
+                    <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+                      <button type="button" onClick={() => removeEducation(edu.id)} className="h-9 flex-1 sm:flex-none text-sm text-neutral-500 cursor-pointer bg-gray-200 hover:bg-gray-300 transition-all duration-300 ease-out px-6">
                         Cancel
                       </button>
-                      <button type="button" data-label="Save" onClick={() => saveEducation(edu.id)} className="save-btn h-9 text-sm cursor-pointer px-6">
+                      <button type="button" data-label="Save" onClick={() => saveEducation(edu.id)} className="save-btn h-9 flex-1 sm:flex-none text-sm cursor-pointer px-6">
                         Save
                       </button>
                     </div>
@@ -822,8 +826,8 @@ export default function CareerApplicationForm({
         </section>
 
         {/* PROFILES */}
-        <section className="mt-5 bg-[#f8f9fa] px-5 py-5">
-          <h2 className="mb-3 font-test-tiempos-fine text-base lg:text-[1.5rem] font-medium text-neutral-800">Your profiles</h2>
+        <section className="mt-6 sm:mt-8 bg-[#f8f9fa] px-4 py-4 sm:px-5 sm:py-5">
+          <h2 className="mb-3 font-test-tiempos-fine text-lg lg:text-[1.5rem] font-medium text-neutral-800">Your profiles</h2>
 
           <label className={labelClass}>LinkedIn</label>
 
@@ -847,44 +851,44 @@ export default function CareerApplicationForm({
           </div>
         </section>
 
-        <section className="bg-gray-50 px-8 py-8 mt-8">
-          <h2 className="font-test-tiempos-fine text-base lg:text-[1.5rem] font-medium text-neutral-800">Upload your CV or resume</h2>
+        <section className="bg-gray-50 px-4 py-6 mt-8 sm:mt-10 sm:px-6 sm:py-8 lg:px-8 lg:mt-12">
+          <h2 className="font-test-tiempos-fine text-lg lg:text-[1.5rem] font-medium text-neutral-800">Upload your CV or resume</h2>
 
           <div
             onClick={() => fileRef.current?.click()}
             onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
             onDragLeave={() => setDragOver(false)}
             onDrop={handleDrop}
-            className={`group mt-6 flex h-48 lg:h-56 cursor-pointer flex-col items-center justify-center rounded border-2 border-dashed text-center transition-all duration-300 ease-in-out ${
+            className={`group mt-4 flex h-40 cursor-pointer flex-col items-center justify-center rounded border-2 border-dashed text-center transition-all duration-300 ease-in-out sm:mt-6 sm:h-48 lg:h-56 lg:mt-6 ${
               dragOver
                 ? "border-[#76c438] bg-[#f7fcf4]"
                 : "border-[#cce5b7] bg-[#fcfefd] hover:border-[#76c438] hover:bg-[#f7fcf4]"
             }`}
           >
             <UploadCloud
-              size={40}
+              size={32}
               strokeWidth={1.2}
-              className="mb-5 text-[#00a889] transition-transform duration-300 ease-in-out group-hover:scale-110"
+              className="mb-3 size-8 sm:mb-5 sm:size-10 lg:size-10 text-[#00a889] transition-transform duration-300 ease-in-out group-hover:scale-110"
             />
 
             {fileName ? (
               <>
-                <p className="text-lg lg:text-xl font-medium text-[#25282b]">
+                <p className="text-sm sm:text-base lg:text-xl font-medium text-[#25282b]">
                   {fileName}
                 </p>
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); setFileName(""); }}
-                  className="mt-2 text-base lg:text-lg text-red-400"
+                  className="mt-2 text-sm sm:text-base lg:text-lg text-red-400"
                 >
                   Remove
                 </button>
               </>
             ) : (
               <>
-                <p className="text-lg lg:text-xl font-medium text-neutral-800">Upload your CV or resume</p>
-                <p className="mt-2 text-base lg:text-lg text-neutral-500">Drag and drop, or browse · PDF, DOC, DOCX, JPEG, PNG</p>
-                <p className="mt-1 text-base lg:text-lg text-neutral-500">10MB size limit </p>
+                <p className="text-sm sm:text-base lg:text-xl font-medium text-neutral-800">Upload your CV or resume</p>
+                <p className="mt-2 text-xs sm:text-sm lg:text-base text-neutral-500">Drag and drop, or browse · PDF, DOC, DOCX, JPEG, PNG</p>
+                <p className="mt-1 text-xs sm:text-sm lg:text-base text-neutral-500">10MB size limit </p>
               </>
             )}
 
@@ -899,10 +903,10 @@ export default function CareerApplicationForm({
         </section>
 
         {/* SUBMIT */}
-        <div className="mt-8 flex justify-end">
+        <div className="mt-8 flex justify-end sm:mt-10 lg:mt-12">
           <button
             type="submit"
-            className="group relative inline-flex shrink-0 items-center justify-center overflow-hidden px-16 py-5 text-lg lg:text-[1.25rem] leading-none cursor-pointer"
+            className="group relative inline-flex shrink-0 items-center justify-center overflow-hidden px-6 py-3 text-sm sm:px-8 sm:py-4 sm:text-base lg:px-16 lg:py-5 lg:text-[1.25rem] leading-none cursor-pointer"
             style={{
               borderImage: "var(--primary-gradient) 1",
               borderWidth: 2,
@@ -911,7 +915,7 @@ export default function CareerApplicationForm({
             {/* Invisible spacer — preserves the button's intrinsic width/height */}
             <span className="invisible inline-flex items-center gap-2 whitespace-nowrap">
               Submit Application
-              <Send className="h-6 w-6" />
+              <Send className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6" />
             </span>
 
             {/* Default: gradient fill + white text + white icon — slides down and out on hover */}
@@ -921,7 +925,7 @@ export default function CareerApplicationForm({
               style={{ background: "var(--primary-gradient)" }}
             >
               Submit Application
-              <Send className="h-6 w-6 text-white" strokeWidth={1.5} />
+              <Send className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" strokeWidth={1.5} />
             </span>
 
             {/* Hover: gradient text + gradient icon — slides in from the top */}
@@ -935,7 +939,7 @@ export default function CareerApplicationForm({
               >
                 Submit Application
               </span>
-              <Send className="h-6 w-6" style={{ color: '#1AA179' }} strokeWidth={1.5} />
+              <Send className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6" style={{ color: '#1AA179' }} strokeWidth={1.5} />
             </span>
           </button>
         </div>

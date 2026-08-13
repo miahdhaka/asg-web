@@ -4,8 +4,8 @@ export default function CsrIntro() {
   return (
     <>
       {/* Intro statement */}
-      <section className="px-4 sm:px-8 lg:px-[5rem] pt-10 lg:pt-[5rem]">
-        <h2 className="max-w-[58.8rem] font-test-tiempos-fine text-xl lg:text-[2.5rem] leading-[1.5] lg:leading-[3rem] text-neutral-800">
+      <section className="px-4 sm:px-8 lg:px-[5rem] pt-6 sm:pt-10 lg:pt-[5rem]">
+        <h2 className="max-w-[58.8rem] font-test-tiempos-fine text-xl lg:text-[2.5rem] leading-[1.5] lg:leading-[3rem] text-neutral-800 font-medium">
           {csrIntroStatement}
         </h2>
       </section>

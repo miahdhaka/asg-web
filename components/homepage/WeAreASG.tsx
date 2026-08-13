@@ -54,7 +54,7 @@ export default function WeAreASG() {
         const counter = { value: 0 };
         gsap.to(counter, {
           value: target,
-          duration: 2,
+          duration: 2.8,
           ease: "power2.out",
           paused: true,
           scrollTrigger: {

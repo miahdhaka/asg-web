@@ -5,15 +5,15 @@ import { BriefcaseBusiness, Calendar, MapPinned } from "lucide-react";
 
 export default function JobCard({ job }: { job: Job }) {
   return (
-    <article data-job-card className="flex flex-col gap-6 bg-gray-50 p-4 lg:gap-[2.1667rem] lg:p-[1.3333rem]">
-      <div className="flex flex-col gap-6 lg:gap-[2.3333rem]">
-        <div className="flex flex-col gap-6 lg:gap-[2.3333rem]">
+    <article data-job-card className="flex flex-col gap-6 rounded-xl border border-gray-200 bg-white p-4 lg:gap-[2.1667rem] lg:rounded-none lg:border-none lg:bg-gray-50 lg:p-[1.3333rem]">
+      <div className="flex flex-col gap-3.5 sm:gap-6 lg:gap-[2.3333rem]">
+        <div className="flex flex-col gap-3.5 sm:gap-6 lg:gap-[2.3333rem]">
           {/* Badge + role */}
           <div className="flex flex-col gap-2">
             <span className="w-fit bg-gray-100 px-[0.6667rem] py-[0.3333rem] text-xs text-neutral-800 lg:text-[1rem]">
               {job.department}
             </span>
-            <h3 className="font-test-tiempos-fine text-xl leading-7 text-neutral-800 lg:text-[2rem] lg:leading-[2.6667rem]">
+            <h3 className="font-test-tiempos-fine text-lg leading-7 text-neutral-800 lg:text-[2rem] lg:leading-[2.6667rem]">
               {job.title}
             </h3>
           </div>
@@ -40,17 +40,17 @@ export default function JobCard({ job }: { job: Job }) {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-3 lg:gap-[1.0833rem]">
+        <div className="grid grid-cols-2 gap-3 lg:gap-[1.0833rem]">
           <Link
             href={`/careers/${job.id}`}
-            className="flex-1 cursor-pointer bg-gray-100 px-4 py-2 text-center text-xs font-medium text-neutral-800 transition-all duration-300 hover:bg-gray-200 lg:px-[2rem] lg:py-[0.7rem] lg:text-[1rem]"
+            className="w-full flex-1 cursor-pointer bg-gray-100 px-4 py-2 text-center text-xs font-medium text-neutral-800 transition-all duration-300 hover:bg-gray-200 lg:px-[2rem] lg:py-[0.7rem] lg:text-[1rem]"
           >
             Job Details
           </Link>
           <Link
             href={`/careers/${job.id}/apply`}
             data-label="Apply Now"
-            className="primary-btn-flip-gradient w-[11.3333rem] shrink-0 cursor-pointer px-4 py-2 text-xs font-medium lg:px-[2rem] lg:py-[0.8rem] lg:text-[1rem]"
+            className="w-full primary-btn-flip-gradient shrink-0 cursor-pointer px-4 py-2 text-xs font-medium lg:px-[2rem] lg:py-[0.8rem] lg:text-[1rem]"
           >
             Apply Now
           </Link>

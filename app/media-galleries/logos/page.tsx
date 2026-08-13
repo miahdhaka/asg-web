@@ -8,11 +8,7 @@ export const metadata: Metadata = {
   description:
     "Curated high-resolution visual assets from ASG Group — official logos of Amanat Shah Group and its concern companies.",
 };
-
-/* ------------------------------------------------------------------ */
-/*  Page                                                               */
-/* ------------------------------------------------------------------ */
-
+ 
 export default function LogosGalleryPage() {
   return (
     <main className="flex flex-col">

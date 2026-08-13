@@ -19,7 +19,7 @@ export default function ContactUsPage() {
       {/* Contact info + form section — split by a vertical divider */}
       <section className="lg:grid lg:grid-cols-[36.4rem_1fr]">
         {/* Left column — HQ info + hours (divider runs full column height) */}
-        <div className="border-b lg:border-b-0 lg:border-r border-gray-100 px-4 sm:px-8 lg:px-[5rem] pt-10 lg:pt-[5rem] pb-10 sm:pb-16 lg:pb-[4.5rem]">
+        <div className="border-b lg:border-b-0 lg:border-r border-gray-100 px-4 sm:px-8 lg:px-[5rem] pt-6 sm:pt-10 lg:pt-[5rem] pb-10 sm:pb-16 lg:pb-[4.5rem]">
           <ContactInfo />
         </div>
 

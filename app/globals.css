@@ -355,6 +355,26 @@
   transform: scale(0.92);
 }
 
+/* Animated line-clamp: shows "..." inline at the last visible line */
+.line-clamp-animate {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.line-clamp-animate.clamp-collapsed {
+  -webkit-line-clamp: 3;
+  transition: -webkit-line-clamp 0s ease-in-out 0.7s;
+}
+@media (min-width: 1024px) {
+  .line-clamp-animate.clamp-collapsed {
+    -webkit-line-clamp: unset;
+  }
+}
+.line-clamp-animate.clamp-expanded {
+  -webkit-line-clamp: 100;
+  transition: 0s;
+}
+
 
 /* Primary Gradient flip button — gradient border + gradient text + flip hover */
 .primary-btn-flip-gradient {

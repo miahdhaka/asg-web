@@ -19,7 +19,7 @@ export default function OfficeCard({ card }: { card: OfficeCardData }) {
   return (
     <div className="border border-gray-200 sm:border-transparent rounded-md sm:rounded-none p-5 sm:p-0 flex flex-col lg:flex-row items-center justify-center gap-4 sm:gap-9 lg:gap-12">
       {/* Title */}
-      <h3 className="w-full lg:w-90 text-lg sm:text-2xl lg:text-[2.2rem] text-black sm:leading-8 lg:leading-[2.8rem] font-test-tiempos-fine lg:shrink-0">
+      <h3 className="w-full lg:w-90 text-base sm:text-2xl lg:text-[2.2rem] text-black sm:leading-8 lg:leading-[2.8rem] font-test-tiempos-fine lg:shrink-0">
         {card.title}
       </h3>
 

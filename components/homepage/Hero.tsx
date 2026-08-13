@@ -21,7 +21,6 @@ export default function Hero() {
   const introFlyRef = useRef<HTMLDivElement>(null);
   const flyDarkRef = useRef<HTMLImageElement>(null);
   const flyMixedRef = useRef<HTMLImageElement>(null);
-  const waaCapsuleRef = useRef<HTMLDivElement>(null);
   const waaWhiteRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -91,18 +90,18 @@ export default function Hero() {
       // Headline, tagline & scroll hint fade away first
       tl.to(
         [textRef.current, hintRef.current],
-        { opacity: 0, y: -40, duration: 0.35, ease: "power2.out" },
+        { opacity: 0, y: -40, duration: 0.5, ease: "power2.out" },
         0
       );
 
       // Dark overlay clears while the video shrinks into its card
-      tl.to(overlayRef.current, { opacity: 0, duration: 0.55 }, 0.05);
+      tl.to(overlayRef.current, { opacity: 0, duration: 0.75 }, 0.05);
       tl.to(
         videoWrapRef.current,
         {
           width: "33.4vw",
           height: "18.79vw",
-          duration: 0.75,
+          duration: 1,
         },
         0.05
       );
@@ -115,23 +114,23 @@ export default function Hero() {
           y: flyY,
           scale: flyScale,
           transformOrigin: "center center",
-          duration: 0.7,
+          duration: 0.95,
         },
         0.05
       );
       // …pauses there, fades out…
-      tl.to(logoRef.current, { opacity: 0, duration: 0.25, ease: "power1.out" }, 0.85);
+      tl.to(logoRef.current, { opacity: 0, duration: 0.35, ease: "power1.out" }, 1.1);
       // …and the navbar logo takes over
       if (headerLogo) {
-        tl.to(headerLogo, { opacity: 1, duration: 0.3, ease: "power1.inOut" }, 0.95);
+        tl.to(headerLogo, { opacity: 1, duration: 0.4, ease: "power1.inOut" }, 1.25);
       }
 
       // "Family Business" settles in above the shrunken video
       tl.fromTo(
         familyRef.current,
         { opacity: 0, y: 28 },
-        { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" },
-        0.6
+        { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
+        0.8
       );
 
       /* Centre-anchor the heading via GSAP so phase 2 can re-align it
@@ -176,7 +175,7 @@ export default function Hero() {
           left: "33.3vw",
           xPercent: 0,
           y: () => -metrics().rise,
-          duration: 0.6,
+          duration: 1.1,
         },
         0
       );
@@ -184,7 +183,7 @@ export default function Hero() {
       // The video card dips down to widen the gap
       tl2.to(
         videoWrapRef.current,
-        { y: () => metrics().drop, duration: 0.6 },
+        { y: () => metrics().drop, duration: 1.1 },
         0
       );
 
@@ -194,8 +193,8 @@ export default function Hero() {
       tl2.fromTo(
         legacyRef.current,
         { x: "70vw", autoAlpha: 0 },
-        { x: 0, autoAlpha: 1, duration: 0.65, ease: "power3.out" },
-        0.1
+        { x: 0, autoAlpha: 1, duration: 1.3, ease: "power3.out" },
+        0.3
       );
 
       /* ── Phase 3 (3rd scroll): "More Then 130 Years" rises from the bottom,
@@ -222,8 +221,8 @@ export default function Hero() {
       tl3.fromTo(
         moreRef.current,
         { y: 90, autoAlpha: 0 },
-        { y: 0, autoAlpha: 1, duration: 0.65, ease: "power3.out" },
-        0
+        { y: 0, autoAlpha: 1, duration: 1.1, ease: "power3.out" },
+        0.5
       );
 
       /* ── Phase 4 (4th scroll): the IntroSection opens over the hero as an
@@ -264,7 +263,7 @@ export default function Hero() {
           { clipPath: "circle(0% at 50% 50%)" },
           {
             clipPath: "circle(75% at 50% 50%)",
-            duration: 1,
+            duration: 1.3,
             ease: "power2.inOut",
           }
         );
@@ -313,15 +312,15 @@ export default function Hero() {
         // Fly down while the circle opens…
         tl4.to(
           introFlyRef.current,
-          { x: 0, y: 0, scale: 1, duration: 0.98, ease: "power2.inOut" },
+          { x: 0, y: 0, scale: 1, duration: 1.3, ease: "power2.inOut" },
           0.02
         );
-        // …cross-fading dark → mixed variant mid-flight
-        tl4.to(flyDarkRef.current, { opacity: 0, duration: 0.35 }, 0.4);
-        tl4.to(flyMixedRef.current, { opacity: 1, duration: 0.35 }, 0.4);
+        // …cross-fading dark → mixed variant near the end of flight
+        tl4.to(flyDarkRef.current, { opacity: 0, duration: 0.4 }, 0.8);
+        tl4.to(flyMixedRef.current, { opacity: 1, duration: 0.4 }, 0.8);
         // Land: the intro's own logo takes over
-        tl4.set(introFlyRef.current, { autoAlpha: 0 }, 1.0);
-        tl4.set(introLogo, { autoAlpha: 1 }, 1.0);
+        tl4.set(introFlyRef.current, { autoAlpha: 0 }, 1.2);
+        tl4.set(introLogo, { autoAlpha: 1 }, 1.2);
       }
 
       /* While the logo flies down from the top, the intro's paragraph and
@@ -334,7 +333,7 @@ export default function Hero() {
         tl4.fromTo(
           introRisers,
           { y: 120, autoAlpha: 0 },
-          { y: 0, autoAlpha: 1, duration: 0.98, ease: "power2.inOut" },
+          { y: 0, autoAlpha: 1, duration: 1.3, ease: "power2.inOut" },
           0.02
         );
       }
@@ -372,7 +371,7 @@ export default function Hero() {
         // OurBusiness underneath, so nothing behind ever shows through
         tl5.to(
           intro,
-          { autoAlpha: 0, duration: 1, ease: "power2.inOut" },
+          { autoAlpha: 0, duration: 1.3, ease: "power2.inOut" },
           0
         );
       }
@@ -419,17 +418,17 @@ export default function Hero() {
         // Fly up to the navbar while the intro fades away…
         tl5.to(
           introFlyRef.current,
-          { x: uX, y: uY, scale: uScale, duration: 0.98, ease: "power2.inOut" },
+          { x: uX, y: uY, scale: uScale, duration: 1.3, ease: "power2.inOut" },
           0.02
         );
-        // …cross-fading mixed → dark variant mid-flight
-        tl5.to(flyMixedRef.current, { opacity: 0, duration: 0.35 }, 0.4);
-        tl5.to(flyDarkRef.current, { opacity: 1, duration: 0.35 }, 0.4);
+        // …cross-fading mixed → dark variant near the end of flight
+        tl5.to(flyMixedRef.current, { opacity: 0, duration: 0.4 }, 0.8);
+        tl5.to(flyDarkRef.current, { opacity: 1, duration: 0.4 }, 0.8);
         // Land: the navbar logo takes over again
-        tl5.set(introFlyRef.current, { autoAlpha: 0 }, 1.0);
-        tl5.set(headerLogo, { opacity: 1 }, 1.0);
+        tl5.set(introFlyRef.current, { autoAlpha: 0 }, 1.2);
+        tl5.set(headerLogo, { opacity: 1 }, 1.2);
         // Restore the intro's own logo for future replays/reverses
-        tl5.set(introLogo, { autoAlpha: 1 }, 1.0);
+        tl5.set(introLogo, { autoAlpha: 1 }, 1.2);
       }
 
       /* Mirror of the phase-4 entrance: while the logo flies back up to the
@@ -439,7 +438,7 @@ export default function Hero() {
         tl5.fromTo(
           introRisers,
           { y: 0, autoAlpha: 1 },
-          { y: 120, autoAlpha: 0, duration: 0.98, ease: "power2.inOut" },
+          { y: 120, autoAlpha: 0, duration: 1.3, ease: "power2.inOut" },
           0.02
         );
       }
@@ -457,7 +456,7 @@ export default function Hero() {
             scale: 1,
             autoAlpha: 1,
             transformOrigin: "left center",
-            duration: 0.98,
+            duration: 1.3,
             ease: "power2.inOut",
           },
           0.02
@@ -531,7 +530,7 @@ export default function Hero() {
            dissolves over it: same top-layer-only fade as phase 5 */
         link.tl.to(
           link.from,
-          { autoAlpha: 0, duration: 1, ease: "power2.inOut" },
+          { autoAlpha: 0, duration: 1.3, ease: "power2.inOut" },
           0
         );
       }
@@ -551,7 +550,7 @@ export default function Hero() {
             scale: 1,
             autoAlpha: 1,
             transformOrigin: "left center",
-            duration: 1,
+            duration: 1.3,
             ease: "power2.inOut",
           },
           0
@@ -577,9 +576,9 @@ export default function Hero() {
           {
             y: 0,
             autoAlpha: 1,
-            duration: 1,
+            duration: 1.3,
             ease: "power2.inOut",
-            stagger: 0.08,
+            stagger: 0.1,
           },
           0
         );
@@ -621,7 +620,7 @@ export default function Hero() {
         // Timeline just travels back to identity — reverse restacks them
         certLink.tl.to(
           tiles,
-          { x: 0, y: 0, duration: 1, ease: "power2.inOut" },
+          { x: 0, y: 0, duration: 1.3, ease: "power2.inOut" },
           0
         );
         // Once landed (either direction) drop the leftover transforms so
@@ -649,7 +648,7 @@ export default function Hero() {
             scale: 1,
             autoAlpha: 1,
             transformOrigin: "left center",
-            duration: 1,
+            duration: 1.3,
             ease: "power2.inOut",
           },
           0
@@ -668,76 +667,63 @@ export default function Hero() {
         };
       }
 
-      /* 9th-scroll custom reveal: a proper capsule showing ONLY WeAreASG's
-         bg image (a fixed pill "window" onto the full-bleed aerial shot)
-         rises from bottom-center to screen-center (1s) while the page
-         behind it fades to full white, holds there a moment, then the
-         capsule fades away while the full section — with "WE ARE" nudging
-         in from the right and "ASG" from the left — cross-fades in (1s).
-         Reversing plays the exact mirror: section fades out to the white
-         backdrop, capsule reappears, holds, sinks down as the page returns. */
+      /* 9th-scroll custom reveal: WeAreASG emerges from a blurred,
+         scaled-up state into crisp focus — a cinematic depth-of-field
+         effect. The white backdrop fades in, the section de-blurs and
+         settles from 1.15× scale to 1×, while "WE ARE" sweeps in from
+         the right and "ASG" from the left. Reversing plays the mirror:
+         section blurs and zooms out, texts fly away. */
       const waaLink = fadeChain.find((l) => l.to === weAreASG);
-      const waaCapsule = waaCapsuleRef.current;
       const waaWhite = waaWhiteRef.current;
-      if (waaLink && weAreASG && waaCapsule && waaWhite) {
+      if (waaLink && weAreASG && waaWhite) {
         const weAreTxt = document.getElementById("waa-we-are");
         const asgTxt = document.getElementById("waa-asg");
         const texts = [weAreTxt, asgTxt].filter(Boolean) as HTMLElement[];
         waaLink.onPrep = () => {
-          // Stage the start frame: capsule parked below the viewport, white
-          // backdrop transparent over cert, the section itself invisible on
-          // top, headline halves offset
-          gsap.set(waaCapsule, {
-            display: "block",
-            autoAlpha: 1,
-            xPercent: -50,
-            yPercent: -50,
-            y: window.innerHeight,
-          });
+          // Stage the start frame: section large and blurred, texts
+          // offset to their respective sides, backdrop hidden
           gsap.set(waaWhite, { display: "block", autoAlpha: 0 });
-          gsap.set(weAreASG, { autoAlpha: 0 });
-          if (weAreTxt) gsap.set(weAreTxt, { x: 90 });
-          if (asgTxt) gsap.set(asgTxt, { x: -90 });
+          gsap.set(weAreASG, {
+            scale: 1.15,
+            filter: "blur(30px)",
+            autoAlpha: 0,
+            transformOrigin: "center center",
+          });
+          if (weAreTxt) gsap.set(weAreTxt, { x: 200, autoAlpha: 0 });
+          if (asgTxt) gsap.set(asgTxt, { x: -200, autoAlpha: 0 });
         };
-        // Stage 1 — the bg-image capsule glides bottom-center → screen-center
-        // while the page behind it dissolves to full white
-        waaLink.tl.to(
-          waaCapsule,
-          { y: 0, duration: 1, ease: "power2.inOut" },
-          0
-        );
+        // White backdrop fades in
         waaLink.tl.to(
           waaWhite,
-          { autoAlpha: 1, duration: 1, ease: "power2.inOut" },
+          { autoAlpha: 1, duration: 1.3, ease: "power2.inOut" },
           0
         );
-        // …stays a little bit at the center (0.35s hold)…
-        // Stage 2 — the capsule fades away while the full section fades in
-        waaLink.tl.to(
-          waaCapsule,
-          { autoAlpha: 0, duration: 1, ease: "power2.inOut" },
-          1.35
-        );
+        // Section de-blurs, scales down, and fades in — cinematic focus
         waaLink.tl.to(
           weAreASG,
-          { autoAlpha: 1, duration: 1, ease: "power2.inOut" },
-          1.35
+          {
+            scale: 1,
+            filter: "blur(0px)",
+            autoAlpha: 1,
+            duration: 1.3,
+            ease: "power2.inOut",
+          },
+          0
         );
-        // …while the two headline halves slide into place
+        // "WE ARE" sweeps in from the right
         if (weAreTxt) {
-          waaLink.tl.to(weAreTxt, { x: 0, duration: 1, ease: "power2.inOut" }, 1.35);
+          waaLink.tl.to(weAreTxt, { x: 0, autoAlpha: 1, duration: 1.1, ease: "power3.out" }, 0.2);
         }
+        // "ASG" sweeps in from the left
         if (asgTxt) {
-          waaLink.tl.to(asgTxt, { x: 0, duration: 1, ease: "power2.inOut" }, 1.35);
+          waaLink.tl.to(asgTxt, { x: 0, autoAlpha: 1, duration: 1.1, ease: "power3.out" }, 0.2);
         }
-        // Landing (either direction) — park the capsule and the white
-        // backdrop away and drop the leftover values so the in-flow
-        // section is always clean
+        // Landing (either direction) — park the backdrop and drop
+        // all leftover props so the in-flow section is always clean
         const resetWaa = () => {
-          gsap.set(waaCapsule, { display: "none", clearProps: "opacity,visibility,transform" });
           gsap.set(waaWhite, { display: "none", clearProps: "opacity,visibility" });
-          gsap.set(weAreASG, { clearProps: "opacity,visibility" });
-          if (texts.length) gsap.set(texts, { clearProps: "transform" });
+          gsap.set(weAreASG, { clearProps: "transform,filter,opacity,visibility" });
+          if (texts.length) gsap.set(texts, { clearProps: "transform,opacity,visibility" });
         };
         waaLink.onSettle = resetWaa;
         waaLink.onUnsettle = resetWaa;
@@ -761,7 +747,7 @@ export default function Hero() {
             scale: 1,
             autoAlpha: 1,
             transformOrigin: "left center",
-            duration: 1,
+            duration: 1.3,
             ease: "power2.inOut",
           },
           0
@@ -960,9 +946,9 @@ export default function Hero() {
       ];
 
       const LAST = transitions.length; // deepest resting state
-      const TEMPO = 3.5; // > 1 → everything a touch slower than designed
-      const LAG_EXP = -0.06; // negative → further behind = shorter chase
-      const RATE_MAX = 1.2; // resting states per second — ceiling on a wild fling
+      const TEMPO = 4.5; // > 1 → everything a touch slower than designed
+      const LAG_EXP = -0.03; // negative → further behind = shorter chase (less aggressive = smoother)
+      const RATE_MAX = 0.8; // resting states per second — ceiling on a wild fling (lower = smoother)
 
       const scrub = { pos: 0 }; // where the screen is
       let goal = 0; // where the gestures have asked it to be
@@ -1273,32 +1259,10 @@ export default function Hero() {
         }
       };
 
-      // Page loaded already scrolled (e.g. refresh mid-page): jump to end state
-      // (everything lives in normal flow, native scrolling active; land on the
-      // deepest chain step whose section the page has reached, else step 5)
-      if (!atTop()) {
-        step = 5;
-        for (const link of fadeChain) {
-          if (link.to && window.scrollY >= topY(link.to) - 4) {
-            step = link.step + 1;
-          }
-        }
-        tl.progress(1);
-        tl2.progress(1);
-        tl3.progress(1);
-        syncHeader(true);
-        // The scrub axis starts settled on that step, so the very first
-        // gesture travels exactly one unit from where the page already is
-        goal = step;
-        scrub.pos = step;
-
-        /* Start out exactly on that step's anchor, so the floor the router
-           and the scroll guard both rely on holds from the very first frame */
-        const anchor = anchorY();
-        if (anchor !== null && window.scrollY < anchor) {
-          window.scrollTo({ top: anchor, behavior: "auto" });
-        }
-      }
+      // Always start from the top — page.tsx's useLayoutEffect guarantees
+      // scrollY === 0 before this effect runs, so step 0 is the only case
+      goal = 0;
+      scrub.pos = 0;
 
       window.addEventListener("wheel", onWheel, { passive: false });
       window.addEventListener("keydown", onKeyDown);
@@ -1440,35 +1404,14 @@ export default function Hero() {
         />
       </div>
 
-      {/* 9th-scroll white backdrop — sits between Certifications (z-40) and
-          the WeAreASG reveal (z-50): the page behind the rising capsule
-          dissolves into this full-white layer, leaving only the capsule
-          visible. GSAP fades it in/out around the capsule's travel. */}
+      {/* 9th-scroll white backdrop — sits between Certifications (z-40)
+          and the WeAreASG reveal (z-50): Certifications dissolves into
+          this full-white layer while the circular clip-path reveals the
+          section underneath. */}
       <div
         ref={waaWhiteRef}
         className="pointer-events-none fixed inset-0 z-45 hidden bg-white"
       />
-
-      {/* 9th-scroll capsule — a fixed tall pill that acts as a "window"
-          showing only WeAreASG's full-bleed bg image (the viewport-sized
-          image is centered inside, the pill crops it). GSAP raises it from
-          below the screen, holds it at the center, then fades it away. */}
-      <div
-        ref={waaCapsuleRef}
-        className="pointer-events-none fixed left-1/2 top-1/2 z-60 hidden h-[52vh] w-[14vw] min-w-55 overflow-hidden rounded-full"
-      >
-        <div className="absolute left-1/2 top-1/2 h-screen w-screen -translate-x-1/2 -translate-y-1/2">
-          <Image
-            src="/images/we-are-asg.webp"
-            alt=""
-            fill
-            sizes="100vw"
-            draggable={false}
-            className="pointer-events-none object-cover"
-            quality={80}
-          />
-        </div>
-      </div>
     </>
   );
 }
