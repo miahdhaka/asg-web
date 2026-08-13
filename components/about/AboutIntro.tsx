@@ -29,11 +29,12 @@ export default function AboutIntro() {
       </h2>
 
       {/* Body copy — indented column */}
-      <div className="flex flex-col gap-0 sm:gap-6 w-full lg:w-[55rem] lg:mx-auto mt-6 sm:mt-8 lg:mt-11">
+      <div className="relative flex flex-col gap-0 sm:gap-6 w-full lg:w-[55rem] lg:mx-auto mt-6 sm:mt-8 lg:mt-11">
         {/* Paragraphs — truncated on mobile, full on desktop */}
         <div
-          className="overflow-hidden lg:overflow-visible transition-[max-height] duration-700 ease-in-out"
-          style={{ maxHeight: expanded ? "50rem" : "12rem" }}
+          className={`overflow-hidden transition-[max-height] duration-700 ease-in-out lg:overflow-visible ${
+            expanded ? "max-h-[50rem]" : "max-h-48"
+          } lg:max-h-none`}
         >
           <p
             className={`text-sm sm:text-base lg:text-lg text-neutral-800 text-justify tracking-wide leading-[1.6] line-clamp-animate ${expanded ? "clamp-expanded" : "clamp-collapsed"}`}
@@ -82,7 +83,7 @@ export default function AboutIntro() {
         <button
           onClick={toggle}
           className="gradient-text-showmore group ml-auto flex lg:hidden cursor-pointer items-center gap-1.5 tracking-wider text-sm sm:text-[0.95rem] font-medium transition-opacity duration-500 ease-in-out"
-          style={{ opacity: expanded ? 1 : 0, pointerEvents: expanded ? "auto" : "none", position: expanded ? "relative" : "absolute" }}
+          style={{ opacity: expanded ? 1 : 0, pointerEvents: expanded ? "auto" : "none", visibility: expanded ? "visible" : "hidden", height: expanded ? "auto" : 0, overflow: "hidden" }}
         >
           <span className="relative inline-block after:absolute after:-bottom-0.5 after:left-0 after:h-[1.5px] after:w-full after:scale-x-0 after:origin-right after:bg-[var(--primary-gradient)] after:transition-transform after:duration-300 group-hover:after:scale-x-100 group-hover:after:origin-left">
             Show less

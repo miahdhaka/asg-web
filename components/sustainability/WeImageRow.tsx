@@ -3,8 +3,8 @@ import { weImageRow } from "./weData";
 
 export default function WeImageRow() {
   return (
-    <section className="px-4 sm:px-8 lg:px-[5rem] pb-10 lg:pb-[3rem]">
-      <div className="flex items-center gap-4 w-full max-w-[63rem] mx-auto">
+    <section className="px-4 sm:px-8 lg:px-0 py-4 sm:py-10 lg:py-[3rem]">
+      <div className="grid grid-cols-2 gap-2 sm:flex sm:gap-4 w-full max-w-[63rem] mx-auto">
         {weImageRow.map((img) => (
           <div
             key={img.src}

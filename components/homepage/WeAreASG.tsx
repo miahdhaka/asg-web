@@ -76,8 +76,7 @@ export default function WeAreASG() {
     <section
       ref={sectionRef}
       id="we-are-asg"
-      className="relative flex w-full flex-col overflow-hidden"
-      style={{ height: "calc(100vh - var(--header-height))" }}
+      className="relative flex w-full flex-col overflow-hidden min-h-[calc(100vh-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Aerial background — swap with the real asset once it lands in
           /public/images/we-are-asg/. */}
@@ -98,36 +97,36 @@ export default function WeAreASG() {
       <span
         id="waa-we-are"
         aria-hidden
-        className="pointer-events-none absolute top-[10%] left-[10%] z-10 font-serif text-[10rem] leading-none uppercase bg-[image:var(--primary-gradient)] bg-clip-text text-transparent"
+        className="pointer-events-none absolute top-[10%] left-[5%] z-10 font-serif text-[4rem] sm:text-[6rem] lg:text-[10rem] leading-none uppercase bg-[image:var(--primary-gradient)] bg-clip-text text-transparent"
       >
         We Are
       </span>
       <span
         id="waa-asg"
         aria-hidden
-        className="pointer-events-none absolute bottom-[10%] right-[19%] z-10 font-serif text-[10rem] leading-none uppercase bg-[image:var(--primary-gradient)] bg-clip-text text-transparent"
+        className="pointer-events-none absolute bottom-[10%] right-[5%] z-10 font-serif text-[4rem] sm:text-[6rem] lg:text-[10rem] leading-none uppercase bg-[image:var(--primary-gradient)] bg-clip-text text-transparent"
       >
         ASG
       </span>
 
       {/* Stat cards */}
-      <div className="relative z-20 flex min-h-0 flex-1 items-center px-20">
-        <div className="grid w-full grid-cols-4 gap-8">
+      <div className="relative z-20 flex min-h-0 flex-1 items-center px-4 lg:px-20">
+        <div className="grid w-full grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8">
           {stats.map((stat) => (
             <div
               key={stat.label}
-              className="group flex h-[min(46vh,26.25rem)] flex-col bg-white"
+              className="group flex h-[min(40vh,22rem)] lg:h-[min(46vh,26.25rem)] flex-col bg-white"
             >
               {/* Top part — icon + label, own padding */}
-              <div className="flex flex-1 flex-col justify-between p-5">
-                <div className="relative size-[4.6875rem] transition-transform duration-500 ease-in-out group-hover:scale-110">
+              <div className="flex flex-1 flex-col justify-between p-3 lg:p-5">
+                <div className="relative size-[3rem] lg:size-[4.6875rem] transition-transform duration-500 ease-in-out group-hover:scale-110">
                   <Image
                     src={stat.icon}
                     alt=""
                     width={75}
                     height={75}
                     draggable={false}
-                    className="size-[4.6875rem] object-contain transition-opacity duration-500 ease-in-out group-hover:opacity-0"
+                    className="size-[3rem] lg:size-[4.6875rem] object-contain transition-opacity duration-500 ease-in-out group-hover:opacity-0"
                   />
                   <span
                     aria-hidden
@@ -145,7 +144,7 @@ export default function WeAreASG() {
                   />
                 </div>
 
-                <span className="font-neue-montreal text-xl tracking-wider text-neutral-800 uppercase">
+                <span className="font-neue-montreal text-sm lg:text-xl tracking-wider text-neutral-800 uppercase">
                   {stat.label}
                 </span>
               </div>
@@ -157,7 +156,7 @@ export default function WeAreASG() {
               />
 
               {/* Bottom part — count pinned to the card bottom, own padding */}
-              <p className="font-serif text-7xl font-semibold leading-none text-neutral-900 px-5 py-10">
+              <p className="font-serif text-4xl sm:text-5xl lg:text-7xl font-semibold leading-none text-neutral-900 px-3 py-6 lg:px-5 lg:py-10">
                 <span data-count={stat.value}>0</span>
                 {stat.suffix}
               </p>

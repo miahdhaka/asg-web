@@ -67,7 +67,7 @@ export default function HelalIntro() {
       className="w-full bg-white px-4 sm:px-6 lg:px-[5em] py-6 sm:py-10 lg:py-[5em]"
     >
       {/* 707px design width at 30px type → 23.57em in the heading's own em */}
-      <h2 className="max-w-3xl lg:max-w-[23.57em] text-xl sm:text-3xl lg:text-[2.5em] text-neutral-800 font-test-tiempos-fine lg:leading-[1.2]">
+      <h2 className="max-w-3xl lg:max-w-[23.57em] text-xl sm:text-3xl lg:text-[2.5em] text-neutral-800 font-test-tiempos-fine lg:leading-[1.2] font-medium">
         One of the most reputable and diverse corporate empires in Bangladesh,
         Amanat Shah Group has been Family business legacy.
       </h2>

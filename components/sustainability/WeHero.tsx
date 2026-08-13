@@ -3,7 +3,7 @@ import { weHeroTitle, weHeroSubtitle } from "./weData";
 
 export default function WeHero() {
   return (
-    <section className="relative w-full lg:h-[41.5625rem]">
+    <section className="relative w-full min-h-[28rem] lg:h-[41.5625rem]">
       {/* Background image */}
       <Image
         src="/images/sustainability/we/hero.png"

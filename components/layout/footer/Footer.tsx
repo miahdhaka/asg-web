@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
@@ -109,6 +109,36 @@ const socials = [
 export default function Footer() {
   const footerRef = useRef<HTMLElement>(null);
   const wordmarkRef = useRef<HTMLParagraphElement>(null);
+  const [locationOpen, setLocationOpen] = useState(false);
+  const locationContentRef = useRef<HTMLDivElement>(null);
+  const locationTweenRef = useRef<gsap.core.Tween | null>(null);
+
+  // Animate location dropdown open/close on mobile
+  useEffect(() => {
+    const content = locationContentRef.current;
+    if (!content) return;
+
+    locationTweenRef.current?.kill();
+
+    if (locationOpen) {
+      gsap.set(content, { height: "auto" });
+      const full = content.offsetHeight;
+      gsap.set(content, { height: 0 });
+      locationTweenRef.current = gsap.to(content, {
+        height: full,
+        duration: 0.5,
+        ease: "power2.inOut",
+        onComplete: () => gsap.set(content, { height: "auto" }),
+      });
+    } else {
+      gsap.set(content, { height: content.offsetHeight });
+      locationTweenRef.current = gsap.to(content, {
+        height: 0,
+        duration: 0.4,
+        ease: "power2.inOut",
+      });
+    }
+  }, [locationOpen]);
 
   /* The oversized wordmark hides parked down behind the opaque offices
      block and slides up into place when the footer scrolls into view —
@@ -160,26 +190,29 @@ export default function Footer() {
 
       <div className="relative z-10">
         {/* Link columns */}
-        <div className="grid grid-cols-[1fr_1fr_1.4fr_1fr] gap-8 px-20 pt-11 pb-10">
-          {linkColumns.map((column) => (
-            <div key={column.title}>
-              <h3 className="font-neue-montreal text-lg tracking-wider text-white uppercase">
-                {column.title}
-              </h3>
-              <ul className="mt-2 space-y-2">
-                {column.links.map((link) => (
-                  <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      className="font-neue-montreal text-[0.9375rem] tracking-wider text-neutral-400 transition-colors duration-300 hover:text-white hover:underline"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+        <div className="grid grid-cols-2 gap-8 px-4 pt-11 pb-10 sm:grid-cols-[1fr_1fr_1.4fr_1fr] sm:px-20">
+          {linkColumns.map((column) => {
+            const isFullWidth = column.title === "Sistern Concern" || column.title === "Legal";
+            return (
+              <div key={column.title} className={isFullWidth ? "col-span-2 sm:col-span-1" : ""}>
+                <h3 className="font-neue-montreal text-base sm:text-lg tracking-wider text-white uppercase">
+                  {column.title}
+                </h3>
+                <ul className="mt-2 space-y-2">
+                  {column.links.map((link) => (
+                    <li key={link.label}>
+                      <Link
+                        href={link.href}
+                        className="font-neue-montreal text-sm sm:text-[0.9375rem] tracking-wider text-neutral-400 transition-colors duration-300 hover:text-white hover:underline"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
         </div>
 
         {/* Oversized gradient wordmark — rises from behind the offices
@@ -187,27 +220,69 @@ export default function Footer() {
         <p
           ref={wordmarkRef}
           aria-hidden
-          className="pointer-events-none my-0 text-center font-serif font-medium text-[clamp(2rem,4.5vw,4.5rem)] leading-[0.8] tracking-[0.19em] whitespace-nowrap uppercase bg-[image:var(--primary-gradient)] bg-clip-text text-transparent opacity-50 px-20"
+          className="pointer-events-none my-0 text-center font-serif font-semibold text-[clamp(1.5rem,4.5vw,4.5rem)] leading-[0.8] tracking-[0.1em] [word-spacing:0.02em] whitespace-nowrap uppercase bg-[image:var(--primary-gradient)] bg-clip-text text-transparent opacity-70 px-0 sm:px-20"
         >
           Amanat Shah Group
         </p>
 
-        {/* Office addresses — kept above the wordmark so it can hide behind */}
-        <div className="relative z-10 grid grid-cols-7 gap-8 bg-[var(--neutral-900)] border-t border-white/10 px-20 py-10">
-          {offices.map((office) => (
-            <div key={`${office.title}-${office.address}`}>
-              <h3 className="font-neue-montreal text-lg font-medium tracking-wider text-white uppercase">
-                {office.title}
-              </h3>
-              <p className="font-neue-montreal leading-tight text-neutral-400 mt-2">
-                {office.address}
-              </p>
+        {/* Office addresses — dropdown on mobile, grid on desktop */}
+        <div className="relative z-10 border-t border-white/10 bg-[var(--neutral-900)]">
+          {/* Mobile toggle */}
+          <button
+            type="button"
+            onClick={() => setLocationOpen((v) => !v)}
+            className="flex w-full cursor-pointer items-center justify-between px-6 py-5 lg:hidden"
+          >
+            <span className="font-neue-montreal text-base sm:text-lg font-medium tracking-wider text-white uppercase">
+              Our Locations
+            </span>
+            <svg
+              className={`size-4 text-neutral-400 transition-transform duration-300 ${locationOpen ? "rotate-180" : ""}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          {/* Content: animated dropdown on mobile */}
+          <div
+            ref={locationContentRef}
+            className="overflow-hidden lg:hidden"
+            style={{ height: 0 }}
+          >
+            <div className="grid grid-cols-1 gap-6 px-6 py-8 sm:grid-cols-2 sm:px-20">
+              {offices.map((office) => (
+                <div key={`${office.title}-${office.address}`}>
+                  <h3 className="font-neue-montreal text-[15px] sm:text-lg font-medium tracking-wider text-white uppercase">
+                    {office.title}
+                  </h3>
+                  <p className="text-sm sm:text-base font-neue-montreal sm:leading-tight text-neutral-400 mt-2">
+                    {office.address}
+                  </p>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+          {/* Desktop: always visible, outside the animated container */}
+          <div className="hidden grid-cols-7 gap-8 px-20 py-10 lg:grid" style={{ gridTemplateColumns: "repeat(7, minmax(0, 1fr))" }}>
+            {offices.map((office) => (
+              <div key={`${office.title}-${office.address}`}>
+                <h3 className="font-neue-montreal text-lg font-medium tracking-wider text-white uppercase">
+                  {office.title}
+                </h3>
+                <p className="font-neue-montreal leading-tight text-neutral-400 mt-2">
+                  {office.address}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Copyright + socials */}
-        <div className="relative flex items-center justify-between px-20 py-6">
+        <div className="relative flex flex-col items-center gap-4 px-6 py-6 sm:flex-row sm:justify-between sm:px-20">
           <Image
             src="/images/footer-copywrite-bg.webp"
             alt=""
@@ -217,7 +292,7 @@ export default function Footer() {
             className="pointer-events-none object-cover opacity-50"
             quality={80}
           />
-          <p className="relative z-10 font-neue-montreal text-white">
+          <p className="text-sm sm:text-base relative z-10 font-neue-montreal text-white">
             Copyright &copy; 2026 ASG Group. All Rights Reserved.
           </p>
           

@@ -35,7 +35,7 @@ export default function IntroSection() {
           className="w-[18.75rem] h-[7.5rem] object-contain"
         />
 
-        {/* Description — rises from the bottom during the Hero's circle-reveal */}
+        {/* Description — rises from the bottom during the Hero's circle reveal */}
         <p
           id="intro-copy"
           className="max-w-[56.25rem] text-center text-[2rem] leading-[1.375] text-white mt-12"
@@ -43,7 +43,7 @@ export default function IntroSection() {
           Amanat Shah Group is a diversified business group with strong concentration in the Textile-to-Fashion value chain supported by Finance, Chemicals, Technology, Agriculture.
         </p>
 
-        {/* About Us button — rises from the bottom during the Hero's circle-reveal */}
+        {/* About Us button — rises from the bottom during the Hero's circle reveal */}
         <Link
           id="intro-cta"
           href="/about-us"

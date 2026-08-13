@@ -89,22 +89,21 @@ export default function OurBusiness() {
   return (
     <section
       id="our-business"
-      className="bg-background relative flex w-full flex-col overflow-hidden pb-18"
-      style={{ height: "calc(100vh - var(--header-height))" }}
+      className="bg-background relative flex w-full flex-col overflow-hidden pb-8 lg:pb-18 min-h-[calc(100vh-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Header row — title left, description right */}
-      <div className="pt-18 px-20 pb-12">
-        <div className="flex flex-col lg:flex-row items-center lg:justify-between gap-8 max-w-[90%]">
+      <div className="pt-8 px-4 pb-6 lg:pt-18 lg:px-20 lg:pb-12">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center lg:justify-between gap-4 lg:gap-8 max-w-[90%]">
           {/* Title — drops in from above via the Hero's phase-5 timeline */}
           <h2
             id="our-business-title"
-            className="font-serif text-[4rem] leading-[1] text-neutral-800 shrink-0"
+            className="font-serif text-3xl sm:text-4xl lg:text-[4rem] leading-[1] text-neutral-800 shrink-0"
           >
             Our Business
           </h2>
 
           {/* Description */}
-          <p className="max-w-[38.75rem] text-xl leading-[1.5] tracking-wide text-neutral-800">
+          <p className="max-w-[38.75rem] text-base lg:text-xl leading-[1.5] tracking-wide text-neutral-800">
             With a 130-year legacy, Amanat Shah Group is a premier, multi-sector
             conglomerate. We drive sustainable growth across textiles, finance,
             and technology by integrating innovation, integrity.
@@ -114,7 +113,7 @@ export default function OurBusiness() {
 
       {/* Full-bleed infinite carousel — drag with the mouse to scroll */}
       <div
-        className="relative min-h-0 max-h-[58vh] flex-1"
+        className="relative min-h-0 flex-1 max-h-[50vh] lg:max-h-[58vh]"
         onMouseEnter={() => {
           isHoveredRef.current = true;
         }}
@@ -135,7 +134,7 @@ export default function OurBusiness() {
             <div
               key={`${card.image}-${index}`}
               data-card
-              className="group relative h-full w-[calc((100vw-1.875rem)/2.3)] flex-shrink-0 overflow-hidden"
+              className="group relative h-full w-[calc((100vw-1rem)/1.5)] sm:w-[calc((100vw-1.875rem)/2.3)] flex-shrink-0 overflow-hidden"
               style={{ marginRight: GAP }}
             >
               {/* Background image */}
@@ -170,12 +169,12 @@ export default function OurBusiness() {
                   width={320}
                   height={120}
                   draggable={false}
-                  className="h-[7.5rem] w-[20rem] object-contain"
+                  className="h-[4rem] w-[12rem] lg:h-[7.5rem] lg:w-[20rem] object-contain"
                 />
               </div>
 
               {/* Category label */}
-              <span className="pointer-events-none uppercase text-3xl tracking-[0.12em] absolute bottom-10 left-1/2 -translate-x-1/2 text-white"
+              <span className="pointer-events-none uppercase text-lg sm:text-2xl lg:text-3xl tracking-[0.12em] absolute bottom-4 lg:bottom-10 left-1/2 -translate-x-1/2 text-white"
               >
                 {card.label}
               </span>

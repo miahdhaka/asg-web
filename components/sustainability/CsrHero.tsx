@@ -3,7 +3,7 @@ import { csrHeroTitle, csrHeroSubtitle } from "./csrData";
 
 export default function CsrHero() {
   return (
-    <section className="relative w-full lg:h-[41.5625rem]">
+    <section className="relative w-full min-h-[28rem] lg:h-[41.5625rem]">
       {/* Background image */}
       <Image
         src="/images/sustainability/csr/hero.png"
