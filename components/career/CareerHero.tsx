@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function CareerHero() {
   return (
-    <section id="career-hero" className="relative w-full lg:h-[41.5625rem]">
+    <section id="career-hero" className="relative w-full min-h-[28rem] lg:h-[41.5625rem]">
       {/* Background image */}
       <Image
         src="/images/career/hero.webp"
@@ -29,8 +29,11 @@ export default function CareerHero() {
       />
 
       <div className="flex flex-col gap-1 lg:gap-0.5 absolute left-4 sm:left-8 lg:left-[5em] bottom-6 sm:bottom-10 lg:bottom-[5em] z-10">
-        <h1 className="text-2xl sm:text-4xl lg:text-6xl text-white font-test-tiempos-fine tracking-wider">
+        <h1 className="hidden sm:block text-2xl sm:text-4xl lg:text-6xl text-white font-test-tiempos-fine tracking-wider">
           Find Your<br />Opportunity
+        </h1>
+        <h1 className="block sm:hidden text-2xl sm:text-4xl lg:text-6xl text-white font-test-tiempos-fine tracking-wider">
+          Find Your Opportunity
         </h1>
         <p className="text-xs sm:text-sm tracking-wider font-light text-white lg:text-base">
           Family business legacy for more than 130 years.

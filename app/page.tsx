@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import Hero from "@/components/homepage/Hero";
 import OurBusiness from "@/components/homepage/OurBusiness";
 import GlobalFootprint from "@/components/homepage/GlobalFootprint";
@@ -11,10 +11,13 @@ import Newsroom from "@/components/homepage/Newsroom";
 import IntroSection from "@/components/homepage/IntroSection";
 
 export default function HomePage() {
-  useEffect(() => {
-    // Always start the homepage from the top
+  // useLayoutEffect fires BEFORE any child useEffect/useGSAP — guarantees
+  // the Hero sees scrollY === 0 on mount, so it always starts from step 0
+  useLayoutEffect(() => {
     window.scrollTo(0, 0);
+  }, []);
 
+  useEffect(() => {
     // Hide scrollbar visually but keep scroll functionality
     const style = document.createElement("style");
     style.innerHTML = `

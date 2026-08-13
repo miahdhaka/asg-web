@@ -191,7 +191,7 @@ export default function PhotoLightbox({
   return (
     <div
       ref={rootRef}
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-4 py-8 backdrop-blur-sm"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-2 py-4 sm:px-4 sm:py-8 backdrop-blur-sm"
       onClick={dismiss}
       role="dialog"
       aria-modal="true"
@@ -199,7 +199,7 @@ export default function PhotoLightbox({
     >
       <div
         ref={contentRef}
-        className="flex w-fit max-w-[90vw] flex-col gap-4"
+        className="flex w-fit max-w-[90vw] flex-col gap-2 sm:gap-4"
         onClick={(e) => e.stopPropagation()}
       >
         {/* ── Top bar: download + close ─────────────────────────── */}
@@ -209,7 +209,7 @@ export default function PhotoLightbox({
           <a
             href={item.image}
             download
-            className="group relative inline-flex cursor-pointer items-center gap-2 overflow-hidden px-[1.5rem] py-[0.8rem] font-medium leading-none text-white shadow-lg shadow-black/30 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_0.75rem_2rem_-0.375rem_rgba(26,161,121,0.6)]"
+            className="group relative inline-flex cursor-pointer items-center gap-2 overflow-hidden px-3 py-2 sm:px-[1.5rem] sm:py-[0.8rem] font-medium leading-none text-white shadow-lg shadow-black/30 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_0.75rem_2rem_-0.375rem_rgba(26,161,121,0.6)]"
             style={{ background: "var(--primary-gradient)" }}
           >
             {/* Shine sweep — parked off the left edge, glides across on hover */}
@@ -217,8 +217,8 @@ export default function PhotoLightbox({
               aria-hidden
               className="pointer-events-none absolute inset-y-0 -left-[60%] w-[40%] -skew-x-[20deg] bg-white/30 blur-[6px] transition-transform duration-700 ease-out group-hover:translate-x-[460%]"
             />
-            <Download className="h-[1.1rem] w-[1.1rem]" strokeWidth={2} />
-            Download image
+            <Download className="h-4 w-4 sm:h-[1.1rem] sm:w-[1.1rem]" strokeWidth={2} />
+            <span className="hidden sm:inline">Download image</span>
           </a>
           <button
             type="button"
@@ -226,7 +226,7 @@ export default function PhotoLightbox({
             aria-label="Close lightbox"
             className="cursor-pointer p-2 text-white transition-all duration-200 hover:rotate-90 hover:opacity-70"
           >
-            <X className="h-[2rem] w-[2rem]" strokeWidth={1.5} />
+            <X className="h-6 w-6 sm:h-[2rem] sm:w-[2rem]" strokeWidth={1.5} />
           </button>
         </div>
 
@@ -235,14 +235,14 @@ export default function PhotoLightbox({
                image is contained inside it, never cropped or stretched.
                The top bar spans the same width, keeping the download and
                close buttons aligned with the stage edges on every slide. */}
-        <div className="relative h-[min(62vh,46rem)] w-[58vw] max-w-[86vw] bg-white">
+        <div className="relative h-[30vh] sm:h-[min(62vh,46rem)] w-[90vw] sm:w-[58vw] max-w-[92vw] bg-white">
           <button
             type="button"
             onClick={goPrev}
             aria-label="Previous image"
-            className="absolute left-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-[#D9D9D9] text-neutral-800 shadow-lg shadow-black/20 transition duration-200 hover:scale-105 hover:bg-white sm:left-4"
+            className="absolute left-1.5 top-1/2 z-10 flex h-8 w-8 sm:h-11 sm:w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-[#D9D9D9] text-neutral-800 shadow-lg shadow-black/20 transition duration-200 hover:scale-105 hover:bg-white sm:left-4"
           >
-            <ChevronLeft className="h-6 w-6" strokeWidth={2} />
+            <ChevronLeft className="h-4 w-4 sm:h-6 sm:w-6" strokeWidth={2} />
           </button>
 
           <div className="flex h-full w-full items-center justify-center">
@@ -264,19 +264,19 @@ export default function PhotoLightbox({
             type="button"
             onClick={goNext}
             aria-label="Next image"
-            className="absolute right-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-[#D9D9D9] text-neutral-800 shadow-lg shadow-black/20 transition duration-200 hover:scale-105 hover:bg-white sm:right-4"
+            className="absolute right-1.5 top-1/2 z-10 flex h-8 w-8 sm:h-11 sm:w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-[#D9D9D9] text-neutral-800 shadow-lg shadow-black/20 transition duration-200 hover:scale-105 hover:bg-white sm:right-4"
           >
-            <ChevronRight className="h-6 w-6" strokeWidth={2} />
+            <ChevronRight className="h-4 w-4 sm:h-6 sm:w-6" strokeWidth={2} />
           </button>
         </div>
 
         {/* ── Caption ───────────────────────────────────────────── */}
         <div ref={captionRef} className="flex flex-col items-center gap-1">
-          <p className="text-center font-test-tiempos-fine text-[1.25rem] leading-[1.75rem] text-white lg:text-[1.5rem]">
+          <p className="text-center font-test-tiempos-fine text-sm sm:text-[1.25rem] leading-[1.75rem] text-white lg:text-[1.5rem]">
             {item.caption}
           </p>
           {item.subCaption && (
-            <p className="text-center font-neue-montreal text-[1rem] leading-[1.5rem] text-white/80">
+            <p className="text-center font-neue-montreal text-xs sm:text-[1rem] leading-[1.5rem] text-white/80">
               {item.subCaption}
             </p>
           )}

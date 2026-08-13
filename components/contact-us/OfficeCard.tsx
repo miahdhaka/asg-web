@@ -8,22 +8,23 @@ import OfficeMap from "./OfficeMap";
 
 function DetailChip({ icon: Icon }: { icon: React.ElementType }) {
   return (
-    <div className="flex h-[3.5rem] w-[3.5rem] shrink-0 items-center justify-center rounded bg-gray-100">
-      <Icon size={24} className="text-neutral-800" strokeWidth={1.5} />
+    <div className="flex h-[2.75rem] w-[2.75rem] sm:h-[3.5rem] sm:w-[3.5rem] shrink-0 items-center justify-center rounded bg-gray-100">
+      <Icon size={20} className="sm:hidden text-neutral-800" strokeWidth={1.5} />
+      <Icon size={24} className="hidden sm:block text-neutral-800" strokeWidth={1.5} />
     </div>
   );
 }
 
 export default function OfficeCard({ card }: { card: OfficeCardData }) {
   return (
-    <div className="flex flex-col lg:flex-row items-center justify-center gap-9 lg:gap-12">
+    <div className="border border-gray-200 sm:border-transparent rounded-md sm:rounded-none p-5 sm:p-0 flex flex-col lg:flex-row items-center justify-center gap-4 sm:gap-9 lg:gap-12">
       {/* Title */}
-      <h3 className="w-full lg:w-90 text-2xl lg:text-[2.2rem] text-black leading-8 lg:leading-[2.8rem] font-test-tiempos-fine lg:shrink-0">
+      <h3 className="w-full lg:w-90 text-base sm:text-2xl lg:text-[2.2rem] text-black sm:leading-8 lg:leading-[2.8rem] font-test-tiempos-fine lg:shrink-0">
         {card.title}
       </h3>
 
       {/* Map */}
-      <div className="relative w-full lg:w-[42rem] h-[18rem] bg-[#D9D9D9] overflow-hidden lg:shrink-0">
+      <div className="relative w-full lg:w-[42rem] h-[12rem] sm:h-[18rem] bg-[#D9D9D9] overflow-hidden lg:shrink-0">
         <OfficeMap
           lat={card.coordinates.lat}
           lng={card.coordinates.lng}

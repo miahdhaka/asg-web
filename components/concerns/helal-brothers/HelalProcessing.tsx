@@ -38,7 +38,9 @@ export default function HelalProcessing() {
 
   // Teleport by one whole copy when nearing either end — content is
   // identical one set away, so the jump is invisible
+  const isNormalizing = useRef(false);
   const normalizeLoop = useCallback((track: HTMLDivElement) => {
+    if (isNormalizing.current) return;
     const step = cardStep(track);
     const setWidth = step * slides.length;
     if (!setWidth) return;
@@ -47,8 +49,16 @@ export default function HelalProcessing() {
     if (track.scrollLeft < step) delta = setWidth;
     else if (track.scrollLeft > maxScroll - step) delta = -setWidth;
     if (delta) {
+      isNormalizing.current = true;
+      // Disable snap during teleport to prevent jitter
+      track.style.scrollSnapType = "none";
       track.scrollLeft += delta;
       if (drag.current.active) drag.current.startScrollLeft += delta;
+      // Restore snap on next frame
+      requestAnimationFrame(() => {
+        track.style.scrollSnapType = "";
+        isNormalizing.current = false;
+      });
     }
   }, []);
 
@@ -138,7 +148,7 @@ export default function HelalProcessing() {
 
   return (
     <section id="helal-processing" className="w-full bg-white">
-      <h2 className="px-4 font-test-tiempos-fine text-3xl text-neutral-800 sm:px-6 sm:text-4xl lg:px-[5em] lg:text-[4em] lg:leading-[1]">
+      <h2 className="px-4 font-test-tiempos-fine text-2xl sm:text-4xl text-neutral-800 sm:px-6 lg:px-[5em] lg:text-[4em] lg:leading-[1]">
         Helal &amp; Brothers
         <br />
         Processing Excellence
@@ -162,7 +172,7 @@ export default function HelalProcessing() {
                 quality={90}
                 draggable={false}
                 priority={copy === 1 && i < 3}
-                className="pointer-events-none w-[70%] shrink-0 object-cover sm:w-[45%] lg:h-[20.83em] lg:w-[50.67em]"
+                className="pointer-events-none w-[70%] shrink-0 object-cover h-[8rem] sm:w-[45%] sm:h-[16rem] lg:h-[20.83em] lg:w-[50.67em]"
               />
             ))
           )}
@@ -173,9 +183,9 @@ export default function HelalProcessing() {
           type="button"
           aria-label="Previous processing image"
           onClick={() => scrollByCard(-1)}
-          className="absolute left-2 top-1/2 z-10 -translate-y-1/2 p-2 text-white cursor-pointer lg:left-[2.67em]"
+          className="absolute left-0 top-1/2 z-10 -translate-y-1/2 p-1.5 text-[1.25em] text-white cursor-pointer lg:left-[2.67em] lg:p-2 lg:text-[2.25em]"
         >
-          <svg width="2.25em" height="2.25em" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" aria-hidden>
             <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
@@ -183,9 +193,9 @@ export default function HelalProcessing() {
           type="button"
           aria-label="Next processing image"
           onClick={() => scrollByCard(1)}
-          className="absolute right-2 top-1/2 z-10 -translate-y-1/2 p-2 text-white cursor-pointer lg:right-[2.67em]"
+          className="absolute right-0 top-1/2 z-10 -translate-y-1/2 p-1.5 text-[1.25em] text-white cursor-pointer lg:right-[2.67em] lg:p-2 lg:text-[2.25em]"
         >
-          <svg width="2.25em" height="2.25em" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" aria-hidden>
             <path d="M9 6L15 12L9 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>

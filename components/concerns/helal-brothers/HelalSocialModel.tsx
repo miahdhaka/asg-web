@@ -47,7 +47,7 @@ export default function HelalSocialModel() {
       <div className="flex flex-col gap-10 px-4 py-10 sm:px-6 lg:flex-row lg:justify-between lg:px-[5em] lg:py-[5em]">
         {/* Sustainability wheel — free-form absolute layout on desktop,
             simple stacked cards on mobile */}
-        <div className="relative order-2 lg:order-1 lg:mt-[1.25em] lg:h-[40.92em] lg:w-[61.92em] lg:shrink-0">
+        <div className="relative order-2 flex flex-col gap-4 lg:order-1 lg:mt-[1.25em] lg:flex-none lg:h-[40.92em] lg:w-[61.92em] lg:shrink-0 lg:gap-0">
           {/* Dashed gradient ring + core circle (desktop only) */}
           <div className="hidden lg:block">
             <svg
@@ -87,9 +87,9 @@ export default function HelalSocialModel() {
 
           {/* Pillar icons + copy */}
           {pillars.map((pillar) => (
-            <div key={pillar.title} className="contents">
+            <div key={pillar.title} className="flex flex-col sm:flex-row items-start gap-3 rounded-lg border border-gray-200 bg-white p-3 lg:contents">
               <div
-                className={`mt-8 flex h-14 w-14 items-center justify-center rounded-full border border-gray-100 bg-white first:mt-0 lg:absolute lg:mt-0 ${pillar.iconClass}`}
+                className={`flex h-16 sm:h-10 lg:h-[5.33em] w-16 sm:w-10 lg:w-[5.33em] shrink-0 items-center justify-center rounded-full border border-gray-100 bg-white lg:absolute lg:mt-0 ${pillar.iconClass}`}
               >
                 <Image
                   src={pillar.icon}
@@ -98,14 +98,14 @@ export default function HelalSocialModel() {
                   width={pillar.iconSize}
                   height={pillar.iconSize}
                   quality={100}
-                  className="h-3/5 w-3/5 object-contain lg:h-[60%] lg:w-[60%]"
+                  className="h-4/5 sm:h-3/5 lg:h-[60%] w-4/5 lg:w-[60%] object-contain"
                 />
               </div>
-              <div className={`mt-3 lg:absolute lg:mt-0 ${pillar.frameClass}`}>
-                <h3 className="font-test-tiempos-fine text-lg text-neutral-800 lg:text-[1.5em] lg:leading-[1.56]">
+              <div className={`lg:absolute lg:mt-0 ${pillar.frameClass}`}>
+                <h3 className="font-test-tiempos-fine text-base text-neutral-800 lg:text-[1.5em] lg:leading-[1.56]">
                   {pillar.title}
                 </h3>
-                <p className="mt-1 text-xs text-neutral-800 lg:mt-[0.33em] lg:text-[1em] lg:leading-[1.33]">
+                <p className="mt-0.5 text-xs leading-5 text-neutral-800 lg:mt-[0.33em] lg:text-[1em] lg:leading-[1.33]">
                   {pillar.body}
                 </p>
               </div>

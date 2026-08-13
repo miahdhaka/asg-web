@@ -18,7 +18,7 @@ export function DirectorCard({
 }) {
   return (
     <div
-      className={`group flex flex-col gap-4 ${onSelect ? "cursor-pointer" : ""}`}
+      className={`group flex flex-col gap-4 rounded-md bg-neutral-100 p-3 sm:bg-transparent sm:p-0 ${onSelect ? "cursor-pointer" : ""}`}
       onClick={onSelect}
       role={onSelect ? "button" : undefined}
       tabIndex={onSelect ? 0 : undefined}
@@ -44,11 +44,11 @@ export function DirectorCard({
           quality={90}
         />
       </div>
-      <div className="flex flex-col gap-1">
-        <p className="font-test-tiempos-fine text-[1.125rem] leading-[1.5rem] text-neutral-800 lg:text-[1.5rem] lg:leading-[1.75rem]">
+      <div className="flex flex-col gap-0 sm:gap-1">
+        <p className="font-test-tiempos-fine text-base sm:text-[1.125rem] sm:leading-[1.5rem] text-neutral-800 lg:text-[1.5rem] lg:leading-[1.75rem]">
           {card.name}
         </p>
-        <p className="font-neue-montreal text-[1.11rem] leading-[1.5rem] text-neutral-800">
+        <p className="font-neue-montreal text-xs sm:text-[1.11rem] sm:leading-[1.5rem] text-neutral-800">
           {card.title}
         </p>
       </div>

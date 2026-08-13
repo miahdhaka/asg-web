@@ -226,7 +226,7 @@ export default function OtherBoardMembers({
           ref={trackRef}
           onPointerDown={onPointerDown}
           onClickCapture={onClickCapture}
-          className={`flex gap-4 lg:gap-[1.35em] overflow-x-auto no-scrollbar select-none ${
+          className={`flex gap-2 sm:gap-4 lg:gap-[1.35em] overflow-x-auto no-scrollbar select-none ${
             isDragging ? "snap-none" : "snap-x snap-mandatory"
           }`}
         >

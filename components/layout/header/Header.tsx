@@ -1,13 +1,15 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { Menu } from "lucide-react";
 import Navigation from "./Navigation";
 import Search from "./Search";
+import MobileSidebar from "./MobileSidebar";
 
 gsap.registerPlugin(useGSAP);
 
@@ -17,7 +19,10 @@ export default function Header() {
   const overlayTweenRef = useRef<gsap.core.Tween | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
+
+  const closeSidebar = useCallback(() => setSidebarOpen(false), []);
   // On the homepage the center logo starts hidden — the Hero scroll timeline
   // reveals it once the hero logo finishes its flight into the navbar.
   const isHome = pathname === "/";
@@ -119,12 +124,24 @@ export default function Header() {
         scrolled || searchOpen ? "bg-white" : "bg-background/60"
       }`}>
       <div className="grid grid-cols-3 items-center px-6">
-        {/* Navigation - left */}
+        {/* Left: hamburger on mobile, full navigation on desktop */}
         <div className="h-full flex items-center py-5">
-          <Navigation />
+          {/* Mobile hamburger icon */}
+          <button
+            type="button"
+            onClick={() => setSidebarOpen(true)}
+            className="lg:hidden cursor-pointer rounded-full p-1.5 transition-colors hover:bg-neutral-100"
+            aria-label="Open menu"
+          >
+            <Menu className="size-6 text-neutral-800" />
+          </button>
+          {/* Desktop navigation */}
+          <div className="hidden lg:block">
+            <Navigation />
+          </div>
         </div>
 
-        {/* Logo - center (hidden on homepage load; revealed by the Hero scroll timeline) */}
+        {/* Logo - center */}
         <div className="flex items-center justify-center">
           <Link
             href="/"
@@ -150,6 +167,9 @@ export default function Header() {
         </div>
       </div>
     </header>
+
+      {/* Mobile sidebar navigation — rendered outside <header> so its z-index is not trapped */}
+      <MobileSidebar isOpen={sidebarOpen} onClose={closeSidebar} />
     </>
   );
 }

@@ -8,16 +8,12 @@ export const metadata: Metadata = {
   description:
     "Curated high-resolution visual assets from ASG Group — official logos of Amanat Shah Group and its concern companies.",
 };
-
-/* ------------------------------------------------------------------ */
-/*  Page                                                               */
-/* ------------------------------------------------------------------ */
-
+ 
 export default function LogosGalleryPage() {
   return (
     <main className="flex flex-col">
       {/* ── Hero ──────────────────────────────────────────────────── */}
-      <section className="relative w-full lg:h-[41.5625rem]">
+      <section className="relative w-full min-h-[28rem] lg:h-[41.5625rem]">
         {/* Background image */}
         <Image
           src="/images/media-galleries/hero-bg.png"
@@ -51,7 +47,7 @@ export default function LogosGalleryPage() {
       </section>
 
       {/* ── Logo grid ─────────────────────────────────────────────── */}
-      <section className="flex w-full flex-col px-[5rem] py-[5rem]">
+      <section className="flex w-full flex-col px-4 py-6 sm:px-6 sm:py-8 lg:px-[5rem] lg:py-[5rem]">
         <LogoGalleryGrid cards={logoCards} />
       </section>
     </main>

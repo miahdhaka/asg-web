@@ -50,8 +50,10 @@ function BrandRow({ title, description, images, textSide }: BrandRowProps) {
 
   // Teleport by one whole copy when nearing either end — content is
   // identical one set away, so the jump is invisible
+  const isNormalizing = useRef(false);
   const normalizeLoop = useCallback(
     (track: HTMLDivElement) => {
+      if (isNormalizing.current) return;
       const step = cardStep(track);
       const setWidth = step * count;
       if (!setWidth) return;
@@ -60,8 +62,16 @@ function BrandRow({ title, description, images, textSide }: BrandRowProps) {
       if (track.scrollLeft < step) delta = setWidth;
       else if (track.scrollLeft > maxScroll - step) delta = -setWidth;
       if (delta) {
+        isNormalizing.current = true;
+        // Disable snap during teleport to prevent jitter
+        track.style.scrollSnapType = "none";
         track.scrollLeft += delta;
         if (drag.current.active) drag.current.startScrollLeft += delta;
+        // Restore snap on next frame
+        requestAnimationFrame(() => {
+          track.style.scrollSnapType = "";
+          isNormalizing.current = false;
+        });
       }
     },
     [count]
@@ -180,7 +190,7 @@ function BrandRow({ title, description, images, textSide }: BrandRowProps) {
         textSide === "left" ? "lg:w-[29.33em]" : "lg:w-[25em]"
       }`}
     >
-      <h3 className="font-test-tiempos-fine text-xl font-medium uppercase tracking-[0.04em] text-neutral-800 sm:text-2xl lg:text-[2em] lg:leading-[1.33]">
+      <h3 className="font-test-tiempos-fine text-lg sm:text-2xl lg:text-[2em] font-medium uppercase tracking-[0.04em] text-neutral-800 lg:leading-[1.33]">
         {title}
       </h3>
       <p className="mt-2 text-sm text-neutral-800 lg:mt-[0.67em] lg:text-[1.17em] lg:leading-[1.43]">
@@ -222,9 +232,9 @@ function BrandRow({ title, description, images, textSide }: BrandRowProps) {
           type="button"
           aria-label={`Previous ${title} image`}
           onClick={() => scrollByCard(-1)}
-          className="absolute left-2 top-1/2 z-10 -translate-y-1/2 p-2 text-white cursor-pointer lg:left-[0.58em]"
+          className="absolute left-0 top-1/2 z-10 -translate-y-1/2 p-1.5 text-[1.25em] text-white cursor-pointer lg:left-[0.58em] lg:p-2 lg:text-[2.25em]"
         >
-          <svg width="2.25em" height="2.25em" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" aria-hidden>
             <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
@@ -232,9 +242,9 @@ function BrandRow({ title, description, images, textSide }: BrandRowProps) {
           type="button"
           aria-label={`Next ${title} image`}
           onClick={() => scrollByCard(1)}
-          className="absolute right-2 top-1/2 z-10 -translate-y-1/2 p-2 text-white cursor-pointer lg:right-[0.58em]"
+          className="absolute right-0 top-1/2 z-10 -translate-y-1/2 p-1.5 text-[1.25em] text-white cursor-pointer lg:right-[0.58em] lg:p-2 lg:text-[2.25em]"
         >
-          <svg width="2.25em" height="2.25em" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" aria-hidden>
             <path d="M9 6L15 12L9 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
@@ -283,8 +293,8 @@ export default function HelalBrands() {
       id="helal-brands"
       className="w-full bg-white px-4 py-10 sm:px-6 lg:px-[5em] lg:py-[5em]"
     >
-      <div className="flex flex-col gap-4 lg:flex-row lg:justify-between">
-        <h2 className="font-test-tiempos-fine text-3xl text-neutral-800 sm:text-4xl lg:text-[4em] lg:leading-[1]">
+      <div className="flex flex-col gap-2 sm:gap-4 lg:flex-row lg:justify-between">
+        <h2 className="font-test-tiempos-fine text-xl sm:text-4xl lg:text-[4em] text-neutral-800 lg:leading-[1]">
           Our Brands
         </h2>
         {/* 359px design width at 14px type → 25.64em in the paragraph's own em */}

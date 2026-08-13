@@ -50,7 +50,7 @@ export default function TrustKnitwearCapabilities() {
       id="trustknitwear-capabilities"
       className="w-full bg-[rgb(249,250,251)] px-4 py-10 sm:px-6 lg:px-[10em] lg:py-[5em]"
     >
-      <div className="flex flex-col-reverse gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-[5em]">
+      <div className="flex flex-col-reverse gap-4 sm:gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-[5em]">
         {/* Staggered card grid — right column sits 63px lower than the left */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-0 lg:flex lg:w-[58.67em] lg:shrink-0">
           <div className="flex flex-col gap-4 sm:gap-0">

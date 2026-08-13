@@ -38,7 +38,7 @@ export default async function ApplyPage({
   if (!job) notFound();
 
   return (
-    <main className="w-full max-w-[85rem] mx-auto mt-[6rem] px-5 pb-16 pt-4">
+    <main className="mx-auto mt-[4rem] sm:mt-[6rem] w-full max-w-[59rem] px-4 pt-8 pb-16 sm:px-5 sm:pt-[3.5rem]">
       <CareerApplicationForm jobTitle={job.title} />
     </main>
   );

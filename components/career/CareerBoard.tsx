@@ -40,46 +40,47 @@ export default function CareerBoard() {
   return (
     <section id="career-board" className="bg-white">
       {/* Heading + search controls */}
-      <div className="relative z-10 w-full max-w-[70rem] mx-auto pt-10 lg:pt-[3.3333rem] px-4 sm:px-8">
-        <h2 className="text-center font-test-tiempos-fine text-neutral-800 text-2xl sm:text-3xl lg:text-[2.5rem] lg:leading-[3rem]">
+      <div className="relative z-10 w-full max-w-[70rem] mx-auto pt-6 sm:pt-10 lg:pt-[5rem] px-4 sm:px-8">
+        <h2 className="text-center font-test-tiempos-fine text-neutral-800 text-xl sm:text-3xl lg:text-[2.5rem] lg:leading-[3rem]">
           AVAILABLE JOBS - {filtered.length}
         </h2>
 
         {/* Search bar with embedded gradient button */}
-        <div className="input-gradient-border-hover mt-5 bg-gray-50 lg:mt-[1.3333rem]">
-          <div className="flex h-11 items-stretch lg:h-[3.6667rem]">
-          <div className="flex flex-1 items-center gap-2 px-3.5 lg:gap-[0.6667rem] lg:px-[1.1667rem]">
-            <Image src="/icons/career/search.svg" alt="" width={20} height={20} quality={100} className="size-4 shrink-0 lg:size-[1.6667rem]" />
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search job title"
-              className="min-w-0 flex-1 bg-transparent text-sm text-neutral-800 placeholder:text-neutral-600 focus:outline-none lg:text-[1.3333rem]"
-            />
-            {query && (
-              <button
-                type="button"
-                onClick={() => setQuery("")}
-                className="shrink-0 cursor-pointer text-neutral-500 transition-all duration-300 hover:rotate-90 hover:text-neutral-800"
-                aria-label="Clear search"
-              >
-                <X className="size-4 lg:size-5" />
-              </button>
-            )}
-          </div>
-          <button
-            type="button"
-            className="group relative flex items-center justify-center gap-1 lg:gap-[0.3333rem] text-sm lg:text-[1.1667rem] text-white cursor-pointer bg-[image:var(--primary-gradient)] px-5 lg:px-[1.6667rem] transition-all duration-300 ease-out"
-          >
-            {/* Shine sweep — parked off the left edge, glides across on hover */}
-            <span
-              aria-hidden
-              className="pointer-events-none absolute inset-y-0 -left-[60%] w-[40%] -skew-x-[20deg] bg-white/30 blur-[6px] transition-transform duration-700 ease-out group-hover:translate-x-[460%]"
-            />
-            <Image src="/icons/career/search.svg" alt="" width={16} height={16} quality={100} className="size-3.5 brightness-0 invert lg:size-[1.3333rem]" />
-            Search
-          </button>
+        <div className=" mt-5 lg:mt-[1.3333rem]">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 h-auto ">
+            <div className="flex sm:flex-1 items-center h-12 lg:h-[3.6667rem] gap-2 px-3.5 lg:gap-[0.6667rem] lg:px-[1.1667rem] bg-gray-50 input-gradient-border-hover">
+              <Image src="/icons/career/search.svg" alt="" width={20} height={20} quality={100} className="size-4 shrink-0 lg:size-[1.6667rem]" />
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search job title"
+                className="min-w-0 flex-1 bg-transparent text-sm text-neutral-800 placeholder:text-neutral-600 focus:outline-none lg:text-[1.3333rem]"
+              />
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => setQuery("")}
+                  className="shrink-0 cursor-pointer text-neutral-500 transition-all duration-300 hover:rotate-90 hover:text-neutral-800"
+                  aria-label="Clear search"
+                >
+                  <X className="size-4 lg:size-5" />
+                </button>
+              )}
+            </div>
+
+            <button
+              type="button"
+              className="group relative flex w-full sm:w-auto h-11 lg:h-[3.6667rem] items-center justify-center gap-1 lg:gap-[0.3333rem] text-sm lg:text-[1.1667rem] text-white cursor-pointer bg-[image:var(--primary-gradient)] px-5 lg:px-[1.6667rem] transition-all duration-300 ease-out"
+            >
+              {/* Shine sweep — parked off the left edge, glides across on hover */}
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-y-0 -left-[60%] w-[40%] -skew-x-[20deg] bg-white/30 blur-[6px] transition-transform duration-700 ease-out group-hover:translate-x-[460%]"
+              />
+              <Image src="/icons/career/search.svg" alt="" width={16} height={16} quality={100} className="size-3.5 brightness-0 invert lg:size-[1.3333rem]" />
+              Search
+            </button>
           </div>
         </div>
 
