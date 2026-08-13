@@ -45,7 +45,7 @@ export default function HasslHero() {
             height={45}
             priority
             quality={100}
-            className="h-auto w-20 lg:w-[5.81em]"
+            className="h-auto w-[5.42em]"
           />
           <h1 className="mt-2 font-test-tiempos-fine text-2xl text-neutral-800 sm:text-3xl lg:mt-[0.67em] lg:text-[2em] lg:leading-[1.33]">
             Hazrat Amanat Shah Securities Limited (HASSL)

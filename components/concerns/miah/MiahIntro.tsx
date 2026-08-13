@@ -73,9 +73,9 @@ export default function MiahIntro() {
     <section
       ref={sectionRef}
       id="miah-intro"
-      className="w-full bg-white px-4 py-10 sm:px-6 lg:px-[5em] lg:py-[5em]"
+      className="w-full bg-white px-4 sm:px-6 lg:px-[5em] py-6 sm:py-10 lg:py-[5em]"
     >
-      <h2 className="max-w-3xl font-test-tiempos-fine text-2xl text-neutral-800 sm:text-3xl lg:max-w-[58.9em] lg:text-[2.5em] lg:leading-[1.2]">
+      <h2 className="max-w-3xl font-test-tiempos-fine text-xl sm:text-3xl text-neutral-800 lg:max-w-[23.57em] lg:text-[2.5em] lg:leading-[1.2]">
         One of the most reputable and diverse corporate empires in Bangladesh,
         Amanat Shah Group has been Family business legacy.
       </h2>
@@ -85,7 +85,7 @@ export default function MiahIntro() {
         {paragraphs.map((text) => (
           <p
             key={text.slice(0, 24)}
-            className="text-sm text-neutral-800 lg:text-[1.17em] lg:leading-[1.43]"
+            className="text-justify text-sm text-neutral-500 lg:text-[1.17em] lg:leading-[1.43]"
           >
             {text}
           </p>
@@ -93,11 +93,11 @@ export default function MiahIntro() {
       </div>
 
       {/* Stat cards */}
-      <div className="mt-8 grid grid-cols-2 gap-3 lg:mt-[5em] lg:grid-cols-4 lg:gap-[1.33em]">
+      <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:mt-[1.33em] lg:grid-cols-4 lg:gap-[1.33em]">
         {stats.map((stat) => (
           <div key={stat.label} className="flex flex-col">
-            <div className="flex items-baseline gap-2 border border-gray-100 bg-gray-50 px-4 pt-6 pb-4 lg:h-[11.17em] lg:gap-[0.67em] lg:px-[1.33em] lg:pt-[2.67em] lg:pb-0">
-              <span className="font-test-tiempos-fine text-4xl font-medium text-neutral-800 lg:text-[5em] lg:leading-[1.17]">
+            <div className="border border-gray-100 bg-gray-50 lg:h-[11.17em] pt-6 lg:pt-[2.67em] px-3 sm:px-4 lg:px-[1.33em] pb-4 lg:pb-0 overflow-hidden">
+              <span className="font-test-tiempos-fine text-3xl sm:text-4xl lg:text-[5em] font-medium text-neutral-800 lg:leading-[1.17]">
                 <span
                   data-count={stat.value}
                   data-decimals={stat.decimals ?? 0}
@@ -108,8 +108,8 @@ export default function MiahIntro() {
                 {stat.suffix}
               </span>
             </div>
-            <div className="flex items-center border border-t-0 border-gray-100 bg-gray-50 px-4 py-3 lg:h-[4.67em] lg:px-[1.33em] lg:py-0">
-              <span className="text-xs uppercase text-neutral-800 sm:text-sm lg:text-[1.33em] lg:leading-[1.5]">
+            <div className="flex items-center border border-t-0 border-gray-100 bg-gray-50 lg:h-[4.67em] px-3 sm:px-4 lg:px-[1.33em] py-3 lg:py-0">
+              <span className="text-xs sm:text-sm lg:text-[1.33em] capitalize sm:uppercase text-neutral-800 lg:leading-[1.5]">
                 {stat.label}
               </span>
             </div>

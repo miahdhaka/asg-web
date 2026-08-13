@@ -18,7 +18,7 @@ export function LogoCard({
 }) {
   return (
     <div
-      className={`group flex flex-col gap-4 ${onSelect ? "cursor-pointer" : ""}`}
+      className={`group flex flex-col gap-2 sm:gap-4 rounded-md bg-neutral-100 p-3 sm:bg-transparent sm:p-0 ${onSelect ? "cursor-pointer" : ""}`}
       onClick={onSelect}
       role={onSelect ? "button" : undefined}
       tabIndex={onSelect ? 0 : undefined}
@@ -44,7 +44,7 @@ export function LogoCard({
           quality={100}
         />
       </div>
-      <p className="font-test-tiempos-fine text-[1.125rem] leading-[1.5rem] text-neutral-800 lg:text-[1.5rem] lg:leading-[1.75rem]">
+      <p className="font-test-tiempos-fine text-base sm:text-[1.125rem] leading-[1.5rem] text-neutral-800 lg:text-[1.5rem] lg:leading-[1.75rem]">
         {card.label}
       </p>
     </div>
@@ -65,7 +65,7 @@ export default function LogoGalleryGrid({ cards }: { cards: LogoCardData[] }) {
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-5 lg:gap-y-8">
+      <div className="grid grid-cols-1 gap-8 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-5 lg:gap-y-8">
         {cards.map((card, i) => (
           <LogoCard key={card.label + i} card={card} onSelect={() => setActiveIndex(i)} />
         ))}

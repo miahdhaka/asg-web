@@ -2,24 +2,24 @@ import Image from "next/image";
 
 export default function ContactHero() {
   return (
-    <section className="snap-start relative w-full h-screen">
-      {/* Background image — mobile-only below lg */}
+    <section className="relative w-full">
+      {/* Background image — mobile-only asset below lg */}
       <Image
         src="/images/contact-us/hero-bg.png"
         alt="ASG Group contact us"
-        width={1434}
-        height={445}
+        width={360}
+        height={290}
         priority
         quality={90}
-        className="block lg:hidden min-h-[20rem] w-full h-auto object-cover object-[50%_40%]"
+        className="block lg:hidden min-h-[28rem] w-full h-auto object-cover object-[50%_40%]"
       />
 
       {/* Background image — desktop only */}
       <Image
         src="/images/contact-us/hero-bg.png"
         alt="ASG Group contact us"
-        width={1434}
-        height={445}
+        width={1920}
+        height={1080}
         priority
         quality={90}
         className="hidden lg:block lg:h-[41.5625rem] w-full object-cover object-[50%_40%]"

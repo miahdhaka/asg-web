@@ -2,16 +2,27 @@ import Image from "next/image";
 
 export default function MediaGalleriesHero() {
   return (
-    <section className="relative w-full lg:h-[41.5625rem]">
-      {/* Background image */}
+    <section className="relative w-full">
+      {/* Background image — mobile-only asset below lg */}
       <Image
         src="/images/media-galleries/hero-bg.png"
         alt="ASG Group media galleries"
-        fill
+        width={360}
+        height={290}
         priority
         quality={90}
-        sizes="100vw"
-        className="object-cover"
+        className="block lg:hidden min-h-[28rem] w-full h-auto object-cover object-[50%_40%]"
+      />
+
+      {/* Background image — desktop only */}
+      <Image
+        src="/images/media-galleries/hero-bg.png"
+        alt="ASG Group media galleries"
+        width={1920}
+        height={1080}
+        priority
+        quality={90}
+        className="hidden lg:block lg:h-[41.5625rem] w-full object-cover object-[50%_40%]"
       />
 
       {/* Dark bottom overlay for text legibility */}

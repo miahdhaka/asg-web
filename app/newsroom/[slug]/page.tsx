@@ -39,38 +39,38 @@ export default async function NewsDetailPage({
   if (!article) notFound();
 
   return (
-    <main className="flex flex-col w-full max-w-[80rem] mx-auto pt-[3.5rem] mt-[6rem] px-5">
-      {/* ── Meta + Title ──────────────────────────────────────────── */}
+    <main className="flex flex-col w-full max-w-[80rem] mx-auto pt-2 sm:pt-[3.5rem] mt-[6rem] px-4 sm:px-5">
+      {/* Meta + Title */}
       <div className="w-full">
         {/* Category / label row */}
         <div className="flex items-center gap-2">
-          <span className="font-neue-montreal text-[1rem] tracking-wide leading-[1.25rem] text-neutral-800">
+          <span className="font-neue-montreal text-xs sm:text-[1rem] tracking-wide leading-[1.25rem] text-neutral-800">
             {article.label}
           </span>
           <span
             aria-hidden
             className="h-[0.8125rem] w-px rotate-[30deg] bg-neutral-600"
           />
-          <span className="font-neue-montreal text-[1rem] tracking-wide leading-[1.25rem] text-neutral-800">
+          <span className="font-neue-montreal text-xs sm:text-[1rem] tracking-wide leading-[1.25rem] text-neutral-800">
             {article.category}
           </span>
         </div>
 
         {/* Title */}
-        <h1 className="mt-4 font-serif text-[2.2rem] leading-[3rem] font-normal text-black">
+        <h1 className="mt-2 sm:mt-4 font-serif text-[1.25rem] sm:text-[2.2rem] leading-[2rem] sm:leading-[3rem] font-normal text-black">
           {article.title}
         </h1>
       </div>
 
-      {/* ── Info row ──────────────────────────────────────────────── */}
-      <div className="flex w-full flex-wrap items-center gap-6 mt-10">
+      {/* Info row */}
+      <div className="flex w-full flex-wrap items-center gap-3 sm:gap-6 mt-6 sm:mt-10">
         {/* Published date */}
-        <span className="font-neue-montreal text-[1rem] leading-[1.25rem] tracking-wider text-neutral-800">
+        <span className="font-neue-montreal text-xs sm:text-[1rem] leading-[1.25rem] tracking-wider text-neutral-800">
           Published: {article.publishedAt}
         </span>
 
         {/* Newspaper source icon */}
-        <div className="bg-gray-100 p-3">
+        <div className="bg-gray-100 p-2 sm:p-3">
           <Image
             src="/images/newsroom/prothom-alo.png"
             alt="Prothom Alo"
@@ -78,7 +78,7 @@ export default async function NewsDetailPage({
             height={1080}
             priority
             quality={90}
-            className="w-[5rem] object-contain"
+            className="w-[3.5rem] sm:w-[5rem] object-contain"
           />
         </div>
 
@@ -196,7 +196,7 @@ export default async function NewsDetailPage({
       <hr className="mt-[1.5rem] border-0 border-t border-gray-100" />
 
       {/* ── Hero image ────────────────────────────────────────────── */}
-      <div className="mt-12 w-full">
+      <div className="mt-6 sm:mt-12 w-full">
         <div className="relative aspect-[915/520] w-full overflow-hidden bg-[#D9D9D9]">
           <Image
             src={article.image}
@@ -212,12 +212,12 @@ export default async function NewsDetailPage({
       </div>
 
       {/* ── Article body ──────────────────────────────────────────── */}
-      <div className="flex flex-col gap-4 w-full tracking-wider pb-16 mt-8">
+      <div className="flex flex-col gap-4 w-full tracking-wider pb-8 sm:pb-16 mt-6 sm:mt-8">
         {/* Paragraphs */}
         {article.body.map((p, i) => (
           <p
             key={i}
-            className="font-neue-montreal text-[1.08rem] text-neutral-800 font- text-justify text-left"
+            className="font-neue-montreal text-sm sm:text-[1.08rem] text-neutral-800 font-medium text-justify text-left"
           >
             {p}
           </p>
@@ -226,7 +226,7 @@ export default async function NewsDetailPage({
         {/* Bulleted sub-sections */}
         {article.bulletSections?.map((section) => (
           <div key={section.heading} className="flex flex-col gap-2">
-            <p className="font-neue-montreal text-[1.125rem] leading-[1.5rem] font-medium text-neutral-800">
+            <p className="font-neue-montreal text-sm sm:text-[1.08rem] leading-[1.5rem] font-medium text-neutral-800">
               {section.heading}
             </p>
             {section.items.map((item, i) => (
@@ -248,7 +248,7 @@ export default async function NewsDetailPage({
                     strokeLinejoin="round"
                   />
                 </svg>
-                <span className="font-neue-montreal text-[1rem] leading-[1.5rem] text-neutral-600">
+                <span className="font-neue-montreal text-sm sm:text-[1.08rem] leading-[1.5rem] text-neutral-600">
                   {item}
                 </span>
               </div>

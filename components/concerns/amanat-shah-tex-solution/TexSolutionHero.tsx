@@ -45,7 +45,7 @@ export default function TexSolutionHero() {
             height={45}
             priority
             quality={100}
-            className="h-auto w-28 lg:w-[10.83em]"
+            className="h-auto w-[5.42em]"
           />
           <h1 className="mt-2 font-test-tiempos-fine text-2xl text-neutral-800 sm:text-3xl lg:mt-[0.67em] lg:text-[2em] lg:leading-[1.33]">
             Amanat Shah Tex Solution

@@ -60,7 +60,7 @@ export default function FabricsCapabilities() {
       id="fabrics-capabilities"
       className="w-full bg-[rgb(249,250,251)] px-4 py-10 sm:px-6 lg:px-[10em] lg:py-[5em]"
     >
-      <div className="flex flex-col-reverse gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-[5em]">
+      <div className="flex flex-col-reverse gap-4 sm:gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-[5em]">
         {/* Staggered card grid — right column sits 69px lower than the left */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-0 lg:flex lg:w-[58.67em] lg:shrink-0">
           <div className="flex flex-col gap-4 sm:gap-0">
@@ -78,7 +78,7 @@ export default function FabricsCapabilities() {
           <h2 className="font-test-tiempos-fine text-2xl text-neutral-800 sm:text-3xl lg:max-w-[9.75em] lg:text-[3em] lg:leading-[1.11]">
             Core Capabilities &amp; Technology
           </h2>
-          <p className="mt-3 text-sm text-neutral-800 lg:mt-[1.33em] lg:w-[29.58em] lg:text-[1.17em] lg:leading-[1.43]">
+          <p className="mt-3 text-sm text-neutral-800 lg:mt-[1.14em] lg:w-[27.79em] lg:text-[1.17em] lg:leading-[1.43]">
             At Amanat Shah Fabrics Ltd. (ASFL), we employ state-of-the-art
             European and advanced machinery across our entire production chain
             to ensure superior quality, efficiency, and consistency.

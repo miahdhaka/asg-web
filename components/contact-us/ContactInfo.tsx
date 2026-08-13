@@ -16,11 +16,12 @@ function InfoBlock({
 }) {
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center gap-4">
-        <div className="flex h-[3.2rem] w-[3.2rem] shrink-0 items-center justify-center rounded bg-gray-100">
-          <Icon size={24} className="text-neutral-800" strokeWidth={1.5} />
+      <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex h-[2.5rem] w-[2.5rem] sm:h-[3.2rem] sm:w-[3.2rem] shrink-0 items-center justify-center rounded bg-gray-100">
+          <Icon size={18} className="sm:hidden text-neutral-800" strokeWidth={1.5} />
+          <Icon size={24} className="hidden sm:block text-neutral-800" strokeWidth={1.5} />
         </div>
-        <span className="text-sm lg:text-[1.2rem] leading-5 font-medium text-gray-800">
+        <span className="text-base lg:text-[1.2rem] leading-5 font-medium text-gray-800">
           {label}
         </span>
       </div>
@@ -38,8 +39,8 @@ export default function ContactInfo() {
   return (
     <div className="flex flex-col">
       {/* Corporate Headquarters */}
-      <div className="flex w-full max-w-[18rem] flex-col gap-5">
-        <p className="text-lg lg:text-[1.5rem] leading-7 lg:leading-[2.3rem] text-neutral-800 font-test-tiempos-fine">
+      <div className="flex w-full flex-col gap-5">
+        <p className="text-xl lg:text-[1.5rem] leading-7 lg:leading-[2.3rem] text-neutral-800 font-test-tiempos-fine">
           CORPORATE HEADQUARTERS
         </p>
 
@@ -75,16 +76,16 @@ export default function ContactInfo() {
       <hr className="mt-4 lg:mt-8 border-t border-gray-100" />
 
       {/* Opening Hours */}
-      <div className="mt-6 lg:mt-8 flex w-full max-w-[18.9375rem] flex-col gap-5">
-        <p className="text-lg lg:text-[1.5rem] leading-7 lg:leading-[2.3rem] text-neutral-800 font-test-tiempos-fine">
+      <div className="mt-6 lg:mt-8 flex w-full flex-col gap-3 sm:gap-5">
+        <p className="text-xl lg:text-[1.5rem] leading-7 lg:leading-[2.3rem] text-neutral-800 font-test-tiempos-fine">
           OPENING HOURS
         </p>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-1 sm:gap-3">
           {openingHours.map((item) => (
             <div key={item.day} className="flex items-center gap-6">
               <span
-                className={`w-20 lg:w-[6.5rem] shrink-0 text-sm lg:text-[1.2rem] leading-8 font-medium text-nowrap ${
+                className={`w-24 lg:w-[6.5rem] shrink-0 text-sm lg:text-[1.2rem] leading-8 font-medium text-nowrap ${
                   item.closed ? "text-[#B61753]" : "text-gray-800"
                 }`}
               >

@@ -15,13 +15,13 @@ export default function EsgCertifications() {
             <span aria-hidden className="h-1.5 w-1.5 bg-neutral-800" />
           </div>
 
-          <h2 className="mt-3 font-serif text-[4rem] leading-[1] font-normal text-neutral-800">
+          <h2 className="mt-3 font-serif text-[2rem] sm:text-[4rem] leading-[1] font-normal text-neutral-800">
             Certifications and
             <br />
             Compliance
           </h2>
 
-          <p className="mt-8 text-xl leading-[1.6] tracking-wide text-neutral-600">
+          <p className="mt-4 sm:mt-8 text-base sm:text-xl leading-[1.6] tracking-wide text-neutral-600">
             {certificationIntro}
           </p>
         </div>
