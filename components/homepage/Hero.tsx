@@ -786,8 +786,9 @@ export default function Hero() {
              rest of the stream so one flick = exactly one step
          Deltas are normalized across deltaMode first. */
       const NOTCH_DELTA = 40; // |delta| at/above this is a discrete notch
-      const INTENT_DISTANCE = 30; // accumulated px that count as a swipe
-      const SWALLOW_MS = 200; // ms to ignore after a gesture fires
+      const INTENT_DISTANCE = 50; // accumulated px that count as a swipe
+      const SWALLOW_MS = 400; // ms to ignore the active stream after a gesture
+      const COOLDOWN_MS = 700; // ms total guard — drops residual momentum after swallow
       let wheelAccum = 0;
       let lastGestureTime = 0;
 
@@ -801,22 +802,43 @@ export default function Hero() {
 
       /* Feed one wheel event into the tracker; returns true when it
          completes a deliberate gesture (the caller then plays exactly one
-         phase while the rest of the stream is ignored) */
+         phase while the rest of the stream is ignored).
+
+         Two-tier post-gesture guard keeps Mac trackpad momentum from
+         re-triggering:
+           1. SWALLOW (≤ 400 ms) — drops every event, drains the active
+              stream so the accumulator stays at zero.
+           2. COOLDOWN (400–700 ms) — drops small trackpad residuals but
+              still lets a large mouse-wheel notch break through so a
+              deliberate second scroll is never delayed. */
       const wheelIntent = (e: WheelEvent) => {
         const now = performance.now();
         const delta = normalizeWheel(e);
         const abs = Math.abs(delta);
         if (!abs) return false;
 
-        // Swallow the tail of a stream that already fired a gesture
-        if (now - lastGestureTime < SWALLOW_MS) {
+        const since = now - lastGestureTime;
+
+        // A direction flip always restarts the accumulation — even
+        // inside the swallow / cooldown windows, so a reversal answers
+        // the very next event
+        if ((delta > 0 && wheelAccum < 0) || (delta < 0 && wheelAccum > 0)) {
+          wheelAccum = 0;
+        }
+
+        // Tier 1 — swallow: drop everything, keep the accumulator at zero
+        // so the active trackpad stream cannot re-arm the gesture
+        if (since < SWALLOW_MS) {
           wheelAccum = 0;
           return false;
         }
 
-        // A direction flip restarts the accumulation
-        if ((delta > 0 && wheelAccum < 0) || (delta < 0 && wheelAccum > 0)) {
+        // Tier 2 — cooldown: drop small trackpad residuals (momentum
+        // tail) but let a large mouse-wheel notch break through so a
+        // deliberate second scroll fires without lag
+        if (since < COOLDOWN_MS && abs < NOTCH_DELTA) {
           wheelAccum = 0;
+          return false;
         }
 
         // Mouse notch — big delta = deliberate gesture, fires immediately

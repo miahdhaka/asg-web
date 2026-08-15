@@ -48,7 +48,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body className={`${neueMontreal.variable} ${tiemposFine.variable} h-screen min-h-screen flex flex-col font-neue-montreal`}>
+      <body className={`${neueMontreal.variable} ${tiemposFine.variable} min-h-screen flex flex-col font-neue-montreal`}>
         <Header />
         {children}
         <Footer />
