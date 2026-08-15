@@ -20,117 +20,42 @@ const SVG_W = 899;
 const SVG_H = 530;
 const BADGE_W = 167;
 const BADGE_H = 166;
+const VISIBLE = 3.5;
+const SPEED = 30; // px/sec
 
 export default function EsgCertifications() {
   const [expanded, setExpanded] = useState(false);
-  const [badgeIdx, setBadgeIdx] = useState(0);
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const noTransition = useRef(false);
-  const intervalRef = useRef<ReturnType<typeof setInterval>>(undefined);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const posRef = useRef(0);
+  const rafRef = useRef<number>(0);
+  const lastTimeRef = useRef(0);
   const dragStartX = useRef(0);
   const dragDelta = useRef(0);
   const isDragging = useRef(false);
-  const [dragging, setDragging] = useState(false);
-  const [dragOffset, setDragOffset] = useState(0);
-  const [imgStyle, setImgStyle] = useState<{
-    width: number;
-    height: number;
+  const pauseUntilRef = useRef(0);
+  const [dims, setDims] = useState<{
+    slideW: number;
+    slideH: number;
+    svgW: number;
+    svgH: number;
     positions: { x: number; y: number }[];
   } | null>(null);
 
-  /* Restart auto-advance timer */
-  const restartAutoAdvance = useCallback(() => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    intervalRef.current = setInterval(() => {
-      setBadgeIdx((i) => {
-        if (i === BADGE_POSITIONS.length - 1) {
-          setTimeout(() => {
-            noTransition.current = true;
-            setBadgeIdx(0);
-            requestAnimationFrame(() =>
-              requestAnimationFrame(() => {
-                noTransition.current = false;
-              }),
-            );
-          }, 520);
-          return BADGE_POSITIONS.length;
-        }
-        return i + 1;
-      });
-    }, 2500);
-  }, []);
-
-  /* Auto-advance mobile badge carousel */
-  useEffect(() => {
-    restartAutoAdvance();
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [restartAutoAdvance]);
-
-  /* Pointer drag handlers */
-  const handlePointerDown = useCallback(
-    (e: React.PointerEvent) => {
-      if (!imgStyle) return;
-      isDragging.current = true;
-      setDragging(true);
-      dragStartX.current = e.clientX;
-      dragDelta.current = 0;
-      setDragOffset(0);
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      (e.target as HTMLElement).setPointerCapture(e.pointerId);
-    },
-    [imgStyle],
-  );
-
-  const handlePointerMove = useCallback(
-    (e: React.PointerEvent) => {
-      if (!isDragging.current) return;
-      const delta = e.clientX - dragStartX.current;
-      dragDelta.current = delta;
-      setDragOffset(delta);
-    },
-    [],
-  );
-
-  const handlePointerUp = useCallback(() => {
-    if (!isDragging.current || !imgStyle) return;
-    isDragging.current = false;
-    setDragging(false);
-    const threshold = imgStyle.width * 0.2;
-    if (dragDelta.current < -threshold) {
-      setBadgeIdx((i) => {
-        if (i === BADGE_POSITIONS.length - 1) {
-          setTimeout(() => {
-            noTransition.current = true;
-            setBadgeIdx(0);
-            requestAnimationFrame(() =>
-              requestAnimationFrame(() => {
-                noTransition.current = false;
-              }),
-            );
-          }, 520);
-          return BADGE_POSITIONS.length;
-        }
-        return i + 1;
-      });
-    } else if (dragDelta.current > threshold) {
-      setBadgeIdx((i) => (i === 0 ? BADGE_POSITIONS.length - 1 : i - 1));
-    }
-    setDragOffset(0);
-    restartAutoAdvance();
-  }, [imgStyle, restartAutoAdvance]);
-
-  /* Compute image dimensions & object-position per badge */
-  const updateSize = useCallback(() => {
-    const el = carouselRef.current;
+  /* Measure container & compute badge dimensions */
+  const measure = useCallback(() => {
+    const el = containerRef.current;
     if (!el) return;
     const cw = el.offsetWidth;
     if (cw === 0) return;
-    const scale = cw / BADGE_W;
-    setImgStyle({
-      width: SVG_W * scale,
-      height: SVG_H * scale,
+    const slideW = cw / VISIBLE;
+    const scale = slideW / BADGE_W;
+    const slideH = slideW * (BADGE_H / BADGE_W);
+    setDims({
+      slideW,
+      slideH,
+      svgW: SVG_W * scale,
+      svgH: SVG_H * scale,
       positions: BADGE_POSITIONS.map((b) => ({
         x: -(b.x * scale),
         y: -(b.y * scale),
@@ -138,12 +63,71 @@ export default function EsgCertifications() {
     });
   }, []);
 
+  /* rAF-based continuous animation (no React re-renders) */
   useEffect(() => {
-    updateSize();
-    const ro = new ResizeObserver(updateSize);
-    if (carouselRef.current) ro.observe(carouselRef.current);
+    if (!dims) return;
+    const track = trackRef.current;
+    if (!track) return;
+
+    const animate = (time: number) => {
+      if (lastTimeRef.current && !isDragging.current && time > pauseUntilRef.current) {
+        const dt = (time - lastTimeRef.current) / 1000;
+        posRef.current -= SPEED * dt;
+        if (posRef.current <= -dims.slideW) {
+          posRef.current += dims.slideW;
+        }
+      }
+      lastTimeRef.current = time;
+      track.style.transform = `translateX(${posRef.current}px)`;
+      rafRef.current = requestAnimationFrame(animate);
+    };
+
+    rafRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [dims]);
+
+  /* Pointer drag */
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (!dims) return;
+      isDragging.current = true;
+      dragStartX.current = e.clientX;
+      dragDelta.current = 0;
+      lastTimeRef.current = 0;
+      (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    },
+    [dims],
+  );
+
+  const handlePointerMove = useCallback(
+    (e: React.PointerEvent) => {
+      if (!isDragging.current) return;
+      dragDelta.current = e.clientX - dragStartX.current;
+      posRef.current = posRef.current + dragDelta.current;
+      dragStartX.current = e.clientX;
+      dragDelta.current = 0;
+      const track = trackRef.current;
+      if (track) track.style.transform = `translateX(${posRef.current}px)`;
+    },
+    [],
+  );
+
+  const handlePointerUp = useCallback(() => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    lastTimeRef.current = 0;
+    pauseUntilRef.current = performance.now() + 3000;
+  }, []);
+
+  useEffect(() => {
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (containerRef.current) ro.observe(containerRef.current);
     return () => ro.disconnect();
-  }, [updateSize]);
+  }, [measure]);
+
+  /* Build 2× badge set for seamless loop */
+  const allPositions = dims ? [...dims.positions, ...dims.positions] : [];
 
   return (
     <section className="bg-gray-50 py-6 sm:py-12 lg:py-[4.8rem] my-4 sm:my-[2rem]">
@@ -164,7 +148,7 @@ export default function EsgCertifications() {
             Compliance
           </h2>
 
-          <div className="flex flex-col gap-2 lg:gap-6">
+          <div className="flex flex-col gap-2 lg:gap-6 mb-4 sm:mb-0">
             {/* Truncatable paragraph */}
             <div
               className="mt-4 sm:mt-8 overflow-hidden lg:overflow-visible transition-[max-height] duration-700 ease-in-out"
@@ -215,36 +199,31 @@ export default function EsgCertifications() {
         />
       </div>
 
-      {/* Mobile: auto-sliding badge carousel (separate section) */}
+      {/* Mobile: continuous auto-scrolling badge carousel */}
       <div
-        ref={carouselRef}
+        ref={containerRef}
         className="lg:hidden w-full overflow-hidden px-4 sm:px-8 cursor-grab active:cursor-grabbing select-none"
+        style={{ minHeight: dims ? undefined : "6rem" }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
       >
-        {imgStyle && (
-          <div
-            className={`flex ease-in-out duration-500 ${noTransition.current || dragging ? "[transition:none]" : "transition-transform"}`}
-            style={{
-              transform: `translateX(calc(-${badgeIdx * 100}% + ${dragOffset}px))`,
-            }}
-          >
-            {[...imgStyle.positions, imgStyle.positions[0]].map(
-              (pos, i) => (
-                <div
-                  key={i}
-                  className="w-full shrink-0"
-                  style={{
-                    aspectRatio: `${BADGE_W}/${BADGE_H}`,
-                    backgroundImage: `url(/images/sustainability/esg/badges.svg)`,
-                    backgroundSize: `${imgStyle.width}px ${imgStyle.height}px`,
-                    backgroundPosition: `${pos.x}px ${pos.y}px`,
-                    backgroundRepeat: "no-repeat",
-                  }}
-                />
-              ),
-            )}
+        {dims && (
+          <div ref={trackRef} className="flex will-change-transform">
+            {allPositions.map((pos, i) => (
+              <div
+                key={i}
+                className="shrink-0"
+                style={{
+                  width: dims.slideW,
+                  height: dims.slideH,
+                  backgroundImage: `url(/images/sustainability/esg/badges.svg)`,
+                  backgroundSize: `${dims.svgW}px ${dims.svgH}px`,
+                  backgroundPosition: `${pos.x}px ${pos.y}px`,
+                  backgroundRepeat: "no-repeat",
+                }}
+              />
+            ))}
           </div>
         )}
       </div>

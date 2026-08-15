@@ -39,16 +39,15 @@ export default function GlobalFootprint() {
   return (
     <section
       id="global-footprint"
-      className="relative flex w-full flex-col overflow-hidden bg-[var(--color-primary-black)] pb-10"
-      style={{ height: "calc(100vh - var(--header-height))" }}
+      className="relative flex w-full flex-col overflow-hidden bg-[var(--color-primary-black)] pb-6 lg:pb-10 min-h-[calc(100vh-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Content row — copy left, map right */}
-      <div className="relative flex min-h-0 flex-1 items-center px-20">
+      <div className="relative flex min-h-0 flex-1 flex-col lg:flex-row items-center px-4 lg:px-20">
         {/* Left copy — pinned to the bottom while the map stays centered */}
-        <div className="w-[38%] shrink-0 self-end mb-[5%]">
+        <div className="w-full lg:w-[38%] shrink-0 mb-6 lg:mb-0 lg:self-end lg:mb-[5%]">
           {/* Eyebrow */}
           <div className="flex items-center gap-3">
-            <span className="font-neue-montreal text-sm font-normal tracking-[0.25em] text-white uppercase"
+            <span className="font-neue-montreal text-xs sm:text-sm font-normal tracking-[0.25em] text-white uppercase"
             >
               We Export To
             </span>
@@ -56,12 +55,12 @@ export default function GlobalFootprint() {
           </div>
 
           {/* Title */}
-          <h2 className="mt-2 font-serif text-[4rem] leading-[1.1] font-normal text-white">
+          <h2 className="mt-2 font-serif text-3xl sm:text-4xl lg:text-[4rem] leading-[1.1] font-normal text-white">
             Our Global Footprint
           </h2>
 
           {/* Description */}
-          <p className="mt-6 max-w-[38.75rem] text-[1.0625rem] leading-[1.6] tracking-wider text-neutral-400">
+          <p className="mt-4 lg:mt-6 max-w-[38.75rem] text-sm sm:text-base lg:text-[1.0625rem] leading-[1.6] tracking-wider text-neutral-400">
             Amanat Shah Group operates a robust international supply chain,
             delivering world-class textile products to major apparel hubs
             worldwide. Driven by an expert workforce, our footprint connects
@@ -71,7 +70,7 @@ export default function GlobalFootprint() {
         </div>
 
         {/* Map with location pins */}
-        <div className="relative min-w-0 flex-1">
+        <div className="relative min-w-0 w-full lg:flex-1">
           {/* Green gradient blur centered behind the map */}
           <div
             aria-hidden
@@ -185,14 +184,14 @@ export default function GlobalFootprint() {
       </div>
 
       {/* Brand logo marquees - two rows going opposite directions */}
-      <div className="relative mt-6">
+      <div className="relative mt-4 lg:mt-6">
         {/* Row 1: Right to Left */}
         <div className="no-scrollbar overflow-hidden select-none">
-          <div className="animate-marquee-left flex w-max gap-4">
+          <div className="animate-marquee-left flex w-max gap-2 lg:gap-4">
             {loopedBrands.map((brand, index) => (
               <div
                 key={`left-${brand}-${index}`}
-                className="flex h-24 w-[17.5rem] flex-shrink-0 items-center justify-center bg-[#10161a]"
+                className="flex h-16 w-[12rem] lg:h-24 lg:w-[17.5rem] flex-shrink-0 items-center justify-center bg-[#10161a]"
               >
                 <Image
                   src={brand}
@@ -200,7 +199,7 @@ export default function GlobalFootprint() {
                   width={160}
                   height={40}
                   draggable={false}
-                  className="pointer-events-none h-10 w-36 object-contain"
+                  className="pointer-events-none h-7 w-24 lg:h-10 lg:w-36 object-contain"
                   quality={90}
                 />
               </div>
@@ -209,12 +208,12 @@ export default function GlobalFootprint() {
         </div>
 
         {/* Row 2: Left to Right */}
-        <div className="no-scrollbar mt-4 overflow-hidden select-none">
-          <div className="animate-marquee-right flex w-max gap-4">
+        <div className="no-scrollbar mt-2 lg:mt-4 overflow-hidden select-none">
+          <div className="animate-marquee-right flex w-max gap-2 lg:gap-4">
             {loopedBrands.map((brand, index) => (
               <div
                 key={`right-${brand}-${index}`}
-                className="flex h-24 w-[17.5rem] flex-shrink-0 items-center justify-center bg-[#10161a]"
+                className="flex h-16 w-[12rem] lg:h-24 lg:w-[17.5rem] flex-shrink-0 items-center justify-center bg-[#10161a]"
               >
                 <Image
                   src={brand}
@@ -222,7 +221,7 @@ export default function GlobalFootprint() {
                   width={160}
                   height={40}
                   draggable={false}
-                  className="pointer-events-none h-10 w-36 object-contain"
+                  className="pointer-events-none h-7 w-24 lg:h-10 lg:w-36 object-contain"
                   quality={90}
                 />
               </div>

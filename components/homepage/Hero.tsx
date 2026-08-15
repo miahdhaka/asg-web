@@ -25,6 +25,9 @@ export default function Hero() {
 
   useGSAP(
     () => {
+      // Skip scroll phases on mobile — let the page scroll naturally
+      if (window.innerWidth < 1024) return;
+
       const headerLogo = document.getElementById("header-logo");
 
       /* Current root font size — the whole layout is scaled through it (see
@@ -225,9 +228,8 @@ export default function Hero() {
         0.5
       );
 
-      /* ── Phase 4 (4th scroll): the IntroSection opens over the hero as an
-         expanding circle from the viewport centre, then the page settles on
-         it seamlessly ── */
+      /* ── Phase 4 (4th scroll): the IntroSection scales up over the hero
+         from a smaller size, then the page settles on it seamlessly ── */
       const intro = document.getElementById("intro-section");
 
       const headerH = () =>
@@ -250,27 +252,31 @@ export default function Hero() {
       const releaseIntro = () => {
         if (!intro) return;
         gsap.set(intro, {
-          clearProps: "position,top,left,width,zIndex,clipPath",
+          clearProps: "position,top,left,width,zIndex,transform,filter,opacity,visibility",
         });
+        intro.style.clipPath = "";
       };
 
       const tl4 = gsap.timeline({ paused: true });
       if (intro) {
-        // 75% of the clip-path reference box ≳ half the viewport diagonal,
-        // so the circle fully swallows the corners
-        tl4.fromTo(
-          intro,
-          { clipPath: "circle(0% at 50% 50%)" },
+        // Circle reveal: expands from the centre in all directions
+        gsap.set(intro, { clipPath: "circle(0% at 50% 50%)" });
+        const circleReveal = { r: 0 };
+        tl4.to(
+          circleReveal,
           {
-            clipPath: "circle(75% at 50% 50%)",
+            r: 80,
             duration: 1.3,
             ease: "power2.inOut",
-          }
+            onUpdate() {
+              intro.style.clipPath = `circle(${circleReveal.r}% at 50% 50%)`;
+            },
+          },
         );
       }
 
       /* Logo handoff to the intro — mirror of the phase-1 hero→navbar flight:
-         while the circle opens, the navbar logo detaches, flies down and
+         while the intro scales up, the navbar logo detaches, flies down and
          lands exactly on the intro's logo (same spot, same size), cross-
          fading from the dark navbar variant to the intro's mixed variant */
       const introLogo = document.getElementById("intro-logo");
@@ -309,7 +315,7 @@ export default function Hero() {
         tl4.set(flyMixedRef.current, { opacity: 0 }, 0.02);
         tl4.set(headerLogo, { opacity: 0 }, 0.02);
         tl4.set(introLogo, { autoAlpha: 0 }, 0.02);
-        // Fly down while the circle opens…
+        // Fly down while the intro scales up…
         tl4.to(
           introFlyRef.current,
           { x: 0, y: 0, scale: 1, duration: 1.3, ease: "power2.inOut" },
@@ -324,7 +330,7 @@ export default function Hero() {
       }
 
       /* While the logo flies down from the top, the intro's paragraph and
-         About Us button rise from the bottom — same duration, same ease, so
+         About Us button rise from the bottom — same duration, same ease,
          both motions land together (reversing tl4 plays the exact mirror) */
       const introCopy = document.getElementById("intro-copy");
       const introCta = document.getElementById("intro-cta");
@@ -361,7 +367,7 @@ export default function Hero() {
       const releaseOurBusiness = () => {
         if (!ourBusiness) return;
         gsap.set(ourBusiness, {
-          clearProps: "position,top,left,width,zIndex,opacity,visibility",
+          clearProps: "position,top,left,width,zIndex,transform,filter,opacity,visibility",
         });
       };
 
@@ -1272,6 +1278,23 @@ export default function Hero() {
       window.addEventListener("scroll", onScroll, { passive: true });
 
       return () => {
+        // Kill the active scrub tween so it stops calling render()
+        // on DOM that no longer exists
+        sweep?.kill();
+        sweep = null;
+
+        // Drop every pinned section back into normal flow — without this
+        // the next page inherits fixed-position overlays that block scroll
+        transitions.forEach((t, i) => {
+          if (i <= step) t.landBack();
+        });
+
+        // Reset the header logo to its default navbar state so the
+        // next page doesn't start with a hidden/stuck logo
+        if (headerLogo) {
+          gsap.set(headerLogo, { clearProps: "opacity" });
+        }
+
         window.removeEventListener("wheel", onWheel);
         window.removeEventListener("keydown", onKeyDown);
         window.removeEventListener("touchstart", onTouchStart);
@@ -1306,7 +1329,7 @@ export default function Hero() {
       {/* "Family Business" heading — revealed by the scroll timeline */}
       <h2
         ref={familyRef}
-        className="absolute top-[20%] z-20 font-test-tiempos-fine text-[4.0625rem] leading-20 text-[var(--primary-black)] whitespace-nowrap opacity-0"
+        className="hidden lg:block absolute top-[20%] z-20 font-test-tiempos-fine text-[4.0625rem] leading-20 text-[var(--primary-black)] whitespace-nowrap opacity-0"
       >
         Family Business
       </h2>
@@ -1315,7 +1338,7 @@ export default function Hero() {
           right-aligned to the video's right edge */}
       <h2
         ref={legacyRef}
-        className="absolute top-[24%] right-[33.3vw] z-20 font-test-tiempos-fine text-[4.0625rem] leading-16 text-[var(--primary-black)] whitespace-nowrap opacity-0"
+        className="hidden lg:block absolute top-[24%] right-[33.3vw] z-20 font-test-tiempos-fine text-[4.0625rem] leading-16 text-[var(--primary-black)] whitespace-nowrap opacity-0"
       >
         Legacy For
       </h2>
@@ -1324,22 +1347,32 @@ export default function Hero() {
           centred with the same gap as above the video */}
       <h2
         ref={moreRef}
-        className="absolute top-[60%] z-20 font-test-tiempos-fine text-[4.0625rem] leading-16 text-[var(--primary-black)] whitespace-nowrap opacity-0"
+        className="hidden lg:block absolute top-[60%] z-20 font-test-tiempos-fine text-[4.0625rem] leading-16 text-[var(--primary-black)] whitespace-nowrap opacity-0"
       >
         More Then 130 Years
       </h2>
 
       {/* Centered content */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
-        {/* Invisible slot marking where the flying logo starts from */}
-        <div ref={logoSlotRef} className="mb-6 w-[8.125rem] h-[6.875rem]" />
+        {/* Logo — static on mobile, flying logo covers this slot on desktop */}
+        <div ref={logoSlotRef} className="mb-4 lg:mb-6 w-[6rem] h-[5rem] lg:w-[8.125rem] lg:h-[6.875rem] flex items-center justify-center">
+          <Image
+            src="/logo/asg-icon.png"
+            alt="ASG Logo"
+            width={130}
+            height={110}
+            quality={100}
+            priority
+            className="w-full h-full object-contain lg:hidden"
+          />
+        </div>
 
         <div ref={textRef}>
-          <h1 className="font-test-tiempos-fine uppercase text-6xl font-medium mb-4">
+          <h1 className="font-test-tiempos-fine uppercase text-3xl sm:text-4xl lg:text-6xl font-medium mb-2 lg:mb-4">
             Amanat Shah Group
           </h1>
 
-          <p className="text-white font-neue-montreal font-light word-space-4 uppercase tracking-wider max-w-4xl">
+          <p className="text-white font-neue-montreal font-light word-space-4 uppercase tracking-wider max-w-4xl text-xs sm:text-sm lg:text-base">
             Textile | RMG | Chemical | Trading | IT | E-Commerce | Real Estate | Finance | Agriculture
           </p>
         </div>
@@ -1374,7 +1407,7 @@ export default function Hero() {
         height={90}
         quality={100}
         priority
-        className="pointer-events-none invisible fixed left-0 top-0 z-60 w-[8.125rem] h-[6.875rem] object-contain"
+        className="pointer-events-none invisible fixed left-0 top-0 z-60 hidden lg:block w-[8.125rem] h-[6.875rem] object-contain"
       />
 
       {/* Flying intro logo — carries the navbar logo down onto the intro
@@ -1382,7 +1415,7 @@ export default function Hero() {
           cross-fade mid-flight (dark navbar logo → mixed intro logo) */}
       <div
         ref={introFlyRef}
-        className="pointer-events-none invisible fixed left-0 top-0 z-60"
+        className="pointer-events-none invisible fixed left-0 top-0 z-60 hidden lg:block"
       >
         <Image
           ref={flyDarkRef}

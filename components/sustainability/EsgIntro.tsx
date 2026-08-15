@@ -22,7 +22,7 @@ export default function EsgIntro() {
 
       {/* Commitment paragraph + compliance certificate swatches */}
       <section className="flex flex-col gap-6 px-4 sm:px-8 lg:px-0 py-4 sm:py-10 lg:py-[3rem]">
-        <div className="flex flex-col gap-8 w-full max-w-[63rem] mx-auto">
+        <div className="flex flex-col gap-4 sm:gap-8 w-full max-w-[63rem] mx-auto">
           <div className="flex flex-col gap-1 lg:gap-6">
             {/* Truncatable paragraph */}
             <div

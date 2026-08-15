@@ -32,15 +32,14 @@ export default function Certifications() {
   return (
     <section
       id="certifications"
-      className="relative flex w-full flex-col overflow-hidden bg-[#f5f4ef] py-16"
-      style={{ height: "calc(100vh - var(--header-height))" }}
+      className="relative flex w-full flex-col overflow-hidden bg-[#f5f4ef] py-8 lg:py-16 min-h-[calc(100vh-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
-      <div className="flex min-h-0 flex-1 justify-between px-20">
+      <div className="flex min-h-0 flex-1 flex-col lg:flex-row justify-between px-4 lg:px-20">
         {/* Left copy — pinned to the top of the section */}
-        <div className="w-[34%] shrink-0 self-start mt-2">
+        <div className="w-full lg:w-[34%] shrink-0 self-start mt-2 mb-6 lg:mb-0">
           {/* Eyebrow — drops in together with the title below */}
           <div id="certifications-eyebrow" className="flex items-center gap-3">
-            <span className="font-neue-montreal text-base font-medium tracking-widest text-neutral-800 uppercase">
+            <span className="font-neue-montreal text-sm lg:text-base font-medium tracking-widest text-neutral-800 uppercase">
               Certification
             </span>
             <span aria-hidden className="h-1.5 w-1.5 bg-neutral-800" />
@@ -49,7 +48,7 @@ export default function Certifications() {
           {/* Title — drops in from above via the Hero's fade-chain reveal */}
           <h2
             id="certifications-title"
-            className="mt-3 font-serif text-[4rem] leading-[1] font-normal text-neutral-800"
+            className="mt-3 font-serif text-3xl sm:text-4xl lg:text-[4rem] leading-[1] font-normal text-neutral-800"
           >
             Certifications and
             <br />
@@ -57,7 +56,7 @@ export default function Certifications() {
           </h2>
 
           {/* Description */}
-          <p className="mt-8 text-xl leading-[1.6] tracking-wide text-neutral-600">
+          <p className="mt-4 lg:mt-8 text-base lg:text-xl leading-[1.6] tracking-wide text-neutral-600">
             Amanat Shah Group (ASG) is committed to Environmental, Social, and Governance (ESG) principles, advancing a sustainable uture through renewable energy. By investing in 7MW solar power, ASG aims to reduce its carbon footprint, enhance energy efficiency, and foster eco-friendly practices across its operations.
           </p>
         </div>
@@ -67,12 +66,12 @@ export default function Certifications() {
             of the bottom-right corner during the 8th-scroll fade. */}
         <div
           id="cert-grid"
-          className="grid w-full max-w-[75rem] grid-cols-5 gap-5.5 self-end"
+          className="grid w-full max-w-[75rem] grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-5.5 self-end"
         >
           {certifications.map((cert) => (
             <div
               key={cert.label}
-              className={`flex aspect-square items-center justify-center bg-white p-5 ${
+              className={`flex aspect-square items-center justify-center bg-white p-3 lg:p-5 ${
                 cert.colStart ?? ""
               }`}
             >

@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
 import type { MegaMenuItem } from "./types";
@@ -13,10 +15,13 @@ interface MegaMenuProps {
 
 export default function MegaMenu({ items, isOpen, variant = "photo", onNavigate }: MegaMenuProps) {
   const isLogo = variant === "logo";
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
 
-  return (
+  return createPortal(
     <div
-      className={`fixed left-0 z-50 w-screen bg-white shadow-lg transition-[opacity,transform] duration-150 ease-out ${
+      className={`fixed left-0 z-[60] w-screen bg-white shadow-lg transition-[opacity,transform] duration-150 ease-out ${
         isOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 pointer-events-none"
       }`}
       style={{ top: "var(--header-height)" }}
@@ -39,6 +44,7 @@ export default function MegaMenu({ items, isOpen, variant = "photo", onNavigate 
                       src={item.hoverImage || item.image}
                       alt={item.label}
                       fill
+                      loading="eager"
                       className={`${isLogo ? "object-contain p-[20%]" : "object-cover"} grayscale transition-[filter] duration-500 ease-in-out group-hover:grayscale-0`}
                       sizes={isLogo ? "(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw" : "(max-width: 768px) 100vw, 33vw"}
                       quality={90}
@@ -57,6 +63,7 @@ export default function MegaMenu({ items, isOpen, variant = "photo", onNavigate 
               ))}
             </div>
           </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

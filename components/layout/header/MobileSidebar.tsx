@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { X, ChevronRight } from "lucide-react";
+import { X, ChevronDown } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { navCategories } from "./navData";
@@ -19,39 +19,53 @@ interface MobileSidebarProps {
 /* ─── Accordion menu item with smooth subcategory expand/collapse ─── */
 function SidebarMenuItem({
   category,
+  isExpanded,
+  onToggle,
   onClose,
 }: {
   category: NavCategory;
+  isExpanded: boolean;
+  onToggle: () => void;
   onClose: () => void;
 }) {
-  const [expanded, setExpanded] = useState(false);
   const subListRef = useRef<HTMLDivElement>(null);
   const chevronRef = useRef<HTMLSpanElement>(null);
+  const itemsWrapRef = useRef<HTMLDivElement>(null);
   const tweenRef = useRef<gsap.core.Tween | null>(null);
 
   const items = category.megaItems ?? category.children ?? [];
 
-  const toggle = useCallback(() => {
+  // Animate whenever isExpanded changes (controlled from parent)
+  useEffect(() => {
     const subList = subListRef.current;
     const chevron = chevronRef.current;
+    const itemsWrap = itemsWrapRef.current;
     if (!subList || !chevron) return;
 
     tweenRef.current?.kill();
-    const next = !expanded;
-    setExpanded(next);
 
-    if (next) {
+    if (isExpanded) {
       // Expand: measure natural height, then animate
       gsap.set(subList, { height: "auto" });
       const fullHeight = subList.offsetHeight;
       gsap.set(subList, { height: 0 });
       tweenRef.current = gsap.to(subList, {
         height: fullHeight,
-        duration: 0.35,
+        duration: 0.4,
         ease: "power3.out",
         onComplete: () => gsap.set(subList, { height: "auto" }),
       });
-      gsap.to(chevron, { rotation: 90, duration: 0.3, ease: "power2.out" });
+      gsap.to(chevron, { rotation: 180, duration: 0.3, ease: "power2.out" });
+
+      // Stagger children in
+      if (itemsWrap) {
+        const kids = itemsWrap.children;
+        gsap.fromTo(
+          kids,
+          { opacity: 0, x: -12 },
+          { opacity: 1, x: 0, duration: 0.3, stagger: 0.04, ease: "power2.out", delay: 0.08 },
+        );
+      }
     } else {
       // Collapse: animate height to 0
       gsap.set(subList, { height: subList.offsetHeight });
@@ -62,7 +76,7 @@ function SidebarMenuItem({
       });
       gsap.to(chevron, { rotation: 0, duration: 0.25, ease: "power2.in" });
     }
-  }, [expanded]);
+  }, [isExpanded]);
 
   // Plain link (no subcategories)
   if (items.length === 0 && category.href) {
@@ -78,16 +92,18 @@ function SidebarMenuItem({
   }
 
   return (
-    <div className="border-b border-gray-100">
+    <div className="border-b border-neutral-100">
       {/* Label row — click to expand/collapse */}
       <button
         type="button"
-        onClick={toggle}
-        className="flex w-full cursor-pointer items-center justify-between py-4 text-base font-medium uppercase tracking-wider text-neutral-800 transition-colors duration-200 hover:text-neutral-600"
+        onClick={onToggle}
+        className={`flex w-full cursor-pointer items-center justify-between py-4 text-base font-medium uppercase tracking-wider transition-colors duration-200 ${
+          isExpanded ? "text-neutral-900" : "text-neutral-700 hover:text-neutral-500"
+        }`}
       >
         <span>{category.label}</span>
         <span ref={chevronRef} className="flex items-center">
-          <ChevronRight className="size-4 text-neutral-400" />
+          <ChevronDown className="size-4 text-neutral-400" />
         </span>
       </button>
 
@@ -97,15 +113,20 @@ function SidebarMenuItem({
         className="overflow-hidden"
         style={{ height: 0 }}
       >
-        <div className="flex flex-col gap-1 pb-3 pl-3">
+        <div
+          ref={itemsWrapRef}
+          className="flex flex-col pb-4 pl-2"
+        >
           {items.map((item) => (
             <Link
               key={item.label}
               href={item.href}
               onClick={onClose}
-              className="rounded-md px-2 py-2 text-sm text-neutral-600 transition-colors duration-200 hover:bg-neutral-50 hover:text-neutral-900"
+              className="border-b border-neutral-100 py-2 pl-2 transition-colors duration-200 last:border-b-0 last:pb-0 active:bg-neutral-50"
             >
-              {item.label}
+              <span className="block border-l-[2.5px] border-neutral-800 pl-2 text-sm font-medium text-neutral-800">
+                {item.label}
+              </span>
             </Link>
           ))}
         </div>
@@ -120,6 +141,14 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const tweenRef = useRef<gsap.core.Tween | null>(null);
   const overlayTweenRef = useRef<gsap.core.Tween | null>(null);
+
+  // Track which menu is currently expanded — only one at a time
+  const [activeMenu, setActiveMenu] = useState<string | null>(null);
+
+  // Reset expanded menu when sidebar closes
+  useEffect(() => {
+    if (!isOpen) setActiveMenu(null);
+  }, [isOpen]);
 
   // Lock body scroll while sidebar is open
   useEffect(() => {
@@ -193,7 +222,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
       {/* Sidebar panel */}
       <div
         ref={sidebarRef}
-        className="fixed inset-y-0 left-0 z-[70] flex w-[280px] flex-col bg-white shadow-xl"
+        className="fixed inset-y-0 left-0 z-[70] flex w-[90%] sm:w-[280px] flex-col bg-white shadow-xl"
         style={{ transform: "translateX(-100%)" }}
       >
         {/* Header */}
@@ -224,6 +253,12 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
             <SidebarMenuItem
               key={category.label}
               category={category}
+              isExpanded={activeMenu === category.label}
+              onToggle={() =>
+                setActiveMenu((prev) =>
+                  prev === category.label ? null : category.label,
+                )
+              }
               onClose={onClose}
             />
           ))}
