@@ -11,8 +11,8 @@ const paragraphs = [
 
 const quickLinks = [
   { label: "OUR CONCERNS", href: "#" },
-  { label: "LEADERSHIP", href: "#" },
-  { label: "OUR HISTORY", href: "#" },
+  { label: "LEADERSHIP", href: "/board-of-directors" },
+  { label: "OUR HISTORY", href: "our-history" },
 ];
 
 export default function AboutIntro() {

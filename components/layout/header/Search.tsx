@@ -97,14 +97,16 @@ export default function Search({ onOpenChange }: SearchProps) {
 
   return (
     <>
-      {/* Search icon button — shown when panel is closed */}
-      {!isOpen && (
-        <button
-          type="button"
-          onClick={open}
-          className="group cursor-pointer rounded-full p-1.5 transition-all duration-300 ease-out hover:bg-neutral-100 hover:scale-110"
-          aria-label="Open search"
-        >
+      {/* Search / Close icon button */}
+      <button
+        type="button"
+        onClick={isOpen ? close : open}
+        className="group cursor-pointer rounded-full p-1.5 transition-all duration-300 ease-out hover:bg-neutral-100"
+        aria-label={isOpen ? "Close search" : "Open search"}
+      >
+        {isOpen ? (
+          <X className="size-6 text-neutral-800 transition-all duration-300 group-hover:opacity-70 group-hover:rotate-90" strokeWidth={1.5} />
+        ) : (
           <Image
             src="/icons/search.png"
             alt="Search"
@@ -112,33 +114,33 @@ export default function Search({ onOpenChange }: SearchProps) {
             height={20}
             className="h-6 w-6 transition-opacity duration-300 group-hover:opacity-70"
           />
-        </button>
-      )}
+        )}
+      </button>
 
       {/* Full-width search panel — slides down from below the navbar */}
       <div
         ref={panelRef}
-        className="fixed left-0 z-50 w-screen overflow-hidden bg-white shadow-lg"
+        className="fixed inset-x-0 z-50 overflow-hidden bg-white shadow-lg"
         style={{
           top: "var(--header-height)",
           height: 0,
           opacity: 0,
         }}
       >
-        <div className="flex items-center justify-center px-4 py-8 lg:py-10">
+        <div className="flex items-center justify-center px-4 py-4 sm:py-6 lg:px-8 lg:py-10">
           {/* Search bar — half the page width on desktop */}
-          <div className="w-full lg:w-1/2">
+          <div className="w-full sm:w-2/3 lg:w-1/2">
             <div className="input-gradient-border-hover bg-gray-50">
-              <div className="flex h-12 items-stretch lg:h-[4rem]">
+              <div className="flex items-stretch h-10 sm:h-12 lg:h-[4rem]">
                 {/* Input area */}
-                <div className="flex flex-1 items-center gap-2 px-3.5 lg:gap-[0.6667rem] lg:px-[1.1667rem]">
+                <div className="flex flex-1 items-center gap-2 px-2 sm:px-3.5 lg:gap-[0.6667rem] lg:px-[1.1667rem]">
                   <Image
                     src="/icons/career/search.svg"
                     alt=""
                     width={20}
                     height={20}
                     quality={100}
-                    className="size-4 shrink-0 lg:size-[1.6667rem]"
+                    className="shrink-0 size-4 lg:size-[1.6667rem]"
                   />
                   <input
                     ref={inputRef}
@@ -146,7 +148,7 @@ export default function Search({ onOpenChange }: SearchProps) {
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
                     placeholder="Search..."
-                    className="min-w-0 flex-1 bg-transparent text-sm text-neutral-800 placeholder:text-neutral-600 focus:outline-none lg:text-[1.3333rem]"
+                    className="min-w-0 flex-1 bg-transparent text-neutral-800 placeholder:text-neutral-600 focus:outline-none text-sm sm:text-base lg:text-[1.3333rem]"
                   />
                 </div>
 
@@ -165,7 +167,7 @@ export default function Search({ onOpenChange }: SearchProps) {
                 {/* Gradient search button */}
                 <button
                   type="button"
-                  className="group relative flex h-full shrink-0 items-center justify-center gap-1 lg:gap-[0.3333rem] text-sm lg:text-[1.1667rem] text-white cursor-pointer bg-[image:var(--primary-gradient)] px-5 lg:px-[1.6667rem] transition-all duration-300 ease-out"
+                  className="group relative flex h-full shrink-0 items-center justify-center gap-1 lg:gap-[0.3333rem] text-sm text-white cursor-pointer bg-[image:var(--primary-gradient)] px-2.5 sm:px-5 lg:px-[1.6667rem] lg:text-[1.1667rem] transition-all duration-300 ease-out tracking-wider"
                 >
                   {/* Shine sweep */}
                   <span
@@ -178,7 +180,7 @@ export default function Search({ onOpenChange }: SearchProps) {
                     width={16}
                     height={16}
                     quality={100}
-                    className="size-3.5 brightness-0 invert lg:size-[1.3333rem]"
+                    className="size-4 brightness-0 invert sm:size-3.5 lg:size-[1.3333rem]"
                   />
                   Search
                 </button>

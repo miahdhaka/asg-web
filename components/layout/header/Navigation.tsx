@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { navCategories } from "./navData";
 import type { NavCategory } from "./types";
 import MegaMenu from "./MegaMenu";
@@ -25,6 +26,17 @@ function HoverBorder({ active }: { active?: boolean }) {
 function NavItem({ category }: { category: NavCategory }) {
   const [isOpen, setIsOpen] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
+  const pathname = usePathname();
+
+  // TEMP DEBUG
+  console.log("[NAV] RENDER", { pathname, isOpen, time: performance.now() });
+
+  // Close menu when route changes — defensive fallback so the portal
+  // cannot remain visible after navigation completes.
+  useEffect(() => {
+    console.log("[NAV] PATHNAME EFFECT", { pathname, time: performance.now() });
+    setIsOpen(false);
+  }, [pathname]);
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);

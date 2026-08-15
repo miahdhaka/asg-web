@@ -12,7 +12,9 @@ export default function OurHistoryPage() {
   return (
     <main>
       <OurHistoryHero />
-      <HistoryTimeline />
+      <div className="pb-10 sm:pb-0">
+        <HistoryTimeline />
+      </div>
     </main>
   );
 }

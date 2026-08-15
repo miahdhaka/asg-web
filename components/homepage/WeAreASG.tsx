@@ -1,12 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+gsap.registerPlugin(useGSAP);
 
 interface StatCard {
   label: string;
@@ -41,36 +40,61 @@ const stats: StatCard[] = [
   },
 ];
 
-export default function WeAreASG() {
+interface WeAreASGProps {
+  /** C2 fix: the homepage scroll stepper calls these when the WeAreASG
+      section is fully settled (forward) or reversed away (backward),
+      replacing the old ScrollTrigger-based count-up that fired at the
+      wrong visual moment during pin/unpin transitions. */
+  onReady?: (trigger: () => void, reset: () => void) => void;
+}
+
+export default function WeAreASG({ onReady }: WeAreASGProps) {
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Count each card's number up from 0 whenever the section scrolls into
-  // view; leaving the section (either direction) resets the numbers to 0
-  // so the count-up replays on every visit.
-  useGSAP(
-    () => {
-      gsap.utils.toArray<HTMLElement>("[data-count]").forEach((el) => {
-        const target = Number(el.dataset.count);
-        const counter = { value: 0 };
-        gsap.to(counter, {
-          value: target,
-          duration: 2.8,
-          ease: "power2.out",
-          paused: true,
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 75%",
-            end: "bottom top",
-            toggleActions: "restart reset restart reset",
-          },
-          onUpdate: () => {
-            el.textContent = String(Math.round(counter.value));
-          },
-        });
+  // C2 fix: count-up is triggered imperatively by the homepage scroll
+  // stepper (via onReady callback) instead of ScrollTrigger. This ensures
+  // the count-up only fires when the section is fully settled — not while
+  // it's still blurred, scaled, or pinned.
+  const tweensRef = useRef<gsap.core.Tween[]>([]);
+
+  useGSAP(() => {
+    const els = gsap.utils.toArray<HTMLElement>("[data-count]");
+    tweensRef.current = els.map((el) => {
+      const target = Number(el.dataset.count);
+      const counter = { value: 0 };
+      return gsap.to(counter, {
+        value: target,
+        duration: 2.8,
+        ease: "power2.out",
+        paused: true,
+        onUpdate: () => {
+          el.textContent = String(Math.round(counter.value));
+        },
       });
-    },
-    { scope: sectionRef }
-  );
+    });
+  }, { scope: sectionRef });
+
+  // Expose trigger/reset to the parent via the onReady callback
+  useEffect(() => {
+    if (!onReady) return;
+    const trigger = () => {
+      tweensRef.current.forEach((t) => {
+        t.restart();
+      });
+    };
+    const reset = () => {
+      tweensRef.current.forEach((t) => {
+        t.pause();
+        t.progress(0);
+      });
+      // Reset displayed values to 0
+      const els = gsap.utils.toArray<HTMLElement>("[data-count]");
+      els.forEach((el) => {
+        el.textContent = "0";
+      });
+    };
+    onReady(trigger, reset);
+  }, [onReady]);
 
   return (
     <section

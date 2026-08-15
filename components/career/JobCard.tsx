@@ -6,7 +6,7 @@ import { BriefcaseBusiness, Calendar, MapPinned } from "lucide-react";
 export default function JobCard({ job }: { job: Job }) {
   return (
     <article data-job-card className="flex flex-col gap-6 rounded-xl border border-gray-200 bg-white p-4 lg:gap-[2.1667rem] lg:rounded-none lg:border-none lg:bg-gray-50 lg:p-[1.3333rem]">
-      <div className="flex flex-col gap-3.5 sm:gap-6 lg:gap-[2.3333rem]">
+      <div className="flex flex-col gap-3.5 sm:gap-6 lg:gap-[2.3333rem] h-full justify-between">
         <div className="flex flex-col gap-3.5 sm:gap-6 lg:gap-[2.3333rem]">
           {/* Badge + role */}
           <div className="flex flex-col gap-2">
