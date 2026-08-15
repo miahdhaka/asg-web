@@ -17,6 +17,10 @@ export default function MegaMenu({ items, isOpen, variant = "photo", onNavigate 
   const isLogo = variant === "logo";
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+
+  // TEMP DEBUG
+  console.log("[MEGA] RENDER", { isOpen, time: performance.now() });
+
   if (!mounted) return null;
 
   return createPortal(
@@ -32,7 +36,18 @@ export default function MegaMenu({ items, isOpen, variant = "photo", onNavigate 
                 <Link
                   key={item.label}
                   href={item.href}
-                  onClick={onNavigate}
+                  onClick={(e) => {
+                    console.log("[MEGA] CLICK START", {
+                      href: item.href,
+                      defaultPrevented: e.defaultPrevented,
+                      time: performance.now(),
+                    });
+                    onNavigate?.();
+                    console.log("[MEGA] CLICK AFTER CALLBACK", {
+                      defaultPrevented: e.defaultPrevented,
+                      time: performance.now(),
+                    });
+                  }}
                   className="group flex flex-col items-start text-left"
                 >
                   <div

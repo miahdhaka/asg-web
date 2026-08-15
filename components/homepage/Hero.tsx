@@ -1,13 +1,22 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, type MutableRefObject } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { useGestureInput } from "./hooks/useGestureInput";
+import { useScrollStepper } from "./hooks/useScrollStepper";
+import { useSectionTransitions } from "./hooks/useSectionTransitions";
 
 gsap.registerPlugin(useGSAP);
 
-export default function Hero() {
+interface HeroProps {
+  /** Shared refs connecting WeAreASG's count-up to the stepper */
+  waaTriggerRef?: MutableRefObject<(() => void) | null>;
+  waaResetRef?: MutableRefObject<(() => void) | null>;
+}
+
+export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const videoWrapRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -23,10 +32,68 @@ export default function Hero() {
   const flyMixedRef = useRef<HTMLImageElement>(null);
   const waaWhiteRef = useRef<HTMLDivElement>(null);
 
+  // ── Section-transition orchestration (extracted) ──
+  const transitionHelpersRef = useRef<{
+    syncHeader: (active: boolean) => void;
+    fixIntro: () => void;
+    releaseIntro: () => void;
+    fixOurBusiness: () => void;
+    releaseOurBusiness: () => void;
+    controlledScrollTo: (top: number) => void;
+    topY: (el: HTMLElement) => number;
+    pinUnder: (el: HTMLElement, z?: number) => void;
+    releasePin: (el: HTMLElement) => void;
+    ourBusinessTopY: () => number;
+    restoreIntroVisibility: () => void;
+  }>(null!);
+  const fadeChainRef = useRef<{ tl: gsap.core.Timeline; from: HTMLElement | null; to: HTMLElement | null; pinZ?: number; onPrep?: () => void; onSettle?: () => void; onUnsettle?: () => void }[]>([]);
+  const timelinesRef = useRef({ tl: null as unknown as gsap.core.Timeline, tl2: null as unknown as gsap.core.Timeline, tl3: null as unknown as gsap.core.Timeline, tl4: null as unknown as gsap.core.Timeline, tl5: null as unknown as gsap.core.Timeline });
+  const transitionsHandle = useSectionTransitions({
+    get tl() { return timelinesRef.current.tl; },
+    get tl2() { return timelinesRef.current.tl2; },
+    get tl3() { return timelinesRef.current.tl3; },
+    get tl4() { return timelinesRef.current.tl4; },
+    get tl5() { return timelinesRef.current.tl5; },
+    get fadeChain() { return fadeChainRef.current; },
+    get helpers() { return transitionHelpersRef.current; },
+  });
+
+  // ── Scroll-stepper state machine (extracted) ──
+  const TRANSITION_COUNT = 10;
+  const onProgressRef = useRef<(i: number, p: number) => void>(() => {});
+  const onStageRef = useRef<(i: number, fromAbove: boolean) => void>(() => {});
+  const onLandRef = useRef<(i: number) => void>(() => {});
+  const onLandBackRef = useRef<(i: number) => void>(() => {});
+  const stepper = useScrollStepper({
+    transitionCount: TRANSITION_COUNT,
+    getTransitionDuration: transitionsHandle.getTransitionDuration,
+    onProgress: onProgressRef,
+    onStage: onStageRef,
+    onLand: onLandRef,
+    onLandBack: onLandBackRef,
+  });
+
+  // Extracted gesture input — owns wheel / touch / keyboard event handling.
+  const onGestureRef = useRef<(dir: number, fire: boolean) => boolean>(() => false);
+  const { isLandingRef, anchorCorrectedRef } = useGestureInput({
+    onGesture: onGestureRef,
+    sweeping: stepper.sweeping,
+  });
+
   useGSAP(
     () => {
       // Skip scroll phases on mobile — let the page scroll naturally
       if (window.innerWidth < 1024) return;
+
+      /* ── Scroll-stability state (C3 + C4) ── */
+      const SCROLL_TOP_THRESHOLD = 4;
+      const FADE_CHAIN_TOLERANCE = 6;
+      const ANCHOR_DRIFT_LIMIT = 20;
+
+      const controlledScrollTo = (top: number) => {
+        isLandingRef.current = true;
+        window.scrollTo({ top, behavior: "auto" });
+      };
 
       const headerLogo = document.getElementById("header-logo");
 
@@ -731,8 +798,22 @@ export default function Hero() {
           gsap.set(weAreASG, { clearProps: "transform,filter,opacity,visibility" });
           if (texts.length) gsap.set(texts, { clearProps: "transform,opacity,visibility" });
         };
-        waaLink.onSettle = resetWaa;
-        waaLink.onUnsettle = resetWaa;
+        waaLink.onSettle = () => {
+          resetWaa();
+          // C2 fix: trigger count-up only when WeAreASG is fully settled
+          // (step 9 = the WeAreASG rest state, forward reveal complete)
+          if (stepper.stepRef.current === 9) {
+            waaTriggerRef?.current?.();
+          }
+        };
+        waaLink.onUnsettle = () => {
+          resetWaa();
+          // C2 fix: reset count-up when reversing away from WeAreASG
+          // (step 8 = Certifications rest state, WeAreASG no longer visible)
+          if (stepper.stepRef.current === 8) {
+            waaResetRef?.current?.();
+          }
+        };
       }
 
       /* 10th-scroll extra: as WeAreASG dissolves into Newsroom its eyebrow
@@ -766,100 +847,21 @@ export default function Hero() {
         newsLink.onUnsettle = resetNewsHeading;
       }
 
-      /* ── Discrete scroll stepping ──
-         While the page sits at the very top, scrolling is locked and each
-         downward gesture carries the page exactly one phase further (1st
-         scroll → phase 1, 2nd → phase 2, 3rd → phase 3, 4th → the intro
-         circle-reveal). Only after all phases does native scrolling resume.
-         Scrolling up reverses one phase per gesture. `step` is the last
-         *resting* state reached; the scrub driver further down carries the
-         screen between them. */
-      let step = 0; // 0 = full hero, 1…10 = resting states down the chain
-
-      /* ── Cross-device wheel gesture detection ──
-         Mouse wheels fire one big delta per notch; trackpads stream dozens of
-         tiny deltas plus a decaying inertia tail.  Two rules cover both:
-           • a big delta (≥ NOTCH_DELTA) is always a deliberate notch → fires
-             immediately, every time
-           • small deltas accumulate; once they cross INTENT_DISTANCE the
-             gesture fires and a short swallow window (SWALLOW_MS) eats the
-             rest of the stream so one flick = exactly one step
-         Deltas are normalized across deltaMode first. */
-      const NOTCH_DELTA = 40; // |delta| at/above this is a discrete notch
-      const INTENT_DISTANCE = 50; // accumulated px that count as a swipe
-      const SWALLOW_MS = 400; // ms to ignore the active stream after a gesture
-      const COOLDOWN_MS = 700; // ms total guard — drops residual momentum after swallow
-      let wheelAccum = 0;
-      let lastGestureTime = 0;
-
-      // deltaMode: 0 = pixels, 1 = lines (Firefox), 2 = pages
-      const normalizeWheel = (e: WheelEvent) =>
-        e.deltaMode === 1
-          ? e.deltaY * 16
-          : e.deltaMode === 2
-            ? e.deltaY * window.innerHeight
-            : e.deltaY;
-
-      /* Feed one wheel event into the tracker; returns true when it
-         completes a deliberate gesture (the caller then plays exactly one
-         phase while the rest of the stream is ignored).
-
-         Two-tier post-gesture guard keeps Mac trackpad momentum from
-         re-triggering:
-           1. SWALLOW (≤ 400 ms) — drops every event, drains the active
-              stream so the accumulator stays at zero.
-           2. COOLDOWN (400–700 ms) — drops small trackpad residuals but
-              still lets a large mouse-wheel notch break through so a
-              deliberate second scroll is never delayed. */
-      const wheelIntent = (e: WheelEvent) => {
-        const now = performance.now();
-        const delta = normalizeWheel(e);
-        const abs = Math.abs(delta);
-        if (!abs) return false;
-
-        const since = now - lastGestureTime;
-
-        // A direction flip always restarts the accumulation — even
-        // inside the swallow / cooldown windows, so a reversal answers
-        // the very next event
-        if ((delta > 0 && wheelAccum < 0) || (delta < 0 && wheelAccum > 0)) {
-          wheelAccum = 0;
-        }
-
-        // Tier 1 — swallow: drop everything, keep the accumulator at zero
-        // so the active trackpad stream cannot re-arm the gesture
-        if (since < SWALLOW_MS) {
-          wheelAccum = 0;
-          return false;
-        }
-
-        // Tier 2 — cooldown: drop small trackpad residuals (momentum
-        // tail) but let a large mouse-wheel notch break through so a
-        // deliberate second scroll fires without lag
-        if (since < COOLDOWN_MS && abs < NOTCH_DELTA) {
-          wheelAccum = 0;
-          return false;
-        }
-
-        // Mouse notch — big delta = deliberate gesture, fires immediately
-        if (abs >= NOTCH_DELTA) {
-          wheelAccum = 0;
-          lastGestureTime = now;
-          return true;
-        }
-
-        // Trackpad accumulation — small deltas add up to one gesture
-        wheelAccum += delta;
-        if (Math.abs(wheelAccum) >= INTENT_DISTANCE) {
-          wheelAccum = 0;
-          lastGestureTime = now;
-          return true;
-        }
-
-        return false;
+      /* C1 fix — After a reverse of tl4, correct the flying logo position. */
+      const correctLogoPosition = () => {
+        if (!introLogo || !headerLogo || !logoRef.current) return;
+        const iRect = introLogo.getBoundingClientRect();
+        const nRect = headerLogo.getBoundingClientRect();
+        const dx = nRect.left + nRect.width / 2 - (iRect.left + iRect.width / 2);
+        const dy = nRect.top + nRect.height / 2 - (iRect.top + iRect.height / 2);
+        const scale = nRect.height / Math.max(iRect.height, 1);
+        gsap.set(logoRef.current, {
+          left: iRect.left, top: iRect.top, x: dx, y: dy, scale,
+          transformOrigin: "center center", opacity: 1, autoAlpha: 1,
+        });
       };
 
-      // Let the Header mirror its "scrolled" style while the page can't scroll
+            // Let the Header mirror its "scrolled" style while the page can't scroll
       const syncHeader = (active: boolean) =>
         window.dispatchEvent(new CustomEvent("hero-phase", { detail: active }));
 
@@ -867,235 +869,35 @@ export default function Hero() {
       const ourBusinessTopY = () =>
         ourBusiness ? ourBusiness.offsetTop - headerH() : 0;
 
-      /* ── Scroll-linked scrub ──
-         Every resting state lives on one continuous axis: 0 is the untouched
-         hero, 10 is the settled Newsroom, and the fraction in between is how
-         far the transition out of ⌊pos⌋ has come. A gesture moves a *goal* on
-         that axis; the screen then chases it.
-
-         The chase is what ties speed to the hand. At one unit of distance it
-         runs on that phase's own designed length, stretched a touch by TEMPO
-         and eased out into the landing, so a deliberate scroll glides in and
-         settles softly. But the further behind the screen falls, the *shorter*
-         the chase becomes — so a burst of five gestures sweeps five phases and
-         lands with the scrolling, instead of playing them out one by one while
-         the hand sits idle. */
-      type Transition = {
-        tl: gsap.core.Timeline;
-        /** Stage the DOM for scrubbing. `fromAbove` = entered backwards, from
-            the finished side. */
-        enter: (fromAbove: boolean) => void;
-        /** Committed at the forward end. */
-        land: () => void;
-        /** Committed back at the starting end. */
-        landBack: () => void;
-      };
-
-      const noop = () => {};
-
-      /* Entry i carries resting state i over into resting state i+1 */
-      const transitions: Transition[] = [
-        {
-          tl,
-          enter: () => syncHeader(true),
-          land: noop,
-          landBack: () => syncHeader(false),
+      // ── Populate refs for the extracted transition hook ──
+      timelinesRef.current = { tl, tl2, tl3, tl4, tl5 };
+      fadeChainRef.current = fadeChain;
+      transitionHelpersRef.current = {
+        syncHeader,
+        fixIntro,
+        releaseIntro,
+        fixOurBusiness,
+        releaseOurBusiness,
+        controlledScrollTo,
+        topY,
+        pinUnder,
+        releasePin,
+        ourBusinessTopY,
+        restoreIntroVisibility: () => {
+          if (intro) gsap.set(intro, { autoAlpha: 1 });
         },
-        { tl: tl2, enter: noop, land: noop, landBack: noop },
-        { tl: tl3, enter: noop, land: noop, landBack: noop },
-        {
-          tl: tl4,
-          enter: (fromAbove) => {
-            fixIntro();
-            /* Re-measure the logo flight for the current viewport — forward
-               only. Invalidating from the finished side would make the `.to()`
-               tweens record start === end and the flight would die. */
-            if (!fromAbove) tl4.invalidate();
-          },
-          land: noop, // the intro stays pinned — that IS the step-4 rest state
-          landBack: releaseIntro,
-        },
-        {
-          tl: tl5,
-          enter: (fromAbove) => {
-            fixIntro();
-            fixOurBusiness();
-            if (fromAbove) {
-              // Coming back up: the page drops silently to the top behind the
-              // two pinned overlays, so the visible frame never jumps
-              window.scrollTo({ top: 0, behavior: "auto" });
-              syncHeader(true);
-            } else {
-              tl5.invalidate();
-            }
-          },
-          land: () => {
-            // Swap the pinned overlays for the real in-flow section — same
-            // visual frame — then native scrolling takes over from there
-            releaseIntro();
-            gsap.set(intro, { autoAlpha: 1 }); // restore for future replays
-            releaseOurBusiness();
-            window.scrollTo({ top: ourBusinessTopY(), behavior: "auto" });
-          },
-          landBack: releaseOurBusiness,
-        },
-        ...fadeChain.map<Transition>((link) => ({
-          tl: link.tl,
-          enter: (fromAbove) => {
-            if (!link.from || !link.to) return;
-            gsap.set(link.from, { zIndex: 40 }); // top layer during the fade
-            pinUnder(link.to, link.pinZ);
-            // Coming back up: the page jumps silently back to `from`, which is
-            // exactly the frame the reversed dissolve starts on
-            if (fromAbove) {
-              window.scrollTo({ top: topY(link.from), behavior: "auto" });
-            }
-            link.onPrep?.(); // stage the extra tweens *before* re-measuring
-            link.tl.invalidate();
-          },
-          land: () => {
-            if (!link.to) return;
-            releasePin(link.to);
-            if (link.from) {
-              // Restore the faded section (off-screen above) for future replays
-              gsap.set(link.from, { autoAlpha: 1, clearProps: "zIndex" });
-            }
-            window.scrollTo({ top: topY(link.to), behavior: "auto" });
-            link.onSettle?.();
-          },
-          landBack: () => {
-            if (link.to) releasePin(link.to);
-            if (link.from) {
-              gsap.set(link.from, { clearProps: "zIndex,opacity,visibility" });
-            }
-            link.onUnsettle?.();
-          },
-        })),
-      ];
-
-      const LAST = transitions.length; // deepest resting state
-      const TEMPO = 4.5; // > 1 → everything a touch slower than designed
-      const LAG_EXP = -0.03; // negative → further behind = shorter chase (less aggressive = smoother)
-      const RATE_MAX = 0.8; // resting states per second — ceiling on a wild fling (lower = smoother)
-
-      const scrub = { pos: 0 }; // where the screen is
-      let goal = 0; // where the gestures have asked it to be
-      let staged: number | null = null; // transition currently mid-scrub
-      let sweep: gsap.core.Tween | null = null;
-
-      // A chase is in flight, so the page itself must hold still
-      const sweeping = () => sweep !== null;
-
-      const stageTransition = (i: number, fromAbove: boolean) => {
-        staged = i;
-        transitions[i].enter(fromAbove);
       };
 
-      /* Paint the current position. Crossing a whole number commits that
-         transition's end state and stages the next one, so a single chase
-         runs clean through as many phases as it needs to. */
-      const render = () => {
-        // Bounded: one pass per boundary crossed, never an open loop
-        for (let guard = 0; guard <= LAST * 2; guard++) {
-          if (staged !== null) {
-            const i = staged;
-            const t = transitions[i];
-            if (scrub.pos >= i + 1) {
-              t.tl.progress(1);
-              staged = null;
-              step = i + 1;
-              t.land();
-              continue;
-            }
-            if (scrub.pos <= i) {
-              t.tl.progress(0);
-              staged = null;
-              step = i;
-              t.landBack();
-              continue;
-            }
-            t.tl.progress(scrub.pos - i);
-            return;
-          }
-          if (scrub.pos > step && step < LAST) {
-            stageTransition(step, false);
-            continue;
-          }
-          if (scrub.pos < step && step > 0) {
-            stageTransition(step - 1, true);
-            continue;
-          }
-          return;
-        }
-      };
+      // Wire the stepper callbacks to the transitions array
+      const { correctLogoOnLandBack } = transitionsHandle.wireStepper({
+        onProgress: onProgressRef,
+        onStage: onStageRef,
+        onLand: onLandRef,
+        onLandBack: onLandBackRef,
+      });
+      correctLogoOnLandBack(correctLogoPosition);
 
-      const retarget = () => {
-        sweep?.kill();
-        sweep = null;
-        const dist = Math.abs(goal - scrub.pos);
-        if (dist < 0.0005) {
-          scrub.pos = goal;
-          render();
-          return;
-        }
-        /* The phase about to be scrubbed sets the reference pace, so each one
-           keeps its own designed length at a distance of exactly one */
-        const lead = Math.min(
-          LAST - 1,
-          Math.max(
-            0,
-            goal > scrub.pos ? Math.floor(scrub.pos) : Math.ceil(scrub.pos) - 1
-          )
-        );
-        const base = transitions[lead].tl.duration() || 1;
-        /* Up to one unit the chase is simply proportional, so a single
-           deliberate gesture runs on that phase's own designed length,
-           stretched by TEMPO for a smooth, unhurried feel.  Past one unit
-           the hand is ahead of the screen, and the chase gets shorter the
-           further behind it is.  The rate ceiling (dist / RATE_MAX) is NOT
-           stretched by TEMPO — it caps how slow a multi-step sweep can get,
-           so a burst of scrolls sweeps through them at a readable pace
-           instead of leaving the user watching sections crawl by. */
-        const duration =
-          dist <= 1
-            ? TEMPO * base * dist
-            : Math.max(
-                TEMPO * base * Math.pow(dist, LAG_EXP),
-                dist / RATE_MAX
-              );
-        sweep = gsap.to(scrub, {
-          pos: goal,
-          duration,
-          /* Lenis-style glide: the chase answers the gesture at speed and
-             then decays softly into the landing, instead of moving at one
-             flat mechanical rate — that soft settle is what reads as an
-             unhurried, expensive scroll */
-          ease: "power4.out",
-          onUpdate: render,
-          onComplete: () => {
-            scrub.pos = goal;
-            render();
-            sweep = null;
-          },
-        });
-      };
-
-      /* One gesture = one resting state further along. Turning around mid
-         chase abandons the rest of the old goal and heads back from where the
-         screen actually is, so a reversal answers at once instead of waiting
-         out whatever was still in flight. */
-      const advance = (dir: number) => {
-        const reversing = (goal - scrub.pos) * dir < 0;
-        const from = reversing
-          ? dir > 0
-            ? Math.floor(scrub.pos)
-            : Math.ceil(scrub.pos)
-          : goal;
-        goal = Math.min(LAST, Math.max(0, from + dir));
-        retarget();
-      };
-
-      const atTop = () => window.scrollY <= 2;
+      const atTop = () => window.scrollY <= SCROLL_TOP_THRESHOLD;
 
       /* The scroll position the page is anchored to at the current step — the
          top of the section currently settled below the navbar. Every section
@@ -1103,8 +905,8 @@ export default function Hero() {
          the chain is engaged the page must never travel above it. Returns
          null during the opening phases, which hold the page at the very top. */
       const anchorY = () => {
-        if (step === 5) return ourBusiness ? ourBusinessTopY() : null;
-        const link = fadeChain.find((l) => step === l.step + 1);
+        if (stepper.stepRef.current === 5) return ourBusiness ? ourBusinessTopY() : null;
+        const link = fadeChain.find((l) => stepper.stepRef.current === l.step + 1);
         return link?.to ? topY(link.to) : null;
       };
 
@@ -1118,7 +920,7 @@ export default function Hero() {
         if (!dir) return false;
 
         // At the last step and scrolling down? Allow native scrolling to footer
-        if (dir > 0 && step === LAST) {
+        if (dir > 0 && stepper.stepRef.current === TRANSITION_COUNT) {
           return false;
         }
 
@@ -1127,11 +929,11 @@ export default function Hero() {
         for (const link of fadeChain) {
           if (
             dir > 0 &&
-            step === link.step &&
+            stepper.stepRef.current === link.step &&
             link.from &&
-            Math.abs(window.scrollY - topY(link.from)) <= 4
+            Math.abs(window.scrollY - topY(link.from)) <= FADE_CHAIN_TOLERANCE
           ) {
-            if (fire) advance(1);
+            if (fire) stepper.advanceRef.current(1);
             return true;
           }
         }
@@ -1143,116 +945,52 @@ export default function Hero() {
            the gesture slip through, stranding `step` deep in the chain while
            the page ran on to the top (the next gesture then replayed a hero
            phase from the wrong state). Anything at or past the anchor is ours. */
-        if (dir < 0 && step >= 5 && !atTop()) {
+        if (dir < 0 && stepper.stepRef.current >= 5 && !atTop()) {
           const anchor = anchorY();
           if (anchor !== null && window.scrollY <= anchor + 4) {
             if (window.scrollY < anchor - 1) {
               // The arriving gesture overshot above the section — clamp back
-              window.scrollTo({ top: anchor, behavior: "auto" });
+              controlledScrollTo(anchor);
             }
-            if (fire) advance(-1);
+            if (fire) stepper.advanceRef.current(-1);
             return true;
           }
         }
 
         if (!atTop()) return false;
 
-        if (dir > 0 && step < 5) {
-          if (fire) advance(1);
+        if (dir > 0 && stepper.stepRef.current < 5) {
+          if (fire) stepper.advanceRef.current(1);
           return true;
         }
-        if (dir < 0 && step > 0) {
-          if (fire) advance(-1);
+        if (dir < 0 && stepper.stepRef.current > 0) {
+          if (fire) stepper.advanceRef.current(-1);
           return true;
         }
         return false;
       };
 
-      const onWheel = (e: WheelEvent) => {
-        // Trackpad pinch-zoom arrives as ctrl+wheel — never a scroll gesture
-        if (e.ctrlKey) return;
-
-        const dir = Math.sign(normalizeWheel(e));
-        if (!dir) return;
-
-        // Always fed, so the stream tracker stays in sync even over stretches
-        // the router leaves to native scrolling
-        const isGesture = wheelIntent(e);
-
-        /* A chase is in flight — the page still must not drift, but the
-           gesture is real, so push the goal further out instead of dropping
-           it. That is what lets a fast burst sweep several phases at once. */
-        if (sweeping()) {
-          e.preventDefault();
-          if (isGesture) advance(dir);
-          return;
-        }
-
-        if (routeGesture(dir, isGesture)) e.preventDefault();
-      };
-
-      const onKeyDown = (e: KeyboardEvent) => {
-        const target = e.target as HTMLElement | null;
-        if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) return;
-
-        // Keys are already discrete — every press is a deliberate gesture,
-        // and held auto-repeat simply drives the goal further, like a fast
-        // scroll
-        const dir = ["ArrowDown", "PageDown", " "].includes(e.key)
-          ? 1
-          : ["ArrowUp", "PageUp"].includes(e.key)
-            ? -1
-            : 0;
-        if (!dir) return;
-
-        // A chase is in flight — swallow the scroll but keep the intent
-        if (sweeping()) {
-          e.preventDefault();
-          advance(dir);
-          return;
-        }
-
-        if (routeGesture(dir, true)) e.preventDefault();
-      };
-
-      /* ── Touch (tablets, touchscreen laptops, mobile) ──
-         Wheel events never fire for touch scrolling, so swipes are tracked
-         directly: one swipe = one gesture. The first move that crosses the
-         threshold fires the step; the rest of the swipe is swallowed.
-         Native touch scrolling stays untouched wherever the wheel handler
-         wouldn't block either. */
-      const TOUCH_DISTANCE = 40; // swipe px that count as a gesture
-      let touchStartY = 0;
-      let touchHandled = false;
-      const onTouchStart = (e: TouchEvent) => {
-        touchStartY = e.touches[0].clientY;
-        touchHandled = false;
-      };
-      const onTouchMove = (e: TouchEvent) => {
-        if (e.touches.length !== 1) return; // pinch-zoom — not a scroll
-        // Finger up = page down (matches wheel deltaY sign)
-        const dy = touchStartY - e.touches[0].clientY;
-        const dir = Math.sign(dy);
-        const fire = !touchHandled && Math.abs(dy) >= TOUCH_DISTANCE;
-
-        if (sweeping()) {
-          if (e.cancelable) e.preventDefault();
+      /* ── Wire the extracted gesture-input hook to the animation state ── */
+      onGestureRef.current = (dir, fire) => {
+        if (stepper.sweeping.current()) {
           if (fire) {
-            advance(dir);
-            touchHandled = true;
+            anchorCorrectedRef.current = false;
+            isLandingRef.current = false;
+            stepper.advanceRef.current(dir);
           }
-          return;
+          return true;
         }
-
-        if (routeGesture(dir, fire)) {
-          if (e.cancelable) e.preventDefault();
-          if (fire) touchHandled = true;
+        const handled = routeGesture(dir, fire);
+        if (handled && fire) {
+          anchorCorrectedRef.current = false;
+          isLandingRef.current = false;
         }
+        return handled;
       };
 
       // Keep the flying logo glued to its slot before the sequence starts
       const onResize = () => {
-        if (step === 0 && !sweeping()) placeLogo();
+        if (stepper.stepRef.current === 0 && !stepper.sweeping.current()) placeLogo();
       };
 
       /* After the handoff the navbar centre is empty — bring its logo back
@@ -1260,23 +998,29 @@ export default function Hero() {
          hide it again when we return to the pinned states at the top */
       let navLogoBack = false;
       const onScroll = () => {
-        /* Anchor floor — the last line of defence for the settled sections.
-           A hard flick up can outrun the wheel handler (the browser's own
-           smooth-scroll momentum keeps moving the page after the events are
-           swallowed), and scrollbar drags, Home and autoscroll never fire a
-           wheel event at all. Any of those could carry the page above the
-           settled section while `step` stayed deep in the chain, which broke
-           the animation and left plain native scrolling behind. Re-clamping
-           here holds the page at its anchor until a real gesture reverses. */
-        if (!sweeping() && step >= 5) {
-          const anchor = anchorY();
-          if (anchor !== null && window.scrollY < anchor - 1) {
-            window.scrollTo({ top: anchor, behavior: "auto" });
+        /* Anchor floor (C3 + C4 fix) —
+           During a controlled landing, skip correction entirely.
+           After one correction per momentum burst, suppress further
+           corrections to avoid fighting browser inertia (jitter). */
+        if (!stepper.sweeping.current() && stepper.stepRef.current >= 5) {
+          if (isLandingRef.current) {
+            isLandingRef.current = false;
+          } else if (anchorCorrectedRef.current) {
+            const anchor = anchorY();
+            if (anchor !== null && window.scrollY < anchor - ANCHOR_DRIFT_LIMIT) {
+              anchorCorrectedRef.current = false;
+            }
+          } else {
+            const anchor = anchorY();
+            if (anchor !== null && window.scrollY < anchor - 1) {
+              window.scrollTo({ top: anchor, behavior: "auto" });
+              anchorCorrectedRef.current = true;
+            }
           }
         }
 
         if (!headerLogo || tl4.progress() < 1) return;
-        const past = window.scrollY > 2;
+        const past = window.scrollY > SCROLL_TOP_THRESHOLD;
         if (past !== navLogoBack) {
           navLogoBack = past;
           gsap.to(headerLogo, {
@@ -1289,27 +1033,22 @@ export default function Hero() {
 
       // Always start from the top — page.tsx's useLayoutEffect guarantees
       // scrollY === 0 before this effect runs, so step 0 is the only case
-      goal = 0;
-      scrub.pos = 0;
 
-      window.addEventListener("wheel", onWheel, { passive: false });
-      window.addEventListener("keydown", onKeyDown);
-      window.addEventListener("touchstart", onTouchStart, { passive: true });
-      window.addEventListener("touchmove", onTouchMove, { passive: false });
       window.addEventListener("resize", onResize);
       window.addEventListener("scroll", onScroll, { passive: true });
 
       return () => {
-        // Kill the active scrub tween so it stops calling render()
-        // on DOM that no longer exists
-        sweep?.kill();
-        sweep = null;
+        // TEMP DEBUG
+        console.log("[HOME] CLEANUP START", { scrollY: window.scrollY, time: performance.now() });
+
+        // Kill the smooth-scroll tween first — it lives outside the GSAP
+        // context and would otherwise survive unmount, calling scrollTo()
+        // on the new page.
+        transitionsHandle.cleanup();
 
         // Drop every pinned section back into normal flow — without this
         // the next page inherits fixed-position overlays that block scroll
-        transitions.forEach((t, i) => {
-          if (i <= step) t.landBack();
-        });
+        transitionsHandle.landBackAll(stepper.stepRef.current);
 
         // Reset the header logo to its default navbar state so the
         // next page doesn't start with a hidden/stuck logo
@@ -1317,12 +1056,11 @@ export default function Hero() {
           gsap.set(headerLogo, { clearProps: "opacity" });
         }
 
-        window.removeEventListener("wheel", onWheel);
-        window.removeEventListener("keydown", onKeyDown);
-        window.removeEventListener("touchstart", onTouchStart);
-        window.removeEventListener("touchmove", onTouchMove);
         window.removeEventListener("resize", onResize);
         window.removeEventListener("scroll", onScroll);
+
+        // TEMP DEBUG
+        console.log("[HOME] CLEANUP END", { scrollY: window.scrollY, time: performance.now() });
       };
     },
     { scope: sectionRef }

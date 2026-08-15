@@ -15,6 +15,7 @@ import {
   Trash2,
   UploadCloud,
 } from "lucide-react";
+import ApplicationSubmitted from "./ApplicationSubmitted";
 
 const COUNTRIES = [
   { name: "Bangladesh", code: "+880", flag: "🇧🇩" },
@@ -57,8 +58,12 @@ interface Education {
 
 export default function CareerApplicationForm({
   jobTitle,
+  department,
+  location,
 }: {
   jobTitle: string;
+  department: string;
+  location: string;
 }) {
   const nextId = useRef(2);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -413,6 +418,7 @@ export default function CareerApplicationForm({
   ) => {
     e.preventDefault();
     setSubmitted(true);
+    window.scrollTo({ top: 0, behavior: "instant" });
 
     console.log({
       personal,
@@ -495,7 +501,26 @@ export default function CareerApplicationForm({
 
   return (
     <div>
-      <form
+      {/* ── Success view ── */}
+      {submitted && (
+        <ApplicationSubmitted
+          refNumber={`ASG-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 99999)).padStart(5, "0")}`}
+          jobTitle={jobTitle}
+          companyName="Amanat Shah Group"
+          department={department}
+          location={location}
+          applicantName={`${personal.firstName} ${personal.lastName}`.trim() || "Applicant"}
+          appliedOn={new Date().toLocaleDateString("en-US", {
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          })}
+          phone={`${phoneCountry.code} ${personal.phone || "N/A"}`}
+          email={personal.email}
+        />
+      )}
+
+      {!submitted && <form
         onSubmit={handleSubmit}
         className="w-full sm:pb-[70px] "
       >
@@ -629,7 +654,7 @@ export default function CareerApplicationForm({
                     {renderField(`exp-${experience.id}-from`, "From", experience.from, (v) => updateExperience(experience.id, "from", v), {
                       errorLabel: "start date",
                       children: (
-                        <div className="relative cursor-pointer" onClick={(e) => { const input = e.currentTarget.querySelector("input") as HTMLInputElement; if (input && !input.disabled && input.showPicker) { e.preventDefault(); input.showPicker(); } }}>
+                        <div className="relative cursor-pointer">
                           <CalendarDays size={14} strokeWidth={1.4} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[#999]" />
                           <input required type="date" value={experience.from} onChange={(e) => updateExperience(experience.id, "from", e.target.value)} onBlur={() => setTouched((prev) => new Set(prev).add(`exp-${experience.id}-from`))} className={`${inputClass} pl-8 sm:pl-7`} />
                         </div>
@@ -641,7 +666,7 @@ export default function CareerApplicationForm({
                       required: !experience.currentlyWorking,
                       disabled: experience.currentlyWorking,
                       children: (
-                        <div className="relative cursor-pointer" onClick={(e) => { const input = e.currentTarget.querySelector("input") as HTMLInputElement; if (input && !input.disabled && input.showPicker) { e.preventDefault(); input.showPicker(); } }}>
+                        <div className="relative cursor-pointer">
                           <CalendarDays size={14} strokeWidth={1.4} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[#999]" />
                           <input required={!experience.currentlyWorking} disabled={experience.currentlyWorking} type="date" value={experience.to} onChange={(e) => updateExperience(experience.id, "to", e.target.value)} onBlur={() => setTouched((prev) => new Set(prev).add(`exp-${experience.id}-to`))} className={`${inputClass} pl-8 sm:pl-7 disabled:bg-[#f1f2f3] disabled:cursor-not-allowed`} />
                         </div>
@@ -776,7 +801,7 @@ export default function CareerApplicationForm({
                     {renderField(`edu-${edu.id}-from`, "From", edu.from, (v) => updateEducation(edu.id, "from", v), {
                       errorLabel: "start date",
                       children: (
-                        <div className="relative cursor-pointer" onClick={(e) => { const input = e.currentTarget.querySelector("input") as HTMLInputElement; if (input && !input.disabled && input.showPicker) { e.preventDefault(); input.showPicker(); } }}>
+                        <div className="relative cursor-pointer">
                           <CalendarDays size={14} strokeWidth={1.4} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[#999]" />
                           <input required type="date" value={edu.from} onChange={(e) => updateEducation(edu.id, "from", e.target.value)} onBlur={() => setTouched((prev) => new Set(prev).add(`edu-${edu.id}-from`))} className={`${inputClass} pl-8 sm:pl-7`} />
                         </div>
@@ -788,7 +813,7 @@ export default function CareerApplicationForm({
                       required: !edu.currentlyAttending,
                       disabled: edu.currentlyAttending,
                       children: (
-                        <div className="relative cursor-pointer" onClick={(e) => { const input = e.currentTarget.querySelector("input") as HTMLInputElement; if (input && !input.disabled && input.showPicker) { e.preventDefault(); input.showPicker(); } }}>
+                        <div className="relative cursor-pointer">
                           <CalendarDays size={14} strokeWidth={1.4} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[#999]" />
                           <input required={!edu.currentlyAttending} disabled={edu.currentlyAttending} type="date" value={edu.to} onChange={(e) => updateEducation(edu.id, "to", e.target.value)} onBlur={() => setTouched((prev) => new Set(prev).add(`edu-${edu.id}-to`))} className={`${inputClass} pl-8 sm:pl-7 disabled:bg-[#f1f2f3] disabled:cursor-not-allowed`} />
                         </div>
@@ -835,7 +860,7 @@ export default function CareerApplicationForm({
             <Link2
               size={14}
               strokeWidth={1.4}
-              className="absolute left-3 top-2.5 text-[#9da1a4]"
+              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#9da1a4]"
             />
 
             <input
@@ -943,7 +968,7 @@ export default function CareerApplicationForm({
             </span>
           </button>
         </div>
-      </form>
+      </form>}
     </div>
   );
 }

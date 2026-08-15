@@ -124,7 +124,7 @@ function SidebarMenuItem({
               onClick={onClose}
               className="border-b border-neutral-100 py-2 pl-2 transition-colors duration-200 last:border-b-0 last:pb-0 active:bg-neutral-50"
             >
-              <span className="block border-l-[2.5px] border-neutral-800 pl-2 text-sm font-medium text-neutral-800">
+              <span className="block border-l-[2.5px] border-neutral-300 pl-2 text-sm font-medium text-neutral-600">
                 {item.label}
               </span>
             </Link>
@@ -233,7 +233,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
               alt="Amanat Shah Group"
               width={80}
               height={48}
-              className="h-10 w-auto object-contain"
+              className="h-12 w-auto object-contain"
               priority
             />
           </Link>

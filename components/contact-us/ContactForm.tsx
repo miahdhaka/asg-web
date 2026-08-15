@@ -48,7 +48,7 @@ export default function ContactForm() {
         {/* Full name */}
         <div className="flex flex-col gap-1.5 sm:gap-0">
           <label className="sm:hidden text-xs font-medium text-neutral-800">Full Name</label>
-          <div className="border border-neutral-200 sm:border-0 rounded-md sm:input-gradient-border-hover">
+          <div className="border border-neutral-200 rounded-md sm:input-gradient-border-hover">
             <input
               type="text"
               placeholder={fields.namePlaceholder}
@@ -60,7 +60,7 @@ export default function ContactForm() {
         {/* Mobile number */}
         <div className="flex flex-col gap-1.5 sm:gap-0">
           <label className="sm:hidden text-xs font-medium text-neutral-800">Mobile Number</label>
-          <div className="border border-neutral-200 sm:border-0 rounded-md sm:input-gradient-border-hover">
+          <div className="border border-neutral-200 rounded-md sm:input-gradient-border-hover">
             <input
               type="tel"
               placeholder={fields.mobilePlaceholder}
@@ -72,7 +72,7 @@ export default function ContactForm() {
         {/* Topic dropdown */}
         <div className="flex flex-col gap-1.5 sm:gap-0">
           <label className="sm:hidden text-xs font-medium text-neutral-800">Topic</label>
-          <div className="flex h-9 lg:h-[3rem] self-stretch items-center gap-2 bg-white px-3 sm:px-3.5 border border-neutral-200 sm:border-0 rounded-md sm:input-gradient-border-hover">
+          <div className="flex h-9 lg:h-[3rem] self-stretch items-center gap-2 bg-white px-3 sm:px-3.5 border border-neutral-200 rounded-md sm:input-gradient-border-hover">
             <span className="flex-1 text-xs lg:text-[1rem] text-neutral-600">
               {fields.dropdownPlaceholder}
             </span>
@@ -83,7 +83,7 @@ export default function ContactForm() {
         {/* Message */}
         <div className="flex flex-col gap-1.5 sm:gap-0">
           <label className="sm:hidden text-xs font-medium text-neutral-800">Message</label>
-          <div className="border border-neutral-200 sm:border-0 rounded-md sm:input-gradient-border-hover">
+          <div className="border border-neutral-200 rounded-md sm:input-gradient-border-hover">
             <textarea
               placeholder={fields.messagePlaceholder}
               className="h-[10rem] lg:h-[16.5rem] w-full resize-none bg-white px-3 sm:px-4 py-2.5 sm:py-3.5 text-xs lg:text-[1rem] text-neutral-800 placeholder:text-neutral-600 focus:outline-none rounded-md"

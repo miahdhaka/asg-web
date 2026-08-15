@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import Hero from "@/components/homepage/Hero";
 import OurBusiness from "@/components/homepage/OurBusiness";
 import GlobalFootprint from "@/components/homepage/GlobalFootprint";
@@ -11,6 +11,10 @@ import Newsroom from "@/components/homepage/Newsroom";
 import IntroSection from "@/components/homepage/IntroSection";
 
 export default function HomePage() {
+  // C2 fix: shared refs connecting WeAreASG's count-up trigger/reset to
+  // the homepage scroll stepper in Hero.tsx
+  const waaTriggerRef = useRef<(() => void) | null>(null);
+  const waaResetRef = useRef<(() => void) | null>(null);
   // useLayoutEffect fires BEFORE any child useEffect/useGSAP — guarantees
   // the Hero sees scrollY === 0 on mount, so it always starts from step 0
   useLayoutEffect(() => {
@@ -39,13 +43,16 @@ export default function HomePage() {
 
   return (
     <main>
-      <Hero />
+      <Hero waaTriggerRef={waaTriggerRef} waaResetRef={waaResetRef} />
       <IntroSection />
       <OurBusiness />
       <GlobalFootprint />
       <Sustainability />
       <Certifications />
-      <WeAreASG />
+      <WeAreASG onReady={useCallback((trigger: () => void, reset: () => void) => {
+        waaTriggerRef.current = trigger;
+        waaResetRef.current = reset;
+      }, [])} />
       <Newsroom />
     </main>
   );

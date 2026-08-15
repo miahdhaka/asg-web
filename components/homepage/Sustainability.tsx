@@ -1,12 +1,14 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 interface SustainabilityPanel {
   label: string;
   description: string;
   image: string;
+  href: string;
 }
 
 // Placeholder images — swap with real assets once they land in
@@ -17,24 +19,28 @@ const panels: SustainabilityPanel[] = [
     description:
       "Driving eco-conscious manufacturing through renewable energy and closed-loop water systems, we minimize environmental impact to shape a cleaner, greener tomorrow for global fashion.",
     image: "/images/sustainability/sustainability.webp",
+    href: "",
   },
   {
     label: "Innovation",
     description:
       "Embracing digitalization, we are transforming the fashion industry to be future-ready. By integrating advanced technologies, we enhance design, production, and customer experiences. ",
     image: "/images/sustainability/innovation.webp",
+    href: "",
   },
   {
     label: "Quality & Compliance",
     description:
       "Upholding rigorous international standards and ethical practices, we guarantee premium product integrity, complete transparency, and flawless compliance for world-class brands.",
     image: "/images/sustainability/quality-&-compliance.webp",
+    href: "",
   },
   {
     label: "Social Business Commitment",
     description:
       "By optimizing raw material consumption and minimizing waste across our supply chain, we maximize output while reducing our overall environmental impact and promoting responsible production.",
     image: "/images/sustainability/social-business-commitment.webp",
+    href: "",
   },
 ];
 
@@ -112,25 +118,27 @@ export default function Sustainability() {
               />
 
               {/* Arrow button — only on the expanded panel */}
-              <div
-                className={`absolute top-2 right-2 lg:top-3 lg:right-3 flex h-12 w-14 lg:h-20 lg:w-22 items-center justify-center bg-[image:var(--primary-gradient)] transition-opacity duration-500 ${
-                  isActive ? "opacity-100 delay-[400ms]" : "opacity-0 delay-0"
-                }`}
-              >
-                <svg
-                  width="28"
-                  height="28"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="square"
-                  className="size-5 lg:size-7"
+              <Link href={panel.href}>
+                <div
+                  className={`absolute top-2 right-2 lg:top-3 lg:right-3 flex h-12 w-14 lg:h-20 lg:w-22 items-center justify-center bg-[image:var(--primary-gradient)] cursor-pointer transition-opacity duration-500 ${
+                    isActive ? "opacity-100 delay-[400ms]" : "opacity-0 delay-0"
+                  }`}
                 >
-                  <path d="M7 17 17 7" />
-                  <path d="M9 7h8v8" />
-                </svg>
-              </div>
+                  <svg
+                    width="28"
+                    height="28"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="square"
+                    className="size-5 lg:size-7"
+                  >
+                    <path d="M7 17 17 7" />
+                    <path d="M9 7h8v8" />
+                  </svg>
+                </div>
+              </Link>
 
               {/* Expanded content — title + description, bottom left */}
               <div
