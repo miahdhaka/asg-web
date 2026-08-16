@@ -1038,9 +1038,6 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
       window.addEventListener("scroll", onScroll, { passive: true });
 
       return () => {
-        // TEMP DEBUG
-        console.log("[HOME] CLEANUP START", { scrollY: window.scrollY, time: performance.now() });
-
         // Kill the smooth-scroll tween first — it lives outside the GSAP
         // context and would otherwise survive unmount, calling scrollTo()
         // on the new page.
@@ -1058,9 +1055,6 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
 
         window.removeEventListener("resize", onResize);
         window.removeEventListener("scroll", onScroll);
-
-        // TEMP DEBUG
-        console.log("[HOME] CLEANUP END", { scrollY: window.scrollY, time: performance.now() });
       };
     },
     { scope: sectionRef }
