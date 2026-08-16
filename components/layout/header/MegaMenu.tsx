@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
 import type { MegaMenuItem } from "./types";
 
 interface MegaMenuProps {
@@ -16,12 +16,14 @@ interface MegaMenuProps {
 export default function MegaMenu({ items, isOpen, variant = "photo", onNavigate }: MegaMenuProps) {
   const isLogo = variant === "logo";
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
   useEffect(() => setMounted(true), []);
-
-  // TEMP DEBUG
-  console.log("[MEGA] RENDER", { isOpen, time: performance.now() });
-
   if (!mounted) return null;
+
+  const handleClick = (href: string) => {
+    onNavigate?.();
+    router.push(href);
+  };
 
   return createPortal(
     <div
@@ -33,22 +35,12 @@ export default function MegaMenu({ items, isOpen, variant = "photo", onNavigate 
           <div className="px-6 py-8">
             <div className={`grid ${isLogo ? "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-4 gap-y-8" : "grid-cols-6 gap-4"}`}>
               {items.map((item) => (
-                <Link
+                <div
                   key={item.label}
-                  href={item.href}
-                  onClick={(e) => {
-                    console.log("[MEGA] CLICK START", {
-                      href: item.href,
-                      defaultPrevented: e.defaultPrevented,
-                      time: performance.now(),
-                    });
-                    onNavigate?.();
-                    console.log("[MEGA] CLICK AFTER CALLBACK", {
-                      defaultPrevented: e.defaultPrevented,
-                      time: performance.now(),
-                    });
-                  }}
-                  className="group flex flex-col items-start text-left"
+                  role="link"
+                  tabIndex={0}
+                  onClick={() => handleClick(item.href)}
+                  className="group flex flex-col items-start text-left cursor-pointer"
                 >
                   <div
                     className={`relative aspect-[5/3] w-full overflow-hidden ${
@@ -74,7 +66,7 @@ export default function MegaMenu({ items, isOpen, variant = "photo", onNavigate 
                       {item.label}
                     </span>
                   )}
-                </Link>
+                </div>
               ))}
             </div>
           </div>

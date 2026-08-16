@@ -28,13 +28,9 @@ function NavItem({ category }: { category: NavCategory }) {
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
   const pathname = usePathname();
 
-  // TEMP DEBUG
-  console.log("[NAV] RENDER", { pathname, isOpen, time: performance.now() });
-
   // Close menu when route changes — defensive fallback so the portal
   // cannot remain visible after navigation completes.
   useEffect(() => {
-    console.log("[NAV] PATHNAME EFFECT", { pathname, time: performance.now() });
     setIsOpen(false);
   }, [pathname]);
 
