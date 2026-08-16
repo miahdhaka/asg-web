@@ -28,7 +28,7 @@ export default function VisionMission() {
           {/* Photo — own aspect ratio, fills the remaining width */}
           <div className="order-3 relative w-full lg:order-none lg:flex-1 mt-4">
             <Image
-              src="/images/about-us/vision-mission.png"
+              src="/images/about-us/vision.png"
               alt="ASG vision"
               width={1100}
               height={668}
@@ -73,7 +73,7 @@ export default function VisionMission() {
           {/* Photo — own aspect ratio, fills the remaining width */}
           <div className="order-3 relative w-full lg:order-none lg:flex-1 mt-4">
             <Image
-              src="/images/about-us/vision-mission.png"
+              src="/images/about-us/mission.png"
               alt="ASG mission"
               width={1100}
               height={668}

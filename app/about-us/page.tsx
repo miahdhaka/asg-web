@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import AboutHero from "@/components/about/AboutHero";
+import PageHero from "@/components/common/PageHero";
 import AboutIntro from "@/components/about/AboutIntro";
 import AboutStats from "@/components/about/AboutStats";
 import VisionMission from "@/components/about/VisionMission";
@@ -80,7 +80,14 @@ const coreCompetencies: ValueCardItem[] = [
 export default function AboutUsPage() {
   return (
     <main>
-      <AboutHero />
+      <PageHero
+        id="about-hero"
+        title="Amanat Shah Group"
+        subtitle="Family business legacy for more than 130 years."
+        mobileSrc="/images/about-us/about-hero-mobile.png"
+        desktopSrc="/images/about-us/about-hero.png"
+        alt="Amanat Shah Group"
+      />
       <AboutIntro />
       <AboutStats />
       <VisionMission />

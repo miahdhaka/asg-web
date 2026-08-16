@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import BoardHero from "@/components/board/BoardHero";
+import PageHero from "@/components/common/PageHero";
 import MessageSection from "@/components/board/MessageSection";
 import OtherBoardMembers from "@/components/board/OtherBoardMembers";
 
@@ -18,7 +18,14 @@ const managingDirectorBio =
 export default function BoardOfDirectorsPage() {
   return (
     <main>
-      <BoardHero />
+      <PageHero
+        id="board-hero"
+        title="Board of Directors"
+        subtitle="The task of the board of directors is to manage the company's"
+        mobileSrc="/images/board-of-directors/board-hero-mobile.png"
+        desktopSrc="/images/board-of-directors/board-hero-desktop.png"
+        alt="Board of Directors of Amanat Shah Group"
+      />
       <MessageSection
         id="chairman-message"
         variant="light"

@@ -82,9 +82,6 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
 
   useGSAP(
     () => {
-      // Skip scroll phases on mobile — let the page scroll naturally
-      if (window.innerWidth < 1024) return;
-
       /* ── Scroll-stability state (C3 + C4) ── */
       const SCROLL_TOP_THRESHOLD = 4;
       const FADE_CHAIN_TOLERANCE = 6;
@@ -96,18 +93,32 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
       };
 
       const headerLogo = document.getElementById("header-logo");
-
+      
+      // Reset logo elements to their clean initial state — critical when
+      // returning to the homepage via the browser back button.  The Header
+      // component persists across navigation, so the navbar logo may still
+      // carry opacity: 1 from the previous page.  On a fresh visit the
+      // Header's React style hides it, but the back button doesn't always
+      // trigger a re-render.  We set it here directly to guarantee the
+      // logo stays hidden until the scroll timeline reveals it.
+      if (headerLogo) {
+        gsap.set(headerLogo, { clearProps: "all" });
+        headerLogo.style.opacity = "0";
+      }
+      
       /* Current root font size — the whole layout is scaled through it (see
          the fluid scale in globals.css), so the hard gaps below are read as
          multiples of it instead of raw pixels and stay proportional on
          laptops and big screens alike. */
       const rootPx = () =>
         parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-
+      
       /* The flying logo lives outside the section (fixed, above the navbar).
-         Pin it onto its invisible slot in the hero's centered content. */
+         Pin it onto its invisible slot in the hero's centered content */
       const placeLogo = () => {
         if (!logoRef.current || !logoSlotRef.current) return;
+        // Clear any residual GSAP styles from a previous visit (back button)
+        gsap.set(logoRef.current, { clearProps: "all" });
         const slot = logoSlotRef.current.getBoundingClientRect();
         gsap.set(logoRef.current, {
           left: slot.left,
@@ -166,11 +177,17 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
 
       // Dark overlay clears while the video shrinks into its card
       tl.to(overlayRef.current, { opacity: 0, duration: 0.75 }, 0.05);
+
+      // Video card dimensions: larger on mobile, smaller on desktop
+      const isMobile = window.innerWidth < 1024;
+      const videoWidth = isMobile ? "70vw" : "33.4vw";
+      const videoHeight = isMobile ? "39.375vw" : "18.79vw";
+
       tl.to(
         videoWrapRef.current,
         {
-          width: "33.4vw",
-          height: "18.79vw",
+          width: videoWidth,
+          height: videoHeight,
           duration: 1,
         },
         0.05

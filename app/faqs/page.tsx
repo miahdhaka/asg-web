@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import FaqHero from "@/components/faq/FaqHero";
+import PageHero from "@/components/common/PageHero";
 import FaqCategories from "@/components/faq/FaqCategories";
 
 export const metadata: Metadata = {
@@ -10,7 +10,13 @@ export const metadata: Metadata = {
 export default function FaqsPage() {
   return (
     <main>
-      <FaqHero />
+      <PageHero
+        title="FAQ's"
+        subtitle="Family business legacy for more than 130 years."
+        mobileSrc="/images/faq/hero.webp"
+        desktopSrc="/images/faq/hero.webp"
+        alt="ASG Group shipping and logistics operations"
+      />
       <FaqCategories />
     </main>
   );

@@ -58,7 +58,7 @@ export default function Newsroom() {
         <Link
           href="/newsroom"
           data-label="More news"
-          className="primary-btn-flip-gradient text-base lg:text-lg px-6 lg:px-10 py-3.5 lg:py-5"
+          className="primary-btn-flip-gradient text-sm sm:text-base lg:text-lg px-5 sm:px-6 lg:px-10 py-3 sm:py-3.5 lg:py-5"
         >
           More news
         </Link>
@@ -89,20 +89,20 @@ export default function Newsroom() {
 
               {/* Meta — date / category */}
               <div className="flex items-center gap-2 mt-1">
-                <span className="font-neue-montreal text-base lg:text-xl text-neutral-600">
+                <span className="font-neue-montreal text-sm sm:text-base lg:text-xl text-neutral-600">
                   {item.date}
                 </span>
                 <span
                   aria-hidden
-                  className="h-5 w-px rotate-[30deg] bg-neutral-600"
+                  className="h-4 sm:h-5 w-px rotate-[30deg] bg-neutral-600"
                 />
-                <span className="font-neue-montreal text-base lg:text-xl text-neutral-600">
+                <span className="font-neue-montreal text-sm sm:text-base lg:text-xl text-neutral-600">
                   {item.category}
                 </span>
               </div>
 
               {/* Title */}
-              <h3 className="max-w-full lg:max-w-[21.5625rem] font-serif text-xl sm:text-2xl lg:text-3xl leading-8 lg:leading-10 text-neutral-800">
+              <h3 className="max-w-full lg:max-w-[21.5625rem] font-serif text-xl sm:text-2xl lg:text-3xl leading-7 sm:leading-8 lg:leading-10 text-neutral-800">
                 {item.title}
               </h3>
             </Link>

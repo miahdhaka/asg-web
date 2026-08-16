@@ -11,6 +11,25 @@ import Newsroom from "@/components/homepage/Newsroom";
 import IntroSection from "@/components/homepage/IntroSection";
 
 export default function HomePage() {
+  // Force a full page reload every time the homepage mounts.
+  // The homepage's custom scroll system, GSAP timelines, and logo animations
+  // require a pristine initial state — client-side navigation (including the
+  // browser back button) can leave residual styles from the previous page.
+  // A hard reload guarantees the homepage always starts completely fresh.
+  //
+  // A sessionStorage timestamp prevents infinite reload loops: if the page
+  // was reloaded within the last 5 seconds we skip the reload.  After 5 s
+  // the flag expires so a later back-button return triggers a new reload.
+  useLayoutEffect(() => {
+    const KEY = "__asg_home_reloaded";
+    const now = Date.now();
+    const last = parseInt(sessionStorage.getItem(KEY) || "0", 10);
+    if (now - last > 5000) {
+      sessionStorage.setItem(KEY, String(now));
+      window.location.reload();
+    }
+  }, []);
+
   // C2 fix: shared refs connecting WeAreASG's count-up trigger/reset to
   // the homepage scroll stepper in Hero.tsx
   const waaTriggerRef = useRef<(() => void) | null>(null);

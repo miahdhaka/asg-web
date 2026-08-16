@@ -56,7 +56,7 @@ export default function Certifications() {
           </h2>
 
           {/* Description */}
-          <p className="mt-4 lg:mt-8 text-base lg:text-xl leading-[1.6] tracking-wide text-neutral-600">
+          <p className="mt-4 lg:mt-8 text-sm sm:text-base lg:text-xl leading-[1.6] tracking-wide text-neutral-600">
             Amanat Shah Group (ASG) is committed to Environmental, Social, and Governance (ESG) principles, advancing a sustainable uture through renewable energy. By investing in 7MW solar power, ASG aims to reduce its carbon footprint, enhance energy efficiency, and foster eco-friendly practices across its operations.
           </p>
         </div>
@@ -66,12 +66,12 @@ export default function Certifications() {
             of the bottom-right corner during the 8th-scroll fade. */}
         <div
           id="cert-grid"
-          className="grid w-full max-w-[75rem] grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-5.5 self-end"
+          className="grid w-full max-w-[75rem] grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 lg:gap-5.5 self-end"
         >
           {certifications.map((cert) => (
             <div
               key={cert.label}
-              className={`flex aspect-square items-center justify-center bg-white p-3 lg:p-5 ${
+              className={`flex aspect-square items-center justify-center bg-white p-2 sm:p-3 lg:p-5 ${
                 cert.colStart ?? ""
               }`}
             >

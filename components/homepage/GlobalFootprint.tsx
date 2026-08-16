@@ -187,11 +187,11 @@ export default function GlobalFootprint() {
       <div className="relative mt-4 lg:mt-6">
         {/* Row 1: Right to Left */}
         <div className="no-scrollbar overflow-hidden select-none">
-          <div className="animate-marquee-left flex w-max gap-2 lg:gap-4">
+          <div className="animate-marquee-left flex w-max gap-2 sm:gap-3 lg:gap-4">
             {loopedBrands.map((brand, index) => (
               <div
                 key={`left-${brand}-${index}`}
-                className="flex h-16 w-[12rem] lg:h-24 lg:w-[17.5rem] flex-shrink-0 items-center justify-center bg-[#10161a]"
+                className="flex h-14 sm:h-16 lg:h-24 w-[10rem] sm:w-[12rem] lg:w-[17.5rem] flex-shrink-0 items-center justify-center bg-[#10161a]"
               >
                 <Image
                   src={brand}
@@ -199,7 +199,7 @@ export default function GlobalFootprint() {
                   width={160}
                   height={40}
                   draggable={false}
-                  className="pointer-events-none h-7 w-24 lg:h-10 lg:w-36 object-contain"
+                  className="pointer-events-none h-6 sm:h-7 lg:h-10 w-20 sm:w-24 lg:w-36 object-contain"
                   quality={90}
                 />
               </div>
@@ -208,12 +208,12 @@ export default function GlobalFootprint() {
         </div>
 
         {/* Row 2: Left to Right */}
-        <div className="no-scrollbar mt-2 lg:mt-4 overflow-hidden select-none">
-          <div className="animate-marquee-right flex w-max gap-2 lg:gap-4">
+        <div className="no-scrollbar mt-2 sm:mt-3 lg:mt-4 overflow-hidden select-none">
+          <div className="animate-marquee-right flex w-max gap-2 sm:gap-3 lg:gap-4">
             {loopedBrands.map((brand, index) => (
               <div
                 key={`right-${brand}-${index}`}
-                className="flex h-16 w-[12rem] lg:h-24 lg:w-[17.5rem] flex-shrink-0 items-center justify-center bg-[#10161a]"
+                className="flex h-14 sm:h-16 lg:h-24 w-[10rem] sm:w-[12rem] lg:w-[17.5rem] flex-shrink-0 items-center justify-center bg-[#10161a]"
               >
                 <Image
                   src={brand}
@@ -221,7 +221,7 @@ export default function GlobalFootprint() {
                   width={160}
                   height={40}
                   draggable={false}
-                  className="pointer-events-none h-7 w-24 lg:h-10 lg:w-36 object-contain"
+                  className="pointer-events-none h-6 sm:h-7 lg:h-10 w-20 sm:w-24 lg:w-36 object-contain"
                   quality={90}
                 />
               </div>
