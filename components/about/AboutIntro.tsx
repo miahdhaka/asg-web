@@ -23,7 +23,7 @@ export default function AboutIntro() {
   return (
     <section id="about-intro" className="w-full bg-white px-4 sm:px-6 lg:px-[5em] py-6 sm:py-10 sm:py-12 lg:py-[5em]">
       {/* Lead statement */}
-      <h2 className="text-xl sm:text-3xl lg:text-[2.5rem] sm:leading-[1.3] lg:leading-[1.2] text-neutral-800 max-w-full lg:max-w-[56.25rem] font-test-tiempos-fine">
+      <h2 className="text-xl sm:text-3xl lg:text-[2.5rem] sm:leading-[1.3] lg:leading-[1.2] text-neutral-800 font-medium max-w-full lg:max-w-[56.25rem] font-test-tiempos-fine">
         One of the most reputable and diverse corporate empires in Bangladesh,
         Amanat Shah Group has been Family business legacy.
       </h2>

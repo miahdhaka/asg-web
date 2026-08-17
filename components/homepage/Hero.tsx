@@ -82,9 +82,6 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
 
   useGSAP(
     () => {
-      // Skip scroll phases on mobile — let the page scroll naturally
-      if (window.innerWidth < 1024) return;
-
       /* ── Scroll-stability state (C3 + C4) ── */
       const SCROLL_TOP_THRESHOLD = 4;
       const FADE_CHAIN_TOLERANCE = 6;
@@ -96,18 +93,32 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
       };
 
       const headerLogo = document.getElementById("header-logo");
-
+      
+      // Reset logo elements to their clean initial state — critical when
+      // returning to the homepage via the browser back button.  The Header
+      // component persists across navigation, so the navbar logo may still
+      // carry opacity: 1 from the previous page.  On a fresh visit the
+      // Header's React style hides it, but the back button doesn't always
+      // trigger a re-render.  We set it here directly to guarantee the
+      // logo stays hidden until the scroll timeline reveals it.
+      if (headerLogo) {
+        gsap.set(headerLogo, { clearProps: "all" });
+        headerLogo.style.opacity = "0";
+      }
+      
       /* Current root font size — the whole layout is scaled through it (see
          the fluid scale in globals.css), so the hard gaps below are read as
          multiples of it instead of raw pixels and stay proportional on
          laptops and big screens alike. */
       const rootPx = () =>
         parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-
+      
       /* The flying logo lives outside the section (fixed, above the navbar).
-         Pin it onto its invisible slot in the hero's centered content. */
+         Pin it onto its invisible slot in the hero's centered content */
       const placeLogo = () => {
         if (!logoRef.current || !logoSlotRef.current) return;
+        // Clear any residual GSAP styles from a previous visit (back button)
+        gsap.set(logoRef.current, { clearProps: "all" });
         const slot = logoSlotRef.current.getBoundingClientRect();
         gsap.set(logoRef.current, {
           left: slot.left,
@@ -166,11 +177,17 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
 
       // Dark overlay clears while the video shrinks into its card
       tl.to(overlayRef.current, { opacity: 0, duration: 0.75 }, 0.05);
+
+      // Video card dimensions: larger on mobile, smaller on desktop
+      const isMobile = window.innerWidth < 1024;
+      const videoWidth = isMobile ? "70vw" : "33.4vw";
+      const videoHeight = isMobile ? "39.375vw" : "18.79vw";
+
       tl.to(
         videoWrapRef.current,
         {
-          width: "33.4vw",
-          height: "18.79vw",
+          width: videoWidth,
+          height: videoHeight,
           duration: 1,
         },
         0.05
@@ -847,7 +864,10 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         newsLink.onUnsettle = resetNewsHeading;
       }
 
-      /* C1 fix — After a reverse of tl4, correct the flying logo position. */
+      /* C1 fix — After a reverse of tl4, correct the flying logo position.
+         Only reposition — do NOT set opacity/autoAlpha. tl1's reverse owns
+         the flying logo's opacity; overriding it here caused two logos to
+         appear in the navbar when scrolling up very fast. */
       const correctLogoPosition = () => {
         if (!introLogo || !headerLogo || !logoRef.current) return;
         const iRect = introLogo.getBoundingClientRect();
@@ -857,7 +877,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         const scale = nRect.height / Math.max(iRect.height, 1);
         gsap.set(logoRef.current, {
           left: iRect.left, top: iRect.top, x: dx, y: dy, scale,
-          transformOrigin: "center center", opacity: 1, autoAlpha: 1,
+          transformOrigin: "center center",
         });
       };
 
@@ -895,7 +915,14 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         onLand: onLandRef,
         onLandBack: onLandBackRef,
       });
-      correctLogoOnLandBack(correctLogoPosition);
+      // Defer the logo correction until after the sweep finishes — running it
+      // during the sweep overrides tl1's reverse animation (which controls
+      // the flying logo's position), causing the logo to jump to the wrong
+      // spot and disappear when scrolling up very fast.
+      let logoCorrectionPending = false;
+      correctLogoOnLandBack(() => {
+        logoCorrectionPending = true;
+      });
 
       const atTop = () => window.scrollY <= SCROLL_TOP_THRESHOLD;
 
@@ -998,6 +1025,15 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
          hide it again when we return to the pinned states at the top */
       let navLogoBack = false;
       const onScroll = () => {
+        /* Deferred logo correction — runs after the sweep settles at step 3.
+           During a fast reverse scroll the onLandBack(3) callback fires while
+           tl1 is still reversing; deferring to post-sweep avoids overriding
+           the flying logo's position mid-animation. */
+        if (logoCorrectionPending && !stepper.sweeping.current() && stepper.stepRef.current === 3) {
+          logoCorrectionPending = false;
+          correctLogoPosition();
+        }
+
         /* Anchor floor (C3 + C4 fix) —
            During a controlled landing, skip correction entirely.
            After one correction per momentum burst, suppress further
@@ -1019,7 +1055,25 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
           }
         }
 
-        if (!headerLogo || tl4.progress() < 1) return;
+        if (!headerLogo) return;
+
+        // Back at the top — tl1's reverse handles the logo flight back,
+        // but we must sync navLogoBack and hide the header logo in case
+        // the user scrolled up so fast that the onScroll handler skipped
+        // intermediate states.
+        if (window.scrollY <= SCROLL_TOP_THRESHOLD) {
+          if (navLogoBack) {
+            navLogoBack = false;
+            gsap.to(headerLogo, {
+              opacity: 0,
+              duration: 0.3,
+              overwrite: "auto",
+            });
+          }
+          return;
+        }
+
+        if (tl4.progress() < 1) return;
         const past = window.scrollY > SCROLL_TOP_THRESHOLD;
         if (past !== navLogoBack) {
           navLogoBack = past;
@@ -1126,7 +1180,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
             Amanat Shah Group
           </h1>
 
-          <p className="text-white font-neue-montreal font-light word-space-4 uppercase tracking-wider max-w-4xl text-xs sm:text-sm lg:text-base">
+          <p className="text-white font-neue-montreal word-space-4 uppercase tracking-wider max-w-4xl text-xs sm:text-sm lg:text-base">
             Textile | RMG | Chemical | Trading | IT | E-Commerce | Real Estate | Finance | Agriculture
           </p>
         </div>

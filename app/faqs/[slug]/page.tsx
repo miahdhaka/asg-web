@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import FaqHero from "@/components/faq/FaqHero";
+import PageHero from "@/components/common/PageHero";
 import FaqAccordion from "@/components/faq/FaqAccordion";
 import { faqCategories, getFaqCategory } from "@/components/faq/faqData";
 
@@ -33,7 +33,13 @@ export default async function FaqCategoryPage({
 
   return (
     <main>
-      <FaqHero />
+      <PageHero
+        title="FAQ's"
+        subtitle="Family business legacy for more than 130 years."
+        mobileSrc="/images/faq/hero.webp"
+        desktopSrc="/images/faq/hero.webp"
+        alt="ASG Group shipping and logistics operations"
+      />
       <FaqAccordion title={category.title} items={category.faqs} />
     </main>
   );

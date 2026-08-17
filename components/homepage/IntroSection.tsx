@@ -14,7 +14,7 @@ export default function IntroSection() {
       {/* Brand gradient glow — top center, behind content */}
       <div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-[10%] z-10 -translate-x-1/2 w-[31.25rem] h-[25rem]"
+        className="pointer-events-none absolute left-1/2 top-[10%] z-10 -translate-x-1/2 w-[18rem] sm:w-[25rem] lg:w-[31.25rem] h-[15rem] sm:h-[20rem] lg:h-[25rem]"
         style={{
           opacity: 0.8,
           background:
@@ -32,13 +32,13 @@ export default function IntroSection() {
           width={300}
           height={120}
           quality={100}
-          className="w-[18.75rem] h-[7.5rem] object-contain"
+          className="w-[12rem] sm:w-[15rem] lg:w-[18.75rem] h-[4.8rem] sm:h-[6rem] lg:h-[7.5rem] object-contain"
         />
 
         {/* Description — rises from the bottom during the Hero's circle reveal */}
         <p
           id="intro-copy"
-          className="max-w-[56.25rem] text-center text-[2rem] leading-[1.375] text-white mt-12"
+          className="max-w-[56.25rem] text-center text-base sm:text-lg lg:text-[2rem] leading-[1.375] text-white mt-6 sm:mt-8 lg:mt-12"
         >
           Amanat Shah Group is a diversified business group with strong concentration in the Textile-to-Fashion value chain supported by Finance, Chemicals, Technology, Agriculture.
         </p>
@@ -48,7 +48,7 @@ export default function IntroSection() {
           id="intro-cta"
           href="/about-us"
           data-label="About Us"
-          className="primary-btn-flip-gradient text-lg px-8 py-4.5 mt-11"
+          className="primary-btn-flip-gradient text-sm sm:text-base lg:text-lg px-5 sm:px-6 lg:px-8 py-3 sm:py-3.5 lg:py-4.5 mt-6 sm:mt-8 lg:mt-11"
         >
           About Us
         </Link>

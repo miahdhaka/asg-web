@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import MediaGalleriesHero from "@/components/media-galleries/MediaGalleriesHero";
+import PageHero from "@/components/common/PageHero";
 import GallerySections from "@/components/media-galleries/GallerySections";
 
 export const metadata: Metadata = {
@@ -11,7 +11,13 @@ export const metadata: Metadata = {
 export default function MediaGalleriesPage() {
   return (
     <main>
-      <MediaGalleriesHero />
+      <PageHero
+        title="Media Galleries"
+        subtitle="Curated high-resolution visual assets."
+        mobileSrc="/images/media-galleries/hero-bg.png"
+        desktopSrc="/images/media-galleries/hero-bg.png"
+        alt="ASG Group media galleries"
+      />
       <GallerySections />
     </main>
   );

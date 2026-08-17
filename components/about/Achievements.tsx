@@ -64,7 +64,7 @@ export default function Achievements() {
         {achievements.map((item, index) => (
           <div
             key={`${item.label}-${index}`}
-            className="card-gradient-hover group flex flex-col"
+            className="group flex flex-col"
           >
             <div className="flex flex-1 items-center justify-center bg-gray-100 p-8">
               <Image
@@ -76,7 +76,7 @@ export default function Achievements() {
                 className="w-auto h-auto max-w-[60%] max-h-full object-contain"
               />
             </div>
-            <div className="flex flex-col items-center justify-center gap-2 bg-gray-50 px-6 py-8">
+            <div className="card-gradient-hover flex flex-col items-center justify-center gap-2 bg-gray-50 px-6 py-8">
               <span className="font-test-tiempos-fine text-7xl font-medium text-neutral-800">
                 {item.value}
               </span>

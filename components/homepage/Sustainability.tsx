@@ -68,7 +68,7 @@ export default function Sustainability() {
           </h2>
 
           {/* Description */}
-          <p className="max-w-[38.75rem] text-base lg:text-xl leading-[1.5] tracking-wide text-neutral-800">
+          <p className="max-w-[38.75rem] text-sm sm:text-base lg:text-xl leading-[1.5] tracking-wide text-neutral-800">
             Amanat Shah Group integrates eco-conscious manufacturing tailored
             to the compliance demands of global fashion. From renewable energy
             to closed-loop water systems.
@@ -88,7 +88,7 @@ export default function Sustainability() {
             <div
               key={panel.label}
               onClick={() => setActiveIndex(index)}
-              className={`group relative h-full min-w-0 shrink-0 basis-[4rem] lg:basis-[7.5rem] overflow-hidden select-none transition-[flex-grow] duration-700 ease-in-out ${
+              className={`group relative h-full min-w-0 shrink-0 basis-[3.5rem] sm:basis-[4rem] lg:basis-[7.5rem] overflow-hidden select-none transition-[flex-grow] duration-700 ease-in-out ${
                 isActive ? "grow cursor-default" : "grow-0 cursor-pointer"
               }`}
             >
@@ -149,7 +149,7 @@ export default function Sustainability() {
                 <h3 className="font-neue-montreal text-lg lg:text-2xl font-bold text-white tracking-wider">
                   {panel.label}
                 </h3>
-                <p className="mt-2 lg:mt-4 text-sm lg:text-lg leading-[1.5] tracking-wider text-white/90">
+                <p className="mt-2 lg:mt-4 text-xs sm:text-sm lg:text-lg leading-[1.5] tracking-wider text-white/90">
                   {panel.description}
                 </p>
               </div>

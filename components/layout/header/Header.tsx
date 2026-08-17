@@ -143,22 +143,43 @@ export default function Header() {
 
         {/* Logo - center */}
         <div className="flex items-center justify-center">
-          <Link
-            href="/"
-            id="header-logo"
-            scroll={true}
-            className="flex items-center"
-            style={isHome ? { opacity: 0 } : undefined}
-          >
-            <Image
-              src="/logo/ASG-logo.png"
-              alt="Amanat Shah Group"
-              width={104}
-              height={64}
-              priority
-              className="w-26 h-16 object-contain"
-            />
-          </Link>
+          {isHome ? (
+            <a
+              href="/"
+              id="header-logo"
+              className="flex items-center"
+              style={{ opacity: 0 }}
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.reload();
+              }}
+            >
+              <Image
+                src="/logo/ASG-logo.png"
+                alt="Amanat Shah Group"
+                width={104}
+                height={64}
+                priority
+                className="w-26 h-16 object-contain"
+              />
+            </a>
+          ) : (
+            <Link
+              href="/"
+              id="header-logo"
+              scroll={true}
+              className="flex items-center"
+            >
+              <Image
+                src="/logo/ASG-logo.png"
+                alt="Amanat Shah Group"
+                width={104}
+                height={64}
+                priority
+                className="w-26 h-16 object-contain"
+              />
+            </Link>
+          )}
         </div>
 
         {/* Search - right */}

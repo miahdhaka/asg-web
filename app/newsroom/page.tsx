@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import NewsHero from "@/components/newsroom/NewsHero";
+import PageHero from "@/components/common/PageHero";
 import NewsGrid from "@/components/newsroom/NewsGrid";
 
 export const metadata: Metadata = {
@@ -10,7 +10,13 @@ export const metadata: Metadata = {
 export default function NewsroomPage() {
   return (
     <main>
-      <NewsHero />
+      <PageHero
+        title="News Releases"
+        subtitle="Stay in the know with the latest news from ASG Group."
+        mobileSrc="/images/newsroom/news-hero.png"
+        desktopSrc="/images/newsroom/news-hero.png"
+        alt="ASG Group news releases"
+      />
       <NewsGrid />
     </main>
   );

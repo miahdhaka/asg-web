@@ -142,15 +142,15 @@ export default function WeAreASG({ onReady }: WeAreASGProps) {
               className="group flex h-[min(40vh,22rem)] lg:h-[min(46vh,26.25rem)] flex-col bg-white"
             >
               {/* Top part — icon + label, own padding */}
-              <div className="flex flex-1 flex-col justify-between p-3 lg:p-5">
-                <div className="relative size-[3rem] lg:size-[4.6875rem] transition-transform duration-500 ease-in-out group-hover:scale-110">
+              <div className="flex flex-1 flex-col justify-between p-2.5 sm:p-3 lg:p-5">
+                <div className="relative size-[2.5rem] sm:size-[3rem] lg:size-[4.6875rem] transition-transform duration-500 ease-in-out group-hover:scale-110">
                   <Image
                     src={stat.icon}
                     alt=""
                     width={75}
                     height={75}
                     draggable={false}
-                    className="size-[3rem] lg:size-[4.6875rem] object-contain transition-opacity duration-500 ease-in-out group-hover:opacity-0"
+                    className="size-[2.5rem] sm:size-[3rem] lg:size-[4.6875rem] object-contain transition-opacity duration-500 ease-in-out group-hover:opacity-0"
                   />
                   <span
                     aria-hidden
@@ -168,7 +168,7 @@ export default function WeAreASG({ onReady }: WeAreASGProps) {
                   />
                 </div>
 
-                <span className="font-neue-montreal text-sm lg:text-xl tracking-wider text-neutral-800 uppercase">
+                <span className="font-neue-montreal text-xs sm:text-sm lg:text-xl tracking-wider text-neutral-800 uppercase">
                   {stat.label}
                 </span>
               </div>
@@ -180,7 +180,7 @@ export default function WeAreASG({ onReady }: WeAreASGProps) {
               />
 
               {/* Bottom part — count pinned to the card bottom, own padding */}
-              <p className="font-serif text-4xl sm:text-5xl lg:text-7xl font-semibold leading-none text-neutral-900 px-3 py-6 lg:px-5 lg:py-10">
+              <p className="font-serif text-3xl sm:text-4xl lg:text-7xl font-semibold leading-none text-neutral-900 px-2.5 sm:px-3 py-4 sm:py-6 lg:px-5 lg:py-10">
                 <span data-count={stat.value}>0</span>
                 {stat.suffix}
               </p>

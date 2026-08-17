@@ -10,7 +10,7 @@ export default function JobCard({ job }: { job: Job }) {
         <div className="flex flex-col gap-3.5 sm:gap-6 lg:gap-[2.3333rem]">
           {/* Badge + role */}
           <div className="flex flex-col gap-2">
-            <span className="w-fit bg-gray-100 px-[0.6667rem] py-[0.3333rem] text-xs text-neutral-800 lg:text-[1rem]">
+            <span className="w-fit bg-gray-200 px-[0.6667rem] py-[0.3333rem] text-xs text-neutral-800 lg:text-[1rem]">
               {job.department}
             </span>
             <h3 className="font-test-tiempos-fine text-lg leading-7 text-neutral-800 lg:text-[2rem] lg:leading-[2.6667rem]">

@@ -112,19 +112,9 @@ export default function ApplicationSubmitted({
                 <Building2 className="size-[18px] shrink-0 text-neutral-400 sm:size-5" />
                 Company
               </span>
-              <div className="flex items-center gap-2">
-                <Image
-                  src={companyLogo}
-                  alt={companyName}
-                  width={20}
-                  height={20}
-                  quality={100}
-                  className="size-5 object-contain"
-                />
-                <span className="text-xs text-neutral-800 sm:text-base">
-                  {companyName}
-                </span>
-              </div>
+              <span className="text-xs text-neutral-800 sm:text-base">
+                {companyName}
+              </span>
             </div>
 
             {/* Location */}

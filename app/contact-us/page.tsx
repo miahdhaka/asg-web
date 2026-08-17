@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import ContactHero from "@/components/contact-us/ContactHero";
+import PageHero from "@/components/common/PageHero";
 import ContactInfo from "@/components/contact-us/ContactInfo";
 import ContactForm from "@/components/contact-us/ContactForm";
 import OfficeSection from "@/components/contact-us/OfficeSection";
@@ -14,7 +14,13 @@ export const metadata: Metadata = {
 export default function ContactUsPage() {
   return (
     <main>
-      <ContactHero />
+      <PageHero
+        title="Contact Us"
+        subtitle="ASG Group"
+        mobileSrc="/images/contact-us/hero-bg.png"
+        desktopSrc="/images/contact-us/hero-bg.png"
+        alt="ASG Group contact us"
+      />
 
       {/* Contact info + form section — split by a vertical divider */}
       <section className="lg:grid lg:grid-cols-[36.4rem_1fr]">

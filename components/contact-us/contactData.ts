@@ -34,6 +34,7 @@ export interface FormTabFields {
   mobilePlaceholder: string;
   dropdownPlaceholder: string;
   messagePlaceholder: string;
+  dropdownOptions?: string[];
 }
 
 export const formTabFields: Record<FormTab, FormTabFields> = {
@@ -42,6 +43,12 @@ export const formTabFields: Record<FormTab, FormTabFields> = {
     mobilePlaceholder: "Enter mobile number",
     dropdownPlaceholder: "Select Product...",
     messagePlaceholder: "Write down your message",
+    dropdownOptions: [
+      "Home Textile Bangladesh",
+      "Home Textile International",
+      "Fabrics",
+      "Yarn",
+    ],
   },
   Investor: {
     namePlaceholder: "Enter full name",

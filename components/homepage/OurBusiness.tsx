@@ -103,7 +103,7 @@ export default function OurBusiness() {
           </h2>
 
           {/* Description */}
-          <p className="max-w-[38.75rem] text-base lg:text-xl leading-[1.5] tracking-wide text-neutral-800">
+          <p className="max-w-[38.75rem] text-sm sm:text-base lg:text-xl leading-[1.5] tracking-wide text-neutral-800">
             With a 130-year legacy, Amanat Shah Group is a premier, multi-sector
             conglomerate. We drive sustainable growth across textiles, finance,
             and technology by integrating innovation, integrity.
@@ -169,7 +169,7 @@ export default function OurBusiness() {
                   width={320}
                   height={120}
                   draggable={false}
-                  className="h-[4rem] w-[12rem] lg:h-[7.5rem] lg:w-[20rem] object-contain"
+                  className="h-[3rem] sm:h-[4rem] lg:h-[7.5rem] w-[9rem] sm:w-[12rem] lg:w-[20rem] object-contain"
                 />
               </div>
 
