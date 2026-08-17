@@ -160,7 +160,7 @@ export default function Header() {
                 width={104}
                 height={64}
                 priority
-                className="w-26 h-16 object-contain"
+                className="w-[5.5rem] h-[2.5rem] sm:w-26 sm:h-16 object-contain"
               />
             </a>
           ) : (
@@ -176,7 +176,7 @@ export default function Header() {
                 width={104}
                 height={64}
                 priority
-                className="w-26 h-16 object-contain"
+                className="w-[5.5rem] h-[2.5rem] sm:w-26 sm:h-16 object-contain"
               />
             </Link>
           )}

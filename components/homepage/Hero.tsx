@@ -22,6 +22,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLImageElement>(null);
   const logoSlotRef = useRef<HTMLDivElement>(null);
+  const slotImgRef = useRef<HTMLImageElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const hintRef = useRef<HTMLDivElement>(null);
   const familyRef = useRef<HTMLHeadingElement>(null);
@@ -45,6 +46,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
     releasePin: (el: HTMLElement) => void;
     ourBusinessTopY: () => number;
     restoreIntroVisibility: () => void;
+    restoreSlotLogo?: () => void;
   }>(null!);
   const fadeChainRef = useRef<{ tl: gsap.core.Timeline; from: HTMLElement | null; to: HTMLElement | null; pinZ?: number; onPrep?: () => void; onSettle?: () => void; onUnsettle?: () => void }[]>([]);
   const timelinesRef = useRef({ tl: null as unknown as gsap.core.Timeline, tl2: null as unknown as gsap.core.Timeline, tl3: null as unknown as gsap.core.Timeline, tl4: null as unknown as gsap.core.Timeline, tl5: null as unknown as gsap.core.Timeline });
@@ -156,9 +158,12 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         defaults: { ease: "power3.inOut" },
       });
 
+      // Viewport check — needed by multiple timeline values below
+      const isMobile = window.innerWidth < 1024;
+
       /* Anchor the video wrapper to the viewport centre from the start —
          full-bleed at 100%×100%, then only width/height shrink, so it
-         collapses evenly from all four sides with zero drift */
+         collapses evenly from all four sides with zero drift. */
       gsap.set(videoWrapRef.current, {
         top: "50%",
         left: "50%",
@@ -168,7 +173,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         height: "100%",
       });
 
-      // Headline, tagline & scroll hint fade away first
+      // Headline, tagline & scroll hint fade away
       tl.to(
         [textRef.current, hintRef.current],
         { opacity: 0, y: -40, duration: 0.5, ease: "power2.out" },
@@ -178,10 +183,10 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
       // Dark overlay clears while the video shrinks into its card
       tl.to(overlayRef.current, { opacity: 0, duration: 0.75 }, 0.05);
 
-      // Video card dimensions: larger on mobile, smaller on desktop
-      const isMobile = window.innerWidth < 1024;
+      // Video card dimensions: vertical rectangle on mobile (matches portrait
+      // display), horizontal rectangle on desktop (unchanged)
       const videoWidth = isMobile ? "70vw" : "33.4vw";
-      const videoHeight = isMobile ? "39.375vw" : "18.79vw";
+      const videoHeight = isMobile ? "80vw" : "18.79vw";
 
       tl.to(
         videoWrapRef.current,
@@ -205,6 +210,15 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         },
         0.05
       );
+
+      // Mobile: hide the slot logo immediately so the flying logo (which
+      // sits on top) is the only visible logo.  The slot logo stays hidden
+      // for the entire forward scroll — it is only restored when the
+      // timeline fully reverses back to step 0 (user scrolls back up).
+      if (slotImgRef.current && isMobile) {
+        gsap.set(slotImgRef.current, { autoAlpha: 0 });
+      }
+
       // …pauses there, fades out…
       tl.to(logoRef.current, { opacity: 0, duration: 0.35, ease: "power1.out" }, 1.1);
       // …and the navbar logo takes over
@@ -237,8 +251,8 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
          heading up / video down only as much as needed so "Legacy For" sits
          tightly under "Family Business" with a small gap to the video.
          Evaluated lazily on the 2nd gesture, when both are at rest. */
-      const GAP_TEXT = () => rootPx() * 0.25; // 4px @1920 — between the two headings
-      const GAP_VIDEO = () => rootPx() * 2.5; // 40px @1920 — heading ↔ video card
+      const GAP_TEXT = () => (isMobile ? rootPx() * 0.5 : rootPx() * 0.25); // 8px mobile / 4px @1920 — between headings
+      const GAP_VIDEO = () => (isMobile ? rootPx() * 0.75 : rootPx() * 2.5); // 12px mobile / 40px @1920 — heading ↔ video
       const metrics = () => {
         const fbBottom =
           familyRef.current?.getBoundingClientRect().bottom ?? 0;
@@ -256,10 +270,12 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
       };
 
       // "Family Business" moves up and aligns to the video's left edge
+      // Mobile video is 70vw wide, centered → left edge at (100-70)/2 = 15vw
+      const videoLeftEdge = isMobile ? "15vw" : "33.3vw";
       tl2.to(
         familyRef.current,
         {
-          left: "33.3vw",
+          left: videoLeftEdge,
           xPercent: 0,
           y: () => -metrics().rise,
           duration: 1.1,
@@ -301,7 +317,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         {
           top: () =>
             (videoWrapRef.current?.getBoundingClientRect().bottom ?? 0) +
-            GAP_VIDEO(),
+            (isMobile ? rootPx() * 0.75 : GAP_VIDEO()),
         },
         0
       );
@@ -906,6 +922,14 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         restoreIntroVisibility: () => {
           if (intro) gsap.set(intro, { autoAlpha: 1 });
         },
+        restoreSlotLogo: () => {
+          // Mobile: restore the slot logo when the timeline fully reverses
+          // back to step 0.  At this point the flying logo has returned to
+          // the slot position and faded out, so the slot logo takes over.
+          if (slotImgRef.current && isMobile) {
+            gsap.set(slotImgRef.current, { autoAlpha: 1 });
+          }
+        },
       };
 
       // Wire the stepper callbacks to the transitions array
@@ -1137,7 +1161,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
       {/* "Family Business" heading — revealed by the scroll timeline */}
       <h2
         ref={familyRef}
-        className="hidden lg:block absolute top-[20%] z-20 font-test-tiempos-fine text-[4.0625rem] leading-20 text-[var(--primary-black)] whitespace-nowrap opacity-0"
+        className="absolute top-[20%] z-20 font-test-tiempos-fine text-[2rem] sm:text-[2.5rem] lg:text-[4.0625rem] leading-10 sm:leading-12 lg:leading-20 text-[var(--primary-black)] whitespace-nowrap opacity-0"
       >
         Family Business
       </h2>
@@ -1146,7 +1170,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
           right-aligned to the video's right edge */}
       <h2
         ref={legacyRef}
-        className="hidden lg:block absolute top-[24%] right-[33.3vw] z-20 font-test-tiempos-fine text-[4.0625rem] leading-16 text-[var(--primary-black)] whitespace-nowrap opacity-0"
+        className="absolute top-[24%] right-[15vw] sm:right-[25vw] lg:right-[33.3vw] z-20 font-test-tiempos-fine text-[2rem] sm:text-[2.5rem] lg:text-[4.0625rem] leading-10 sm:leading-12 lg:leading-16 text-[var(--primary-black)] whitespace-nowrap opacity-0"
       >
         Legacy For
       </h2>
@@ -1155,7 +1179,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
           centred with the same gap as above the video */}
       <h2
         ref={moreRef}
-        className="hidden lg:block absolute top-[60%] z-20 font-test-tiempos-fine text-[4.0625rem] leading-16 text-[var(--primary-black)] whitespace-nowrap opacity-0"
+        className="absolute top-[60%] z-20 font-test-tiempos-fine text-[2rem] sm:text-[2.5rem] lg:text-[4.0625rem] leading-10 sm:leading-12 lg:leading-16 text-[var(--primary-black)] whitespace-nowrap opacity-0"
       >
         More Then 130 Years
       </h2>
@@ -1163,8 +1187,9 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
       {/* Centered content */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
         {/* Logo — static on mobile, flying logo covers this slot on desktop */}
-        <div ref={logoSlotRef} className="mb-4 lg:mb-6 w-[6rem] h-[5rem] lg:w-[8.125rem] lg:h-[6.875rem] flex items-center justify-center">
+        <div ref={logoSlotRef} className="mb-4 lg:mb-6 w-[4.5rem] h-[3.75rem] sm:w-[6rem] sm:h-[5rem] lg:w-[8.125rem] lg:h-[6.875rem] flex items-center justify-center">
           <Image
+            ref={slotImgRef}
             src="/logo/asg-icon.png"
             alt="ASG Logo"
             width={130}
@@ -1180,7 +1205,27 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
             Amanat Shah Group
           </h1>
 
-          <p className="text-white font-neue-montreal word-space-4 uppercase tracking-wider max-w-4xl text-xs sm:text-sm lg:text-base">
+          {/* Mobile-only auto-scrolling tagline marquee */}
+          <div className="lg:hidden w-full px-4">
+            <div className="w-full overflow-hidden">
+              <div
+                className="whitespace-nowrap inline-flex"
+                style={{ animation: "marquee-third 18s linear infinite" }}
+              >
+                <span className="font-neue-montreal word-space-4 uppercase tracking-wider text-xs text-white shrink-0 mr-1.5">
+                  Textile | RMG | Chemical | Trading | IT | E-Commerce | Real Estate | Finance | Agriculture | 
+                </span>
+                <span className="font-neue-montreal word-space-4 uppercase tracking-wider text-xs text-white shrink-0 mr-1.5">
+                  Textile | RMG | Chemical | Trading | IT | E-Commerce | Real Estate | Finance | Agriculture | 
+                </span>
+                <span className="font-neue-montreal word-space-4 uppercase tracking-wider text-xs text-white shrink-0 mr-1.5">
+                  Textile | RMG | Chemical | Trading | IT | E-Commerce | Real Estate | Finance | Agriculture | 
+                </span>
+              </div>
+            </div>
+          </div>
+          {/* Desktop static tagline */}
+          <p className="hidden lg:block text-white font-neue-montreal word-space-4 uppercase tracking-wider max-w-4xl text-xs sm:text-sm lg:text-base">
             Textile | RMG | Chemical | Trading | IT | E-Commerce | Real Estate | Finance | Agriculture
           </p>
         </div>
@@ -1189,7 +1234,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
       {/* Scroll down indicator */}
       <div
         ref={hintRef}
-        className="absolute bottom-15 left-1/2 -translate-x-1/2 z-10 flex items-center gap-3 text-white"
+        className="absolute bottom-15 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 sm:gap-3 text-white"
       >
         <Image
           src="/icons/mouse-scroll-wheel.gif"
@@ -1197,9 +1242,9 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
           width={28}
           height={38}
           quality={100}
-          className="w-[1.75rem] h-[2.375rem] object-contain"
+          className="w-[1.6rem] sm:w-[1.75rem] h-[1.6rem] sm:h-[2.375rem] object-contain"
         />
-        <span className="font-neue-montreal font-light uppercase tracking-widest">
+        <span className="text-sm sm:text-base font-neue-montreal font-light uppercase tracking-widest">
           Scroll Down
         </span>
       </div>
@@ -1215,7 +1260,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         height={90}
         quality={100}
         priority
-        className="pointer-events-none invisible fixed left-0 top-0 z-60 hidden lg:block w-[8.125rem] h-[6.875rem] object-contain"
+        className="pointer-events-none invisible fixed left-0 top-0 z-60 w-[4.5rem] h-[3.75rem] sm:w-[6rem] sm:h-[5rem] lg:w-[8.125rem] lg:h-[6.875rem] object-contain"
       />
 
       {/* Flying intro logo — carries the navbar logo down onto the intro
@@ -1223,7 +1268,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
           cross-fade mid-flight (dark navbar logo → mixed intro logo) */}
       <div
         ref={introFlyRef}
-        className="pointer-events-none invisible fixed left-0 top-0 z-60 hidden lg:block"
+        className="pointer-events-none invisible fixed left-0 top-0 z-60"
       >
         <Image
           ref={flyDarkRef}

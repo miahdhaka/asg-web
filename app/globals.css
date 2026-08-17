@@ -554,6 +554,16 @@
   animation-play-state: paused;
 }
 
+/* Seamless marquee using 3 copies — shifts by exactly one copy width */
+@keyframes marquee-third {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-33.3333%);
+  }
+}
+
 /* Fade-in animation for tab content transitions */
 @keyframes fade-in {
   from {
