@@ -39,7 +39,7 @@ export default function GlobalFootprint() {
   return (
     <section
       id="global-footprint"
-      className="relative flex w-full flex-col overflow-hidden bg-[var(--color-primary-black)] pb-6 lg:pb-10 min-h-[calc(100vh-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
+      className="relative flex w-full flex-col overflow-hidden bg-[var(--color-primary-black)] pb-6 lg:pb-10 h-[calc(100dvh-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Content row — copy left, map right */}
       <div className="relative flex min-h-0 flex-1 flex-col lg:flex-row items-center px-4 lg:px-20">
@@ -69,8 +69,9 @@ export default function GlobalFootprint() {
           </p>
         </div>
 
-        {/* Map with location pins */}
-        <div className="relative min-w-0 w-full lg:flex-1">
+        {/* Map with location pins — on mobile it fills and vertically
+            centers the leftover space so no dead gap sits below it */}
+        <div className="relative min-w-0 w-full lg:flex-1 max-lg:flex max-lg:flex-1 max-lg:items-center">
           {/* Green gradient blur centered behind the map */}
           <div
             aria-hidden

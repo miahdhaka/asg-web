@@ -30,6 +30,7 @@ export default function OurBusiness() {
   // Interaction flags kept in refs so the animation loop reads fresh values.
   const isHoveredRef = useRef(false);
   const isDraggingRef = useRef(false);
+  const isTouchingRef = useRef(false);
   const dragStartX = useRef(0);
   const dragStartScroll = useRef(0);
 
@@ -52,7 +53,7 @@ export default function OurBusiness() {
     let raf = 0;
 
     const tick = () => {
-      if (!isHoveredRef.current && !isDraggingRef.current) {
+      if (!isHoveredRef.current && !isDraggingRef.current && !isTouchingRef.current) {
         el.scrollLeft = wrap(el, el.scrollLeft + SCROLL_SPEED);
       }
       raf = requestAnimationFrame(tick);
@@ -60,6 +61,28 @@ export default function OurBusiness() {
 
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
+  }, []);
+
+  // --- Touch pause: stop auto-scroll the moment a finger lands ----------
+  // Native touch-scroll and the rAF loop fight each other on mobile,
+  // producing the jank / black-gap the user sees.  Pausing the loop for
+  // the entire touch lifetime lets the browser glide smoothly.
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const onTouchStart = () => { isTouchingRef.current = true; };
+    const onTouchEnd = () => { isTouchingRef.current = false; };
+
+    el.addEventListener("touchstart", onTouchStart, { passive: true });
+    el.addEventListener("touchend", onTouchEnd, { passive: true });
+    el.addEventListener("touchcancel", onTouchEnd, { passive: true });
+
+    return () => {
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchend", onTouchEnd);
+      el.removeEventListener("touchcancel", onTouchEnd);
+    };
   }, []);
 
   // --- Mouse / pointer drag to scroll ---
@@ -89,15 +112,15 @@ export default function OurBusiness() {
   return (
     <section
       id="our-business"
-      className="bg-background relative flex w-full flex-col overflow-hidden pb-8 lg:pb-18 min-h-[calc(100vh-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
+      className="bg-background relative flex w-full flex-col overflow-hidden pt-4 pb-8 lg:pt-0 lg:pb-18 h-[calc(100dvh-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Header row — title left, description right */}
-      <div className="pt-8 px-4 pb-6 lg:pt-18 lg:px-20 lg:pb-12">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center lg:justify-between gap-4 lg:gap-8 max-w-[90%]">
+      <div className="px-4 pb-3 lg:pt-18 lg:px-20 lg:pb-12">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center lg:justify-between gap-3 lg:gap-8 w-full lg:max-w-[90%]">
           {/* Title — drops in from above via the Hero's phase-5 timeline */}
           <h2
             id="our-business-title"
-            className="font-serif text-3xl sm:text-4xl lg:text-[4rem] leading-[1] text-neutral-800 shrink-0"
+            className="font-serif text-[2rem] sm:text-4xl lg:text-[4rem] leading-[1] text-neutral-800 shrink-0"
           >
             Our Business
           </h2>
@@ -111,9 +134,12 @@ export default function OurBusiness() {
         </div>
       </div>
 
-      {/* Full-bleed infinite carousel — drag with the mouse to scroll */}
+      {/* Full-bleed infinite carousel — drag with the mouse to scroll.
+          The section now has a definite height on every breakpoint, so the
+          track simply fills the space left under the header row instead of
+          guessing a vh fraction that could overflow the screen. */}
       <div
-        className="relative min-h-0 flex-1 max-h-[50vh] lg:max-h-[58vh]"
+        className="relative min-h-0 flex-1 lg:flex-none lg:h-auto lg:max-h-[58vh] overflow-hidden bg-[#0C0C0C]"
         onMouseEnter={() => {
           isHoveredRef.current = true;
         }}
@@ -124,7 +150,7 @@ export default function OurBusiness() {
         {/* Draggable track */}
         <div
           ref={scrollRef}
-          className="no-scrollbar flex h-full cursor-grab touch-pan-y items-stretch overflow-x-auto select-none active:cursor-grabbing"
+          className="no-scrollbar flex h-full cursor-grab items-stretch overflow-x-auto select-none active:cursor-grabbing overscroll-x-none"
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={endDrag}
@@ -134,15 +160,21 @@ export default function OurBusiness() {
             <div
               key={`${card.image}-${index}`}
               data-card
-              className="group relative h-full w-[calc((100vw-1rem)/1.5)] sm:w-[calc((100vw-1.875rem)/2.3)] flex-shrink-0 overflow-hidden"
+              className="group relative h-full w-[calc(100vw-2.5rem)] sm:w-[calc((100vw-1.875rem)/2.3)] flex-shrink-0 overflow-hidden"
               style={{ marginRight: GAP }}
             >
-              {/* Background image */}
+              {/* Background image.
+                  `sizes` must track the card width per breakpoint, not just the
+                  desktop one: below sm a card is nearly the full viewport
+                  (calc(100vw-2.5rem) ≈ 90vw), so a flat 40vw made the browser
+                  pick a 384 px file for a 350 px card on a DPR-2 phone — a ~2x
+                  upscale that rendered the cards visibly soft. The >=1024px
+                  slot stays 40vw, so desktop requests the same file as before. */}
               <Image
                 src={card.image}
                 alt={card.label}
                 fill
-                sizes="40vw"
+                sizes="(min-width: 1024px) 40vw, (min-width: 640px) 44vw, 92vw"
                 draggable={false}
                 className="pointer-events-none object-cover"
                 quality={80}
@@ -174,7 +206,7 @@ export default function OurBusiness() {
               </div>
 
               {/* Category label */}
-              <span className="pointer-events-none uppercase text-lg sm:text-2xl lg:text-3xl tracking-[0.12em] absolute bottom-4 lg:bottom-10 left-1/2 -translate-x-1/2 text-white"
+              <span className="pointer-events-none uppercase text-xl sm:text-2xl lg:text-3xl tracking-[0.12em] absolute bottom-5 lg:bottom-10 left-1/2 -translate-x-1/2 text-white"
               >
                 {card.label}
               </span>

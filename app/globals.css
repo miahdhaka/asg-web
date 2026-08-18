@@ -264,6 +264,20 @@
   }
 }
 
+/* --- Homepage touch lock ---------------------------------------------------
+   While the homepage scroll stepper owns the page (every hero / pinned /
+   fade-chain step), the browser must never take over a touch pan: once
+   native scrolling starts, touchmove events become non-cancelable and the
+   browser's momentum fights the sweep — the page drifts and snaps instead
+   of gliding like it does on desktop wheel input.  Hero.tsx toggles this
+   class on <html> per step and removes it at the final step so the footer
+   scrolls natively again.  touch-action only governs touch input, so
+   wheel / keyboard / mouse behaviour is untouched. */
+html.asg-touch-lock,
+html.asg-touch-lock * {
+  touch-action: none !important;
+}
+
 @layer utilities {
   .font-neue-montreal {
     font-family: var(--font-neue-montreal), sans-serif;

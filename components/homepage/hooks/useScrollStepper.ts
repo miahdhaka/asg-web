@@ -67,9 +67,12 @@ export function useScrollStepper({
     const LAST = transitionCount;
 
     // ── Pacing constants ──
-    const TEMPO = 5.5; // > 1 → everything a touch slower than designed
+    // A single deliberate gesture scrubs its phase at (roughly) the designed
+    // timeline length — long enough to read as a smooth glide, short enough
+    // to never feel sluggish.  TEMPO adds a hair of extra ease.
+    const TEMPO = 2.2; // slower, more deliberate glide
     const LAG_EXP = -0.03; // negative → further behind = shorter chase
-    const RATE_MAX = 0.65; // resting states per second — ceiling on a wild fling
+    const RATE_MAX = 0.85; // resting states per second — ceiling on a wild fling
 
     // ── Core stepper state ──
     const scrub = { pos: 0 }; // where the screen is (animated)
@@ -161,9 +164,9 @@ export function useScrollStepper({
         duration,
         /* Lenis-style glide: the chase answers the gesture at speed and
            then decays softly into the landing, instead of moving at one
-           flat mechanical rate — that soft settle is what reads as an
-           unhurried, expensive scroll */
-        ease: "power4.out",
+           flat mechanical rate — that soft settle is what reads as a
+           smooth, controlled scroll */
+        ease: "power3.out",
         onUpdate: render,
         onComplete: () => {
           scrub.pos = goal;

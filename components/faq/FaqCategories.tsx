@@ -46,18 +46,23 @@ export default function FaqCategories() {
               />
             </span>
 
-            <div className="relative z-10 h-[4.5rem] w-[7.8125rem]">
+            {/* Container must match the icon size per breakpoint: the
+                gradient hover-overlay fills this box (inset-0 + mask
+                contain), so on mobile it must be the icon's 3rem×5rem —
+                otherwise the overlay rendered ~50% bigger and the icon
+                jumped in size on hover instead of cross-fading. */}
+            <div className="relative z-10 h-[3rem] w-[5rem] lg:h-[4.5rem] lg:w-[7.8125rem]">
               <Image
                 src={category.icon}
                 alt={category.title}
                 width={125}
                 height={72}
                 quality={100}
-                className="h-[3rem] w-[5rem] object-contain transition-opacity duration-500 ease-in-out group-hover:opacity-0 lg:h-[4.5rem] lg:w-[7.8125rem]"
+                className="h-[3rem] w-[5rem] object-contain transition-all duration-700 ease-in-out group-hover:opacity-0 group-hover:scale-110 lg:h-[4.5rem] lg:w-[7.8125rem] lg:transition-opacity lg:duration-500 lg:group-hover:scale-100"
               />
               <span
                 aria-hidden
-                className="absolute inset-0 bg-[image:var(--primary-gradient)] opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100"
+                className="absolute inset-0 bg-[image:var(--primary-gradient)] opacity-0 scale-100 transition-all duration-700 ease-in-out group-hover:opacity-100 group-hover:scale-110 lg:transition-opacity lg:duration-500 lg:group-hover:scale-100"
                 style={{
                   maskImage: `url(${category.icon})`,
                   maskSize: "contain",

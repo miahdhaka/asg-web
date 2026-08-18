@@ -2,6 +2,7 @@ import Image from "next/image";
 
 export type ValueCardItem = {
   icon: string;
+  hoverIcon?: string;
   title: string;
   description: string;
 };
@@ -33,7 +34,10 @@ export default function ValueCardsSection({ id, heading, items, variant }: Value
             >
               <div className="flex flex-col gap-0 sm:gap-4">
                 <div className="p-3.5">
-                  <div className="relative size-[3.375rem]">
+                  {/* Container must match icon size per breakpoint to prevent
+                      gradient overlay from rendering larger than the icon */}
+                  <div className="relative size-12 lg:size-[3.375rem]">
+                    {/* Default icon */}
                     <Image
                       src={item.icon}
                       alt=""
@@ -41,22 +45,35 @@ export default function ValueCardsSection({ id, heading, items, variant }: Value
                       width={54}
                       height={54}
                       quality={100}
-                      className="size-12 lg:size-[3.375rem] object-contain transition-opacity duration-500 ease-in-out group-hover:opacity-0"
+                      className="size-12 lg:size-[3.375rem] object-contain transition-all duration-700 ease-in-out group-hover:opacity-0 group-hover:scale-110 lg:transition-opacity lg:duration-500 lg:group-hover:scale-100"
                     />
-                    <span
-                      aria-hidden
-                      className="absolute inset-0 bg-[image:var(--primary-gradient)] opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100"
-                      style={{
-                        maskImage: `url(${item.icon})`,
-                        maskSize: "contain",
-                        maskRepeat: "no-repeat",
-                        maskPosition: "center",
-                        WebkitMaskImage: `url(${item.icon})`,
-                        WebkitMaskSize: "contain",
-                        WebkitMaskRepeat: "no-repeat",
-                        WebkitMaskPosition: "center",
-                      }}
-                    />
+                    {/* Hover icon (if provided) or gradient overlay */}
+                    {item.hoverIcon ? (
+                      <Image
+                        src={item.hoverIcon}
+                        alt=""
+                        aria-hidden
+                        width={54}
+                        height={54}
+                        quality={100}
+                        className="absolute inset-0 size-12 lg:size-[3.375rem] object-contain opacity-0 scale-100 transition-all duration-700 ease-in-out group-hover:opacity-100 group-hover:scale-110 lg:transition-opacity lg:duration-500 lg:group-hover:scale-100"
+                      />
+                    ) : (
+                      <span
+                        aria-hidden
+                        className="absolute inset-0 bg-[image:var(--primary-gradient)] opacity-0 scale-100 transition-all duration-700 ease-in-out group-hover:opacity-100 group-hover:scale-110 lg:transition-opacity lg:duration-500 lg:group-hover:scale-100"
+                        style={{
+                          maskImage: `url(${item.icon})`,
+                          maskSize: "contain",
+                          maskRepeat: "no-repeat",
+                          maskPosition: "center",
+                          WebkitMaskImage: `url(${item.icon})`,
+                          WebkitMaskSize: "contain",
+                          WebkitMaskRepeat: "no-repeat",
+                          WebkitMaskPosition: "center",
+                        }}
+                      />
+                    )}
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">

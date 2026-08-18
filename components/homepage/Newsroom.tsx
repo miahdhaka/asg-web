@@ -33,7 +33,7 @@ export default function Newsroom() {
   return (
     <section
       id="newsroom"
-      className="relative flex w-full flex-col overflow-hidden bg-white py-6 lg:py-8 min-h-[calc(100vh-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
+      className="relative flex w-full flex-col overflow-hidden bg-white py-6 lg:py-8 h-[calc(100dvh-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Header — eyebrow + title left, button right */}
       <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between px-4 lg:px-20 mb-6 lg:mb-10 gap-4">
@@ -64,11 +64,19 @@ export default function Newsroom() {
         </Link>
       </div>
 
-      {/* News cards */}
+      {/* News cards — below lg the three cards would stack ~1300 px tall and
+          spill far past the screen, so the section could never settle as one
+          step. They become a horizontal snap strip instead: all content stays
+          reachable while the section keeps its single-screen height. Desktop
+          keeps the three-column grid. */}
       <div className="flex min-h-0 flex-1 items-start px-4 lg:px-20">
-        <div className="grid w-full grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-5">
+        <div className="no-scrollbar flex h-full w-full snap-x snap-mandatory gap-5 overflow-x-auto lg:grid lg:h-auto lg:grid-cols-3 lg:overflow-visible lg:gap-5">
           {news.map((item, index) => (
-            <Link key={index} href="/newsroom" className="group flex flex-col gap-2 lg:gap-3">
+            <Link
+              key={index}
+              href="/newsroom"
+              className="group flex w-[78%] shrink-0 snap-start flex-col gap-2 sm:w-[52%] lg:w-auto lg:shrink lg:gap-3"
+            >
               {/* Image */}
               <div className="relative aspect-[431/329] w-full overflow-hidden bg-[#D9D9D9]">
                 <Image

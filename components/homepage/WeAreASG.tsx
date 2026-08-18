@@ -100,7 +100,7 @@ export default function WeAreASG({ onReady }: WeAreASGProps) {
     <section
       ref={sectionRef}
       id="we-are-asg"
-      className="relative flex w-full flex-col overflow-hidden min-h-[calc(100vh-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
+      className="relative flex w-full flex-col overflow-hidden h-[calc(100dvh-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Aerial background — swap with the real asset once it lands in
           /public/images/we-are-asg/. */}
@@ -139,7 +139,7 @@ export default function WeAreASG({ onReady }: WeAreASGProps) {
           {stats.map((stat) => (
             <div
               key={stat.label}
-              className="group flex h-[min(40vh,22rem)] lg:h-[min(46vh,26.25rem)] flex-col bg-white"
+              className="group flex h-[min(30dvh,16rem)] lg:h-[min(46vh,26.25rem)] flex-col bg-white"
             >
               {/* Top part — icon + label, own padding */}
               <div className="flex flex-1 flex-col justify-between p-2.5 sm:p-3 lg:p-5">
