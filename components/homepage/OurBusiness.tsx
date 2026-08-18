@@ -11,7 +11,7 @@ interface BusinessCard {
 }
 
 const businessCards: BusinessCard[] = [
-  { label: "Retail", image: "/images/our-business/img-1.webp", logo: "/logo/sister-concern/helal-&-brothers-white.png" },
+  { label: "Retail", image: "/images/our-business/img-1.webp", logo: "/logo/sister-concern/helal-brothers-white.png" },
   { label: "Textile", image: "/images/our-business/img-2.webp", logo: "/logo/sister-concern/spinning-mills-white.png" },
   { label: "Textile", image: "/images/our-business/img-3.webp", logo: "/logo/sister-concern/fabrics-white.png" },
   { label: "Textile", image: "/images/our-business/img-4.webp", logo: "/logo/sister-concern/weaving-white.png" },
@@ -31,7 +31,10 @@ export default function OurBusiness() {
   const isHoveredRef = useRef(false);
   const isDraggingRef = useRef(false);
   const isTouchingRef = useRef(false);
+  const dragPendingRef = useRef(false);
+  const dragAxisRef = useRef<"x" | "y" | null>(null);
   const dragStartX = useRef(0);
+  const dragStartY = useRef(0);
   const dragStartScroll = useRef(0);
 
   // Render the list twice so we can loop seamlessly.
@@ -85,19 +88,45 @@ export default function OurBusiness() {
     };
   }, []);
 
-  // --- Mouse / pointer drag to scroll ---
+  // --- Mouse / pointer drag to scroll (axis-locked) ---------------------
+  // Only claim the gesture once it is clearly horizontal.  A vertical-
+  // intent swipe (the way users scroll the page on mobile) is left alone
+  // so the page / scroll-stepper can move; this stops the carousel from
+  // jerking sideways mid-vertical-swipe.  Desktop mouse drags are
+  // unaffected because horizontal still claims immediately.
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     const el = scrollRef.current;
     if (!el) return;
-    isDraggingRef.current = true;
+    dragPendingRef.current = true;
+    dragAxisRef.current = null;
+    isDraggingRef.current = false;
     dragStartX.current = e.clientX;
+    dragStartY.current = e.clientY;
     dragStartScroll.current = el.scrollLeft;
-    el.setPointerCapture(e.pointerId);
   };
 
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     const el = scrollRef.current;
-    if (!el || !isDraggingRef.current) return;
+    if (!el) return;
+
+    // Decide the gesture axis on the first decisive movement.
+    if (dragPendingRef.current && !isDraggingRef.current) {
+      const dx = Math.abs(e.clientX - dragStartX.current);
+      const dy = Math.abs(e.clientY - dragStartY.current);
+      if (Math.max(dx, dy) < 6) return; // too small to tell yet
+      if (dx > dy) {
+        isDraggingRef.current = true;
+        dragAxisRef.current = "x";
+        el.setPointerCapture(e.pointerId);
+      } else {
+        // Vertical intent — hand the gesture back to the page/stepper.
+        dragPendingRef.current = false;
+        dragAxisRef.current = "y";
+        return;
+      }
+    }
+
+    if (!isDraggingRef.current) return;
     const delta = e.clientX - dragStartX.current;
     el.scrollLeft = wrap(el, dragStartScroll.current - delta);
   };
@@ -105,7 +134,9 @@ export default function OurBusiness() {
   const endDrag = (e: React.PointerEvent<HTMLDivElement>) => {
     const el = scrollRef.current;
     if (!el) return;
+    dragPendingRef.current = false;
     isDraggingRef.current = false;
+    dragAxisRef.current = null;
     if (el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
   };
 
@@ -139,7 +170,7 @@ export default function OurBusiness() {
           track simply fills the space left under the header row instead of
           guessing a vh fraction that could overflow the screen. */}
       <div
-        className="relative min-h-0 flex-1 lg:flex-none lg:h-auto lg:max-h-[58vh] overflow-hidden bg-[#0C0C0C]"
+        className="relative min-h-0 flex-1 lg:h-auto lg:max-h-[58vh]"
         onMouseEnter={() => {
           isHoveredRef.current = true;
         }}
@@ -150,7 +181,7 @@ export default function OurBusiness() {
         {/* Draggable track */}
         <div
           ref={scrollRef}
-          className="no-scrollbar flex h-full cursor-grab items-stretch overflow-x-auto select-none active:cursor-grabbing overscroll-x-none"
+          className="no-scrollbar flex h-full cursor-grab touch-pan-y items-stretch overflow-x-auto select-none active:cursor-grabbing overscroll-x-none"
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={endDrag}

@@ -15,7 +15,7 @@ export const navCategories: NavCategory[] = [
     megaMenu: true,
     megaVariant: "logo",
     megaItems: [
-      { label: "Helal&Brothers Ltd.", href: "/concerns/helal-brothers", image: "/logo/sister-concern/helal-&-brothers-clr.png", hoverImage: "/logo/sister-concern/helal-&-brothers-clr.png" },
+      { label: "Helal&Brothers Ltd.", href: "/concerns/helal-brothers", image: "/logo/sister-concern/helal-brothers-clr.png", hoverImage: "/logo/sister-concern/helal-brothers-clr.png" },
       { label: "Miah & Miah Enterprise ", href: "/concerns/miah", image: "/logo/sister-concern/miah-clr.png", hoverImage: "/logo/sister-concern/miah-clr.png" },
       { label: "Amanat Shah Weaving Processing Ltd. ", href: "/concerns/amanat-shah-weaving-processing", image: "/logo/sister-concern/weaving-clr.png", hoverImage: "/logo/sister-concern/weaving-clr.png" },
       { label: "Amanat Shah Fabrics Ltd.", href: "/concerns/amanat-shah-fabrics", image: "/logo/sister-concern/fabrics-clr.png", hoverImage: "/logo/sister-concern/fabrics-clr.png" },
@@ -39,8 +39,8 @@ export const navCategories: NavCategory[] = [
     label: "Media & Press",
     megaMenu: true,
     megaItems: [
-      { label: "News", href: "/newsroom", image: "/images/navbar/media&press-clr-1.png", hoverImage: "/images/navbar/media&press-clr-1.png" },
-      { label: "Media Gallery", href: "/media-galleries", image: "/images/navbar/media&press-clr-2.png", hoverImage: "/images/navbar/media&press-clr-2.png" },
+      { label: "News", href: "/newsroom", image: "/images/navbar/media-press-clr-1.png", hoverImage: "/images/navbar/media-press-clr-1.png" },
+      { label: "Media Gallery", href: "/media-galleries", image: "/images/navbar/media-press-clr-2.png", hoverImage: "/images/navbar/media-press-clr-2.png" },
     ],
   },
   {
