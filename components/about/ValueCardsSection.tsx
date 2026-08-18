@@ -45,7 +45,7 @@ export default function ValueCardsSection({ id, heading, items, variant }: Value
                       width={54}
                       height={54}
                       quality={100}
-                      className="size-12 lg:size-[3.375rem] object-contain transition-all duration-700 ease-in-out group-hover:opacity-0 group-hover:scale-110 lg:transition-opacity lg:duration-500 lg:group-hover:scale-100"
+                      className="size-12 lg:size-[3.375rem] object-contain transition-all duration-700 ease-in-out group-hover:opacity-0 group-hover:scale-110"
                     />
                     {/* Hover icon (if provided) or gradient overlay */}
                     {item.hoverIcon ? (
@@ -56,12 +56,12 @@ export default function ValueCardsSection({ id, heading, items, variant }: Value
                         width={54}
                         height={54}
                         quality={100}
-                        className="absolute inset-0 size-12 lg:size-[3.375rem] object-contain opacity-0 scale-100 transition-all duration-700 ease-in-out group-hover:opacity-100 group-hover:scale-110 lg:transition-opacity lg:duration-500 lg:group-hover:scale-100"
+                        className="absolute inset-0 size-12 lg:size-[3.375rem] object-contain opacity-0 scale-100 transition-all duration-700 ease-in-out group-hover:opacity-100 group-hover:scale-110"
                       />
                     ) : (
                       <span
                         aria-hidden
-                        className="absolute inset-0 bg-[image:var(--primary-gradient)] opacity-0 scale-100 transition-all duration-700 ease-in-out group-hover:opacity-100 group-hover:scale-110 lg:transition-opacity lg:duration-500 lg:group-hover:scale-100"
+                        className="absolute inset-0 bg-[image:var(--primary-gradient)] opacity-0 scale-100 transition-all duration-700 ease-in-out group-hover:opacity-100 group-hover:scale-110"
                         style={{
                           maskImage: `url(${item.icon})`,
                           maskSize: "contain",

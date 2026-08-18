@@ -62,7 +62,7 @@ export const processCards: GalleryCard[] = [
 
 export const logoCards: LogoCard[] = [
   {
-    image: "/logo/sister-concern/helal-&-brothers-clr.png",
+    image: "/logo/sister-concern/helal-brothers-clr.png",
     label: "Helal & Brothers Ltd.",
   },
   {

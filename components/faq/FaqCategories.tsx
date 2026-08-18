@@ -13,7 +13,7 @@ export default function FaqCategories() {
           <Link
             key={category.slug}
             href={`/faqs/${category.slug}`}
-            className="group relative flex h-[15rem] sm:h-[21.5rem] lg:h-[28.6667rem] flex-col justify-between overflow-hidden bg-gray-50 p-4 lg:p-[1.3333rem]"
+            className="group relative flex h-[15rem] sm:h-[21.5rem] lg:h-[28.6667rem] flex-col justify-between overflow-hidden bg-gray-50 p-5 lg:p-6"
           >
             {/* Hover state layer — soft brand-gradient wash */}
             <div
@@ -46,23 +46,33 @@ export default function FaqCategories() {
               />
             </span>
 
-            {/* Container must match the icon size per breakpoint: the
-                gradient hover-overlay fills this box (inset-0 + mask
-                contain), so on mobile it must be the icon's 3rem×5rem —
-                otherwise the overlay rendered ~50% bigger and the icon
-                jumped in size on hover instead of cross-fading. */}
-            <div className="relative z-10 h-[3rem] w-[5rem] lg:h-[4.5rem] lg:w-[7.8125rem]">
+            {/* Icon size matches the About Us value cards per breakpoint;
+                wide wordmark logos (wideIcon) keep a landscape box so
+                they don't shrink inside the square. The gradient
+                hover-overlay fills this box (inset-0 + mask contain) so it
+                cross-fades without any size jump. */}
+            <div
+              className={`relative z-10 ${
+                category.wideIcon
+                  ? "h-[3rem] w-[6rem] lg:h-[4.5rem] lg:w-[9rem]"
+                  : "size-12 lg:size-[3.375rem]"
+              }`}
+            >
               <Image
                 src={category.icon}
                 alt={category.title}
                 width={125}
                 height={72}
                 quality={100}
-                className="h-[3rem] w-[5rem] object-contain transition-all duration-700 ease-in-out group-hover:opacity-0 group-hover:scale-110 lg:h-[4.5rem] lg:w-[7.8125rem] lg:transition-opacity lg:duration-500 lg:group-hover:scale-100"
+                className={`${
+                  category.wideIcon
+                    ? "h-[3rem] w-[6rem] lg:h-[4.5rem] lg:w-[9rem]"
+                    : "size-12 lg:size-[3.375rem]"
+                } object-contain transition-all duration-700 ease-in-out group-hover:opacity-0 group-hover:scale-110`}
               />
               <span
                 aria-hidden
-                className="absolute inset-0 bg-[image:var(--primary-gradient)] opacity-0 scale-100 transition-all duration-700 ease-in-out group-hover:opacity-100 group-hover:scale-110 lg:transition-opacity lg:duration-500 lg:group-hover:scale-100"
+                className="absolute inset-0 bg-[image:var(--primary-gradient)] opacity-0 scale-100 transition-all duration-700 ease-in-out group-hover:opacity-100 group-hover:scale-110"
                 style={{
                   maskImage: `url(${category.icon})`,
                   maskSize: "contain",

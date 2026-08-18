@@ -1147,12 +1147,15 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         }
 
         /* Anchor floor (C3 + C4 fix) —
-           During a controlled landing, skip correction entirely.
-           After one correction per momentum burst, suppress further
-           corrections to avoid fighting browser inertia (jitter). */
+           During a controlled landing, skip correction entirely and
+           suppress future corrections — the controlledScrollTo already
+           positioned the page exactly, so any later anchor recalculation
+           (e.g. from a layout shift after fonts/images settle) would
+           only cause a visible jump. */
         if (!stepper.sweeping.current() && stepper.stepRef.current >= 5) {
           if (isLandingRef.current) {
             isLandingRef.current = false;
+            anchorCorrectedRef.current = true;
           } else if (anchorCorrectedRef.current) {
             const anchor = anchorY();
             if (anchor !== null && window.scrollY < anchor - ANCHOR_DRIFT_LIMIT) {

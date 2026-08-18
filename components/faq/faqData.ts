@@ -9,6 +9,8 @@ export interface FaqCategory {
   title: string;
   description: string;
   icon: string;
+  /** Renders the icon in a wider landscape box (for wordmark logos like ASG) */
+  wideIcon?: boolean;
   faqs: FaqEntry[];
 }
 
@@ -18,6 +20,7 @@ export const faqCategories: FaqCategory[] = [
     title: "ASG Group",
     description: "Sustainable yarns, fabric sourcing & organic certifications.",
     icon: "/logo/ASG-logo.png",
+    wideIcon: true,
     faqs: [
       {
         question: "In how many countries does ASG Group operate?",

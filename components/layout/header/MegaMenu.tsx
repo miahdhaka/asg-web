@@ -27,8 +27,8 @@ export default function MegaMenu({ items, isOpen, variant = "photo", onNavigate 
 
   return createPortal(
     <div
-      className={`fixed left-0 z-[60] w-screen bg-white shadow-lg transition-[opacity,transform] duration-150 ease-out ${
-        isOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 pointer-events-none"
+      className={`fixed left-0 w-screen bg-white shadow-lg transition-[opacity,transform] duration-150 ease-out ${
+        isOpen ? "opacity-100 translate-y-0 z-[70]" : "opacity-0 translate-y-2 pointer-events-none z-[60]"
       }`}
       style={{ top: "var(--header-height)" }}
     >
