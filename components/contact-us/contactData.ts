@@ -55,18 +55,36 @@ export const formTabFields: Record<FormTab, FormTabFields> = {
     mobilePlaceholder: "Enter mobile number",
     dropdownPlaceholder: "Select your invest choice...",
     messagePlaceholder: "Write down your proposal",
+    dropdownOptions: [
+      "Equity Investment",
+      "Debt Investment",
+      "Joint Venture",
+      "Partnership Opportunity",
+    ],
   },
   Media: {
     namePlaceholder: "Enter your media name",
     mobilePlaceholder: "Enter mobile number",
     dropdownPlaceholder: "Select your media type...",
     messagePlaceholder: "Your offer for us",
+    dropdownOptions: [
+      "Print Media",
+      "Online/Digital Media",
+      "Television",
+      "Radio",
+    ],
   },
   Employee: {
     namePlaceholder: "Enter full name",
     mobilePlaceholder: "Enter mobile number",
     dropdownPlaceholder: "Select your career goals...",
     messagePlaceholder: "Write down your cover letter",
+    dropdownOptions: [
+      "Full-time Position",
+      "Part-time Position",
+      "Internship",
+      "Consultancy",
+    ],
   },
 };
 

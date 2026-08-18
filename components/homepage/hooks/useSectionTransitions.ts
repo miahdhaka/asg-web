@@ -51,6 +51,8 @@ interface TransitionHelpers {
   ourBusinessTopY: () => number;
   /** Restore intro element visibility for future replays. */
   restoreIntroVisibility: () => void;
+  /** Restore slot logo visibility on mobile after timeline reverse. */
+  restoreSlotLogo?: () => void;
 }
 
 export interface UseSectionTransitionsOptions {
@@ -128,6 +130,7 @@ export function useSectionTransitions(
       releasePin,
       ourBusinessTopY,
       restoreIntroVisibility,
+      restoreSlotLogo,
     } = options.helpers;
 
     // Snap timelines at call time (they exist by now — wireStepper
@@ -149,7 +152,13 @@ export function useSectionTransitions(
         tl,
         enter: () => syncHeader(true),
         land: noop,
-        landBack: () => syncHeader(false),
+        landBack: () => {
+          syncHeader(false);
+          // Mobile: restore the slot logo when the timeline fully reverses
+          // back to step 0.  At this point the flying logo has returned to
+          // the slot position and faded out, so the slot logo takes over.
+          restoreSlotLogo?.();
+        },
       },
       { tl: tl2, enter: noop, land: noop, landBack: noop },
       { tl: tl3, enter: noop, land: noop, landBack: noop },

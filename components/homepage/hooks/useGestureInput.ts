@@ -202,7 +202,9 @@ export function useGestureInput({
        threshold fires the step; the rest of the swipe is swallowed.
        Native touch scrolling stays untouched wherever the wheel handler
        wouldn't block either. */
-    const TOUCH_DISTANCE = 40; // swipe px that count as a gesture
+    const TOUCH_DISTANCE = 28; // swipe px that count as a gesture — low enough
+    // to answer as promptly as a desktop wheel notch, high enough to never
+    // misfire on taps or tiny adjustment drags
     let touchStartY = 0;
     let touchHandled = false;
     const touchPrevDir = { current: 0 as number };

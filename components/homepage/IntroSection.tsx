@@ -3,23 +3,27 @@ import Link from "next/link";
 
 export default function IntroSection() {
   return (
+    /* Height uses dvh below lg: a phone's 100vh is the toolbar-HIDDEN
+       height, so a 100vh section is always taller than the visible screen —
+       it gets clipped and leaves native scroll room under the pinned
+       overlay, which breaks the homepage stepper's one-screen-per-step
+       model. dvh tracks the real visible height. Desktop keeps 100vh. */
     <section
       id="intro-section"
-      className="relative w-full bg-[var(--primary-black)] flex flex-col items-center justify-center overflow-hidden"
-      style={{ 
-        height: "calc(100vh - var(--header-height))",
-        paddingTop: "var(--header-height)",
-      }}
+      className="relative w-full bg-[var(--primary-black)] flex flex-col items-center justify-center overflow-hidden h-[calc(100dvh-var(--header-height))] lg:h-[calc(100vh-var(--header-height))] pt-[var(--header-height)]"
     >
-      {/* Brand gradient glow — top center, behind content */}
+      {/* Brand gradient glow — top center, behind content.
+          The blur has to scale with the box: desktop's 15.625rem blur on the
+          mobile-sized box (18×15rem) diffused the glow into invisibility, so
+          below lg the blur keeps the same blur-to-width ratio as desktop
+          (0.5) and lg restores the exact original 15.625rem — desktop output
+          is unchanged. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-[10%] z-10 -translate-x-1/2 w-[18rem] sm:w-[25rem] lg:w-[31.25rem] h-[15rem] sm:h-[20rem] lg:h-[25rem]"
+        className="pointer-events-none absolute left-1/2 top-[10%] z-10 -translate-x-1/2 w-[18rem] sm:w-[25rem] lg:w-[31.25rem] h-[15rem] sm:h-[20rem] lg:h-[25rem] opacity-80 blur-[9rem] sm:blur-[12.5rem] lg:blur-[15.625rem]"
         style={{
-          opacity: 0.8,
           background:
             "linear-gradient(97.37deg, #8BC34A 1.29%, #1AA179 92.01%)",
-          filter: "blur(15.625rem)",
         }}
       />
 

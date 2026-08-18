@@ -52,7 +52,7 @@ export default function Sustainability() {
   return (
     <section
       id="sustainability"
-      className="relative flex w-full flex-col overflow-hidden bg-white pb-8 lg:pb-16 min-h-[calc(100vh-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
+      className="relative flex w-full flex-col overflow-hidden bg-white pb-8 lg:pb-16 h-[calc(100dvh-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Header row — title left, description right */}
       <div className="pt-8 px-4 pb-6 lg:pt-18 lg:px-20 lg:pb-12">
@@ -80,7 +80,7 @@ export default function Sustainability() {
           stagger via the Hero's fade-chain reveal */}
       <div
         id="sustainability-panels"
-        className="flex min-h-0 flex-1 gap-3 lg:gap-5 px-4 lg:px-18 w-[90%] lg:w-[90%] mx-auto"
+        className="flex flex-col lg:flex-row min-h-0 flex-1 gap-3 lg:gap-5 px-4 lg:px-18 w-[90%] lg:w-[90%] mx-auto"
       >
         {panels.map((panel, index) => {
           const isActive = index === activeIndex;
@@ -88,14 +88,14 @@ export default function Sustainability() {
             <div
               key={panel.label}
               onClick={() => setActiveIndex(index)}
-              className={`group relative h-full min-w-0 shrink-0 basis-[3.5rem] sm:basis-[4rem] lg:basis-[7.5rem] overflow-hidden select-none transition-[flex-grow] duration-700 ease-in-out ${
+              className={`group relative h-full min-w-0 min-h-0 shrink-0 basis-[4rem] sm:basis-[4.5rem] lg:basis-[7.5rem] overflow-hidden select-none transition-[flex-grow] duration-700 ease-in-out ${
                 isActive ? "grow cursor-default" : "grow-0 cursor-pointer"
               }`}
             >
               {/* Background image — fixed at the expanded-panel width (inner row
                   width minus 3 collapsed strips + gaps) so opening only reveals
                   more of it; no object-cover rescale/zoom while the width animates */}
-              <div className="pointer-events-none absolute inset-y-0 left-1/2 w-[calc(92vw-14rem)] lg:w-[calc(92vw-34.375rem)] -translate-x-1/2">
+              <div className="pointer-events-none absolute inset-y-0 left-1/2 w-[calc(92vw-14rem)] lg:w-[calc(92vw-34.375rem)] -translate-x-1/2 max-lg:inset-0 max-lg:left-0 max-lg:w-full max-lg:translate-x-0">
                 <Image
                   src={panel.image}
                   alt={panel.label}
@@ -160,7 +160,7 @@ export default function Sustainability() {
                   isActive ? "opacity-0 delay-0" : "opacity-100 delay-[400ms]"
                 }`}
               >
-                <span className="font-neue-montreal text-sm lg:text-[1.375rem] tracking-widest font-bold whitespace-nowrap text-white [writing-mode:vertical-rl] rotate-180">
+                <span className="font-neue-montreal text-sm lg:text-[1.375rem] tracking-widest font-bold whitespace-nowrap text-white [writing-mode:vertical-rl] rotate-180 max-lg:[writing-mode:horizontal-tb] max-lg:rotate-0">
                   {panel.label}
                 </span>
               </div>

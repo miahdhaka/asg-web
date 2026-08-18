@@ -63,7 +63,7 @@ export default async function NewsDetailPage({
       </div>
 
       {/* Info row */}
-      <div className="flex w-full flex-wrap items-center gap-3 sm:gap-6 mt-6 sm:mt-10">
+      <div className="flex w-full flex-wrap items-center justify-between sm:justify-start gap-3 sm:gap-6 mt-6 sm:mt-10">
         {/* Published date */}
         <span className="font-neue-montreal text-xs sm:text-[1rem] leading-[1.25rem] tracking-wider text-neutral-800">
           Published: {article.publishedAt}
