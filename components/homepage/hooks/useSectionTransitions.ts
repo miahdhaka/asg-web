@@ -195,6 +195,13 @@ export function useSectionTransitions(
           restoreIntroVisibility();
           releaseOurBusiness();
           controlledScrollTo(ourBusinessTopY());
+          /* This is the only landing that returns TWO full-screen overlays to
+             the flow at once, i.e. inserts two screens of content above the
+             viewport. The browser can finish that layout a frame later and
+             leave the page off the anchor — the section then shows a strip of
+             the previous one under the navbar. Re-apply the anchor on the
+             next frame: same frame the user first sees, so no visible jump. */
+          requestAnimationFrame(() => controlledScrollTo(ourBusinessTopY()));
         },
         landBack: releaseOurBusiness,
       },

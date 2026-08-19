@@ -3,14 +3,17 @@ import Link from "next/link";
 
 export default function IntroSection() {
   return (
-    /* Height uses dvh below lg: a phone's 100vh is the toolbar-HIDDEN
-       height, so a 100vh section is always taller than the visible screen —
-       it gets clipped and leaves native scroll room under the pinned
-       overlay, which breaks the homepage stepper's one-screen-per-step
-       model. dvh tracks the real visible height. Desktop keeps 100vh. */
+    /* Height uses the stable --vh below lg: a phone's 100vh is the
+       toolbar-HIDDEN height, so a 100vh section is always taller than the
+       visible screen — it gets clipped and leaves native scroll room under
+       the pinned overlay, which breaks the homepage stepper's
+       one-screen-per-step model. Raw dvh tracks the visible height but is a
+       moving target: it grows when the URL bar collapses and shifts every
+       anchor the stepper landed on. --vh is the measured visible height,
+       updated together with a re-seat. Desktop keeps 100vh. */
     <section
       id="intro-section"
-      className="relative w-full bg-[var(--primary-black)] flex flex-col items-center justify-center overflow-hidden h-[calc(100dvh-var(--header-height))] lg:h-[calc(100vh-var(--header-height))] pt-[var(--header-height)]"
+      className="relative w-full bg-[var(--primary-black)] flex flex-col items-center justify-center overflow-hidden h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))] pt-[var(--header-height)]"
     >
       {/* Brand gradient glow — top center, behind content.
           The blur has to scale with the box: desktop's 15.625rem blur on the

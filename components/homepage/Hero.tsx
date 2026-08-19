@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, type MutableRefObject } from "react";
+import { useEffect, useRef, type MutableRefObject } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -87,6 +87,37 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
     onGesture: onGestureRef,
     sweeping: stepper.sweeping,
   });
+
+  /* Re-seat the page on the settled section's anchor. Populated inside
+     useGSAP (it needs anchorY + controlledScrollTo) and called right after
+     --vh changes, below. */
+  const reseatAnchorRef = useRef<() => void>(() => {});
+
+  /* ── Frozen mobile viewport height ──
+     Every homepage section is sized from --vh, and the stepper lands by
+     scrolling to `section.offsetTop - headerHeight`. So --vh must never
+     change once a section has landed: the moment it does, every section
+     above the target grows or shrinks, `offsetTop` moves out from under the
+     scroll position that was just set, and the page has to be snapped back
+     onto the fresh anchor — a visible jolt on an already settled section.
+     `dvh` (and any JS value tracking the visible height) does exactly that,
+     because a phone's URL bar collapses continuously while scrolling.
+     --vh is therefore `100lvh` in globals.css: the URL-bar-hidden height,
+     which is the state the page is in for the whole stepper sequence, and a
+     constant the browser never rewrites mid-scroll. Only a device rotation
+     genuinely changes it, and that is handled below.
+
+     Desktop is untouched: sections keep their own lg: height rule built on
+     100vh, --vh is unused there, and the re-seat bails out above the lg
+     breakpoint. */
+  useEffect(() => {
+    const onOrientation = () => {
+      // lvh has a new value — realign once the new layout has been applied.
+      requestAnimationFrame(() => reseatAnchorRef.current());
+    };
+    window.addEventListener("orientationchange", onOrientation);
+    return () => window.removeEventListener("orientationchange", onOrientation);
+  }, []);
 
   useGSAP(
     () => {
@@ -1023,6 +1054,26 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         return link?.to ? topY(link.to) : null;
       };
 
+      /* Mobile only — called by the --vh publisher the instant the visible
+         viewport height changes (URL bar collapsing/expanding). The section
+         heights have just been rewritten, so every anchor moved; snap the
+         page back onto the settled section's fresh anchor so it keeps
+         filling exactly one screen. Skipped mid-sweep (the transition owns
+         the scroll position) and during the opening pinned phases, which
+         hold the page at the very top and need no anchor. */
+      reseatAnchorRef.current = () => {
+        if (window.innerWidth >= 1024) return; // desktop keeps 100vh
+        if (stepper.sweeping.current() || stepper.stepRef.current < 5) return;
+        const anchor = anchorY();
+        if (anchor === null) return;
+        if (Math.abs(window.scrollY - anchor) > 1) {
+          controlledScrollTo(anchor);
+          // The page is exactly where it should be — keep the onScroll
+          // anchor floor from second-guessing this landing.
+          anchorCorrectedRef.current = true;
+        }
+      };
+
       /* ── Shared gesture routing (wheel + keyboard + touch) ──
          Given a direction, decide whether the input must be blocked (the
          page is holding at a locked spot) and — when `fire` is true — play
@@ -1234,7 +1285,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
 
   return (
     <>
-      <section ref={sectionRef} className="relative w-full h-[100dvh] lg:h-screen overflow-hidden bg-white">
+      <section ref={sectionRef} className="relative w-full h-[var(--vh)] lg:h-screen overflow-hidden bg-white">
       {/* Video wrapper — shrinks from full-bleed to a centered card on scroll */}
       <div ref={videoWrapRef} className="absolute inset-0 overflow-hidden">
         {/* Hero Background video */}

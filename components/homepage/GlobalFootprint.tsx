@@ -39,7 +39,7 @@ export default function GlobalFootprint() {
   return (
     <section
       id="global-footprint"
-      className="relative flex w-full flex-col overflow-hidden bg-[var(--color-primary-black)] pb-6 lg:pb-10 h-[calc(100dvh-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
+      className="relative flex w-full flex-col overflow-hidden bg-[var(--color-primary-black)] pb-6 lg:pb-10 h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Content row — copy left, map right */}
       <div className="relative flex min-h-0 flex-1 flex-col lg:flex-row items-center px-4 lg:px-20">

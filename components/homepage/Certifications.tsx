@@ -6,24 +6,24 @@ interface CertificationCard {
   label: string;
   src: string;
   /** Full literal class so Tailwind can detect it (5-col grid offsets).
-      lg-only: on mobile the grid is a plain 3-col layout, so an offset
-      like col-start-4 would spawn a broken implicit 4th column. */
-  colStart?: "lg:col-start-1" | "lg:col-start-2" | "lg:col-start-3" | "lg:col-start-4";
+      Applied at every breakpoint: mobile renders the same staggered
+      5-column layout as desktop. */
+  colStart?: "col-start-1" | "col-start-2" | "col-start-3" | "col-start-4";
 }
 
 // Certification logo tiles rendered from /public/images/certification/.
 // Rows are right-aligned and grow leftward: 2 cards, then 4, then 5.
 const certifications: CertificationCard[] = [
   // Row 1 — starts at column 4
-  { label: "Cotton Made in Africa", src: "/images/certification/certificate1.png", colStart: "lg:col-start-4" },
+  { label: "Cotton Made in Africa", src: "/images/certification/certificate1.png", colStart: "col-start-4" },
   { label: "BSCI", src: "/images/certification/certificate2.png" },
   // Row 2 — starts at column 2
-  { label: "Cotton USA", src: "/images/certification/certificate-3.png", colStart: "lg:col-start-2" },
+  { label: "Cotton USA", src: "/images/certification/certificate-3.png", colStart: "col-start-2" },
   { label: "Regenerated Cellulosics", src: "/images/certification/certificate4.png" },
   { label: "Higg Index", src: "/images/certification/certificate5.png" },
   { label: "BCI", src: "/images/certification/certificate6.png" },
   // Row 3 — starts at column 1
-  { label: "GOTS", src: "/images/certification/certificate7.png", colStart: "lg:col-start-1" },
+  { label: "GOTS", src: "/images/certification/certificate7.png", colStart: "col-start-1" },
   { label: "OEKO-TEX Standard 100", src: "/images/certification/certificate8.png" },
   { label: "Organic 100", src: "/images/certification/certificate-9.png" },
   { label: "Claim Standard", src: "/images/certification/certificate-10.png" },
@@ -34,7 +34,7 @@ export default function Certifications() {
   return (
     <section
       id="certifications"
-      className="relative flex w-full flex-col overflow-hidden bg-[#f5f4ef] py-8 lg:py-16 h-[calc(100dvh-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
+      className="relative flex w-full flex-col overflow-hidden bg-[#f5f4ef] py-8 lg:py-16 h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
       <div className="flex min-h-0 flex-1 flex-col lg:flex-row justify-between px-4 lg:px-20">
         {/* Left copy — pinned to the top of the section */}
@@ -68,12 +68,12 @@ export default function Certifications() {
             of the bottom-right corner during the 8th-scroll fade. */}
         <div
           id="cert-grid"
-          className="grid w-full max-w-[75rem] grid-cols-3 lg:grid-cols-5 grid-rows-4 lg:grid-rows-none gap-2 sm:gap-3 lg:gap-5.5 self-end max-lg:self-auto max-lg:min-h-0 max-lg:flex-1"
+          className="grid w-full max-w-[75rem] grid-cols-5 gap-2 sm:gap-3 lg:gap-5.5 self-end"
         >
           {certifications.map((cert) => (
             <div
               key={cert.label}
-              className={`flex h-full lg:h-auto lg:aspect-square items-center justify-center bg-white p-2 sm:p-3 lg:p-5 ${
+              className={`flex aspect-square items-center justify-center bg-white p-2 sm:p-3 lg:p-5 ${
                 cert.colStart ?? ""
               }`}
             >
