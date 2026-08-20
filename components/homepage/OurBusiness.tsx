@@ -143,10 +143,10 @@ export default function OurBusiness() {
   return (
     <section
       id="our-business"
-      className="bg-background relative flex w-full flex-col overflow-hidden pt-4 pb-8 lg:pt-0 lg:pb-18 h-[calc(100dvh-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
+      className="bg-background relative flex w-full flex-col overflow-hidden pt-14 pb-8 lg:pt-0 lg:pb-18 h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Header row — title left, description right */}
-      <div className="px-4 pb-3 lg:pt-18 lg:px-20 lg:pb-12">
+      <div className="px-4 pb-8 lg:pt-18 lg:px-20 lg:pb-12">
         <div className="flex flex-col lg:flex-row items-start lg:items-center lg:justify-between gap-3 lg:gap-8 w-full lg:max-w-[90%]">
           {/* Title — drops in from above via the Hero's phase-5 timeline */}
           <h2
@@ -181,7 +181,7 @@ export default function OurBusiness() {
         {/* Draggable track */}
         <div
           ref={scrollRef}
-          className="no-scrollbar flex h-full cursor-grab touch-pan-y items-stretch overflow-x-auto select-none active:cursor-grabbing overscroll-x-none"
+          className="no-scrollbar flex h-full cursor-grab touch-pan-y items-start lg:items-stretch overflow-x-auto select-none active:cursor-grabbing overscroll-x-none"
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={endDrag}
@@ -191,21 +191,19 @@ export default function OurBusiness() {
             <div
               key={`${card.image}-${index}`}
               data-card
-              className="group relative h-full w-[calc(100vw-2.5rem)] sm:w-[calc((100vw-1.875rem)/2.3)] flex-shrink-0 overflow-hidden"
-              style={{ marginRight: GAP }}
+              className="group relative aspect-[5/8] lg:h-full lg:aspect-auto w-[calc((100vw-0.75rem)/1.5)] sm:w-[calc((100vw-1.875rem)/2.3)] flex-shrink-0 overflow-hidden mr-2 sm:mr-4"
             >
               {/* Background image.
                   `sizes` must track the card width per breakpoint, not just the
-                  desktop one: below sm a card is nearly the full viewport
-                  (calc(100vw-2.5rem) ≈ 90vw), so a flat 40vw made the browser
-                  pick a 384 px file for a 350 px card on a DPR-2 phone — a ~2x
-                  upscale that rendered the cards visibly soft. The >=1024px
-                  slot stays 40vw, so desktop requests the same file as before. */}
+                  desktop one: below sm a card is (100vw - 2.5rem) / 1.5 ≈ 60vw
+                  (1.5 cards on screen), so the browser fetches a file sized for
+                  the ~220 px card on a phone. The >=1024px slot stays 40vw, so
+                  desktop requests the same file as before. */}
               <Image
                 src={card.image}
                 alt={card.label}
                 fill
-                sizes="(min-width: 1024px) 40vw, (min-width: 640px) 44vw, 92vw"
+                sizes="(min-width: 1024px) 40vw, (min-width: 640px) 44vw, 60vw"
                 draggable={false}
                 className="pointer-events-none object-cover"
                 quality={80}

@@ -148,6 +148,16 @@
   /* Real navbar height — Header.tsx overwrites this with the measured
      value on mount/resize; the rem default keeps the first paint close. */
   --header-height: 4.0625rem;
+
+  /* Mobile section height — a CONSTANT, never a live value.
+     The homepage stepper anchors on `section.offsetTop`, so a height that
+     changes mid-scroll moves those anchors and forces a visible snap on the
+     section that just settled. `dvh` does exactly that: it grows the instant
+     a phone's URL bar collapses — and scrolling is what collapses it.
+     `lvh` is the URL-bar-hidden height: the state the page is in for the
+     whole sequence, and a value the browser never rewrites while scrolling.
+     Desktop ignores this token and uses its own 100vh rules. */
+  --vh: 100lvh;
   
   /* Gray scale */
   --gray-50: #F9FAFB;
@@ -245,11 +255,18 @@
     /* Kill the Mac/iOS elastic rubber-band bounce — it overshoots the
        scroll position and breaks the discrete section-stepping logic */
     overscroll-behavior-y: none;
+    /* Never let the browser "helpfully" re-adjust the scroll position.
+       Scroll anchoring compensates for layout changes above the viewport —
+       and the homepage stepper does exactly that when it swaps a full-screen
+       fixed overlay back into normal flow, so the browser silently shifted
+       the page away from the anchor the stepper had just scrolled to. */
+    overflow-anchor: none;
   }
   body {
     @apply bg-background text-foreground;
     overflow-x: clip;
     overscroll-behavior-y: none;
+    overflow-anchor: none;
   }
 }
 

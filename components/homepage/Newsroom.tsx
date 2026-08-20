@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useRef } from "react";
 
 interface NewsItem {
   date: string;
@@ -30,10 +33,139 @@ const news: NewsItem[] = [
 ];
 
 export default function Newsroom() {
+  // Infinite draggable strip, mirroring the OurBusiness carousel: the
+  // card list is duplicated and scrollLeft is normalized into [0, half) so
+  // the strip loops seamlessly in both directions. The gesture is axis-
+  // locked so a vertical-intent swipe stays with the page / scroll-stepper,
+  // and pointer capture keeps the drag smooth even when the cursor leaves
+  // the strip. The Previous button runs a short rAF tween (also wrapped)
+  // instead of native smooth-scroll, because a programmatic scrollLeft
+  // would fight the wrap normalization otherwise.
+  const stripRef = useRef<HTMLDivElement>(null);
+  const dragPendingRef = useRef(false);
+  const isDraggingRef = useRef(false);
+  const dragStartX = useRef(0);
+  const dragStartY = useRef(0);
+  const dragStartScroll = useRef(0);
+  const dragMoved = useRef(0);
+  const tweenRef = useRef<number | null>(null);
+
+  // Normalize a scrollLeft value into [0, scrollWidth/2) so the duplicated
+  // copy stays in sync — the jump is visually invisible because both halves
+  // render identical content.
+  const wrap = (el: HTMLDivElement, value: number) => {
+    const half = el.scrollWidth / 2;
+    if (!half) return value;
+    let v = value;
+    while (v < 0) v += half;
+    while (v >= half) v -= half;
+    return v;
+  };
+
+  // Keep native drift (wheel) inside [0, half) too, but never while a drag
+  // or tween is actively writing scrollLeft — that would cancel the in-flight
+  // motion.
+  const onScroll = () => {
+    if (isDraggingRef.current || tweenRef.current !== null) return;
+    const el = stripRef.current;
+    if (!el) return;
+    const half = el.scrollWidth / 2;
+    if (!half) return;
+    const v = el.scrollLeft;
+    if (v >= half) el.scrollLeft = v - half;
+    else if (v < 0) el.scrollLeft = v + half;
+  };
+
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = stripRef.current;
+    if (!el) return;
+    if (tweenRef.current !== null) {
+      cancelAnimationFrame(tweenRef.current);
+      tweenRef.current = null;
+    }
+    dragPendingRef.current = true;
+    isDraggingRef.current = false;
+    dragMoved.current = 0;
+    dragStartX.current = e.clientX;
+    dragStartY.current = e.clientY;
+    dragStartScroll.current = el.scrollLeft;
+  };
+
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = stripRef.current;
+    if (!el) return;
+
+    // Decide the gesture axis on the first decisive movement.
+    if (dragPendingRef.current && !isDraggingRef.current) {
+      const dx = Math.abs(e.clientX - dragStartX.current);
+      const dy = Math.abs(e.clientY - dragStartY.current);
+      if (Math.max(dx, dy) < 6) return; // too small to tell yet
+      if (dx > dy) {
+        isDraggingRef.current = true;
+        el.setPointerCapture(e.pointerId);
+      } else {
+        // Vertical intent — hand the gesture back to the page/stepper.
+        dragPendingRef.current = false;
+        return;
+      }
+    }
+
+    if (!isDraggingRef.current) return;
+    const delta = e.clientX - dragStartX.current;
+    dragMoved.current = Math.max(dragMoved.current, Math.abs(delta));
+    el.scrollLeft = wrap(el, dragStartScroll.current - delta);
+  };
+
+  const endDrag = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = stripRef.current;
+    dragPendingRef.current = false;
+    isDraggingRef.current = false;
+    if (!el) return;
+    if (el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
+  };
+
+  // Swallow the click that follows a drag so the card Link doesn't navigate.
+  const onClickCapture = (e: React.MouseEvent) => {
+    if (dragMoved.current > 8) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
+  // Smooth-scroll the strip by one card in the given direction. Runs as a
+  // short rAF tween so each frame can be wrapped — native smooth-scroll
+  // would be cancelled the moment the wrap listener repositions scrollLeft.
+  const scrollByCard = (dir: 1 | -1) => {
+    const el = stripRef.current;
+    if (!el) return;
+    const first = el.firstElementChild as HTMLElement | null;
+    if (!first) return;
+    const gap = parseFloat(getComputedStyle(el).columnGap) || 0;
+    const step = dir * (first.offsetWidth + gap);
+    if (tweenRef.current !== null) cancelAnimationFrame(tweenRef.current);
+    const start = el.scrollLeft;
+    const duration = 450;
+    const t0 = performance.now();
+    const tick = (now: number) => {
+      const p = Math.min((now - t0) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
+      el.scrollLeft = wrap(el, start + step * eased);
+      if (p < 1) {
+        tweenRef.current = requestAnimationFrame(tick);
+      } else {
+        tweenRef.current = null;
+      }
+    };
+    tweenRef.current = requestAnimationFrame(tick);
+  };
+
+  // Render the list twice so the strip can loop seamlessly via wrap().
+  const loopedNews = [...news, ...news];
+
   return (
     <section
       id="newsroom"
-      className="relative flex w-full flex-col overflow-hidden bg-white py-6 lg:py-8 h-[calc(100dvh-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
+      className="relative flex w-full flex-col overflow-hidden bg-white py-6 lg:py-8 h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Header — eyebrow + title left, button right */}
       <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between px-4 lg:px-20 mb-6 lg:mb-10 gap-4">
@@ -66,16 +198,40 @@ export default function Newsroom() {
 
       {/* News cards — below lg the three cards would stack ~1300 px tall and
           spill far past the screen, so the section could never settle as one
-          step. They become a horizontal snap strip instead: all content stays
-          reachable while the section keeps its single-screen height. Desktop
-          keeps the three-column grid. */}
-      <div className="flex min-h-0 flex-1 items-start px-4 lg:px-20">
-        <div className="no-scrollbar flex h-full w-full snap-x snap-mandatory gap-5 overflow-x-auto lg:grid lg:h-auto lg:grid-cols-3 lg:overflow-visible lg:gap-5">
-          {news.map((item, index) => (
+          step. They become an infinite horizontal strip instead: the list is
+          duplicated and scrollLeft is wrapped so it loops seamlessly in both
+          directions, while the section keeps its single-screen height.
+          Desktop keeps the three-column grid (clones hidden). */}
+      <div className="relative flex min-h-0 flex-1 items-start px-4 lg:px-20">
+        {/* Previous — smooth-scrolls the strip back one card. Mobile only;
+            desktop is a static grid so there's nothing to scroll. */}
+        <button
+          type="button"
+          aria-label="Previous news"
+          onClick={() => scrollByCard(-1)}
+          className="absolute left-2 top-1/2 z-30 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-neutral-800 shadow-[0_2px_12px_rgba(0,0,0,0.15)] transition hover:bg-neutral-50 active:scale-95 lg:hidden"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M10 2L4 8l6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+        <div
+          ref={stripRef}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={endDrag}
+          onPointerCancel={endDrag}
+          onScroll={onScroll}
+          onClickCapture={onClickCapture}
+          className="no-scrollbar flex h-full w-full select-none gap-3 overflow-x-auto cursor-grab active:cursor-grabbing overscroll-x-none touch-pan-y lg:grid lg:h-auto lg:grid-cols-3 lg:overflow-visible lg:gap-5 lg:cursor-auto"
+        >
+          {loopedNews.map((item, index) => (
             <Link
-              key={index}
+              key={`${item.image}-${index}`}
               href="/newsroom"
-              className="group flex w-[78%] shrink-0 snap-start flex-col gap-2 sm:w-[52%] lg:w-auto lg:shrink lg:gap-3"
+              className={`group flex w-[78%] shrink-0 flex-col gap-2 sm:w-[52%] lg:w-auto lg:shrink lg:gap-3 ${
+                index >= news.length ? "lg:hidden" : ""
+              }`}
             >
               {/* Image */}
               <div className="relative aspect-[431/329] w-full overflow-hidden bg-[#D9D9D9]">

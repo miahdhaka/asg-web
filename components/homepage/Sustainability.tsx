@@ -52,7 +52,7 @@ export default function Sustainability() {
   return (
     <section
       id="sustainability"
-      className="relative flex w-full flex-col overflow-hidden bg-white pb-8 lg:pb-16 h-[calc(100dvh-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
+      className="relative flex w-full flex-col overflow-hidden bg-white pb-8 lg:pb-16 h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Header row — title left, description right */}
       <div className="pt-8 px-4 pb-6 lg:pt-18 lg:px-20 lg:pb-12">
@@ -142,7 +142,7 @@ export default function Sustainability() {
 
               {/* Expanded content — title + description, bottom left */}
               <div
-                className={`pointer-events-none absolute bottom-3 left-3 lg:bottom-5 lg:left-5 max-w-[40rem] p-4 lg:p-8 transition-opacity duration-500 ${
+                className={`pointer-events-none absolute bottom-3 left-3 lg:bottom-5 lg:left-5 max-w-[40rem] lg:p-8 transition-opacity duration-500 ${
                   isActive ? "opacity-100 delay-300" : "opacity-0 delay-0"
                 }`}
               >
