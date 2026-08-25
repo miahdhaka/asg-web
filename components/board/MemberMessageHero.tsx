@@ -58,7 +58,7 @@ export default function MemberMessageHero({
           height={portrait.height}
           priority
           quality={90}
-          className={`mx-auto w-full sm:w-48  sm:mt-8 sm:w-72 lg:absolute lg:bottom-0 lg:mx-0 lg:mt-0 h-auto z-20 ${portraitClassName}`}
+          className={`mx-auto w-full sm:w-48 sm:mt-8 sm:w-72 lg:absolute lg:bottom-0 lg:mx-0 lg:mt-0 h-auto z-20 ${portraitClassName}`}
         />
 
         {/* Name / role / divider / group — shows after portrait on mobile */}

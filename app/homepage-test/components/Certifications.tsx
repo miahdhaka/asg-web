@@ -34,11 +34,11 @@ export default function Certifications() {
   return (
     <section
       id="certifications"
-      className="relative flex w-full flex-col overflow-hidden bg-[#f5f4ef] py-8 lg:py-16 h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
+      className="relative flex w-full flex-col overflow-hidden bg-[#f5f4ef] py-8 lg:py-16 min-h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
-      <div className="flex min-h-0 flex-1 flex-col lg:flex-row justify-between px-4 lg:px-20">
+      <div className="flex min-h-0 flex-1 flex-col lg:flex-row justify-between px-4 lg:px-14">
         {/* Left copy — pinned to the top of the section */}
-        <div className="w-full lg:w-[34%] shrink-0 self-start lg:mt-2 lg:mb-0">
+        <div className="w-full lg:w-[30%] shrink-0 self-start mt-0 lg:mt-2 mb-6 lg:mb-0">
           {/* Eyebrow — drops in together with the title below */}
           <div id="certifications-eyebrow" className="flex items-center gap-3">
             <span className="font-neue-montreal text-sm lg:text-base font-medium tracking-widest text-neutral-800 uppercase">
@@ -63,47 +63,17 @@ export default function Certifications() {
           </p>
         </div>
 
-        {/* Mobile-only stat strip — occupies the middle band between the
-            copy and the cert grid on phones (the section is a fixed
-            viewport height, so short mobile content left a big empty band).
-            Box-less editorial layout: gradient numerals split by short
-            hairline dividers, vertically centred inside a flex-1 band so
-            the leftover space is shared evenly above and below it — no
-            single oversized gap. Desktop keeps its side-by-side layout,
-            so this stays lg:hidden. */}
-        <div className="flex min-h-0 flex-1 w-full items-center lg:hidden">
-          {[
-            { value: "11+", label: "Global Certifications" },
-            { value: "7MW", label: "Solar Power" },
-            { value: "130+", label: "Years of Legacy" },
-          ].map((stat, index) => (
-            <div
-              key={stat.label}
-              className={`flex flex-1 flex-col items-center justify-center gap-2 px-1 text-center ${
-                index > 0 ? "border-l border-neutral-800/15 self-center h-16" : ""
-              }`}
-            >
-              <span className="font-serif text-3xl sm:text-3xl leading-none bg-[image:var(--primary-gradient)] bg-clip-text text-transparent">
-                {stat.value}
-              </span>
-              <span className="font-neue-montreal text-[0.7rem] sm:text-xs uppercase tracking-widest text-neutral-600">
-                {stat.label}
-              </span>
-            </div>
-          ))}
-        </div>
-
         {/* Right — staggered logo grid, pinned to the bottom of the section.
             The id lets the hero's scroll orchestrator scatter the tiles out
             of the bottom-right corner during the 8th-scroll fade. */}
         <div
           id="cert-grid"
-          className="grid w-full max-w-[75rem] grid-cols-5 gap-1 sm:gap-3 lg:gap-5.5 self-end"
+          className="grid w-full max-w-[87.5rem] grid-cols-5 gap-2 sm:gap-3 lg:gap-4 self-end"
         >
           {certifications.map((cert) => (
             <div
               key={cert.label}
-              className={`flex aspect-square items-center justify-center bg-white p-1 sm:p-3 lg:p-5 ${
+              className={`flex aspect-square items-center justify-center bg-white p-2 sm:p-3 lg:p-4 ${
                 cert.colStart ?? ""
               }`}
             >
@@ -114,7 +84,7 @@ export default function Certifications() {
                 height={160}
                 quality={90}
                 draggable={false}
-                className="pointer-events-none max-h-[70%] max-w-[80%] object-contain"
+                className="pointer-events-none max-h-[82%] max-w-[88%] object-contain"
               />
             </div>
           ))}

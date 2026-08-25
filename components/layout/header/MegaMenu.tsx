@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import type { MegaMenuItem } from "./types";
 
 interface MegaMenuProps {
@@ -33,7 +32,7 @@ export default function MegaMenu({ items, isOpen, variant = "photo", onNavigate 
       style={{ top: "var(--header-height)" }}
     >
           <div className="px-6 py-8">
-            <div className={`grid ${isLogo ? "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-4 gap-y-8" : "grid-cols-6 gap-4"}`}>
+            <div className={`grid ${isLogo ? "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-4 gap-y-8 sm:gap-y-10" : "grid-cols-6 gap-4"}`}>
               {items.map((item) => (
                 <div
                   key={item.label}
@@ -47,14 +46,10 @@ export default function MegaMenu({ items, isOpen, variant = "photo", onNavigate 
                       isLogo ? "bg-gray-100" : "bg-gray-100"
                     }`}
                   >
-                    <Image
+                    <img
                       src={item.hoverImage || item.image}
                       alt={item.label}
-                      fill
-                      loading="eager"
-                      className={`${isLogo ? "object-contain p-[20%]" : "object-cover"} grayscale transition-[filter] duration-500 ease-in-out group-hover:grayscale-0`}
-                      sizes={isLogo ? "(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw" : "(max-width: 768px) 100vw, 33vw"}
-                      quality={90}
+                      className={`absolute inset-0 h-full w-full ${isLogo ? "object-contain p-[20%]" : "object-cover"} grayscale transition-[filter] duration-500 ease-in-out group-hover:grayscale-0`}
                     />
                     {!isLogo && (
                       <div className="overlay-image-hover pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700 ease-in-out group-hover:opacity-100" />
@@ -62,7 +57,7 @@ export default function MegaMenu({ items, isOpen, variant = "photo", onNavigate 
                   </div>
                   
                   {item.label && (
-                    <span className="relative inline-block text-sm tracking-wider text-[var(--neutral-800)] gradient-text-hover mt-3">
+                    <span className="relative inline-block text-sm tracking-wider text-[var(--neutral-800)] font-medium gradient-text-hover leading-tight mt-2 pl-1">
                       {item.label}
                     </span>
                   )}

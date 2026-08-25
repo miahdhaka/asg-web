@@ -1,11 +1,6 @@
 "use client";
 
-import { useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
-
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+import StatGrid, { type StatItem } from "@/components/common/StatGrid";
 
 const paragraphs = [
   "Amanat Shah Tex Solution is a specialized manufacturer and supplier of a wide range of surfactants, emulsifiers, and specialty chemicals, catering to the diverse needs of the textile industry. Established in 2025, we are committed to delivering exceptional performance, reliability, and innovation in every chemical formulation. As a trusted partner for businesses, we build strong relationships by understanding client needs and delivering customized, cost-effective solutions with speed and precision.",
@@ -17,20 +12,11 @@ const clients = [
   "Amanat Shah Fabrics",
 ];
 
-interface Stat {
-  value: string;
-  /** Whether the value is a plain number (for count-up animation) */
-  numeric: boolean;
-  numericValue?: number;
-  label: string;
-  subLabel?: string;
-}
-
-const stats: Stat[] = [
-  { value: "2025", numeric: false, label: "ESTABLISHMENT" },
-  { value: "600", numeric: true, numericValue: 600, label: "PRODUCTION CAPACITY", subLabel: "Metric tons monthly" },
-  { value: "99.8%", numeric: false, label: "TECHNICAL COMPLIANCE RATE" },
-  { value: "50+", numeric: false, label: "EMPLOYEES" },
+const stats: StatItem[] = [
+  { value: 0, numeric: false, staticValue: "2025", label: "ESTABLISHMENT" },
+  { value: 600, numeric: true, numericValue: 600, label: "PRODUCTION CAPACITY", subLabel: "Metric tons monthly" },
+  { value: 0, numeric: false, staticValue: "99.8%", label: "TECHNICAL COMPLIANCE RATE" },
+  { value: 0, numeric: false, staticValue: "50+", label: "EMPLOYEES" },
 ];
 
 /**
@@ -38,38 +24,6 @@ const stats: Stat[] = [
  * Amanat Shah Tex Solution concern page (Figma node 1692-10970).
  */
 export default function TexSolutionIntro() {
-  const statsRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      gsap.utils.toArray<HTMLElement>("[data-count]").forEach((el) => {
-        const target = Number(el.dataset.count);
-        const format = (v: number) =>
-          v.toLocaleString("en-US", {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-          });
-        const counter = { value: 0 };
-        gsap.to(counter, {
-          value: target,
-          duration: 2,
-          ease: "power2.out",
-          paused: true,
-          scrollTrigger: {
-            trigger: statsRef.current,
-            start: "top 75%",
-            end: "bottom top",
-            toggleActions: "restart reset restart reset",
-          },
-          onUpdate: () => {
-            el.textContent = format(counter.value);
-          },
-        });
-      });
-    },
-    { scope: statsRef }
-  );
-
   return (
     <section
       id="tex-solution-intro"
@@ -120,34 +74,7 @@ export default function TexSolutionIntro() {
       </div>
 
       {/* Stat cards */}
-      <div
-        ref={statsRef}
-        className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:mt-[1.33em] lg:grid-cols-4 lg:gap-[1.33em]"
-      >
-        {stats.map((stat) => (
-          <div key={stat.label} className="flex flex-col">
-            <div className="border border-gray-100 bg-gray-50 lg:h-[11.17em] pt-6 lg:pt-[2.67em] px-3 sm:px-4 lg:px-[1.33em] pb-4 lg:pb-0 overflow-hidden">
-              <span className="font-test-tiempos-fine text-3xl sm:text-4xl lg:text-[5em] font-medium text-neutral-800 lg:leading-[1.17]">
-                {stat.numeric ? (
-                  <span data-count={stat.numericValue}>0</span>
-                ) : (
-                  stat.value
-                )}
-              </span>
-              {stat.subLabel && (
-                <span className="text-xs whitespace-nowrap text-neutral-800 sm:text-sm lg:text-[1.17em] lg:leading-[1.43]">
-                  {stat.subLabel}
-                </span>
-              )}
-            </div>
-            <div className="flex items-center border border-t-0 border-gray-100 bg-gray-50 lg:h-[4.67em] px-3 sm:px-4 lg:px-[1.33em] py-3 lg:py-0">
-              <span className="text-xs sm:text-sm lg:text-[1.33em] capitalize sm:uppercase text-neutral-800 lg:leading-[1.5]">
-                {stat.label}
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
+      <StatGrid stats={stats} />
     </section>
   );
 }

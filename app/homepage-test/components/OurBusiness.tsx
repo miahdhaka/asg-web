@@ -143,7 +143,7 @@ export default function OurBusiness() {
   return (
     <section
       id="our-business"
-      className="bg-background relative flex w-full flex-col overflow-hidden pt-8 pb-8 lg:pt-0 lg:pb-18 h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
+      className="bg-background relative flex w-full flex-col overflow-hidden pt-8 pb-8 lg:pt-0 lg:pb-18 min-h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Header row — title left, description right */}
       <div className="px-4 pb-8 lg:pt-18 lg:px-20 lg:pb-12">

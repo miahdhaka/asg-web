@@ -1,136 +1,70 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { certificationIntro } from "./esgData";
 
-/* Badge top-left positions in the 899×530 source SVG */
-const BADGE_POSITIONS = [
-  { x: 549, y: 0 },
-  { x: 732, y: 0 },
-  { x: 183, y: 182 },
-  { x: 366, y: 182 },
-  { x: 549, y: 182 },
-  { x: 732, y: 182 },
-  { x: 0, y: 364 },
-  { x: 183, y: 364 },
-  { x: 366, y: 364 },
+interface CertificationCard {
+  label: string;
+  src: string;
+  colStart?: "col-start-1" | "col-start-2" | "col-start-3" | "col-start-4";
+}
+
+// Certification logo tiles rendered from /public/images/certification/.
+// Rows are right-aligned and grow leftward: 2 cards, then 4, then 5.
+const certifications: CertificationCard[] = [
+  // Row 1 — starts at column 4
+  { label: "Cotton Made in Africa", src: "/images/certification/certificate1.png", colStart: "col-start-4" },
+  { label: "BSCI", src: "/images/certification/certificate2.png" },
+  // Row 2 — starts at column 2
+  { label: "Cotton USA", src: "/images/certification/certificate-3.png", colStart: "col-start-2" },
+  { label: "Regenerated Cellulosics", src: "/images/certification/certificate4.png" },
+  { label: "Higg Index", src: "/images/certification/certificate5.png" },
+  { label: "BCI", src: "/images/certification/certificate6.png" },
+  // Row 3 — starts at column 1
+  { label: "GOTS", src: "/images/certification/certificate7.png", colStart: "col-start-1" },
+  { label: "OEKO-TEX Standard 100", src: "/images/certification/certificate8.png" },
+  { label: "Organic 100", src: "/images/certification/certificate-9.png" },
+  { label: "Claim Standard", src: "/images/certification/certificate-10.png" },
+  { label: "USGBC", src: "/images/certification/certificate-11.png" },
 ];
-const SVG_W = 899;
-const SVG_H = 530;
-const BADGE_W = 167;
-const BADGE_H = 166;
-const VISIBLE = 3.5;
-const SPEED = 30; // px/sec
 
 export default function EsgCertifications() {
   const [expanded, setExpanded] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const posRef = useRef(0);
-  const rafRef = useRef<number>(0);
-  const lastTimeRef = useRef(0);
-  const dragStartX = useRef(0);
-  const dragDelta = useRef(0);
-  const isDragging = useRef(false);
-  const pauseUntilRef = useRef(0);
-  const [dims, setDims] = useState<{
-    slideW: number;
-    slideH: number;
-    svgW: number;
-    svgH: number;
-    positions: { x: number; y: number }[];
-  } | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+  const [offsets, setOffsets] = useState<{ x: number; y: number }[]>([]);
+  const [initialized, setInitialized] = useState(false);
 
-  /* Measure container & compute badge dimensions */
-  const measure = useCallback(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const cw = el.offsetWidth;
-    if (cw === 0) return;
-    const slideW = cw / VISIBLE;
-    const scale = slideW / BADGE_W;
-    const slideH = slideW * (BADGE_H / BADGE_W);
-    setDims({
-      slideW,
-      slideH,
-      svgW: SVG_W * scale,
-      svgH: SVG_H * scale,
-      positions: BADGE_POSITIONS.map((b) => ({
-        x: -(b.x * scale),
-        y: -(b.y * scale),
-      })),
-    });
+  /* Measure stacked offsets (relative to last tile) after grid renders */
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid || grid.children.length === 0) return;
+    const tiles = Array.from(grid.children) as HTMLElement[];
+    const anchor = tiles[tiles.length - 1];
+    const a = anchor.getBoundingClientRect();
+    setOffsets(tiles.map((t) => {
+      const r = t.getBoundingClientRect();
+      return { x: a.left - r.left, y: a.top - r.top };
+    }));
+    setInitialized(true);
   }, []);
 
-  /* rAF-based continuous animation (no React re-renders) */
+  /* Scatter / stack when section scrolls in / out of view */
   useEffect(() => {
-    if (!dims) return;
-    const track = trackRef.current;
-    if (!track) return;
-
-    const animate = (time: number) => {
-      if (lastTimeRef.current && !isDragging.current && time > pauseUntilRef.current) {
-        const dt = (time - lastTimeRef.current) / 1000;
-        posRef.current -= SPEED * dt;
-        if (posRef.current <= -dims.slideW) {
-          posRef.current += dims.slideW;
-        }
-      }
-      lastTimeRef.current = time;
-      track.style.transform = `translateX(${posRef.current}px)`;
-      rafRef.current = requestAnimationFrame(animate);
-    };
-
-    rafRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [dims]);
-
-  /* Pointer drag */
-  const handlePointerDown = useCallback(
-    (e: React.PointerEvent) => {
-      if (!dims) return;
-      isDragging.current = true;
-      dragStartX.current = e.clientX;
-      dragDelta.current = 0;
-      lastTimeRef.current = 0;
-      (e.target as HTMLElement).setPointerCapture(e.pointerId);
-    },
-    [dims],
-  );
-
-  const handlePointerMove = useCallback(
-    (e: React.PointerEvent) => {
-      if (!isDragging.current) return;
-      dragDelta.current = e.clientX - dragStartX.current;
-      posRef.current = posRef.current + dragDelta.current;
-      dragStartX.current = e.clientX;
-      dragDelta.current = 0;
-      const track = trackRef.current;
-      if (track) track.style.transform = `translateX(${posRef.current}px)`;
-    },
-    [],
-  );
-
-  const handlePointerUp = useCallback(() => {
-    if (!isDragging.current) return;
-    isDragging.current = false;
-    lastTimeRef.current = 0;
-    pauseUntilRef.current = performance.now() + 3000;
+    const section = sectionRef.current;
+    if (!section) return;
+    const observer = new IntersectionObserver(
+      ([e]) => setVisible(e.isIntersecting),
+      { threshold: 0.15 },
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
   }, []);
-
-  useEffect(() => {
-    measure();
-    const ro = new ResizeObserver(measure);
-    if (containerRef.current) ro.observe(containerRef.current);
-    return () => ro.disconnect();
-  }, [measure]);
-
-  /* Build 2× badge set for seamless loop */
-  const allPositions = dims ? [...dims.positions, ...dims.positions] : [];
 
   return (
-    <section className="bg-gray-50 py-6 sm:py-12 lg:py-[4.8rem] my-4 sm:my-[2rem]">
+    <section ref={sectionRef} className="bg-gray-50 py-6 sm:py-12 lg:py-[4.8rem] my-4 sm:my-[2rem]">
       <div className="flex min-h-0 flex-1 flex-col justify-between lg:flex-row px-4 sm:px-8 lg:px-[5rem] gap-8 sm:gap-0">
         {/* Left copy */}
         <div className="w-full shrink-0 self-start lg:w-[34%]">
@@ -187,45 +121,39 @@ export default function EsgCertifications() {
           </div>
         </div>
 
-        {/* Right — certification badge grid (desktop only) */}
-        <Image
-          src="/images/sustainability/esg/badges.svg"
-          alt="ASG international certifications — Cotton USA, Higg Index, BCI, GOTS, OEKO-TEX and more"
-          width={1180}
-          height={700}
-          quality={100}
-          draggable={false}
-          className="pointer-events-none hidden lg:block w-full self-end lg:max-w-[78rem]"
-        />
-      </div>
-
-      {/* Mobile: continuous auto-scrolling badge carousel */}
-      <div
-        ref={containerRef}
-        className="lg:hidden w-full overflow-hidden px-4 sm:px-8 cursor-grab active:cursor-grabbing select-none"
-        style={{ minHeight: dims ? undefined : "6rem" }}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-      >
-        {dims && (
-          <div ref={trackRef} className="flex will-change-transform">
-            {allPositions.map((pos, i) => (
-              <div
-                key={i}
-                className="shrink-0"
-                style={{
-                  width: dims.slideW,
-                  height: dims.slideH,
-                  backgroundImage: `url(/images/sustainability/esg/badges.svg)`,
-                  backgroundSize: `${dims.svgW}px ${dims.svgH}px`,
-                  backgroundPosition: `${pos.x}px ${pos.y}px`,
-                  backgroundRepeat: "no-repeat",
-                }}
+        {/* Right — staggered certification logo grid */}
+        <div
+          ref={gridRef}
+          className="grid w-full max-w-[75rem] grid-cols-5 gap-1 sm:gap-3 lg:gap-5.5 self-end"
+        >
+          {certifications.map((cert, i) => (
+            <div
+              key={cert.label}
+              className={`flex aspect-square items-center justify-center bg-white p-1 sm:p-3 lg:p-5 ${
+                cert.colStart ?? ""
+              }`}
+              style={{
+                transform: initialized && !visible && offsets[i]
+                  ? `translate(${offsets[i].x}px, ${offsets[i].y}px)`
+                  : undefined,
+                opacity: initialized && !visible && offsets.length ? 0 : 1,
+                transition: initialized
+                  ? "transform 1.3s cubic-bezier(.4,0,.2,1), opacity 1.3s cubic-bezier(.4,0,.2,1)"
+                  : "none",
+              }}
+            >
+              <Image
+                src={cert.src}
+                alt={cert.label}
+                width={160}
+                height={160}
+                quality={90}
+                draggable={false}
+                className="pointer-events-none max-h-[70%] max-w-[80%] object-contain"
               />
-            ))}
-          </div>
-        )}
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

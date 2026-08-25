@@ -1027,6 +1027,30 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
       };
       syncTouchLock();
 
+      /* Safari momentum repair — macOS Safari does NOT cancel trackpad
+         inertia when wheel events are preventDefault()-ed (Chrome and
+         Firefox do), so while a sweep plays the page can still physically
+         drift away from the anchor the transition just landed on.  The
+         fade-chain's backward landing re-anchors nothing by itself, so the
+         stepper and the scroll position end up out of sync and the next
+         gesture snaps instead of gliding — the "stuck" re-entry from the
+         native-scroll zone.  Re-check one frame after every landing and
+         snap back when the page drifted past the tolerance.  Mid-flight
+         drift is invisible (the sweep's pinned overlays hold the frame),
+         so post-landing is the only moment that needs repairing. */
+      const reanchorAfterLand = () => {
+        requestAnimationFrame(() => {
+          if (stepper.sweeping.current()) return;
+          const anchor = anchorY();
+          if (anchor === null) return;
+          if (Math.abs(window.scrollY - anchor) > FADE_CHAIN_TOLERANCE) {
+            controlledScrollTo(anchor);
+            // Don't let the onScroll floor second-guess this repair
+            anchorCorrectedRef.current = true;
+          }
+        });
+      };
+
       // Refresh the lock the instant the resting step changes — the sweep
       // commits boundaries inside the stepper's render loop, which no other
       // handler observes directly.
@@ -1034,11 +1058,13 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
       onLandRef.current = (i) => {
         prevLand(i);
         syncTouchLock();
+        reanchorAfterLand();
       };
       const prevLandBack = onLandBackRef.current;
       onLandBackRef.current = (i) => {
         prevLandBack(i);
         syncTouchLock();
+        reanchorAfterLand();
       };
 
       const atTop = () => window.scrollY <= SCROLL_TOP_THRESHOLD;
@@ -1136,6 +1162,16 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
             if (fire) stepper.advanceRef.current(-1);
             return true;
           }
+        }
+
+        /* Mobile reload race — if a finger lands before hydration completes,
+           the browser pans the page natively (the touch lock doesn't exist
+           yet) and the stepper wakes at step 0 away from the top, where
+           every gesture falls through to native scroll and the phases never
+           engage.  The opening phases always hold the page at the very top,
+           so any drift there is the race: snap back and answer the gesture. */
+        if (isMobile && stepper.stepRef.current < 5 && !atTop()) {
+          window.scrollTo({ top: 0, behavior: "auto" });
         }
 
         if (!atTop()) return false;
@@ -1252,7 +1288,15 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
       };
 
       // Always start from the top — page.tsx's useLayoutEffect guarantees
-      // scrollY === 0 before this effect runs, so step 0 is the only case
+      // scrollY === 0 before this effect runs, so step 0 is the only case.
+      // Mobile reload race: a scroll that starts while the page is still
+      // hydrating beats the useLayoutEffect reset and lands the page away
+      // from the top before the touch lock exists.  Re-seat at the top so
+      // the stepper starts clean even when a reload is scrolled straight
+      // away.
+      if (isMobile && window.scrollY > SCROLL_TOP_THRESHOLD) {
+        window.scrollTo({ top: 0, behavior: "auto" });
+      }
 
       window.addEventListener("resize", onResize);
       window.addEventListener("scroll", onScroll, { passive: true });

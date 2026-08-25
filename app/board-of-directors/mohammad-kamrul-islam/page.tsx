@@ -33,7 +33,7 @@ export default function MohammadKamrulIslamPage() {
         }}
         /* Sized to fill the hero height at this portrait's aspect ratio, with
            the left edge aligned to the other detail pages */
-        portraitClassName="lg:w-[31.62em] lg:right-[25.88em]"
+        portraitClassName="lg:w-[31.62em] lg:right-[23.88em]"
       />
       <MessageBody
         id="mohammad-kamrul-islam-full-message"

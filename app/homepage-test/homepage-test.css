@@ -1,0 +1,14 @@
+/*
+ * Private stylesheet for the /homepage-test sandbox.
+ *
+ * Any NEW styles needed for experimenting with the homepage scroll
+ * interaction go HERE — never in globals.css — so deleting the
+ * app/homepage-test/ folder fully removes the experiment.
+ */
+
+/* Pre-hydration state for SectionReveal wrappers: keep every section below
+ * the hero hidden until its GSAP entrance runs, so the first screen shows
+ * the hero alone with no flash of the sections underneath. */
+.asg-reveal {
+  visibility: hidden;
+}

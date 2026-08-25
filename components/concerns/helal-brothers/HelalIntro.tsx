@@ -1,25 +1,13 @@
 "use client";
 
-import { useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
-
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+import StatGrid, { type StatItem } from "@/components/common/StatGrid";
 
 const paragraphs = [
   "M/s Helal & Brothers, the flagship concern of the Amanat Shah Group, stands as a pioneer in Bangladesh\u2019s textile industry. With over 40 years of excellence, the company has transformed local textile heritage into a global success story. Beyond its role as a manufacturer and exporter of premium-quality products like lungi, sharee, and voile, the company operates through a deeply rooted social business model.",
   "We actively empower rural artisans by providing essential financial support and raw materials for production. Upon completion, we purchase these handcrafted textiles at fair market prices, ensuring sustainable livelihoods for weavers. These products are then refined for the international market, bridging the gap between traditional craftsmanship and global demand. Driven by ethical practices, M/s Helal & Brothers continues to connect Bangladesh\u2019s rich artisanal legacy with international consumers through a robust, trusted, and community-focused distribution network.",
 ];
 
-interface Stat {
-  value: number;
-  /** Rendered after the animated number, e.g. "k" or "+" */
-  suffix?: string;
-  label: string;
-}
-
-const stats: Stat[] = [
+const stats: StatItem[] = [
   { value: 10, suffix: "k", label: "Artisans Empowered" },
   { value: 40, suffix: "+", label: "Years Experience" },
   { value: 12, label: "National Awards" },
@@ -32,35 +20,6 @@ const stats: Stat[] = [
  * the social-business band.
  */
 export default function HelalIntro() {
-  const statsRef = useRef<HTMLDivElement>(null);
-
-  // Count each number up from 0 whenever the stat cards scroll into view;
-  // leaving the grid (either direction) resets so the count-up replays.
-  useGSAP(
-    () => {
-      gsap.utils.toArray<HTMLElement>("[data-count]").forEach((el) => {
-        const target = Number(el.dataset.count);
-        const counter = { value: 0 };
-        gsap.to(counter, {
-          value: target,
-          duration: 2,
-          ease: "power2.out",
-          paused: true,
-          scrollTrigger: {
-            trigger: statsRef.current,
-            start: "top 75%",
-            end: "bottom top",
-            toggleActions: "restart reset restart reset",
-          },
-          onUpdate: () => {
-            el.textContent = String(Math.round(counter.value));
-          },
-        });
-      });
-    },
-    { scope: statsRef }
-  );
-
   return (
     <section
       id="helal-intro"
@@ -85,26 +44,7 @@ export default function HelalIntro() {
       </div>
 
       {/* Stat cards */}
-      <div
-        ref={statsRef}
-        className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:mt-[1.33em] lg:grid-cols-5 lg:gap-[1.33em]"
-      >
-        {stats.map((stat) => (
-          <div key={stat.label} className="flex flex-col">
-            <div className="border border-gray-100 bg-gray-50 lg:h-[11.17em] pt-6 lg:pt-[2.67em] px-3 sm:px-4 lg:px-[1.33em] pb-4 lg:pb-0 overflow-hidden">
-              <span className="font-test-tiempos-fine text-3xl sm:text-4xl lg:text-[5em] font-medium text-neutral-800 lg:leading-[1.17]">
-                <span data-count={stat.value}>0</span>
-                {stat.suffix}
-              </span>
-            </div>
-            <div className="flex items-center border border-t-0 border-gray-100 bg-gray-50 lg:h-[4.67em] px-3 sm:px-4 lg:px-[1.33em] py-3 lg:py-0">
-              <span className="text-xs sm:text-sm lg:text-[1.33em] capitalize sm:uppercase text-neutral-800 lg:leading-[1.5]">
-                {stat.label}
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
+      <StatGrid stats={stats} columns={5} />
     </section>
   );
 }
