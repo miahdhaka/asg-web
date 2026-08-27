@@ -57,8 +57,10 @@ export default function Certifications() {
             Compliance
           </h2>
 
-          {/* Description */}
-          <p className="mt-4 lg:mt-8 text-sm sm:text-base lg:text-xl leading-[1.6] tracking-wide text-neutral-600">
+          {/* Description — hidden on ultra-narrow phones (<400px) where the
+              fixed one-screen height can't hold copy + stats + grid without
+              clipping the certification logos at the bottom */}
+          <p className="mt-4 lg:mt-8 text-sm sm:text-base lg:text-xl leading-[1.6] tracking-wide text-neutral-600 max-[400px]:hidden">
             Amanat Shah Group (ASG) is committed to Environmental, Social, and Governance (ESG) principles, advancing a sustainable uture through renewable energy. By investing in 7MW solar power, ASG aims to reduce its carbon footprint, enhance energy efficiency, and foster eco-friendly practices across its operations.
           </p>
         </div>

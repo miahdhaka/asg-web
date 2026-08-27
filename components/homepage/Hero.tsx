@@ -221,9 +221,11 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
       tl.to(overlayRef.current, { opacity: 0, duration: 0.75 }, 0.05);
 
       // Video card dimensions: vertical rectangle on mobile (matches portrait
-      // display), horizontal rectangle on desktop (unchanged)
+      // display), horizontal rectangle on desktop (unchanged). The 72vh cap
+      // keeps the portrait card inside short / landscape phone viewports
+      // where 80vw would end up taller than the screen.
       const videoWidth = isMobile ? "70vw" : "33.4vw";
-      const videoHeight = isMobile ? "80vw" : "18.79vw";
+      const videoHeight = isMobile ? "min(80vw, 72vh)" : "18.79vw";
 
       tl.to(
         videoWrapRef.current,
@@ -1347,10 +1349,12 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         <div ref={overlayRef} className="absolute inset-0 bg-black/40" />
       </div>
 
-      {/* "Family Business" heading — revealed by the scroll timeline */}
+      {/* "Family Business" heading — revealed by the scroll timeline.
+          Below 380px the nowrap text scales with the viewport so it can
+          never be clipped at the screen edge. */}
       <h2
         ref={familyRef}
-        className="absolute top-[20%] z-20 font-test-tiempos-fine text-[2rem] sm:text-[2.5rem] lg:text-[4.0625rem] leading-10 sm:leading-12 lg:leading-20 text-[var(--primary-black)] whitespace-nowrap opacity-0"
+        className="absolute top-[20%] z-20 font-test-tiempos-fine text-[2rem] max-[380px]:text-[clamp(1.5rem,7.2vw,2rem)] sm:text-[2.5rem] lg:text-[4.0625rem] leading-10 sm:leading-12 lg:leading-20 text-[var(--primary-black)] whitespace-nowrap opacity-0"
       >
         Family Business
       </h2>
@@ -1359,7 +1363,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
           right-aligned to the video's right edge */}
       <h2
         ref={legacyRef}
-        className="absolute top-[24%] right-[15vw] sm:right-[25vw] lg:right-[33.3vw] z-20 font-test-tiempos-fine text-[2rem] sm:text-[2.5rem] lg:text-[4.0625rem] leading-10 sm:leading-12 lg:leading-16 text-[var(--primary-black)] whitespace-nowrap opacity-0"
+        className="absolute top-[24%] right-[15vw] sm:right-[25vw] lg:right-[33.3vw] z-20 font-test-tiempos-fine text-[2rem] max-[380px]:text-[clamp(1.5rem,7.2vw,2rem)] sm:text-[2.5rem] lg:text-[4.0625rem] leading-10 sm:leading-12 lg:leading-16 text-[var(--primary-black)] whitespace-nowrap opacity-0"
       >
         Legacy For
       </h2>
@@ -1368,7 +1372,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
           centred with the same gap as above the video */}
       <h2
         ref={moreRef}
-        className="absolute top-[60%] z-20 font-test-tiempos-fine text-[2rem] sm:text-[2.5rem] lg:text-[4.0625rem] leading-10 sm:leading-12 lg:leading-16 text-[var(--primary-black)] whitespace-nowrap opacity-0"
+        className="absolute top-[60%] z-20 font-test-tiempos-fine text-[2rem] max-[380px]:text-[clamp(1.44rem,6.2vw,2rem)] sm:text-[2.5rem] lg:text-[4.0625rem] leading-10 sm:leading-12 lg:leading-16 text-[var(--primary-black)] whitespace-nowrap opacity-0"
       >
         More Then 130 Years
       </h2>
@@ -1390,7 +1394,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         </div>
 
         <div ref={textRef}>
-          <h1 className="font-test-tiempos-fine uppercase text-3xl sm:text-4xl lg:text-6xl font-medium mb-2 lg:mb-4">
+          <h1 className="font-test-tiempos-fine uppercase text-[27px] sm:text-4xl lg:text-6xl font-medium mb-2 lg:mb-4">
             Amanat Shah Group
           </h1>
 

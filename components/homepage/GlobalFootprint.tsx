@@ -75,8 +75,9 @@ export default function GlobalFootprint() {
             Our Global Footprint
           </h2>
 
-          {/* Description */}
-          <p className="mt-4 lg:mt-6 max-w-[38.75rem] text-sm sm:text-base lg:text-[1.0625rem] leading-[1.6] tracking-wider text-neutral-400">
+          {/* Description — clamped on ultra-small phones (iPhone 5/SE class)
+              where its full 8 lines would starve the map band of height */}
+          <p className="mt-4 lg:mt-6 max-w-[38.75rem] text-sm sm:text-base lg:text-[1.0625rem] leading-[1.6] tracking-wider text-neutral-400 max-[380px]:line-clamp-4">
             Amanat Shah Group operates a robust international supply chain,
             delivering world-class textile products to major apparel hubs
             worldwide. Driven by an expert workforce, our footprint connects
