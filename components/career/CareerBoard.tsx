@@ -14,6 +14,51 @@ export default function CareerBoard() {
   const [department, setDepartment] = useState("");
   const gridRef = useRef<HTMLDivElement>(null);
 
+  // Typing-animation for the search-input placeholder
+  const PLACEHOLDER_FULL = "Search job title";
+  const TYPING_SPEED = 100;
+  const PAUSE_AFTER_FULL = 2200;
+  const DELETING_SPEED = 50;
+
+  const [placeholder, setPlaceholder] = useState("");
+  const placeholderIdx = useRef(0);
+  const placeholderDir = useRef<"typing" | "pausing" | "deleting">("typing");
+
+  useEffect(() => {
+    let tid: ReturnType<typeof setTimeout>;
+
+    const tick = () => {
+      const dir = placeholderDir.current;
+      if (dir === "typing") {
+        const next = placeholderIdx.current + 1;
+        setPlaceholder(PLACEHOLDER_FULL.slice(0, next));
+        placeholderIdx.current = next;
+        if (next >= PLACEHOLDER_FULL.length) {
+          placeholderDir.current = "pausing";
+          tid = setTimeout(tick, PAUSE_AFTER_FULL);
+        } else {
+          tid = setTimeout(tick, TYPING_SPEED);
+        }
+      } else if (dir === "pausing") {
+        placeholderDir.current = "deleting";
+        tid = setTimeout(tick, DELETING_SPEED);
+      } else {
+        const next = placeholderIdx.current - 1;
+        setPlaceholder(PLACEHOLDER_FULL.slice(0, next));
+        placeholderIdx.current = next;
+        if (next <= 0) {
+          placeholderDir.current = "typing";
+          tid = setTimeout(tick, TYPING_SPEED); // immediately re-type
+        } else {
+          tid = setTimeout(tick, DELETING_SPEED);
+        }
+      }
+    };
+
+    tid = setTimeout(tick, TYPING_SPEED);
+    return () => clearTimeout(tid);
+  }, []);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return jobs.filter((job) => {
@@ -46,41 +91,47 @@ export default function CareerBoard() {
         </h2>
 
         {/* Search bar with embedded gradient button */}
-        <div className=" mt-5 lg:mt-[1.3333rem]">
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 h-auto ">
-            <div className="flex sm:flex-1 items-center h-12 lg:h-[3.6667rem] gap-2 px-3.5 lg:gap-[0.6667rem] lg:px-[1.1667rem] bg-gray-50 input-gradient-border-hover">
-              <Image src="/icons/career/search.svg" alt="" width={20} height={20} quality={100} className="size-4 shrink-0 lg:size-[1.6667rem]" />
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search job title"
-                className="min-w-0 flex-1 bg-transparent text-sm text-neutral-800 placeholder:text-neutral-600 focus:outline-none lg:text-[1.3333rem]"
-              />
+        <div className="mt-5 lg:mt-[1.3333rem]">
+          <div className="input-gradient-border-hover bg-gray-50">
+            <div className="flex items-stretch h-12 sm:h-12 lg:h-[4rem]">
+              {/* Input area */}
+              <div className="flex flex-1 items-center gap-2 px-3.5 lg:gap-[0.6667rem] lg:px-[1.1667rem]">
+                <Image src="/icons/career/search.svg" alt="" width={20} height={20} quality={100} className="shrink-0 size-4 lg:size-[1.6667rem]" />
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder={placeholder}
+                  className="min-w-0 flex-1 bg-transparent text-sm text-neutral-800 placeholder:text-neutral-400 focus:outline-none lg:text-[1.3333rem]"
+                />
+              </div>
+
+              {/* Clear button — shown when there's text */}
               {query && (
                 <button
                   type="button"
                   onClick={() => setQuery("")}
-                  className="shrink-0 cursor-pointer text-neutral-500 transition-all duration-300 hover:rotate-90 hover:text-neutral-800"
+                  className="flex items-center justify-center px-2 text-neutral-400 transition-all duration-300 hover:rotate-90 hover:text-neutral-700 cursor-pointer"
                   aria-label="Clear search"
                 >
                   <X className="size-4 lg:size-5" />
                 </button>
               )}
-            </div>
 
-            <button
-              type="button"
-              className="group relative flex w-full sm:w-auto h-11 lg:h-[3.6667rem] items-center justify-center gap-1 lg:gap-[0.3333rem] text-sm lg:text-[1.1667rem] text-white cursor-pointer bg-[image:var(--primary-gradient)] px-5 lg:px-[1.6667rem] transition-all duration-300 ease-out"
-            >
-              {/* Shine sweep — parked off the left edge, glides across on hover */}
-              <span
-                aria-hidden
-                className="pointer-events-none absolute inset-y-0 -left-[60%] w-[40%] -skew-x-[20deg] bg-white/30 blur-[6px] transition-transform duration-700 ease-out group-hover:translate-x-[460%]"
-              />
-              <Image src="/icons/career/search.svg" alt="" width={16} height={16} quality={100} className="size-3.5 brightness-0 invert lg:size-[1.3333rem]" />
-              Search
-            </button>
+              {/* Gradient search button */}
+              <button
+                type="button"
+                className="group relative flex h-full shrink-0 items-center justify-center gap-1 lg:gap-[0.3333rem] text-sm text-white cursor-pointer bg-[image:var(--primary-gradient)] px-5 lg:px-[1.6667rem] lg:text-[1.1667rem] transition-all duration-300 ease-out tracking-wider"
+              >
+                {/* Shine sweep — parked off the left edge, glides across on hover */}
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute inset-y-0 -left-[60%] w-[40%] -skew-x-[20deg] bg-white/30 blur-[6px] transition-transform duration-700 ease-out group-hover:translate-x-[460%]"
+                />
+                <Image src="/icons/career/search.svg" alt="" width={16} height={16} quality={100} className="size-4 brightness-0 invert sm:size-3.5 lg:size-[1.3333rem]" />
+                Search
+              </button>
+            </div>
           </div>
         </div>
 
@@ -110,7 +161,7 @@ export default function CareerBoard() {
       <hr className="mt-8 border-t border-gray-100 lg:mt-[3.5rem]" />
 
       {/* Jobs grid */}
-      <div className="w-full px-4 sm:px-8 lg:px-[5rem] pb-10">
+      <div className="w-full px-4 sm:px-8 lg:px-[5rem] pb-10 lg:pb-[5rem]">
         {filtered.length > 0 ? (
           <div ref={gridRef} className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:mt-[3.3333rem] lg:grid-cols-4 lg:gap-[1.3333rem]">
             {filtered.map((job) => (
@@ -118,9 +169,33 @@ export default function CareerBoard() {
             ))}
           </div>
         ) : (
-          <p className="mt-8 pb-4 text-center text-sm text-neutral-500 lg:mt-[3.3333rem] lg:text-[1.1667rem]">
-            No jobs match your search. Try a different keyword or clear the filters.
-          </p>
+          <div className="mx-auto mt-6 flex w-full max-w-3xl flex-col items-center justify-center rounded-lg bg-gray-50 px-6 py-12 text-center lg:mt-[3.5rem] lg:py-14">
+            <svg
+              className="size-9 lg:size-10"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="url(#no-jobs-gradient)"
+              strokeWidth={1.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+            >
+              <defs>
+                <linearGradient id="no-jobs-gradient" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#8BC34A" />
+                  <stop offset="1" stopColor="#1AA179" />
+                </linearGradient>
+              </defs>
+              <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+              <rect width="20" height="14" x="2" y="6" rx="2" />
+            </svg>
+            <h3 className="mt-2 text-base text-neutral-700 lg:text-[1.25rem]">
+              No roles available right now
+            </h3>
+            <p className="mx-auto max-w-sm text-xs text-neutral-400 lg:max-w-md lg:text-sm">
+              We couldn&apos;t find any roles matching your search. Try adjusting your filters, or check back soon for new openings.
+            </p>
+          </div>
         )}
       </div>
     </section>
