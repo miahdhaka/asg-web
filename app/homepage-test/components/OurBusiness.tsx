@@ -143,10 +143,10 @@ export default function OurBusiness() {
   return (
     <section
       id="our-business"
-      className="bg-background relative flex w-full flex-col overflow-hidden pt-8 pb-8 lg:pt-0 lg:pb-18 h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
+      className="bg-background relative flex w-full flex-col overflow-hidden pt-8 pb-8 lg:pt-0 lg:pb-18 min-h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Header row — title left, description right */}
-      <div className="px-4 pb-8 max-[380px]:pb-4 lg:pt-18 lg:px-20 lg:pb-12">
+      <div className="px-4 pb-8 lg:pt-18 lg:px-20 lg:pb-12">
         <div className="flex flex-col lg:flex-row items-start lg:items-center lg:justify-between gap-3 lg:gap-8 w-full lg:max-w-[90%]">
           {/* Title — drops in from above via the Hero's phase-5 timeline */}
           <h2
@@ -156,9 +156,8 @@ export default function OurBusiness() {
             Our Business
           </h2>
 
-          {/* Description — clamped on ultra-small phones (iPhone 5/SE class)
-              so the carousel track keeps a usable height */}
-          <p className="max-w-[38.75rem] text-sm sm:text-base lg:text-xl leading-[1.5] tracking-wide text-neutral-800 max-[380px]:line-clamp-3">
+          {/* Description */}
+          <p className="max-w-[38.75rem] text-sm sm:text-base lg:text-xl leading-[1.5] tracking-wide text-neutral-800">
             With a 130-year legacy, Amanat Shah Group is a premier, multi-sector
             conglomerate. We drive sustainable growth across textiles, finance,
             and technology by integrating innovation, integrity.
@@ -192,7 +191,7 @@ export default function OurBusiness() {
             <div
               key={`${card.image}-${index}`}
               data-card
-              className="group relative aspect-[5/8] max-lg:max-h-full lg:h-full lg:aspect-auto w-[calc((100vw-0.75rem)/1.5)] sm:w-[calc((100vw-1.875rem)/2.3)] flex-shrink-0 overflow-hidden mr-2 sm:mr-4"
+              className="group relative aspect-[5/8] lg:h-full lg:aspect-auto w-[calc((100vw-0.75rem)/1.5)] sm:w-[calc((100vw-1.875rem)/2.3)] flex-shrink-0 overflow-hidden mr-2 sm:mr-4"
             >
               {/* Background image.
                   `sizes` must track the card width per breakpoint, not just the

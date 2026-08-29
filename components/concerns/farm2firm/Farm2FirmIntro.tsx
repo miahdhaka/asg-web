@@ -1,26 +1,13 @@
 "use client";
 
-import { useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
-
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+import StatGrid, { type StatItem } from "@/components/common/StatGrid";
 
 const paragraphs = [
   "Farm2Firm Management Ltd. is a premier tea estate entity dedicated to the art of sustainable agriculture and high-quality tea production. Established with a vision to integrate agricultural heritage with modern, responsible farming practices, we strive to create products that benefit people, the planet, and profit.",
   "As a sister concern of the Amanat Shah Group, we are committed to being an authority in the tea industry, supplying premium-quality goods while fostering farmer revenue, social corporate responsibility, and community development. Our operations are grounded in ethical business strategies and transparent collaborations, ensuring that we deliver excellence in every leaf while driving long-term socio-economic value.",
 ];
 
-interface Stat {
-  value: number;
-  /** Thousands grouping (420000 → "420,000") */
-  grouped?: boolean;
-  unit: string;
-  label: string;
-}
-
-const stats: Stat[] = [
+const stats: StatItem[] = [
   { value: 420000, grouped: true, unit: "", label: "Tea Leaves Processed Annually" },
   { value: 955, unit: "Acres", label: "Land Area" },
   { value: 420, unit: "", label: "Employees" },
@@ -32,38 +19,6 @@ const stats: Stat[] = [
  * hero image and the capabilities band (Figma node 2604-32706).
  */
 export default function Farm2FirmIntro() {
-  const statsRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      gsap.utils.toArray<HTMLElement>("[data-count]").forEach((el) => {
-        const target = Number(el.dataset.count);
-        const grouped = el.dataset.grouped === "1";
-        const format = (v: number) =>
-          v.toLocaleString("en-US", {
-            useGrouping: grouped,
-          });
-        const counter = { value: 0 };
-        gsap.to(counter, {
-          value: target,
-          duration: 2,
-          ease: "power2.out",
-          paused: true,
-          scrollTrigger: {
-            trigger: statsRef.current,
-            start: "top 75%",
-            end: "bottom top",
-            toggleActions: "restart reset restart reset",
-          },
-          onUpdate: () => {
-            el.textContent = format(counter.value);
-          },
-        });
-      });
-    },
-    { scope: statsRef }
-  );
-
   return (
     <section
       id="farm2firm-intro"
@@ -87,35 +42,7 @@ export default function Farm2FirmIntro() {
       </div>
 
       {/* Stat cards */}
-      <div
-        ref={statsRef}
-        className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:mt-[1.33em] lg:grid-cols-4 lg:gap-[1.33em]"
-      >
-        {stats.map((stat) => (
-          <div key={stat.label} className="flex flex-col">
-            <div className="border border-gray-100 bg-gray-50 lg:h-[11.17em] pt-6 lg:pt-[2.67em] px-3 sm:px-4 lg:px-[1.33em] pb-4 lg:pb-0 overflow-hidden">
-              <span className="font-test-tiempos-fine text-3xl sm:text-4xl lg:text-[5em] font-medium text-neutral-800 lg:leading-[1.17]">
-                <span
-                  data-count={stat.value}
-                  data-grouped={stat.grouped ? "1" : "0"}
-                >
-                  0
-                </span>
-              </span>
-              {stat.unit && (
-                <span className="text-xs whitespace-nowrap text-neutral-800 sm:text-sm lg:text-[1.17em] lg:leading-[1.43]">
-                  {stat.unit}
-                </span>
-              )}
-            </div>
-            <div className="flex items-center border border-t-0 border-gray-100 bg-gray-50 lg:h-[4.67em] px-3 sm:px-4 lg:px-[1.33em] py-3 lg:py-0">
-              <span className="text-xs sm:text-sm lg:text-[1.33em] capitalize sm:uppercase text-neutral-800 lg:leading-[1.5]">
-                {stat.label}
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
+      <StatGrid stats={stats} />
     </section>
   );
 }

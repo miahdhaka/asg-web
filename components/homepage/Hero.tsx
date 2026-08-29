@@ -221,9 +221,11 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
       tl.to(overlayRef.current, { opacity: 0, duration: 0.75 }, 0.05);
 
       // Video card dimensions: vertical rectangle on mobile (matches portrait
-      // display), horizontal rectangle on desktop (unchanged)
+      // display), horizontal rectangle on desktop (unchanged). The 72vh cap
+      // keeps the portrait card inside short / landscape phone viewports
+      // where 80vw would end up taller than the screen.
       const videoWidth = isMobile ? "70vw" : "33.4vw";
-      const videoHeight = isMobile ? "80vw" : "18.79vw";
+      const videoHeight = isMobile ? "min(80vw, 72vh)" : "18.79vw";
 
       tl.to(
         videoWrapRef.current,
@@ -1027,6 +1029,30 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
       };
       syncTouchLock();
 
+      /* Safari momentum repair — macOS Safari does NOT cancel trackpad
+         inertia when wheel events are preventDefault()-ed (Chrome and
+         Firefox do), so while a sweep plays the page can still physically
+         drift away from the anchor the transition just landed on.  The
+         fade-chain's backward landing re-anchors nothing by itself, so the
+         stepper and the scroll position end up out of sync and the next
+         gesture snaps instead of gliding — the "stuck" re-entry from the
+         native-scroll zone.  Re-check one frame after every landing and
+         snap back when the page drifted past the tolerance.  Mid-flight
+         drift is invisible (the sweep's pinned overlays hold the frame),
+         so post-landing is the only moment that needs repairing. */
+      const reanchorAfterLand = () => {
+        requestAnimationFrame(() => {
+          if (stepper.sweeping.current()) return;
+          const anchor = anchorY();
+          if (anchor === null) return;
+          if (Math.abs(window.scrollY - anchor) > FADE_CHAIN_TOLERANCE) {
+            controlledScrollTo(anchor);
+            // Don't let the onScroll floor second-guess this repair
+            anchorCorrectedRef.current = true;
+          }
+        });
+      };
+
       // Refresh the lock the instant the resting step changes — the sweep
       // commits boundaries inside the stepper's render loop, which no other
       // handler observes directly.
@@ -1034,11 +1060,13 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
       onLandRef.current = (i) => {
         prevLand(i);
         syncTouchLock();
+        reanchorAfterLand();
       };
       const prevLandBack = onLandBackRef.current;
       onLandBackRef.current = (i) => {
         prevLandBack(i);
         syncTouchLock();
+        reanchorAfterLand();
       };
 
       const atTop = () => window.scrollY <= SCROLL_TOP_THRESHOLD;
@@ -1136,6 +1164,16 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
             if (fire) stepper.advanceRef.current(-1);
             return true;
           }
+        }
+
+        /* Mobile reload race — if a finger lands before hydration completes,
+           the browser pans the page natively (the touch lock doesn't exist
+           yet) and the stepper wakes at step 0 away from the top, where
+           every gesture falls through to native scroll and the phases never
+           engage.  The opening phases always hold the page at the very top,
+           so any drift there is the race: snap back and answer the gesture. */
+        if (isMobile && stepper.stepRef.current < 5 && !atTop()) {
+          window.scrollTo({ top: 0, behavior: "auto" });
         }
 
         if (!atTop()) return false;
@@ -1252,7 +1290,15 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
       };
 
       // Always start from the top — page.tsx's useLayoutEffect guarantees
-      // scrollY === 0 before this effect runs, so step 0 is the only case
+      // scrollY === 0 before this effect runs, so step 0 is the only case.
+      // Mobile reload race: a scroll that starts while the page is still
+      // hydrating beats the useLayoutEffect reset and lands the page away
+      // from the top before the touch lock exists.  Re-seat at the top so
+      // the stepper starts clean even when a reload is scrolled straight
+      // away.
+      if (isMobile && window.scrollY > SCROLL_TOP_THRESHOLD) {
+        window.scrollTo({ top: 0, behavior: "auto" });
+      }
 
       window.addEventListener("resize", onResize);
       window.addEventListener("scroll", onScroll, { passive: true });
@@ -1303,10 +1349,12 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         <div ref={overlayRef} className="absolute inset-0 bg-black/40" />
       </div>
 
-      {/* "Family Business" heading — revealed by the scroll timeline */}
+      {/* "Family Business" heading — revealed by the scroll timeline.
+          Below 380px the nowrap text scales with the viewport so it can
+          never be clipped at the screen edge. */}
       <h2
         ref={familyRef}
-        className="absolute top-[20%] z-20 font-test-tiempos-fine text-[2rem] sm:text-[2.5rem] lg:text-[4.0625rem] leading-10 sm:leading-12 lg:leading-20 text-[var(--primary-black)] whitespace-nowrap opacity-0"
+        className="absolute top-[20%] z-20 font-test-tiempos-fine text-[2rem] max-[380px]:text-[clamp(1.5rem,7.2vw,2rem)] sm:text-[2.5rem] lg:text-[4.0625rem] leading-10 sm:leading-12 lg:leading-20 text-[var(--primary-black)] whitespace-nowrap opacity-0"
       >
         Family Business
       </h2>
@@ -1315,7 +1363,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
           right-aligned to the video's right edge */}
       <h2
         ref={legacyRef}
-        className="absolute top-[24%] right-[15vw] sm:right-[25vw] lg:right-[33.3vw] z-20 font-test-tiempos-fine text-[2rem] sm:text-[2.5rem] lg:text-[4.0625rem] leading-10 sm:leading-12 lg:leading-16 text-[var(--primary-black)] whitespace-nowrap opacity-0"
+        className="absolute top-[24%] right-[15vw] sm:right-[25vw] lg:right-[33.3vw] z-20 font-test-tiempos-fine text-[2rem] max-[380px]:text-[clamp(1.5rem,7.2vw,2rem)] sm:text-[2.5rem] lg:text-[4.0625rem] leading-10 sm:leading-12 lg:leading-16 text-[var(--primary-black)] whitespace-nowrap opacity-0"
       >
         Legacy For
       </h2>
@@ -1324,7 +1372,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
           centred with the same gap as above the video */}
       <h2
         ref={moreRef}
-        className="absolute top-[60%] z-20 font-test-tiempos-fine text-[2rem] sm:text-[2.5rem] lg:text-[4.0625rem] leading-10 sm:leading-12 lg:leading-16 text-[var(--primary-black)] whitespace-nowrap opacity-0"
+        className="absolute top-[60%] z-20 font-test-tiempos-fine text-[2rem] max-[380px]:text-[clamp(1.44rem,6.2vw,2rem)] sm:text-[2.5rem] lg:text-[4.0625rem] leading-10 sm:leading-12 lg:leading-16 text-[var(--primary-black)] whitespace-nowrap opacity-0"
       >
         More Then 130 Years
       </h2>
@@ -1346,7 +1394,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         </div>
 
         <div ref={textRef}>
-          <h1 className="font-test-tiempos-fine uppercase text-3xl sm:text-4xl lg:text-6xl font-medium mb-2 lg:mb-4">
+          <h1 className="font-test-tiempos-fine uppercase text-[27px] sm:text-4xl lg:text-6xl font-medium mb-2 lg:mb-4">
             Amanat Shah Group
           </h1>
 

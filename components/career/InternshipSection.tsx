@@ -17,13 +17,13 @@ export default function InternshipSection() {
         </div>
 
         {/* Copy */}
-        <div className="w-full lg:w-[37.3333rem]">
+        <div className="w-full lg:w-[35rem]">
           <div className="flex flex-col gap-4 sm:gap-6">
             <div className="flex flex-col gap-4 sm:gap-6">
               <h2 className="font-test-tiempos-fine text-2xl sm:text-3xl lg:text-[3rem] leading-8 text-neutral-800 lg:leading-[3.3333rem]">
                 Join the Internship Program at
               </h2>
-              <p className="text-base leading-7 text-neutral-800 lg:text-[1.5rem] lg:leading-[2.3333rem]">
+              <p className="text-base leading-7 font-medium text-neutral-800 lg:text-[1.5rem] lg:leading-[2rem]">
                 Start your career journey with hands-on experience, mentorship, and a global platform
               </p>
             </div>

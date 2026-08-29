@@ -52,10 +52,10 @@ export default function Sustainability() {
   return (
     <section
       id="sustainability"
-      className="relative flex w-full flex-col overflow-hidden bg-white pb-8 lg:pb-16 h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
+      className="relative flex w-full flex-col overflow-hidden bg-white pb-8 lg:pb-16 min-h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Header row — title left, description right */}
-      <div className="pt-8 max-[380px]:pt-5 px-4 pb-6 max-[380px]:pb-3 lg:pt-18 lg:px-20 lg:pb-12">
+      <div className="pt-8 px-4 pb-6 lg:pt-18 lg:px-20 lg:pb-12">
         <div className="flex flex-col lg:flex-row items-start lg:items-center lg:justify-between gap-4 lg:gap-8 max-w-[90%]">
           {/* Title — drops in from above via the Hero's fade-chain reveal */}
           <h2
@@ -80,7 +80,7 @@ export default function Sustainability() {
           stagger via the Hero's fade-chain reveal */}
       <div
         id="sustainability-panels"
-        className="flex flex-col lg:flex-row min-h-0 flex-1 gap-3 max-[380px]:gap-1.5 lg:gap-5 px-4 lg:px-18 w-[90%] lg:w-[90%] mx-auto"
+        className="flex flex-col lg:flex-row min-h-0 flex-1 gap-3 lg:gap-5 px-4 lg:px-18 w-[90%] lg:w-[90%] mx-auto"
       >
         {panels.map((panel, index) => {
           const isActive = index === activeIndex;
@@ -88,7 +88,7 @@ export default function Sustainability() {
             <div
               key={panel.label}
               onClick={() => setActiveIndex(index)}
-              className={`group relative h-full min-w-0 min-h-0 shrink-0 basis-[4rem] max-[380px]:basis-[3.25rem] sm:basis-[4.5rem] lg:basis-[7.5rem] overflow-hidden select-none transition-[flex-grow] duration-700 ease-in-out ${
+              className={`group relative h-full min-w-0 min-h-0 shrink-0 basis-[4rem] sm:basis-[4.5rem] lg:basis-[7.5rem] overflow-hidden select-none transition-[flex-grow] duration-700 ease-in-out ${
                 isActive ? "grow cursor-default" : "grow-0 cursor-pointer"
               }`}
             >
@@ -149,9 +149,7 @@ export default function Sustainability() {
                 <h3 className="font-neue-montreal text-lg lg:text-2xl font-bold text-white tracking-wider">
                   {panel.label}
                 </h3>
-                {/* Clamped on phones so the copy can never spill out of the
-                    short vertical panels — desktop shows the full text */}
-                <p className="mt-2 max-[380px]:mt-1 lg:mt-4 text-xs sm:text-sm lg:text-lg leading-[1.5] tracking-wider text-white/90 max-lg:[display:-webkit-box] max-lg:[-webkit-line-clamp:4] max-lg:[-webkit-box-orient:vertical] max-lg:overflow-hidden">
+                <p className="mt-2 lg:mt-4 text-xs sm:text-sm lg:text-lg leading-[1.5] tracking-wider text-white/90">
                   {panel.description}
                 </p>
               </div>
