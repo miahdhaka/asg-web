@@ -142,7 +142,7 @@ export default function Newsroom() {
   return (
     <section
       id="newsroom"
-      className="relative flex w-full flex-col overflow-hidden bg-white py-6 lg:py-8 h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
+      className="relative flex w-full flex-col overflow-hidden bg-white py-6 lg:py-8 mb-6 lg:mb-8 h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Header — eyebrow + title left, button right */}
       <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between px-4 lg:px-20 mb-10 gap-4">
@@ -181,66 +181,65 @@ export default function Newsroom() {
           Desktop keeps the three-column grid (clones hidden). */}
       <div className="relative flex min-h-0 flex-1 items-start px-4 lg:px-20">
         <div className="relative w-full lg:h-full">
-        <div
-          ref={stripRef}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={endDrag}
-          onPointerCancel={endDrag}
-          onScroll={onScroll}
-          onClickCapture={onClickCapture}
-          className="no-scrollbar flex w-full select-none gap-3 overflow-x-auto cursor-grab active:cursor-grabbing overscroll-x-none touch-pan-y lg:grid lg:h-auto lg:grid-cols-3 lg:overflow-visible lg:gap-5 lg:cursor-auto"
-        >
-          {loopedNews.map((item, index) => (
-            <Link
-              key={`${item.image}-${index}`}
-              href={`/newsroom/${item.slug}`}
-              className={`group flex w-[78%] shrink-0 flex-col sm:w-[52%] lg:w-auto lg:shrink gap-3 sm:gap-4 ${
-                index >= news.length ? "lg:hidden" : ""
-              }`}
-            >
-              {/* Image */}
-              <div className="relative aspect-[431/390] w-full overflow-hidden bg-[#D9D9D9]">
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  fill
-                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                  draggable={false}
-                  className="pointer-events-none object-cover"
-                  quality={80}
-                />
-                {/* Hover overlay */}
-                <div
-                  aria-hidden
-                  className="absolute inset-0 overlay-image-hover opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100"
-                />
-              </div>
-
-              <div className="flex flex-col gap-1">
-                {/* Meta — date / category */}
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="font-neue-montreal text-sm sm:text-base lg:text-xl text-neutral-600">
-                    {item.date}
-                  </span>
-                  <span
-                    aria-hidden
-                    className="h-4 sm:h-5 w-px rotate-[30deg] bg-neutral-600"
+          <div
+            ref={stripRef}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={endDrag}
+            onPointerCancel={endDrag}
+            onScroll={onScroll}
+            onClickCapture={onClickCapture}
+            className="no-scrollbar flex w-full select-none gap-3 overflow-x-auto cursor-grab active:cursor-grabbing overscroll-x-none touch-pan-y lg:grid lg:h-full lg:grid-cols-3 lg:overflow-visible lg:gap-5 lg:cursor-auto"
+          >
+            {loopedNews.map((item, index) => (
+              <Link
+                key={`${item.image}-${index}`}
+                href={`/newsroom/${item.slug}`}
+                className={`group flex w-[78%] shrink-0 flex-col sm:w-[52%] lg:w-auto lg:shrink lg:h-full lg:min-h-0 gap-3 sm:gap-4 ${
+                  index >= news.length ? "lg:hidden" : ""
+                }`}
+              >
+                {/* Image */}
+                <div className="relative aspect-[431/390] w-full overflow-hidden bg-[#D9D9D9] lg:aspect-auto lg:flex-1 lg:min-h-0">
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    draggable={false}
+                    className="pointer-events-none object-cover"
+                    quality={80}
                   />
-                  <span className="font-neue-montreal text-sm sm:text-base lg:text-xl text-neutral-600">
-                    {item.category}
-                  </span>
+                  {/* Hover overlay */}
+                  <div
+                    aria-hidden
+                    className="absolute inset-0 overlay-image-hover opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100"
+                  />
                 </div>
 
-                {/* Title */}
-                <h3 className="max-w-full lg:max-w-[21.5625rem] font-serif text-xl sm:text-2xl lg:text-3xl leading-7 sm:leading-8 lg:leading-10 text-neutral-800">
-                  {item.title}
-                </h3>
-              </div>
+                <div className="flex flex-col gap-1">
+                  {/* Meta — date / category */}
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="font-neue-montreal text-sm sm:text-base lg:text-xl text-neutral-600">
+                      {item.date}
+                    </span>
+                    <span
+                      aria-hidden
+                      className="h-4 sm:h-5 w-px rotate-[30deg] bg-neutral-600"
+                    />
+                    <span className="font-neue-montreal text-sm sm:text-base lg:text-xl text-neutral-600">
+                      {item.category}
+                    </span>
+                  </div>
 
-            </Link>
-          ))}
-        </div>
+                  {/* Title */}
+                  <h3 className="max-w-full lg:max-w-[21.5625rem] font-serif text-xl sm:text-2xl lg:text-3xl leading-7 sm:leading-8 lg:leading-10 text-neutral-800">
+                    {item.title}
+                  </h3>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </section>
