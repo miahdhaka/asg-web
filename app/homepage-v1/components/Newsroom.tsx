@@ -165,7 +165,7 @@ export default function Newsroom() {
   return (
     <section
       id="newsroom"
-      className="relative flex w-full flex-col overflow-hidden bg-white py-6 lg:py-8 min-h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
+      className="relative flex w-full flex-col overflow-hidden bg-white py-6 lg:py-8 h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Header — eyebrow + title left, button right */}
       <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between px-4 lg:px-20 mb-6 lg:mb-10 gap-4">

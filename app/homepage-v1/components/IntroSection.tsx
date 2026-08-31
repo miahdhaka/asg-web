@@ -13,7 +13,7 @@ export default function IntroSection() {
        updated together with a re-seat. Desktop keeps 100vh. */
     <section
       id="intro-section"
-      className="relative w-full bg-[var(--primary-black)] flex flex-col items-center justify-center overflow-hidden h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))] pt-[var(--header-height)]"
+      className="relative w-full bg-[var(--primary-black)] flex flex-col items-center justify-center overflow-hidden h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))] lg:pt-[var(--header-height)]"
     >
       {/* Brand gradient glow — top center, behind content.
           The blur has to scale with the box: desktop's 15.625rem blur on the

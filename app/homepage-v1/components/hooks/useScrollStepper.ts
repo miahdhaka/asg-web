@@ -43,9 +43,6 @@ export interface ScrollStepperHandle {
   stepRef: { current: number };
   /** True while the GSAP chase tween is in flight. */
   sweeping: MutableRefObject<() => boolean>;
-  /** True when the goal is already the last resting state — including while
-   *  the chase toward it is still in flight, before `stepRef` catches up. */
-  atLastGoal: MutableRefObject<() => boolean>;
   /** Advance the goal by `dir` (+1 or −1) and start a new chase. */
   advanceRef: MutableRefObject<(dir: number) => void>;
 }
@@ -61,7 +58,6 @@ export function useScrollStepper({
   const stepRef = useRef(0);
   const advanceRef = useRef<(dir: number) => void>(() => {});
   const sweepingRef = useRef<() => boolean>(() => false);
-  const atLastGoalRef = useRef<() => boolean>(() => false);
 
   // The callback props are already MutableRefObjects — use them directly.
   // Hero populates their .current inside its own useGSAP, which runs before
@@ -86,7 +82,6 @@ export function useScrollStepper({
 
     const sweeping = () => sweep !== null;
     sweepingRef.current = sweeping;
-    atLastGoalRef.current = () => goal === LAST;
 
     /* Paint the current position. Crossing a whole number commits that
        transition's end state and stages the next one, so a single chase
@@ -208,5 +203,5 @@ export function useScrollStepper({
     };
   }, [transitionCount]);
 
-  return { stepRef, sweeping: sweepingRef, atLastGoal: atLastGoalRef, advanceRef };
+  return { stepRef, sweeping: sweepingRef, advanceRef };
 }

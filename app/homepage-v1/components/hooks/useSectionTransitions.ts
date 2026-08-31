@@ -224,7 +224,10 @@ export function useSectionTransitions(
                 duration: 0.35,
                 ease: "power2.out",
                 onUpdate: function () {
-                  window.scrollTo(0, this.targets()[0].y);
+                  // Safari handles sub-pixel scrollTo poorly while trackpad
+                  // momentum is still decaying — rounded values keep the
+                  // glide from juddering on macOS
+                  window.scrollTo(0, Math.round(this.targets()[0].y));
                 },
                 onComplete: () => {
                   _scrollTween = null;
