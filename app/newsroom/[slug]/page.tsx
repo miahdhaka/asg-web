@@ -92,11 +92,11 @@ export default async function NewsDetailPage({
           <button
             type="button"
             aria-label="Share on Facebook"
-            className="flex h-[2rem] w-[2rem] cursor-pointer items-center justify-center rounded-full bg-[#1877F2] transition-all duration-300 ease-out hover:ring-2 hover:ring-[#1877F2] hover:ring-offset-2"
+            className="flex h-[2rem] sm:h-[2.5rem] w-[2rem] sm:w-[2.5rem] cursor-pointer items-center justify-center rounded-full bg-[#1877F2] transition-all duration-300 ease-out hover:ring-2 hover:ring-[#1877F2] hover:ring-offset-2"
           >
             <svg
-              width="16"
-              height="16"
+              width="20"
+              height="20"
               viewBox="0 0 24 24"
               fill="none"
               aria-hidden
@@ -112,12 +112,12 @@ export default async function NewsDetailPage({
           <button
             type="button"
             aria-label="Share on Instagram"
-            className="flex h-[2rem] w-[2rem] cursor-pointer items-center justify-center rounded-full transition-all duration-300 ease-out hover:ring-2 hover:ring-[#E4405F] hover:ring-offset-2"
+            className="flex h-[2rem] sm:h-[2.5rem] w-[2rem] sm:w-[2.5rem] cursor-pointer items-center justify-center rounded-full transition-all duration-300 ease-out hover:ring-2 hover:ring-[#E4405F] hover:ring-offset-2"
             style={{ background: "linear-gradient(45deg, #FFD521 14.64%, #FFD020 18.53%, #FEC01E 23.41%, #FCA71B 28.79%, #FA8316 34.59%, #F85510 40.67%, #F51E09 46.89%, #F30005 50%, #F20007 50.21%, #E1003B 56.86%, #D30067 63.29%, #C70088 69.52%, #BF00A0 75.39%, #BB00AF 80.83%, #B900B4 85.36%)" }}
           >
             <svg
-              width="16"
-              height="16"
+              width="20"
+              height="20"
               viewBox="0 0 24 24"
               fill="none"
               aria-hidden
@@ -132,11 +132,11 @@ export default async function NewsDetailPage({
           <button
             type="button"
             aria-label="Share on LinkedIn"
-            className="flex h-[2rem] w-[2rem] cursor-pointer items-center justify-center rounded-full bg-[#0A66C2] transition-all duration-300 ease-out hover:ring-2 hover:ring-[#0A66C2] hover:ring-offset-2"
+            className="flex h-[2rem] sm:h-[2.5rem] w-[2rem] sm:w-[2.5rem] cursor-pointer items-center justify-center rounded-full bg-[#0A66C2] transition-all duration-300 ease-out hover:ring-2 hover:ring-[#0A66C2] hover:ring-offset-2"
           >
             <svg
-              width="16"
-              height="16"
+              width="20"
+              height="20"
               viewBox="0 0 24 24"
               fill="none"
               aria-hidden

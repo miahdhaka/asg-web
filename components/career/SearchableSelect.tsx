@@ -24,6 +24,54 @@ export default function SearchableSelect({
   const [search, setSearch] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
 
+  /* Typing-animation for the search-input placeholder */
+  const TYPING_SPEED = 100;
+  const PAUSE_AFTER_FULL = 2200;
+  const DELETING_SPEED = 50;
+
+  const [animPlaceholder, setAnimPlaceholder] = useState("");
+  const placeholderIdx = useRef(0);
+  const placeholderDir = useRef<"typing" | "pausing" | "deleting">("typing");
+
+  useEffect(() => {
+    if (!open) return;
+    // Reset animation each time dropdown opens
+    placeholderIdx.current = 0;
+    placeholderDir.current = "typing";
+    setAnimPlaceholder("");
+
+    let tid: ReturnType<typeof setTimeout>;
+    const tick = () => {
+      const dir = placeholderDir.current;
+      if (dir === "typing") {
+        const next = placeholderIdx.current + 1;
+        setAnimPlaceholder(searchPlaceholder.slice(0, next));
+        placeholderIdx.current = next;
+        if (next >= searchPlaceholder.length) {
+          placeholderDir.current = "pausing";
+          tid = setTimeout(tick, PAUSE_AFTER_FULL);
+        } else {
+          tid = setTimeout(tick, TYPING_SPEED);
+        }
+      } else if (dir === "pausing") {
+        placeholderDir.current = "deleting";
+        tid = setTimeout(tick, DELETING_SPEED);
+      } else {
+        const next = placeholderIdx.current - 1;
+        setAnimPlaceholder(searchPlaceholder.slice(0, next));
+        placeholderIdx.current = next;
+        if (next <= 0) {
+          placeholderDir.current = "typing";
+          tid = setTimeout(tick, TYPING_SPEED);
+        } else {
+          tid = setTimeout(tick, DELETING_SPEED);
+        }
+      }
+    };
+    tid = setTimeout(tick, TYPING_SPEED);
+    return () => clearTimeout(tid);
+  }, [open, searchPlaceholder]);
+
   const filtered = options.filter((opt) =>
     opt.toLowerCase().includes(search.toLowerCase())
   );
@@ -43,7 +91,7 @@ export default function SearchableSelect({
   const selectedLabel = value || placeholder;
 
   return (
-    <label className="flex w-full flex-col gap-2 sm:max-w-[32.3333rem]">
+    <label className="flex w-full flex-col gap-2 sm:max-w-[32.3333rem] tracking-wide">
       <span className="text-sm text-neutral-800 lg:text-[1.1667rem]">{label}</span>
       <div ref={containerRef} className={`input-gradient-border-hover relative block bg-white ${open ? "input-gradient-border-active" : ""}`}>
         {/* Trigger button */}
@@ -76,7 +124,7 @@ export default function SearchableSelect({
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder={searchPlaceholder}
+                placeholder={animPlaceholder}
                 className="w-full bg-transparent text-xs text-neutral-800 placeholder:text-neutral-500 focus:outline-none lg:text-sm"
                 autoFocus
               />
@@ -87,8 +135,8 @@ export default function SearchableSelect({
               {/* "All" option */}
               <button
                 type="button"
-                className={`w-full px-3 py-2.5 text-left text-xs transition-colors hover:bg-gray-50 lg:px-4 lg:py-3 lg:text-sm ${
-                  !value ? "bg-gray-50 text-neutral-800 font-medium" : "text-neutral-600"
+                className={`w-full px-3 py-2.5 text-left text-xs transition-colors lg:px-4 lg:py-3 lg:text-sm ${
+                  !value ? "bg-gray-50 text-neutral-800 font-medium" : "text-neutral-600 hover:bg-[image:var(--primary-gradient)] hover:text-white cursor-pointer"
                 }`}
                 onClick={() => {
                   onChange("");
@@ -103,8 +151,8 @@ export default function SearchableSelect({
                 <button
                   key={opt}
                   type="button"
-                  className={`w-full px-3 py-2.5 text-left text-xs transition-colors hover:bg-gray-50 lg:px-4 lg:py-3 lg:text-sm ${
-                    value === opt ? "bg-gray-50 text-neutral-800 font-medium" : "text-neutral-600"
+                  className={`w-full px-3 py-2.5 text-left text-xs transition-colors lg:px-4 lg:py-3 lg:text-sm ${
+                    value === opt ? "bg-gray-50 text-neutral-800 font-medium" : "text-neutral-600 hover:bg-[image:var(--primary-gradient)] hover:text-white cursor-pointer"
                   }`}
                   onClick={() => {
                     onChange(opt);

@@ -182,7 +182,7 @@ export default function ApplicationSubmitted({
             className="group relative inline-flex w-fit items-center justify-center overflow-hidden h-[40px] px-6 py-3 text-sm leading-none lg:px-8 lg:py-4 lg:text-base lg:h-auto"
             style={{
               borderImage: "var(--primary-gradient) 1",
-              borderWidth: 2,
+              borderWidth: 1,
             }}
           >
             {/* Invisible spacer */}

@@ -88,7 +88,7 @@ export default function ContactForm() {
       </div>
 
       {/* Form fields with fade transition */}
-      <div key={activeTab} className="flex flex-col gap-4 sm:gap-10.5 animate-fade-in">
+      <div key={activeTab} className="flex flex-col gap-4 sm:gap-8 animate-fade-in">
         {/* Full name */}
         <div className="flex flex-col gap-1.5 sm:gap-0">
           <label className="sm:hidden text-xs font-medium text-neutral-800">Full Name</label>
@@ -96,7 +96,7 @@ export default function ContactForm() {
             <input
               type="text"
               placeholder={fields.namePlaceholder}
-              className="h-9 lg:h-[3rem] w-full bg-white px-3 sm:px-4 text-xs lg:text-[1rem] text-neutral-800 placeholder:text-neutral-600 focus:outline-none rounded-md"
+              className="h-9 lg:h-[3.5rem] w-full bg-white px-3 sm:px-4 text-xs lg:text-[1rem] text-neutral-800 placeholder:text-neutral-600 focus:outline-none rounded-md"
             />
           </div>
         </div>
@@ -108,7 +108,7 @@ export default function ContactForm() {
             <input
               type="tel"
               placeholder={fields.mobilePlaceholder}
-              className="h-9 lg:h-[3rem] w-full bg-white px-3 sm:px-4 text-xs lg:text-[1rem] text-neutral-800 placeholder:text-neutral-600 focus:outline-none rounded-md"
+              className="h-9 lg:h-[3.5rem] w-full bg-white px-3 sm:px-4 text-xs lg:text-[1rem] text-neutral-800 placeholder:text-neutral-600 focus:outline-none rounded-md"
             />
           </div>
         </div>
@@ -121,7 +121,7 @@ export default function ContactForm() {
             <button
               type="button"
               onClick={() => hasSearchableDropdown && setDropdownOpen((o) => !o)}
-              className="flex h-9 lg:h-[3rem] w-full items-center gap-2 bg-white px-3 sm:px-3.5 border border-neutral-200 rounded-md sm:input-gradient-border-hover text-left cursor-pointer"
+              className="flex h-9 lg:h-[3.5rem] w-full items-center gap-2 bg-white px-3 sm:px-3.5 border border-neutral-200 rounded-md sm:input-gradient-border-hover text-left cursor-pointer"
             >
               <span className="flex-1 text-xs lg:text-[1rem] text-neutral-600 truncate">
                 {selectedOption || fields.dropdownPlaceholder}
@@ -189,30 +189,43 @@ export default function ContactForm() {
         </div>
       </div>
 
-      {/* Send Message button — left-aligned per Figma, flip hover (gradient fill → gradient outline) */}
+      {/* Send Message button — flip hover (gradient fill → gradient outline) */}
       <button
         type="button"
-        className="group relative self-start overflow-hidden text-sm sm:text-lg text-nowrap tracking-wide cursor-pointer"
+        className="group relative self-start inline-flex overflow-hidden text-sm sm:text-lg text-nowrap tracking-wide cursor-pointer px-5 sm:px-10 py-2.5 sm:py-5"
+        style={{
+          borderImage: "var(--primary-gradient) 1",
+          borderWidth: 1,
+        }}
       >
-        {/* Hover layer — gradient border + gradient text, slides in from top */}
-        <span
-          aria-hidden
-          className="absolute inset-0 flex -translate-y-full items-center justify-center gap-2 bg-[linear-gradient(150deg,#8BC34A_0%,#1AA179_81%)] p-px transition-transform duration-500 ease-in-out group-hover:translate-y-0"
-        >
-          <span className="flex h-full w-full items-center justify-center gap-1.5 sm:gap-2 bg-white px-5 sm:px-10">
-            <span className="bg-[linear-gradient(150deg,#8BC34A_0%,#1AA179_81%)] bg-clip-text text-transparent">
-              Send Message
-            </span>
-            <Send size={16} className="sm:hidden shrink-0" style={{ stroke: 'url(#icon-gradient)' }} />
-            <Send size={20} className="hidden sm:block shrink-0" style={{ stroke: 'url(#icon-gradient)' }} />
-          </span>
+        {/* Invisible spacer */}
+        <span className="invisible inline-flex items-center gap-1.5 sm:gap-2">
+          Send Message
+          <Send size={16} className="sm:hidden shrink-0" />
+          <Send size={20} className="hidden sm:block shrink-0" />
         </span>
 
-        {/* Default layer — gradient fill + white content, slides out downward */}
-        <span className="relative flex items-center justify-center gap-1.5 sm:gap-2 bg-[linear-gradient(150deg,#8BC34A_0%,#1AA179_81%)] px-5 sm:px-10 py-2.5 sm:py-5 text-white transition-transform duration-500 ease-in-out group-hover:translate-y-full">
+        {/* Default — gradient fill + white text, slides down on hover */}
+        <span
+          aria-hidden
+          className="absolute inset-0 flex items-center justify-center gap-1.5 sm:gap-2 text-white transition-transform duration-500 ease-in-out group-hover:translate-y-full"
+          style={{ background: "var(--primary-gradient)" }}
+        >
           Send Message
-          <Send size={16} className="sm:hidden shrink-0"/>
-          <Send size={20} className="hidden sm:block shrink-0"/>
+          <Send size={16} className="sm:hidden shrink-0" />
+          <Send size={20} className="hidden sm:block shrink-0" />
+        </span>
+
+        {/* Hover — gradient text, slides in from top */}
+        <span
+          aria-hidden
+          className="absolute inset-0 flex -translate-y-full items-center justify-center gap-1.5 sm:gap-2 transition-transform duration-500 ease-in-out group-hover:translate-y-0"
+        >
+          <span className="bg-clip-text text-transparent" style={{ backgroundImage: "var(--primary-gradient)" }}>
+            Send Message
+          </span>
+          <Send size={16} className="sm:hidden shrink-0" style={{ color: '#1AA179' }} strokeWidth={1.5} />
+          <Send size={20} className="hidden sm:block shrink-0" style={{ color: '#1AA179' }} strokeWidth={1.5} />
         </span>
       </button>
     </div>

@@ -461,7 +461,7 @@ html.asg-touch-lock * {
 .input-gradient-border-hover {
   position: relative;
   isolation: isolate;
-  border: 2px solid oklch(0.961 0 0); /* neutral-100 */
+  border: 1px solid oklch(0.961 0 0); /* neutral-100 */
   transition: border-color 0.3s ease-in-out;
 }
 .input-gradient-border-hover::before {
@@ -469,7 +469,7 @@ html.asg-touch-lock * {
   position: absolute;
   inset: 0;
   z-index: 1;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   border-image: var(--primary-gradient) 1;
   opacity: 0;
   transition: opacity 0.3s ease-in-out;

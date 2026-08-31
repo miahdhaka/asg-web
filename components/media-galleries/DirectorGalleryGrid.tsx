@@ -33,7 +33,7 @@ export function DirectorCard({
           : undefined
       }
     >
-      <div className="card-gradient-target card-gradient-fast relative aspect-[429/257] w-full overflow-hidden bg-gray-50">
+      <div className="card-gradient-target card-gradient-fast relative aspect-[429/257] w-full overflow-hidden bg-gray-50 rounded-[4px]">
         <Image
           src={card.image}
           alt={card.name}

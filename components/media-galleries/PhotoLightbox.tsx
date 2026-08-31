@@ -245,7 +245,7 @@ export default function PhotoLightbox({
             <ChevronLeft className="h-4 w-4 sm:h-6 sm:w-6" strokeWidth={2} />
           </button>
 
-          <div className="flex h-full w-full items-center justify-center">
+          <div className="flex h-full w-full items-center justify-center rounded-[4px] overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               ref={imgRef}
@@ -272,11 +272,11 @@ export default function PhotoLightbox({
 
         {/* ── Caption ───────────────────────────────────────────── */}
         <div ref={captionRef} className="flex flex-col items-center gap-1">
-          <p className="text-center font-test-tiempos-fine text-sm sm:text-[1.25rem] leading-[1.75rem] text-white lg:text-[1.5rem]">
+          <h4 className="text-center font-test-tiempos-fine text-sm sm:text-[1.25rem] leading-[1.75rem] text-white lg:text-[1.5rem] tracking-wider">
             {item.caption}
-          </p>
+          </h4>
           {item.subCaption && (
-            <p className="text-center font-neue-montreal text-xs sm:text-[1rem] leading-[1.5rem] text-white/80">
+            <p className="text-center font-neue-montreal text-xs sm:text-[1rem] leading-[1.5rem] text-white/80 font-medium tracking-wider">
               {item.subCaption}
             </p>
           )}

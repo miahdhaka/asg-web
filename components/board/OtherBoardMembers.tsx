@@ -241,7 +241,7 @@ export default function OtherBoardMembers({
                     <h3 className="font-test-tiempos-fine font-medium text-base lg:text-[2em] text-neutral-900">
                       {member.name}
                     </h3>
-                    <p className="sm:mt-1 text-xs sm:text-sm lg:text-[1.2em] text-neutral-600 tracking-wide">
+                    <p className="sm:mt-1 text-xs sm:text-sm lg:text-[1.2em] text-neutral-600 font-medium tracking-wide">
                       {member.role}
                     </p>
                   </div>

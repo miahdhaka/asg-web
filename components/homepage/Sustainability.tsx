@@ -56,7 +56,7 @@ export default function Sustainability() {
     >
       {/* Header row — title left, description right */}
       <div className="pt-8 max-[380px]:pt-5 px-4 pb-6 max-[380px]:pb-3 lg:pt-18 lg:px-20 lg:pb-12">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center lg:justify-between gap-4 lg:gap-8 max-w-[90%]">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center lg:justify-between gap-2 sm:gap-4 lg:gap-8 max-w-[90%]">
           {/* Title — drops in from above via the Hero's fade-chain reveal */}
           <h2
             id="sustainability-title"

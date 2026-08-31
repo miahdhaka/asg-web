@@ -33,7 +33,7 @@ export function PhotoCard({
           : undefined
       }
     >
-      <div className="relative aspect-[429/257] w-full overflow-hidden bg-[#D9D9D9]">
+      <div className="relative aspect-[429/257] w-full overflow-hidden bg-[#D9D9D9] rounded-[4px]">
         <Image
           src={card.image}
           alt={card.label}

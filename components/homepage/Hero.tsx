@@ -38,6 +38,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
   const flyDarkRef = useRef<HTMLImageElement>(null);
   const flyMixedRef = useRef<HTMLImageElement>(null);
   const waaWhiteRef = useRef<HTMLDivElement>(null);
+  const mobileNavLogoRef = useRef<HTMLImageElement>(null);
 
   // ── Section-transition orchestration (extracted) ──
   const transitionHelpersRef = useRef<{
@@ -144,6 +145,11 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         gsap.set(headerLogo, { clearProps: "all" });
         headerLogo.style.opacity = "0";
       }
+      // Same reset for Hero's mobile navbar-logo stand-in — clear any
+      // position/opacity left behind by a previous visit (back button)
+      if (mobileNavLogoRef.current) {
+        gsap.set(mobileNavLogoRef.current, { clearProps: "all" });
+      }
       
       /* Current root font size — the whole layout is scaled through it (see
          the fluid scale in globals.css), so the hard gaps below are read as
@@ -166,6 +172,17 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         });
       };
       placeLogo();
+
+      /* Mobile: the navbar's own centre logo stays hidden on the homepage,
+         so Hero pins a smaller copy of it over the navbar centre's exact
+         rect and drives that one instead. Rect-based, so it tracks the
+         navbar's current height/position on every call. */
+      const placeMobileNavLogo = () => {
+        const m = mobileNavLogoRef.current;
+        if (!m || !headerLogo || window.innerWidth >= 1024) return;
+        const r = headerLogo.getBoundingClientRect();
+        gsap.set(m, { left: r.left, top: r.top, width: r.width, height: r.height });
+      };
 
       /* Delta from the hero logo's centre to the navbar logo's centre,
          computed lazily so it always matches the current viewport */
@@ -198,6 +215,17 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
       // Viewport check — needed by multiple timeline values below
       const isMobile = window.innerWidth < 1024;
 
+      /* Every navbar-logo reveal/hide targets Hero's small stand-in on
+         mobile and the real navbar logo on desktop. Like desktop, it stays
+         hidden at the top — the phase-1 flight reveals it only after the
+         hero logo has flown up and handed over. */
+      const navLogoTarget: HTMLElement | null = isMobile
+        ? mobileNavLogoRef.current
+        : headerLogo;
+      if (isMobile && navLogoTarget) {
+        placeMobileNavLogo();
+      }
+
       /* Anchor the video wrapper to the viewport centre from the start —
          full-bleed at 100%×100%, then only width/height shrink, so it
          collapses evenly from all four sides with zero drift. */
@@ -220,12 +248,16 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
       // Dark overlay clears while the video shrinks into its card
       tl.to(overlayRef.current, { opacity: 0, duration: 0.75 }, 0.05);
 
-      // Video card dimensions: vertical rectangle on mobile (matches portrait
-      // display), horizontal rectangle on desktop (unchanged). The 72vh cap
-      // keeps the portrait card inside short / landscape phone viewports
-      // where 80vw would end up taller than the screen.
+      // Video card dimensions: identical shrink behaviour on every viewport.
+      // Desktop's 33.4vw × 18.79vw card is exactly 33.4% of BOTH viewport
+      // dimensions on a 16:9 screen, so the full-bleed video scales down
+      // uniformly — an even zoom-out from all four sides. Mobile uses the
+      // same uniform scale on both axes (60% — larger for legibility on the
+      // small screen, height %-based because the phone viewport is
+      // portrait), so the collapse / re-expand still reads exactly like
+      // desktop instead of squashing vertically.
       const videoWidth = isMobile ? "70vw" : "33.4vw";
-      const videoHeight = isMobile ? "min(80vw, 72vh)" : "18.79vw";
+      const videoHeight = isMobile ? "50%" : "18.79vw";
 
       tl.to(
         videoWrapRef.current,
@@ -265,9 +297,9 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
 
       // …pauses there, fades out…
       tl.to(logoRef.current, { opacity: 0, duration: 0.35, ease: "power1.out" }, 1.1);
-      // …and the navbar logo takes over
-      if (headerLogo) {
-        tl.to(headerLogo, { opacity: 1, duration: 0.4, ease: "power1.inOut" }, 1.25);
+      // …and the navbar logo takes over (Hero's stand-in on mobile)
+      if (navLogoTarget) {
+        tl.to(navLogoTarget, { opacity: 1, duration: 0.4, ease: "power1.inOut" }, 1.25);
       }
 
       // "Family Business" settles in above the shrunken video
@@ -295,7 +327,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
          heading up / video down only as much as needed so "Legacy For" sits
          tightly under "Family Business" with a small gap to the video.
          Evaluated lazily on the 2nd gesture, when both are at rest. */
-      const GAP_TEXT = () => (isMobile ? rootPx() * 0.5 : rootPx() * 0.25); // 8px mobile / 4px @1920 — between headings
+      const GAP_TEXT = () => (isMobile ? rootPx() * 0.5 : rootPx() * 0.25); // 8px mobile — small gap / 4px @1920 — between headings
       const GAP_VIDEO = () => (isMobile ? rootPx() * 0.75 : rootPx() * 2.5); // 12px mobile / 40px @1920 — heading ↔ video
       const metrics = () => {
         const fbBottom =
@@ -313,9 +345,9 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         return { rise, drop, lfTop };
       };
 
-      // "Family Business" moves up and aligns to the video's left edge
-      // Mobile video is 70vw wide, centered → left edge at (100-70)/2 = 15vw
-      const videoLeftEdge = isMobile ? "15vw" : "33.3vw";
+      // "Family Business" moves up and aligns to the video's left edge —
+      // centered card, so the edge sits at (100 - width)/2
+      const videoLeftEdge = isMobile ? "14vw" : "33.3vw";
       tl2.to(
         familyRef.current,
         {
@@ -361,7 +393,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         {
           top: () =>
             (videoWrapRef.current?.getBoundingClientRect().bottom ?? 0) +
-            (isMobile ? rootPx() * 0.75 : GAP_VIDEO()),
+            (isMobile ? rootPx() * 0.5 : GAP_VIDEO()),
         },
         0
       );
@@ -386,7 +418,9 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         if (!intro) return;
         gsap.set(intro, {
           position: "fixed",
-          top: headerH(),
+          // Mobile pins flush with the viewport top; desktop keeps the
+          // under-navbar geometry it has in normal flow
+          top: isMobile ? 0 : headerH(),
           left: 0,
           width: "100%",
           zIndex: 40,
@@ -463,7 +497,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         tl4.set(introFlyRef.current, { autoAlpha: 1 }, 0.02);
         tl4.set(flyDarkRef.current, { opacity: 1 }, 0.02);
         tl4.set(flyMixedRef.current, { opacity: 0 }, 0.02);
-        tl4.set(headerLogo, { opacity: 0 }, 0.02);
+        tl4.set(navLogoTarget, { opacity: 0 }, 0.02);
         tl4.set(introLogo, { autoAlpha: 0 }, 0.02);
         // Fly down while the intro scales up…
         tl4.to(
@@ -590,7 +624,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         tl5.to(flyDarkRef.current, { opacity: 1, duration: 0.3 }, 0.9);
         // Land: the navbar logo takes over again
         tl5.set(introFlyRef.current, { autoAlpha: 0 }, 1.2);
-        tl5.set(headerLogo, { opacity: 1 }, 1.2);
+        tl5.set(navLogoTarget, { opacity: 1 }, 1.2);
         // Restore the intro's own logo for future replays/reverses
         tl5.set(introLogo, { autoAlpha: 1 }, 1.2);
       }
@@ -1210,6 +1244,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
       // Keep the flying logo glued to its slot before the sequence starts
       const onResize = () => {
         if (stepper.stepRef.current === 0 && !stepper.sweeping.current()) placeLogo();
+        placeMobileNavLogo();
       };
 
       /* After the handoff the navbar centre is empty — bring its logo back
@@ -1268,7 +1303,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         if (window.scrollY <= SCROLL_TOP_THRESHOLD) {
           if (navLogoBack) {
             navLogoBack = false;
-            gsap.to(headerLogo, {
+            gsap.to(navLogoTarget, {
               opacity: 0,
               duration: 0.3,
               overwrite: "auto",
@@ -1281,7 +1316,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         const past = window.scrollY > SCROLL_TOP_THRESHOLD;
         if (past !== navLogoBack) {
           navLogoBack = past;
-          gsap.to(headerLogo, {
+          gsap.to(navLogoTarget, {
             opacity: past ? 1 : 0,
             duration: 0.3,
             overwrite: "auto",
@@ -1354,7 +1389,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
           never be clipped at the screen edge. */}
       <h2
         ref={familyRef}
-        className="absolute top-[20%] z-20 font-test-tiempos-fine text-[2rem] max-[380px]:text-[clamp(1.5rem,7.2vw,2rem)] sm:text-[2.5rem] lg:text-[4.0625rem] leading-10 sm:leading-12 lg:leading-20 text-[var(--primary-black)] whitespace-nowrap opacity-0"
+        className="absolute top-[17%] sm:top-[20%] z-20 font-test-tiempos-fine text-[2rem] max-[380px]:text-[clamp(1.5rem,7.2vw,2rem)] sm:text-[2.5rem] lg:text-[4.0625rem] leading-[1.1] sm:leading-12 lg:leading-20 text-[var(--primary-black)] whitespace-nowrap opacity-0"
       >
         Family Business
       </h2>
@@ -1363,7 +1398,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
           right-aligned to the video's right edge */}
       <h2
         ref={legacyRef}
-        className="absolute top-[24%] right-[15vw] sm:right-[25vw] lg:right-[33.3vw] z-20 font-test-tiempos-fine text-[2rem] max-[380px]:text-[clamp(1.5rem,7.2vw,2rem)] sm:text-[2.5rem] lg:text-[4.0625rem] leading-10 sm:leading-12 lg:leading-16 text-[var(--primary-black)] whitespace-nowrap opacity-0"
+        className="absolute top-[24%] right-[15vw] sm:right-[25vw] lg:right-[33.3vw] z-20 font-test-tiempos-fine text-[2rem] max-[380px]:text-[clamp(1.5rem,7.2vw,2rem)] sm:text-[2.5rem] lg:text-[4.0625rem] leading-[1.1] sm:leading-12 lg:leading-16 text-[var(--primary-black)] whitespace-nowrap opacity-0"
       >
         Legacy For
       </h2>
@@ -1378,7 +1413,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
       </h2>
 
       {/* Centered content */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
+      <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4 pb-14 sm:pb-0">
         {/* Logo — static on mobile, flying logo covers this slot on desktop */}
         <div ref={logoSlotRef} className="mb-4 lg:mb-6 w-[4.5rem] h-[3.75rem] sm:w-[6rem] sm:h-[5rem] lg:w-[8.125rem] lg:h-[6.875rem] flex items-center justify-center">
           <Image
@@ -1394,7 +1429,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         </div>
 
         <div ref={textRef}>
-          <h1 className="font-test-tiempos-fine uppercase text-[27px] sm:text-4xl lg:text-6xl font-medium mb-2 lg:mb-4">
+          <h1 className="font-test-tiempos-fine uppercase text-[27px] sm:text-4xl lg:text-6xl font-medium mb-0 sm:mb-4">
             Amanat Shah Group
           </h1>
 
@@ -1427,7 +1462,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
       {/* Scroll down indicator */}
       <div
         ref={hintRef}
-        className="absolute bottom-15 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 sm:gap-3 text-white"
+        className="absolute bottom-30 sm:bottom-15 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 sm:gap-3 text-white"
       >
         <Image
           src="/icons/mouse-scroll-wheel.gif"
@@ -1454,6 +1489,20 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         quality={100}
         priority
         className="pointer-events-none invisible fixed left-0 top-0 z-60 w-[4.5rem] h-[3.75rem] sm:w-[6rem] sm:h-[5rem] lg:w-[8.125rem] lg:h-[6.875rem] object-contain"
+      />
+
+      {/* Mobile navbar-centre logo — below lg the navbar's own logo stays
+          hidden on the homepage; Hero pins this smaller copy over its exact
+          spot (positioned from the live rect in useGSAP) and drives its
+          visibility through the scroll sequence instead */}
+      <Image
+        ref={mobileNavLogoRef}
+        src="/logo/ASG-logo.png"
+        alt="Amanat Shah Group"
+        width={104}
+        height={64}
+        priority
+        className="pointer-events-none fixed z-60 object-contain opacity-0 lg:hidden"
       />
 
       {/* Flying intro logo — carries the navbar logo down onto the intro
