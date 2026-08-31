@@ -78,7 +78,7 @@ export default function FabricsCapabilities() {
           <h2 className="font-test-tiempos-fine text-2xl text-neutral-800 sm:text-3xl lg:max-w-[9.75em] lg:text-[3em] lg:leading-[1.11]">
             Core Capabilities &amp; Technology
           </h2>
-          <p className="mt-3 text-sm text-neutral-800 lg:mt-[1.14em] lg:w-[27.79em] lg:text-[1.17em] lg:leading-[1.43]">
+          <p className="mt-1 sm:mt-3 text-sm text-neutral-800 lg:mt-[1.14em] lg:w-[27.79em] lg:text-[1.17em] lg:leading-[1.43]">
             At Amanat Shah Fabrics Ltd. (ASFL), we employ state-of-the-art
             European and advanced machinery across our entire production chain
             to ensure superior quality, efficiency, and consistency.

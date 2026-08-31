@@ -4,9 +4,6 @@ export interface WeInitiativeCard {
   image: string;
 }
 
-export const weHeroTitle = "Women Empowerment";
-export const weHeroSubtitle = "Family business legacy for more than 130 years.";
-
 export const weIntroStatement =
   "One of the most reputable and diverse corporate empires in Bangladesh, Amanat Shah Group has been Family business legacy.";
 

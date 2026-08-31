@@ -100,7 +100,7 @@ export default function Certifications() {
             of the bottom-right corner during the 8th-scroll fade. */}
         <div
           id="cert-grid"
-          className="grid w-full max-w-[75rem] grid-cols-5 gap-1 sm:gap-3 lg:gap-5.5 self-end"
+          className="grid w-full max-w-[75rem] grid-cols-5 gap-1 sm:gap-3 lg:gap-5.5 self-end pb-[6%] sm:pb-0"
         >
           {certifications.map((cert) => (
             <div

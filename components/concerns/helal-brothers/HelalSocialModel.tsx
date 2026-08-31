@@ -89,7 +89,7 @@ export default function HelalSocialModel() {
           {pillars.map((pillar) => (
             <div key={pillar.title} className="flex flex-col sm:flex-row items-start gap-3 rounded-lg border border-gray-200 bg-white p-3 lg:contents">
               <div
-                className={`flex h-16 sm:h-10 lg:h-[5.33em] w-16 sm:w-10 lg:w-[5.33em] shrink-0 items-center justify-center rounded-full border border-gray-100 bg-white lg:absolute lg:mt-0 ${pillar.iconClass}`}
+                className={`flex h-16 sm:h-10 lg:h-[5.33em] w-16 sm:w-10 lg:w-[5.33em] shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white lg:absolute lg:mt-0 ${pillar.iconClass}`}
               >
                 <Image
                   src={pillar.icon}

@@ -76,7 +76,7 @@ export default function EsgCertifications() {
             <span aria-hidden className="h-1 sm:h-1.5 w-1 sm:w-1.5 bg-neutral-800" />
           </div>
 
-          <h2 className="mt-4 font-serif text-[1.5rem] sm:text-[4rem] leading-8 sm:leading-[1] font-normal text-neutral-800">
+          <h2 className="mt-2 sm:mt-4 font-serif text-[1.5rem] sm:text-[4rem] leading-8 sm:leading-[1] font-normal text-neutral-800">
             Certifications and
             <br />
             Compliance

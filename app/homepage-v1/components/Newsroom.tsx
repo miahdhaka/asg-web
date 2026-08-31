@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRef } from "react";
 
 interface NewsItem {
+  slug: string;
   date: string;
   category: string;
   title: string;
@@ -13,18 +14,21 @@ interface NewsItem {
 
 const news: NewsItem[] = [
   {
+    slug: "presidents-industrial-development-award-2024-1",
     date: "3 June, 2026",
     category: "Corporate",
     title: "President's industrial development award -2024",
     image: "/images/newsroom/news_1.webp",
   },
   {
+    slug: "presidents-industrial-development-award-2024-2",
     date: "3 June, 2026",
     category: "Corporate",
     title: "President's industrial development award -2024",
     image: "/images/newsroom/news_2.webp",
   },
   {
+    slug: "news-article-3",
     date: "3 June, 2026",
     category: "Corporate",
     title: "President's industrial development award -2024",
@@ -132,33 +136,6 @@ export default function Newsroom() {
     }
   };
 
-  // Smooth-scroll the strip by one card in the given direction. Runs as a
-  // short rAF tween so each frame can be wrapped — native smooth-scroll
-  // would be cancelled the moment the wrap listener repositions scrollLeft.
-  const scrollByCard = (dir: 1 | -1) => {
-    const el = stripRef.current;
-    if (!el) return;
-    const first = el.firstElementChild as HTMLElement | null;
-    if (!first) return;
-    const gap = parseFloat(getComputedStyle(el).columnGap) || 0;
-    const step = dir * (first.offsetWidth + gap);
-    if (tweenRef.current !== null) cancelAnimationFrame(tweenRef.current);
-    const start = el.scrollLeft;
-    const duration = 450;
-    const t0 = performance.now();
-    const tick = (now: number) => {
-      const p = Math.min((now - t0) / duration, 1);
-      const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
-      el.scrollLeft = wrap(el, start + step * eased);
-      if (p < 1) {
-        tweenRef.current = requestAnimationFrame(tick);
-      } else {
-        tweenRef.current = null;
-      }
-    };
-    tweenRef.current = requestAnimationFrame(tick);
-  };
-
   // Render the list twice so the strip can loop seamlessly via wrap().
   const loopedNews = [...news, ...news];
 
@@ -168,7 +145,7 @@ export default function Newsroom() {
       className="relative flex w-full flex-col overflow-hidden bg-white py-6 lg:py-8 h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Header — eyebrow + title left, button right */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between px-4 lg:px-20 mb-6 lg:mb-10 gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between px-4 lg:px-20 mb-10 gap-4">
         <div className="mt-2">
           {/* Eyebrow — drops in together with the title below */}
           <div id="newsroom-eyebrow" className="flex items-center gap-3">
@@ -203,18 +180,7 @@ export default function Newsroom() {
           directions, while the section keeps its single-screen height.
           Desktop keeps the three-column grid (clones hidden). */}
       <div className="relative flex min-h-0 flex-1 items-start px-4 lg:px-20">
-        {/* Previous — smooth-scrolls the strip back one card. Mobile only;
-            desktop is a static grid so there's nothing to scroll. */}
-        <button
-          type="button"
-          aria-label="Previous news"
-          onClick={() => scrollByCard(-1)}
-          className="absolute left-2 top-1/2 z-30 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-neutral-800 shadow-[0_2px_12px_rgba(0,0,0,0.15)] transition hover:bg-neutral-50 active:scale-95 lg:hidden"
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M10 2L4 8l6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
+        <div className="relative w-full lg:h-full">
         <div
           ref={stripRef}
           onPointerDown={onPointerDown}
@@ -223,18 +189,18 @@ export default function Newsroom() {
           onPointerCancel={endDrag}
           onScroll={onScroll}
           onClickCapture={onClickCapture}
-          className="no-scrollbar flex h-full w-full select-none gap-3 overflow-x-auto cursor-grab active:cursor-grabbing overscroll-x-none touch-pan-y lg:grid lg:h-auto lg:grid-cols-3 lg:overflow-visible lg:gap-5 lg:cursor-auto"
+          className="no-scrollbar flex w-full select-none gap-3 overflow-x-auto cursor-grab active:cursor-grabbing overscroll-x-none touch-pan-y lg:grid lg:h-auto lg:grid-cols-3 lg:overflow-visible lg:gap-5 lg:cursor-auto"
         >
           {loopedNews.map((item, index) => (
             <Link
               key={`${item.image}-${index}`}
-              href="/newsroom"
-              className={`group flex w-[78%] shrink-0 flex-col gap-2 sm:w-[52%] lg:w-auto lg:shrink lg:gap-3 ${
+              href={`/newsroom/${item.slug}`}
+              className={`group flex w-[78%] shrink-0 flex-col sm:w-[52%] lg:w-auto lg:shrink gap-3 sm:gap-4 ${
                 index >= news.length ? "lg:hidden" : ""
               }`}
             >
               {/* Image */}
-              <div className="relative aspect-[431/329] w-full overflow-hidden bg-[#D9D9D9]">
+              <div className="relative aspect-[431/390] w-full overflow-hidden bg-[#D9D9D9]">
                 <Image
                   src={item.image}
                   alt={item.title}
@@ -251,26 +217,30 @@ export default function Newsroom() {
                 />
               </div>
 
-              {/* Meta — date / category */}
-              <div className="flex items-center gap-2 mt-1">
-                <span className="font-neue-montreal text-sm sm:text-base lg:text-xl text-neutral-600">
-                  {item.date}
-                </span>
-                <span
-                  aria-hidden
-                  className="h-4 sm:h-5 w-px rotate-[30deg] bg-neutral-600"
-                />
-                <span className="font-neue-montreal text-sm sm:text-base lg:text-xl text-neutral-600">
-                  {item.category}
-                </span>
+              <div className="flex flex-col gap-1">
+                {/* Meta — date / category */}
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="font-neue-montreal text-sm sm:text-base lg:text-xl text-neutral-600">
+                    {item.date}
+                  </span>
+                  <span
+                    aria-hidden
+                    className="h-4 sm:h-5 w-px rotate-[30deg] bg-neutral-600"
+                  />
+                  <span className="font-neue-montreal text-sm sm:text-base lg:text-xl text-neutral-600">
+                    {item.category}
+                  </span>
+                </div>
+
+                {/* Title */}
+                <h3 className="max-w-full lg:max-w-[21.5625rem] font-serif text-xl sm:text-2xl lg:text-3xl leading-7 sm:leading-8 lg:leading-10 text-neutral-800">
+                  {item.title}
+                </h3>
               </div>
 
-              {/* Title */}
-              <h3 className="max-w-full lg:max-w-[21.5625rem] font-serif text-xl sm:text-2xl lg:text-3xl leading-7 sm:leading-8 lg:leading-10 text-neutral-800">
-                {item.title}
-              </h3>
             </Link>
           ))}
+        </div>
         </div>
       </div>
     </section>

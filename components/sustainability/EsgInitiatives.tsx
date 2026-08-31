@@ -13,7 +13,7 @@ function InitiativeCardItem({ card }: { card: InitiativeCard }) {
             "linear-gradient(150deg, rgba(139, 195, 74, 0.2) 0%, rgba(26, 161, 121, 0.2) 81%)",
         }}
       />
-      <div className="relative flex flex-col gap-4">
+      <div className="relative flex flex-col gap-2 sm:gap-4">
         <h3 className="font-test-tiempos-fine text-neutral-800 text-xl lg:text-[2rem] leading-[1.33] lg:leading-[2rem]">
           {card.title}
         </h3>

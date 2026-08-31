@@ -20,14 +20,14 @@ const LOAD_MORE_COUNT = 6;
 function CardMeta({ date, category }: { date: string; category: string }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="font-neue-montreal text-[1rem] leading-[1.25rem] text-neutral-600">
+      <span className="font-neue-montreal text-sm sm:text-[1rem] leading-[1.25rem] text-neutral-600">
         {date}
       </span>
       <span
         aria-hidden
         className="h-3 w-px rotate-[30deg] bg-neutral-600"
       />
-      <span className="font-neue-montreal text-[1rem] leading-[1.25rem] text-neutral-600">
+      <span className="font-neue-montreal text-sm sm:text-[1rem] leading-[1.25rem] text-neutral-600">
         {category}
       </span>
     </div>

@@ -103,7 +103,7 @@ export default function PageHero({
         <h1 className="text-2xl sm:text-4xl lg:text-6xl text-white font-test-tiempos-fine tracking-wider">
           {title}
         </h1>
-        <p className="text-xs sm:text-sm tracking-wider text-white lg:text-base font-medium pt-2">
+        <p className="text-xs sm:text-sm tracking-wider text-white lg:text-base font-medium pt-0 sm:pt-2">
           {subtitle}
         </p>
       </div>

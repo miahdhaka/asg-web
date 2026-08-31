@@ -4,9 +4,6 @@ export interface CsrInitiativeCard {
   image: string;
 }
 
-export const csrHeroTitle = "Corporate Social Responsibility";
-export const csrHeroSubtitle = "Family business legacy for more than 130 years.";
-
 export const csrIntroStatement =
   "One of the most reputable and diverse corporate empires in Bangladesh, Amanat Shah Group has been Family business legacy.";
 

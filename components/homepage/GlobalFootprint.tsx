@@ -213,7 +213,7 @@ export default function GlobalFootprint() {
       </div>
 
       {/* Brand logo marquees - two rows going opposite directions */}
-      <div className="relative mt-4 lg:mt-6 pb-[14%] sm:pb-0">
+      <div className="relative mt-4 lg:mt-6 pb-[6%] sm:pb-0">
         {/* Row 1: Right to Left */}
         <div className="no-scrollbar overflow-hidden select-none">
           <div className="animate-marquee-left flex w-max gap-2 sm:gap-3 lg:gap-4">

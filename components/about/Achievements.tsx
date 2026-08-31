@@ -26,7 +26,7 @@ const achievements = [
 export default function Achievements() {
   return (
     <section id="about-achievements" className="w-full bg-white px-4 sm:px-6 lg:px-[5em] py-6 sm:py-10 lg:py-[5em]">
-      <h2 className="text-xl lg:text-6xl text-neutral-800 font-test-tiempos-fine">
+      <h2 className="text-2xl lg:text-6xl text-neutral-800 font-test-tiempos-fine">
         Achievement
       </h2>
 
@@ -47,11 +47,11 @@ export default function Achievements() {
                 className="w-auto h-auto max-w-[80px] max-h-[90px] object-contain"
               />
             </div>
-            <div className="card-gradient-target flex flex-col items-center justify-center gap-2 bg-gray-50 px-2 py-3">
+            <div className="card-gradient-target flex flex-col items-center justify-center gap-2 bg-gray-50 px-2 py-3 flex-1">
               <span className="font-test-tiempos-fine text-2xl font-medium text-neutral-800 leading-none">
                 {item.value}
               </span>
-              <span className="text-[11px] text-center tracking-wide text-neutral-800">
+              <span className="text-[11px] text-center tracking-wide text-neutral-800 min-h-[3em]">
                 {item.label}
               </span>
             </div>

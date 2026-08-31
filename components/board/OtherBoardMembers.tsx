@@ -168,7 +168,7 @@ export default function OtherBoardMembers({
   return (
     <section
       id={id}
-      className="w-full bg-white px-4 sm:px-6 lg:px-[5em] py-8 sm:py-12 lg:py-[5em]"
+      className="w-full bg-white px-4 sm:px-6 lg:px-[5em] py-12 lg:py-[5em]"
     >
       <h2 className="font-test-tiempos-fine text-xl sm:text-3xl lg:text-[2.6em] text-neutral-800">
         {heading}
