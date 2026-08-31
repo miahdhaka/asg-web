@@ -139,7 +139,7 @@ export default function WeAreASG({ onReady }: WeAreASGProps) {
           {stats.map((stat) => (
             <div
               key={stat.label}
-              className="group flex h-[min(calc(var(--vh)*0.3),16rem)] lg:h-[min(46vh,26.25rem)] flex-col bg-white"
+              className="group flex h-[min(calc(var(--vh)*0.3),16rem)] lg:h-[min(46vh,420px)] flex-col bg-white"
             >
               {/* Top part — icon + label, own padding */}
               <div className="flex flex-1 flex-col justify-between p-2.5 sm:p-3 lg:p-5">

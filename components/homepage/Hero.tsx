@@ -393,7 +393,7 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         {
           top: () =>
             (videoWrapRef.current?.getBoundingClientRect().bottom ?? 0) +
-            (isMobile ? rootPx() * 0.5 : GAP_VIDEO()),
+            (isMobile ? rootPx() * 1.5 : GAP_VIDEO()),
         },
         0
       );
@@ -1251,6 +1251,12 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
          once the page actually scrolls (settled on OurBusiness or deeper),
          hide it again when we return to the pinned states at the top */
       let navLogoBack = false;
+      // Timestamp of the last scroll event that sat clearly in the native
+      // zone below the settled anchor (footer side).  If the page surfaces
+      // above the anchor while this is fresh, a flick up from the footer
+      // crossed the boundary — hand the chain back one step instead of
+      // snap-fighting the momentum, which reads as a shake on mobile.
+      let belowZoneAt = 0;
       const onScroll = () => {
         // Keep the touch lock aligned with the current step even when the
         // change surfaced through a scroll event rather than a landing.
@@ -1277,18 +1283,28 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
            (e.g. from a layout shift after fonts/images settle) would
            only cause a visible jump. */
         if (!stepper.sweeping.current() && stepper.stepRef.current >= 5) {
+          const anchor = anchorY();
+          if (anchor !== null && window.scrollY > anchor + 4) {
+            belowZoneAt = performance.now();
+          }
           if (isLandingRef.current) {
             isLandingRef.current = false;
             anchorCorrectedRef.current = true;
           } else if (anchorCorrectedRef.current) {
-            const anchor = anchorY();
             if (anchor !== null && window.scrollY < anchor - ANCHOR_DRIFT_LIMIT) {
               anchorCorrectedRef.current = false;
             }
           } else {
-            const anchor = anchorY();
             if (anchor !== null && window.scrollY < anchor - 1) {
-              window.scrollTo({ top: anchor, behavior: "auto" });
+              if (performance.now() - belowZoneAt < 250) {
+                // Crossed from the native zone below — reverse one step
+                // like a gesture would, instead of snapping back into
+                // the momentum (the mobile shake at the footer edge).
+                controlledScrollTo(anchor);
+                stepper.advanceRef.current(-1);
+              } else {
+                window.scrollTo({ top: anchor, behavior: "auto" });
+              }
               anchorCorrectedRef.current = true;
             }
           }

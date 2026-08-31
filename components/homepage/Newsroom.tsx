@@ -142,7 +142,7 @@ export default function Newsroom() {
   return (
     <section
       id="newsroom"
-      className="relative flex w-full flex-col overflow-hidden bg-white py-6 lg:py-8 h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
+      className="relative flex w-full flex-col overflow-hidden bg-white py-6 lg:py-8 mb-6 lg:mb-8 h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Header — eyebrow + title left, button right */}
       <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between px-4 lg:px-20 mb-10 gap-4">
@@ -189,18 +189,18 @@ export default function Newsroom() {
             onPointerCancel={endDrag}
             onScroll={onScroll}
             onClickCapture={onClickCapture}
-            className="no-scrollbar flex w-full select-none gap-3 overflow-x-auto cursor-grab active:cursor-grabbing overscroll-x-none touch-pan-y lg:grid lg:h-auto lg:grid-cols-3 lg:overflow-visible lg:gap-5 lg:cursor-auto"
+            className="no-scrollbar flex w-full select-none gap-3 overflow-x-auto cursor-grab active:cursor-grabbing overscroll-x-none touch-pan-y lg:grid lg:h-full lg:grid-cols-3 lg:overflow-visible lg:gap-5 lg:cursor-auto"
           >
             {loopedNews.map((item, index) => (
               <Link
                 key={`${item.image}-${index}`}
                 href={`/newsroom/${item.slug}`}
-                className={`group flex w-[78%] shrink-0 flex-col sm:w-[52%] lg:w-auto lg:shrink gap-3 sm:gap-4 ${
+                className={`group flex w-[78%] shrink-0 flex-col sm:w-[52%] lg:w-auto lg:shrink lg:h-full lg:min-h-0 gap-3 sm:gap-4 ${
                   index >= news.length ? "lg:hidden" : ""
                 }`}
               >
                 {/* Image */}
-                <div className="relative aspect-[431/390] w-full overflow-hidden bg-[#D9D9D9]">
+                <div className="relative aspect-[431/390] w-full overflow-hidden bg-[#D9D9D9] lg:aspect-auto lg:flex-1 lg:min-h-0">
                   <Image
                     src={item.image}
                     alt={item.title}
