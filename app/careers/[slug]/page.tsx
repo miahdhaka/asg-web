@@ -119,7 +119,7 @@ export default async function JobDetailPage({
               {job.title}
             </h1>
           </div>
-          <div className="flex flex-wrap items-center gap-[1.2rem] text-[1rem] tracking-wider text-neutral-600 mt-10">
+          <div className="flex flex-wrap items-center gap-[1.2rem] text-[1rem] tracking-wider text-neutral-600 mt-4">
             <p className="flex items-center gap-2">
               <span className="flex size-8 items-center justify-center rounded-full border border-neutral-200">
                 <MapPinned className="size-[1.125rem] shrink-0 text-neutral-500" />

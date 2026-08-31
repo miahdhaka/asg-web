@@ -22,7 +22,7 @@ export default function ValueCardsSection({ id, heading, items, variant }: Value
   return (
     <section id={id} className={`w-full py-6 lg:py-[3.75rem] ${sectionBg}`}>
       <div className="px-4 sm:px-6 lg:px-[5em]">
-        <h2 className="text-xl lg:text-6xl text-neutral-800 font-test-tiempos-fine">
+        <h2 className="text-2xl lg:text-6xl text-neutral-800 font-test-tiempos-fine">
           {heading}
         </h2>
 

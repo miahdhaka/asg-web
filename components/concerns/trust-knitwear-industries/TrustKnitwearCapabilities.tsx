@@ -68,7 +68,7 @@ export default function TrustKnitwearCapabilities() {
           <h2 className="font-test-tiempos-fine text-2xl text-neutral-800 sm:text-3xl lg:max-w-[10.53em] lg:text-[3em] lg:leading-[1.11]">
             Technical Infrastructure &amp; Quality Assurance Excellence
           </h2>
-          <p className="mt-3 text-sm text-neutral-800 lg:mt-[1.14em] lg:w-[27.79em] lg:text-[1.17em] lg:leading-[1.43]">
+          <p className="mt-1 sm:mt-3 text-sm text-neutral-800 lg:mt-[1.14em] lg:w-[27.79em] lg:text-[1.17em] lg:leading-[1.43]">
             Trust Knitwear Industries Ltd. operates as a vertically integrated
             knit garment factory equipped with modern, high-precision machinery
             sourced from Germany, Switzerland, Singapore, Greece, Austria, and

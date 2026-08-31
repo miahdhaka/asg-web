@@ -30,7 +30,7 @@ export default function MessageSection({
   return (
     <section 
       id={id} 
-      className={`w-full px-4 sm:px-6 lg:px-[5em] py-6 sm:py-10 lg:py-[5em] ${
+      className={`w-full px-4 sm:px-6 lg:px-[5em] py-10 lg:py-[5em] ${
         dark ? "bg-[var(--primary-black)]" : "bg-white"
       }`}
     >

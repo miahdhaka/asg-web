@@ -147,7 +147,7 @@ export default function FabricsProcessing() {
   return (
     <section
       id="fabrics-processing"
-      className="w-full bg-white pt-10 lg:pt-[5em]"
+      className="w-full bg-white pt-6 sm:pt-10 lg:pt-[5em]"
     >
       <h2 className="px-4 font-test-tiempos-fine text-2xl sm:text-4xl text-neutral-800 sm:px-6 lg:px-[5em] lg:text-[4em] lg:leading-[1]">
         Amanat Shah Fabrics

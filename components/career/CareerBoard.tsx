@@ -154,6 +154,7 @@ export default function CareerBoard() {
             value={location}
             onChange={setLocation}
             options={locations}
+            disabled
           />
 
           <SearchableSelect
@@ -163,6 +164,7 @@ export default function CareerBoard() {
             value={department}
             onChange={setDepartment}
             options={departments}
+            disabled
           />
         </div>
       </div>

@@ -121,21 +121,21 @@ export default function WeAreASG({ onReady }: WeAreASGProps) {
       <span
         id="waa-we-are"
         aria-hidden
-        className="pointer-events-none absolute top-[7.5%] lg:top-[10%] left-[5%] z-10 font-serif text-[4rem] sm:text-[6rem] lg:text-[10rem] leading-none uppercase bg-[image:var(--primary-gradient)] bg-clip-text text-transparent"
+        className="pointer-events-none absolute top-[7%] sm:top-[5%] lg:top-[10%] left-[5%] z-10 font-serif text-[4rem] sm:text-[6rem] lg:text-[10rem] leading-none uppercase bg-[image:var(--primary-gradient)] bg-clip-text text-transparent"
       >
         We Are
       </span>
       <span
         id="waa-asg"
         aria-hidden
-        className="pointer-events-none absolute bottom-[7.5%] lg:bottom-[10%] right-[5%] z-10 font-serif text-[4rem] sm:text-[6rem] lg:text-[10rem] leading-none uppercase bg-[image:var(--primary-gradient)] bg-clip-text text-transparent"
+        className="pointer-events-none absolute bottom-[9.5%] sm:bottom-[5%] lg:bottom-[10%] right-[5%] z-10 font-serif text-[4rem] sm:text-[6rem] lg:text-[10rem] leading-none uppercase bg-[image:var(--primary-gradient)] bg-clip-text text-transparent"
       >
         ASG
       </span>
 
       {/* Stat cards */}
       <div className="relative z-20 flex min-h-0 flex-1 items-center px-4 lg:px-20">
-        <div className="grid w-full grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-8">
+        <div className="grid w-full grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-5 xl:gap-8 mb-6 sm:mb-0">
           {stats.map((stat) => (
             <div
               key={stat.label}

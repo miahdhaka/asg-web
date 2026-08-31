@@ -294,7 +294,7 @@ export default function HelalBrands() {
       className="w-full bg-white px-4 py-10 sm:px-6 lg:px-[5em] lg:py-[5em]"
     >
       <div className="flex flex-col gap-2 sm:gap-4 lg:flex-row lg:justify-between">
-        <h2 className="font-test-tiempos-fine text-xl sm:text-4xl lg:text-[4em] text-neutral-800 lg:leading-[1]">
+        <h2 className="font-test-tiempos-fine text-2xl sm:text-4xl lg:text-[4em] text-neutral-800 lg:leading-[1]">
           Our Brands
         </h2>
         {/* 359px design width at 14px type → 25.64em in the paragraph's own em */}

@@ -860,7 +860,7 @@ export default function CareerApplicationForm({
             <Link2
               size={14}
               strokeWidth={1.4}
-              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#9da1a4]"
+              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#9da1a4] lg:size-4"
             />
 
             <input
@@ -870,7 +870,7 @@ export default function CareerApplicationForm({
                 setLinkedin(e.target.value)
               }
               placeholder="https://www.linkedin.com/in/..."
-              className={`${inputClass} pl-8`}
+              className={`${inputClass} pl-8 lg:pl-10`}
             />
 
           </div>

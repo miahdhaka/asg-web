@@ -80,7 +80,7 @@ export default function Sustainability() {
           stagger via the Hero's fade-chain reveal */}
       <div
         id="sustainability-panels"
-        className="flex flex-col lg:flex-row min-h-0 flex-1 gap-3 max-[380px]:gap-1.5 lg:gap-5 px-4 lg:px-18 w-[90%] lg:w-[90%] mx-auto"
+        className="flex flex-col lg:flex-row min-h-0 flex-1 gap-3 max-[380px]:gap-1.5 lg:gap-5 px-4 lg:px-18 w-[90%] lg:w-[90%] mx-auto pb-[6%] sm:pb-0"
       >
         {panels.map((panel, index) => {
           const isActive = index === activeIndex;
