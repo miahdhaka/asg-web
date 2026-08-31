@@ -123,71 +123,71 @@ export default function Header() {
       <header ref={headerRef} className={`fixed top-0 left-0 right-0 z-50 w-full border-b border-border backdrop-blur transition-colors duration-500 ease-in-out ${
         scrolled || searchOpen ? "bg-white" : "bg-background/60"
       }`}>
-      <div className="grid grid-cols-3 items-center px-6">
-        {/* Left: hamburger on mobile, full navigation on desktop */}
-        <div className="h-full flex items-center py-5">
-          {/* Mobile hamburger icon */}
-          <button
-            type="button"
-            onClick={() => setSidebarOpen(true)}
-            className="lg:hidden cursor-pointer rounded-full p-1.5 transition-colors hover:bg-neutral-100"
-            aria-label="Open menu"
-          >
-            <Menu className="size-6 text-neutral-800" />
-          </button>
-          {/* Desktop navigation */}
-          <div className="hidden lg:block">
-            <Navigation />
+        <div className="grid grid-cols-3 items-center px-6">
+          {/* Left: hamburger on mobile, full navigation on desktop */}
+          <div className="h-full flex items-center py-2 sm:py-5">
+            {/* Mobile hamburger icon */}
+            <button
+              type="button"
+              onClick={() => setSidebarOpen(true)}
+              className="lg:hidden cursor-pointer rounded-full p-1.5 transition-colors hover:bg-neutral-100"
+              aria-label="Open menu"
+            >
+              <Menu className="size-4.5 sm:size-6 text-neutral-800" />
+            </button>
+            {/* Desktop navigation */}
+            <div className="hidden lg:block">
+              <Navigation />
+            </div>
+          </div>
+
+          {/* Logo - center */}
+          <div className="flex items-center justify-center">
+            {isHome ? (
+              <a
+                href="/"
+                id="header-logo"
+                className="flex items-center"
+                style={{ opacity: 0 }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.location.reload();
+                }}
+              >
+                <Image
+                  src="/logo/ASG-logo.png"
+                  alt="Amanat Shah Group"
+                  width={104}
+                  height={64}
+                  priority
+                  className="w-[5rem] h-[2rem] sm:w-26 sm:h-16 object-contain"
+                />
+              </a>
+            ) : (
+              <Link
+                href="/"
+                id="header-logo"
+                scroll={true}
+                className="flex items-center"
+              >
+                <Image
+                  src="/logo/ASG-logo.png"
+                  alt="Amanat Shah Group"
+                  width={104}
+                  height={64}
+                  priority
+                  className="w-[5rem] h-[2rem] sm:w-26 sm:h-16 object-contain"
+                />
+              </Link>
+            )}
+          </div>
+
+          {/* Search - right */}
+          <div className="flex items-center justify-end py-3 sm:py-5">
+            <Search onOpenChange={setSearchOpen} />
           </div>
         </div>
-
-        {/* Logo - center */}
-        <div className="flex items-center justify-center">
-          {isHome ? (
-            <a
-              href="/"
-              id="header-logo"
-              className="flex items-center"
-              style={{ opacity: 0 }}
-              onClick={(e) => {
-                e.preventDefault();
-                window.location.reload();
-              }}
-            >
-              <Image
-                src="/logo/ASG-logo.png"
-                alt="Amanat Shah Group"
-                width={104}
-                height={64}
-                priority
-                className="w-[5.5rem] h-[2.5rem] sm:w-26 sm:h-16 object-contain"
-              />
-            </a>
-          ) : (
-            <Link
-              href="/"
-              id="header-logo"
-              scroll={true}
-              className="flex items-center"
-            >
-              <Image
-                src="/logo/ASG-logo.png"
-                alt="Amanat Shah Group"
-                width={104}
-                height={64}
-                priority
-                className="w-[5.5rem] h-[2.5rem] sm:w-26 sm:h-16 object-contain"
-              />
-            </Link>
-          )}
-        </div>
-
-        {/* Search - right */}
-        <div className="flex items-center justify-end py-5">
-          <Search onOpenChange={setSearchOpen} />
-        </div>
-      </div>
-    </header>
+      </header>
 
       {/* Mobile sidebar navigation — rendered outside <header> so its z-index is not trapped */}
       <MobileSidebar isOpen={sidebarOpen} onClose={closeSidebar} />

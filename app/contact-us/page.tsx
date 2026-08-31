@@ -16,7 +16,7 @@ export default function ContactUsPage() {
     <main>
       <PageHero
         title="Contact Us"
-        subtitle="ASG Group"
+        subtitle="Get in touch with us"
         mobileSrc="/images/contact-us/hero-bg.png"
         desktopSrc="/images/contact-us/hero-bg.png"
         alt="ASG Group contact us"

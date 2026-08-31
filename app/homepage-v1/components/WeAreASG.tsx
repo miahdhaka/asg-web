@@ -1,12 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+gsap.registerPlugin(useGSAP);
 
 interface StatCard {
   label: string;
@@ -41,15 +40,26 @@ const stats: StatCard[] = [
   },
 ];
 
-export default function WeAreASG() {
+interface WeAreASGProps {
+  /** C2 fix: the homepage scroll stepper calls these when the WeAreASG
+      section is fully settled (forward) or reversed away (backward),
+      replacing the old ScrollTrigger-based count-up that fired at the
+      wrong visual moment during pin/unpin transitions. */
+  onReady?: (trigger: () => void, reset: () => void) => void;
+}
+
+export default function WeAreASG({ onReady }: WeAreASGProps) {
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Test-page edition: with the scroll stepper removed, the count-up is
-  // driven by a ScrollTrigger — it starts when the section enters the
-  // viewport and resets when scrolling back above it.
+  // C2 fix: count-up is triggered imperatively by the homepage scroll
+  // stepper (via onReady callback) instead of ScrollTrigger. This ensures
+  // the count-up only fires when the section is fully settled — not while
+  // it's still blurred, scaled, or pinned.
+  const tweensRef = useRef<gsap.core.Tween[]>([]);
+
   useGSAP(() => {
     const els = gsap.utils.toArray<HTMLElement>("[data-count]");
-    const tweens = els.map((el) => {
+    tweensRef.current = els.map((el) => {
       const target = Number(el.dataset.count);
       const counter = { value: 0 };
       return gsap.to(counter, {
@@ -62,35 +72,35 @@ export default function WeAreASG() {
         },
       });
     });
+  }, { scope: sectionRef });
 
-    const trigger = () => tweens.forEach((t) => t.restart());
+  // Expose trigger/reset to the parent via the onReady callback
+  useEffect(() => {
+    if (!onReady) return;
+    const trigger = () => {
+      tweensRef.current.forEach((t) => {
+        t.restart();
+      });
+    };
     const reset = () => {
-      tweens.forEach((t) => {
+      tweensRef.current.forEach((t) => {
         t.pause();
         t.progress(0);
       });
+      // Reset displayed values to 0
+      const els = gsap.utils.toArray<HTMLElement>("[data-count]");
       els.forEach((el) => {
         el.textContent = "0";
       });
     };
-
-    const st = ScrollTrigger.create({
-      trigger: sectionRef.current,
-      start: "top 75%",
-      onEnter: trigger,
-      onLeaveBack: reset,
-    });
-
-    return () => {
-      st.kill();
-    };
-  }, { scope: sectionRef });
+    onReady(trigger, reset);
+  }, [onReady]);
 
   return (
     <section
       ref={sectionRef}
       id="we-are-asg"
-      className="relative flex w-full flex-col overflow-hidden py-10 lg:py-0 min-h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
+      className="relative flex w-full flex-col overflow-hidden h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Aerial background — swap with the real asset once it lands in
           /public/images/we-are-asg/. */}

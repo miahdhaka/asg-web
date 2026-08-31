@@ -57,7 +57,9 @@ export default function Farm2FirmHero() {
 
         {/* Gradient-outline button — label and icon flip on hover */}
         <a
-          href="#"
+          href="https://asg-bd.com/Farm2Firm.php"
+          target="_blank"
+          rel="noopener noreferrer"
           className="group relative inline-flex w-fit items-center justify-center self-start overflow-hidden border px-6 py-3 text-sm font-medium leading-none lg:self-auto lg:px-[2em] lg:py-[1em] lg:text-[1.17em]"
           style={{
             borderImage: "var(--primary-gradient) 1",

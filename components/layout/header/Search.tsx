@@ -105,14 +105,14 @@ export default function Search({ onOpenChange }: SearchProps) {
         aria-label={isOpen ? "Close search" : "Open search"}
       >
         {isOpen ? (
-          <X className="size-6 text-neutral-800 transition-all duration-300 group-hover:opacity-70 group-hover:rotate-90" strokeWidth={1.5} />
+          <X className="size-4.5 sm:size-6 text-neutral-800 transition-all duration-300 group-hover:opacity-70 group-hover:rotate-90" strokeWidth={1.5} />
         ) : (
           <Image
             src="/icons/search.png"
             alt="Search"
             width={20}
             height={20}
-            className="h-6 w-6 transition-opacity duration-300 group-hover:opacity-70"
+            className="h-4.5 w-4.5 sm:h-6 sm:w-6 transition-opacity duration-300 group-hover:opacity-70"
           />
         )}
       </button>

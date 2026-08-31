@@ -934,7 +934,7 @@ export default function CareerApplicationForm({
             className="group relative inline-flex shrink-0 items-center justify-center overflow-hidden px-6 py-3 text-sm sm:px-8 sm:py-4 sm:text-base lg:px-16 lg:py-5 lg:text-[1.25rem] leading-none cursor-pointer"
             style={{
               borderImage: "var(--primary-gradient) 1",
-              borderWidth: 2,
+              borderWidth: 1,
             }}
           >
             {/* Invisible spacer — preserves the button's intrinsic width/height */}

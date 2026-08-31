@@ -12,7 +12,9 @@ export default function CareerBoard() {
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("");
   const [department, setDepartment] = useState("");
+  const [loading, setLoading] = useState(false);
   const gridRef = useRef<HTMLDivElement>(null);
+  const loadingTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   // Typing-animation for the search-input placeholder
   const PLACEHOLDER_FULL = "Search job title";
@@ -67,6 +69,14 @@ export default function CareerBoard() {
       if (q && !`${job.title} ${job.department}`.toLowerCase().includes(q)) return false;
       return true;
     });
+  }, [query, location, department]);
+
+  // Show brief loader on every filter change
+  useEffect(() => {
+    setLoading(true);
+    clearTimeout(loadingTimeout.current);
+    loadingTimeout.current = setTimeout(() => setLoading(false), 400);
+    return () => clearTimeout(loadingTimeout.current);
   }, [query, location, department]);
 
   // Animate cards on filter change
@@ -162,6 +172,32 @@ export default function CareerBoard() {
 
       {/* Jobs grid */}
       <div className="w-full px-4 sm:px-8 lg:px-[5rem] pb-10 lg:pb-[5rem]">
+        {/* Gradient spinner */}
+        <div
+          className={`flex justify-center py-12 transition-opacity duration-300 ${
+            loading ? "opacity-100" : "opacity-0 pointer-events-none h-0 overflow-hidden"
+          }`}
+        >
+          <svg className="size-10 lg:size-12 animate-spin" viewBox="0 0 50 50">
+            <defs>
+              <linearGradient id="spinner-gradient" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="#8BC34A" />
+                <stop offset="100%" stopColor="#1AA179" />
+              </linearGradient>
+            </defs>
+            <circle
+              cx="25" cy="25" r="20"
+              fill="none"
+              stroke="url(#spinner-gradient)"
+              strokeWidth="4"
+              strokeLinecap="round"
+              strokeDasharray="90 150"
+            />
+          </svg>
+        </div>
+
+        {!loading && (
+        <>
         {filtered.length > 0 ? (
           <div ref={gridRef} className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:mt-[3.3333rem] lg:grid-cols-4 lg:gap-[1.3333rem]">
             {filtered.map((job) => (
@@ -196,6 +232,8 @@ export default function CareerBoard() {
               We couldn&apos;t find any roles matching your search. Try adjusting your filters, or check back soon for new openings.
             </p>
           </div>
+        )}
+        </>
         )}
       </div>
     </section>

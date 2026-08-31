@@ -30,24 +30,11 @@ interface UseGestureInputOptions {
   /** Returns true while a GSAP chase tween is in flight — the hook uses
    *  this to swallow events that would otherwise cause drift. */
   sweeping: MutableRefObject<() => boolean>;
-  /** Optional continuous scrub, consulted BEFORE the gesture logic.
-   *  Receives the raw normalized delta in px (positive = downward) so the
-   *  caller can drive a timeline proportionally to how far the user actually
-   *  scrolled. Return true to consume the event — the gesture path is then
-   *  skipped entirely and the DOM event is prevented. */
-  onScrub?: MutableRefObject<(deltaPx: number) => boolean>;
-  /** Optional reset of the wheel gesture tracker (accumulator + swallow /
-   *  cooldown timers). Call when a scrub settles, so the very next scroll
-   *  counts as a fresh gesture instead of dying inside the swallow window
-   *  left over from the gesture that finished the scrub. */
-  resetWheelIntent?: MutableRefObject<() => void>;
 }
 
 export function useGestureInput({
   onGesture,
   sweeping,
-  onScrub,
-  resetWheelIntent,
 }: UseGestureInputOptions) {
   /* ── Scroll-stability refs (shared with the caller) ──
      isLanding: a controlled scrollTo is in flight — the onScroll handler
@@ -78,14 +65,6 @@ export function useGestureInput({
     const COOLDOWN_MS = 700; // ms total guard — drops residual momentum after swallow
     let wheelAccum = 0;
     let lastGestureTime = 0;
-
-    // Expose the tracker reset to the caller (see resetWheelIntent above)
-    if (resetWheelIntent) {
-      resetWheelIntent.current = () => {
-        wheelAccum = 0;
-        lastGestureTime = 0;
-      };
-    }
 
     // deltaMode: 0 = pixels, 1 = lines (Firefox), 2 = pages
     const normalizeWheel = (e: WheelEvent) =>
@@ -167,32 +146,14 @@ export function useGestureInput({
 
       /* A chase is in flight — the page still must not drift, but the
          gesture is real, so push the goal further out instead of dropping
-         it. That is what lets a fast burst sweep several phases at once.
-         The scrub is consulted first, though: once the goal has reached the
-         last phase it may claim the input even mid-glide, so the very first
-         scroll past the stepper starts moving immediately instead of waiting
-         out the landing chase. */
+         it. That is what lets a fast burst sweep several phases at once. */
       if (sweeping.current()) {
-        if (onScrub?.current(normalizeWheel(e))) {
-          e.preventDefault();
-          wheelAccum = 0;
-          return;
-        }
         e.preventDefault();
         if (isGesture) {
           anchorCorrectedRef.current = false;
           isLandingRef.current = false;
           onGesture.current(dir, true);
         }
-        return;
-      }
-
-      /* A scrub owns the input — feed it the raw distance instead of a
-         discrete step. The accumulator is cleared so the stream cannot
-         also fire a gesture once the scrub hands the input back. */
-      if (onScrub?.current(normalizeWheel(e))) {
-        e.preventDefault();
-        wheelAccum = 0;
         return;
       }
 
@@ -219,24 +180,12 @@ export function useGestureInput({
           : 0;
       if (!dir) return;
 
-      // A chase is in flight — swallow the scroll but keep the intent.
-      // The scrub may still claim it mid-glide (see the wheel handler).
+      // A chase is in flight — swallow the scroll but keep the intent
       if (sweeping.current()) {
-        if (onScrub?.current(dir * 200)) {
-          e.preventDefault();
-          return;
-        }
         e.preventDefault();
         anchorCorrectedRef.current = false;
         isLandingRef.current = false;
         onGesture.current(dir, true);
-        return;
-      }
-
-      // Keys are continuous enough for a scrub — one press moves it a fixed
-      // slice, matching roughly a third of a wheel-driven reveal
-      if (onScrub?.current(dir * 200)) {
-        e.preventDefault();
         return;
       }
 
@@ -257,13 +206,11 @@ export function useGestureInput({
     // to answer as promptly as a desktop wheel notch, high enough to never
     // misfire on taps or tiny adjustment drags
     let touchStartY = 0;
-    let touchLastY = 0;
     let touchHandled = false;
     const touchPrevDir = { current: 0 as number };
 
     const onTouchStart = (e: TouchEvent) => {
       touchStartY = e.touches[0].clientY;
-      touchLastY = touchStartY;
       touchHandled = false;
       touchPrevDir.current = 0;
       anchorCorrectedRef.current = false;
@@ -272,13 +219,8 @@ export function useGestureInput({
 
     const onTouchMove = (e: TouchEvent) => {
       if (e.touches.length !== 1) return; // pinch-zoom — not a scroll
-      const y = e.touches[0].clientY;
-      // Travel since the previous move — what a scrub needs, as opposed to
-      // the distance from the swipe's origin the gesture threshold uses
-      const stepPx = touchLastY - y;
-      touchLastY = y;
       // Finger up = page down (matches wheel deltaY sign)
-      const dy = touchStartY - y;
+      const dy = touchStartY - e.touches[0].clientY;
       const dir = Math.sign(dy);
 
       // M1: direction reversal — if the finger flips direction past the
@@ -290,34 +232,18 @@ export function useGestureInput({
         Math.abs(dy) >= TOUCH_DISTANCE
       ) {
         touchHandled = false;
-        touchStartY = y;
+        touchStartY = e.touches[0].clientY;
       }
 
       const fire = !touchHandled && Math.abs(dy) >= TOUCH_DISTANCE;
 
       if (sweeping.current()) {
-        /* The scrub may claim the input even mid-glide (see the wheel
-           handler) — feed it the finger's incremental travel. */
-        if (onScrub?.current(stepPx)) {
-          if (e.cancelable) e.preventDefault();
-          touchStartY = y;
-          return;
-        }
         if (e.cancelable) e.preventDefault();
         if (fire) {
           onGesture.current(dir, true);
           touchHandled = true;
           touchPrevDir.current = dir;
         }
-        return;
-      }
-
-      /* A scrub owns the input — feed it the finger's incremental travel so
-         the reveal tracks the swipe one-to-one. The swipe origin follows the
-         finger meanwhile, so the same drag can never also fire a step. */
-      if (onScrub?.current(stepPx)) {
-        if (e.cancelable) e.preventDefault();
-        touchStartY = y;
         return;
       }
 

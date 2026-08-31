@@ -3,7 +3,7 @@ import { weInitiativeCards, type WeInitiativeCard } from "./weData";
 
 function InitiativeCardItem({ card }: { card: WeInitiativeCard }) {
   return (
-    <div className="group relative flex flex-col gap-2.5 overflow-hidden bg-gray-50 px-4 sm:px-6 lg:px-8 py-5 sm:py-8 lg:py-10">
+    <div className="group relative flex flex-col justify-between gap-2.5 overflow-hidden bg-gray-50 rounded-[4px] px-4 sm:px-6 lg:px-8 py-5 sm:py-8 lg:py-10">
       {/* Brand-green tint on hover (matches the design's hover state) */}
       <div
         aria-hidden
@@ -21,7 +21,7 @@ function InitiativeCardItem({ card }: { card: WeInitiativeCard }) {
           {card.description}
         </p>
       </div>
-      <div className="relative aspect-[603/313] w-full overflow-hidden">
+      <div className="relative aspect-[603/313] w-full overflow-hidden rounded-[4px]">
         <Image
           src={card.image}
           alt={card.title}
