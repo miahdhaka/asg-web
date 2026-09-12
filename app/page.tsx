@@ -1,6 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import SplashScreen from "@/components/homepage/SplashScreen";
 import Hero from "@/components/homepage/Hero";
 import OurBusiness from "@/components/homepage/OurBusiness";
 import GlobalFootprint from "@/components/homepage/GlobalFootprint";
@@ -11,33 +14,42 @@ import Newsroom from "@/components/homepage/Newsroom";
 import IntroSection from "@/components/homepage/IntroSection";
 
 export default function HomePage() {
-  // Force a full page reload every time the homepage mounts.
-  // The homepage's custom scroll system, GSAP timelines, and logo animations
-  // require a pristine initial state — client-side navigation (including the
-  // browser back button) can leave residual styles from the previous page.
-  // A hard reload guarantees the homepage always starts completely fresh.
-  //
-  // A sessionStorage timestamp prevents infinite reload loops: if the page
-  // was reloaded within the last 5 seconds we skip the reload.  After 5 s
-  // the flag expires so a later back-button return triggers a new reload.
+  // Clean up any residual GSAP/ScrollTrigger state from a previous visit
+  // (e.g. browser back button). useGSAP in child components handles their own
+  // cleanup, but ScrollTrigger may leave pinned styles on <html>/<body>.
   useLayoutEffect(() => {
-    const KEY = "__asg_home_reloaded";
-    const now = Date.now();
-    const last = parseInt(sessionStorage.getItem(KEY) || "0", 10);
-    if (now - last > 5000) {
-      sessionStorage.setItem(KEY, String(now));
-      window.location.reload();
-    }
+    return () => {
+      ScrollTrigger.getAll().forEach(st => st.kill());
+      gsap.globalTimeline.clear();
+    };
+  }, []);
+
+  // Always start from the top of the page
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const [splashDone, setSplashDone] = useState(false);
+  // Keep SplashScreen mounted during its fade-out so the overlay dissolves
+  // smoothly into the homepage — no abrupt unmount flash
+  const [splashMounted, setSplashMounted] = useState(true);
+  // Defer main content mount so the logo rise has the main thread.
+  // Logo rise: 0.3s delay + ~2.1s rise = 2.4s, mount at 1.8s (Hero
+  // renders before the overlay starts fading at ~2.8s)
+  const [mainMounted, setMainMounted] = useState(false);
+
+  useLayoutEffect(() => {
+    const id = setTimeout(() => setMainMounted(true), 1500);
+    return () => clearTimeout(id);
   }, []);
 
   // C2 fix: shared refs connecting WeAreASG's count-up trigger/reset to
   // the homepage scroll stepper in Hero.tsx
   const waaTriggerRef = useRef<(() => void) | null>(null);
   const waaResetRef = useRef<(() => void) | null>(null);
-  // useLayoutEffect fires BEFORE any child useEffect/useGSAP — guarantees
-  // the Hero sees scrollY === 0 on mount, so it always starts from step 0
-  useLayoutEffect(() => {
-    window.scrollTo(0, 0);
+  const handleWaaReady = useCallback((trigger: () => void, reset: () => void) => {
+    waaTriggerRef.current = trigger;
+    waaResetRef.current = reset;
   }, []);
 
   useEffect(() => {
@@ -61,18 +73,25 @@ export default function HomePage() {
   }, []);
 
   return (
-    <main>
-      <Hero waaTriggerRef={waaTriggerRef} waaResetRef={waaResetRef} />
-      <IntroSection />
-      <OurBusiness />
-      <GlobalFootprint />
-      <Sustainability />
-      <Certifications />
-      <WeAreASG onReady={useCallback((trigger: () => void, reset: () => void) => {
-        waaTriggerRef.current = trigger;
-        waaResetRef.current = reset;
-      }, [])} />
-      <Newsroom />
-    </main>
+    <>
+      {splashMounted && (
+        <SplashScreen
+          onFadeStart={() => setSplashDone(true)}
+          onFadeComplete={() => setSplashMounted(false)}
+        />
+      )}
+      {mainMounted && (
+        <main style={{ opacity: splashDone ? 1 : 0, transition: "opacity 0.8s ease" }}>
+          <Hero waaTriggerRef={waaTriggerRef} waaResetRef={waaResetRef} />
+          <IntroSection />
+          <OurBusiness />
+          <GlobalFootprint />
+          <Sustainability />
+          <Certifications />
+          <WeAreASG onReady={handleWaaReady} />
+          <Newsroom />
+        </main>
+      )}
+    </>
   );
 }

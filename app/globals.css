@@ -210,6 +210,7 @@
     overflow-x: clip;
     overscroll-behavior-y: none;
     overflow-anchor: none;
+    user-select: none;
   }
 }
 
@@ -244,6 +245,12 @@ html.asg-touch-lock * {
   }
   .font-test-tiempos-fine {
     font-family: var(--font-test-tiempos-fine), serif;
+  }
+  .font-archivo-black {
+    font-family: var(--font-archivo-black), sans-serif;
+  }
+  .font-space-mono {
+    font-family: var(--font-space-mono), monospace;
   }
   .scrollbar-hide {
     -ms-overflow-style: none;
@@ -556,4 +563,25 @@ html.asg-touch-lock * {
 /* Fix Leaflet map z-index to stay below navbar */
 .leaflet-container {
   z-index: 1 !important;
+}
+
+/* ── Splash screen ──
+   Two-phase animation for a seamless splash → homepage transition:
+     Phase 1 (0–3.2s): Logo rises from below, holds at center.
+                       Overlay stays fully opaque.
+     Phase 2 (3.2–4.0s): Entire overlay fades out, revealing the
+                         homepage underneath. No abrupt unmount flash.
+   The easing starts gently (no initial jerk) and decelerates smoothly. */
+@keyframes splash-logo-rise {
+  0%        { opacity: 0; transform: translate3d(0, 50vh, 0); }
+  85%       { opacity: 1; transform: translate3d(0, 0, 0); }     /* 2.1s — slow rise  */
+  100%      { opacity: 1; transform: translate3d(0, 0, 0); }     /* 2.5s — brief hold */
+}
+.splash-logo {
+  animation: splash-logo-rise 2.5s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+  will-change: transform, opacity;
+}
+/* Overlay fade-out — triggered by React after the logo animation ends */
+.splash-overlay-fade {
+  transition: opacity 0.8s ease;
 }

@@ -23,8 +23,7 @@ export default function Header() {
   const pathname = usePathname();
 
   const closeSidebar = useCallback(() => setSidebarOpen(false), []);
-  // On the homepage the center logo starts hidden — the Hero scroll timeline
-  // reveals it once the hero logo finishes its flight into the navbar.
+  // On the homepage the center logo is always visible
   const isHome = pathname === "/";
 
   /* Publish the navbar's real height as --header-height. Every full-height
@@ -148,7 +147,6 @@ export default function Header() {
                 href="/"
                 id="header-logo"
                 className="flex items-center"
-                style={{ opacity: 0 }}
                 onClick={(e) => {
                   e.preventDefault();
                   window.location.reload();
