@@ -12,6 +12,8 @@ import Certifications from "@/components/homepage/Certifications";
 import WeAreASG from "@/components/homepage/WeAreASG";
 import Newsroom from "@/components/homepage/Newsroom";
 import IntroSection from "@/components/homepage/IntroSection";
+import ASGHighlight from "@/components/homepage/ASGHighlight";
+import AboutUs from "@/components/homepage/AboutUs";
 
 export default function HomePage() {
   // Clean up any residual GSAP/ScrollTrigger state from a previous visit
@@ -52,6 +54,12 @@ export default function HomePage() {
     waaResetRef.current = reset;
   }, []);
 
+  // Shared ref connecting ASGHighlight's slide change to Hero's side content
+  const heroSlideChangeRef = useRef<((idx: number) => void) | null>(null);
+  const handleHighlightSlideChange = useCallback((concernIdx: number) => {
+    heroSlideChangeRef.current?.(concernIdx);
+  }, []);
+
   useEffect(() => {
     // Hide scrollbar visually but keep scroll functionality
     const style = document.createElement("style");
@@ -82,8 +90,9 @@ export default function HomePage() {
       )}
       {mainMounted && (
         <main style={{ opacity: splashDone ? 1 : 0, transition: "opacity 0.8s ease" }}>
-          <Hero waaTriggerRef={waaTriggerRef} waaResetRef={waaResetRef} />
-          <IntroSection />
+          <Hero waaTriggerRef={waaTriggerRef} waaResetRef={waaResetRef} heroSlideChangeRef={heroSlideChangeRef} />
+          <ASGHighlight onSlideChange={handleHighlightSlideChange} />
+          <AboutUs />
           <OurBusiness />
           <GlobalFootprint />
           <Sustainability />

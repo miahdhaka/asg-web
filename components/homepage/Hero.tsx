@@ -97,9 +97,11 @@ interface HeroProps {
   /** Shared refs connecting WeAreASG's count-up to the stepper */
   waaTriggerRef?: MutableRefObject<(() => void) | null>;
   waaResetRef?: MutableRefObject<(() => void) | null>;
+  /** Ref exposing a function to change the Hero's side content (from ASGHighlight) */
+  heroSlideChangeRef?: MutableRefObject<((idx: number) => void) | null>;
 }
 
-export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
+export default function Hero({ waaTriggerRef, waaResetRef, heroSlideChangeRef }: HeroProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const videoWrapRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -112,8 +114,10 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
   const rightSlideRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const tickers: Array<() => void> = [];
     const ctx = gsap.context(() => {
-      // Set initial centered position for video wrapper
+      // ─ Initial states ──────────────────────────────────────────
+      // Video wrapper: centered, full-size
       gsap.set(videoWrapRef.current, {
         left: "50%",
         top: "50%",
@@ -123,37 +127,32 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         height: "100%",
       });
 
-      // Set initial state for side content (hidden below, invisible)
-      gsap.set(leftContentRef.current, { y: "250px", opacity: 0 });
-      gsap.set(rightContentRef.current, { y: "250px", opacity: 0 });
+      // Side content: hidden below viewport
+      gsap.set(leftContentRef.current, { y: "100vh", opacity: 0 });
+      gsap.set(rightContentRef.current, { y: "100vh", opacity: 0 });
 
-      // Content animation — plays all at once on first real scroll
+      // Center text: visible at natural position
       gsap.set(textRef.current, { y: 0, opacity: 1 });
-      const contentAnim = gsap.to(textRef.current, {
-        y: "-60vh",
-        opacity: 0,
-        duration: 1,
-        ease: "power3.inOut",
-        paused: true,
-      });
 
-      // Video animation — tied to scroll (shrinks per pixel)
-      const videoAnim = gsap.to(videoWrapRef.current, {
-        width: "23%",
-        height: "56%",
-        borderRadius: "16px",
-        paused: true,
-      });
+      // Phase boundaries
+      const videoEnd = 0.30;   // video fully shrunk at 7th scroll
+      // Per-scroll progress unit derived from the video convention (7th scroll
+      // = videoEnd). Used to anchor the side content to an exact scroll count.
+      const PER_SCROLL = videoEnd / 7; // ≈ 0.042857 progress per scroll
+      // Side content rises across a WIDE progress range so it moves only a
+      // little per scroll notch (slow, per-scroll rise) while staying tightly
+      // tied to scroll position — scroll up reverses it back down.
+      const sideStart = PER_SCROLL * 2; // side content starts at exact 2nd scroll
+      const sideEnd = 0.55;    // side content fully risen (wide = slow)
 
-      // Side content rise animation
-      const sideAnim = gsap.to([leftContentRef.current, rightContentRef.current], {
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        ease: "power1.inOut",
-        paused: true,
-        stagger: 0.1,
-      });
+      // Smoothing config — a light glide follower keeps motion from snapping
+      // on each wheel/trackpad tick while remaining tied to scroll position.
+      const SMOOTH = 0.12;
+      // power2.out: content lifts noticeably right at sideStart (so the rise is
+      // clearly visible from the 4th scroll) then decelerates smoothly to rest.
+      const sideEase = gsap.parseEase("power2.out");
+      let targetProgress = 0;
+      let scrollProgress = 0; // smoothed progress used everywhere
 
       // Slide transition for sector/desc when switching concerns
       const slideConcerns = () => {
@@ -179,80 +178,122 @@ export default function Hero({ waaTriggerRef, waaResetRef }: HeroProps) {
         });
       };
 
-      // ScrollTrigger: pins section, scrubs video, triggers content once
-      let contentTriggered = false;
-      let sideTriggered = false;
-      let hasScrolled = false;
-      let videoTarget = 0;
-      let videoCurrent = 0;
-      let rafId: number;
+      // Text fade boundaries — progressive shrink keeps copy inside the video
+      // Scrolls 1-3: text fades equally; scroll 4: fully gone
+      const textStart = 0.0;
+      const textEnd = 0.2; // fully invisible early
 
-      const smoothUpdate = () => {
-        videoCurrent += (videoTarget - videoCurrent) * 0.06;
-        if (Math.abs(videoTarget - videoCurrent) > 0.001) {
-          videoAnim.progress(videoCurrent);
-          rafId = requestAnimationFrame(smoothUpdate);
+      // Expose function for ASGHighlight to change side content
+      if (heroSlideChangeRef) {
+        heroSlideChangeRef.current = (idx: number) => {
+          if (idx !== activeConcernRef.current) {
+            activeConcernRef.current = idx;
+            setActiveConcern(idx);
+            if (scrollProgress > sideEnd) slideConcerns();
+          }
+        };
+      }
+
+      // Per-frame glide follower — eases scrollProgress toward the raw
+      // trigger progress so pinned visuals move smoothly instead of
+      // snapping on every wheel/trackpad tick.
+      const tick = () => {
+        scrollProgress += (targetProgress - scrollProgress) * SMOOTH;
+        // Snap when effectively settled to avoid endless sub-pixel drift
+        if (Math.abs(targetProgress - scrollProgress) < 0.0005) {
+          scrollProgress = targetProgress;
+        }
+        const p = scrollProgress;
+
+        // Center text: progressive rise + fade + shrink tied to scroll
+        // progress so the copy never outruns the shrinking video frame.
+        // Fades equally across scrolls 1-3, fully gone by scroll 4.
+        if (p <= textStart) {
+          gsap.set(textRef.current, { y: 0, opacity: 1, scale: 1 });
+        } else if (p >= textEnd) {
+          gsap.set(textRef.current, { y: "-35vh", opacity: 0, scale: 0.5 });
         } else {
-          videoAnim.progress(videoTarget);
+          const t = (p - textStart) / (textEnd - textStart);
+          gsap.set(textRef.current, {
+            y: `${-35 * t}vh`,
+            opacity: 1 - t,
+            scale: 1 - 0.5 * t,
+          });
+        }
+
+        // Video: directly interpolated 0%→35% (full-size → small)
+        // Using direct interpolation guarantees correct values at every
+        // scroll position including 0 (no "to() tween not started" issue).
+        const vw = p <= videoEnd
+          ? 100 - (100 - 23) * (p / videoEnd)
+          : 23;
+        const vh = p <= videoEnd
+          ? 100 - (100 - 56) * (p / videoEnd)
+          : 56;
+        const br = p <= videoEnd ? 16 * (p / videoEnd) : 16;
+        gsap.set(videoWrapRef.current, {
+          width: `${vw}%`,
+          height: `${vh}%`,
+          borderRadius: `${br}px`,
+        });
+
+        // Side content: eased interpolation across the wide sideStart–sideEnd
+        // range, driven by scroll-tied progress so the panels rise a little
+        // per scroll (slow) and reverse straight back down on scroll up.
+        if (p <= sideStart) {
+          gsap.set([leftContentRef.current, rightContentRef.current], {
+            y: "100vh",
+            opacity: 0,
+          });
+        } else if (p >= sideEnd) {
+          gsap.set([leftContentRef.current, rightContentRef.current], {
+            y: 0,
+            opacity: 1,
+          });
+        } else {
+          const rawT = (p - sideStart) / (sideEnd - sideStart);
+          const t = sideEase(rawT);
+          gsap.set([leftContentRef.current, rightContentRef.current], {
+            y: `${100 * (1 - t)}vh`,
+            opacity: t,
+          });
+        }
+
+        // Switch concern dynamically based on scroll progress
+        const concernStart = sideEnd;
+        const concernRange = 1 - concernStart;
+        const segLen = concernRange / sisterConcerns.length;
+        const newIdx = p > concernStart
+          ? Math.min(sisterConcerns.length - 1, Math.floor((p - concernStart) / segLen))
+          : 0;
+        if (newIdx !== activeConcernRef.current) {
+          activeConcernRef.current = newIdx;
+          if (p > sideEnd) slideConcerns();
         }
       };
+      tickers.push(tick);
+      gsap.ticker.add(tick);
 
       ScrollTrigger.create({
         trigger: sectionRef.current,
         start: "top top",
-        end: "+=" + (50 + sisterConcerns.length * 15) + "%",
+        end: "+=" + (80 + sisterConcerns.length * 17) + "%",
         pin: true,
         pinSpacing: true,
         onUpdate: (self) => {
-          // Only respond to actual user scrolling, not init
-          if (window.scrollY > 0) hasScrolled = true;
-          if (!hasScrolled) return;
-
-          // Video shrinks in first 40% of scroll, then stays at final size
-          videoTarget = Math.min(self.progress / 0.4, 1);
-          cancelAnimationFrame(rafId);
-          smoothUpdate();
-
-          // Side content rises after video finishes shrinking
-          if (self.progress > 0.42 && !sideTriggered) {
-            sideTriggered = true;
-            sideAnim.play();
-          }
-          if (self.progress < 0.38 && sideTriggered) {
-            sideTriggered = false;
-            sideAnim.timeScale(1).reverse();
-          }
-
-          // Switch concern dynamically based on scroll progress
-          const p = self.progress;
-          const concernStart = 0.42;
-          const concernRange = 1 - concernStart;
-          const segLen = concernRange / sisterConcerns.length;
-          const newIdx = p > concernStart
-            ? Math.min(sisterConcerns.length - 1, Math.floor((p - concernStart) / segLen))
-            : 0;
-          if (newIdx !== activeConcernRef.current) {
-            activeConcernRef.current = newIdx;
-            if (sideTriggered) slideConcerns();
-          }
-
-          if (self.progress > 0.01 && !contentTriggered) {
-            contentTriggered = true;
-            contentAnim.play();
-          }
-          if (self.progress < 0.01 && contentTriggered) {
-            contentTriggered = false;
-            contentAnim.timeScale(1).reverse();
-          }
+          targetProgress = self.progress;
         },
       });
     });
 
-    return () => ctx.revert();
+    return () => {
+      tickers.forEach((t) => gsap.ticker.remove(t));
+      ctx.revert();
+    };
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative w-full h-[var(--vh)] lg:h-screen overflow-hidden bg-white">
+    <section ref={sectionRef} className="relative w-full h-[var(--vh)] lg:h-screen overflow-hidden">
       {/* Video wrapper */}
       <div ref={videoWrapRef} className="absolute inset-0 overflow-hidden">
         {/* Hero Background video */}
