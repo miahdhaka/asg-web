@@ -4,7 +4,6 @@ import AboutIntro from "@/components/about/AboutIntro";
 import AboutStats from "@/components/about/AboutStats";
 import VisionMission from "@/components/about/VisionMission";
 import Achievements from "@/components/about/Achievements";
-import RockSteadySection from "@/components/about/globe/Section";
 import ValueCardsSection, { ValueCardItem } from "@/components/about/ValueCardsSection";
 
 export const metadata: Metadata = {
@@ -93,7 +92,6 @@ export default function AboutUsPage() {
       <AboutStats />
       <VisionMission />
       <Achievements />
-      <RockSteadySection />
       <ValueCardsSection id="core-values" heading="Core Values" items={coreValues} variant="muted" />
       <ValueCardsSection id="core-competency" heading="Core Competency" items={coreCompetencies} variant="light" />
     </main>

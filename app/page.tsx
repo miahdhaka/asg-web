@@ -7,13 +7,16 @@ import SplashScreen from "@/components/homepage/SplashScreen";
 import Hero from "@/components/homepage/Hero";
 import OurBusiness from "@/components/homepage/OurBusiness";
 import GlobalFootprint from "@/components/homepage/GlobalFootprint";
+import GreenerFuture from "@/components/homepage/GreenerFuture";
 import Sustainability from "@/components/homepage/Sustainability";
-import Certifications from "@/components/homepage/Certifications";
+import CertificationsCompliance from "@/components/homepage/CertificationsCompliance";
+import LegacyOfLeadership from "@/components/homepage/LegacyOfLeadership";
 import WeAreASG from "@/components/homepage/WeAreASG";
 import Newsroom from "@/components/homepage/Newsroom";
 import IntroSection from "@/components/homepage/IntroSection";
 import ASGHighlight from "@/components/homepage/ASGHighlight";
 import AboutUs from "@/components/homepage/AboutUs";
+import RockSteadySection from "@/components/about/globe/Section";
 
 export default function HomePage() {
   // Clean up any residual GSAP/ScrollTrigger state from a previous visit
@@ -35,23 +38,12 @@ export default function HomePage() {
   // Keep SplashScreen mounted during its fade-out so the overlay dissolves
   // smoothly into the homepage — no abrupt unmount flash
   const [splashMounted, setSplashMounted] = useState(true);
-  // Defer main content mount so the logo rise has the main thread.
-  // Logo rise: 0.3s delay + ~2.1s rise = 2.4s, mount at 1.8s (Hero
-  // renders before the overlay starts fading at ~2.8s)
+  // Defer main content mount so the logo animation has the main thread
   const [mainMounted, setMainMounted] = useState(false);
 
   useLayoutEffect(() => {
     const id = setTimeout(() => setMainMounted(true), 1500);
     return () => clearTimeout(id);
-  }, []);
-
-  // C2 fix: shared refs connecting WeAreASG's count-up trigger/reset to
-  // the homepage scroll stepper in Hero.tsx
-  const waaTriggerRef = useRef<(() => void) | null>(null);
-  const waaResetRef = useRef<(() => void) | null>(null);
-  const handleWaaReady = useCallback((trigger: () => void, reset: () => void) => {
-    waaTriggerRef.current = trigger;
-    waaResetRef.current = reset;
   }, []);
 
   // Shared ref connecting ASGHighlight's slide change to Hero's side content
@@ -90,14 +82,13 @@ export default function HomePage() {
       )}
       {mainMounted && (
         <main style={{ opacity: splashDone ? 1 : 0, transition: "opacity 0.8s ease" }}>
-          <Hero waaTriggerRef={waaTriggerRef} waaResetRef={waaResetRef} heroSlideChangeRef={heroSlideChangeRef} />
+          <Hero heroSlideChangeRef={heroSlideChangeRef} />
           <ASGHighlight onSlideChange={handleHighlightSlideChange} />
           <AboutUs />
-          <OurBusiness />
-          <GlobalFootprint />
-          <Sustainability />
-          <Certifications />
-          <WeAreASG onReady={handleWaaReady} />
+          <RockSteadySection />
+          <GreenerFuture />
+          <CertificationsCompliance />
+          <LegacyOfLeadership />
           <Newsroom />
         </main>
       )}

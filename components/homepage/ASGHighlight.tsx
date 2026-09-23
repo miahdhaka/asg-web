@@ -155,16 +155,17 @@ export default function ASGHighlight({ onSlideChange }: ASGHighlightProps) {
             gsap.killTweensOf(el);
             if (i !== prevIdx && i !== idx) gsap.set(el, { opacity: 0, y: 0 });
           });
-          // Outgoing: slide up & fade out.
+          // Outgoing: slide up & fade out — matches the Hero's side-content
+          // transition (0.3s, 40px travel) so the change feels slower/smoother.
           if (prevEl) {
-            gsap.to(prevEl, { y: -30 * dir, opacity: 0, duration: 0.15, ease: "power3.in" });
+            gsap.to(prevEl, { y: -40 * dir, opacity: 0, duration: 0.3, ease: "power3.in" });
           }
           // Incoming: start below, slide up & fade in (after the outgoing).
           if (nextEl) {
             gsap.fromTo(
               nextEl,
-              { y: 30 * dir, opacity: 0 },
-              { y: 0, opacity: 1, duration: 0.15, ease: "power3.out", delay: prevEl ? 0.15 : 0 }
+              { y: 40 * dir, opacity: 0 },
+              { y: 0, opacity: 1, duration: 0.3, ease: "power3.out", delay: prevEl ? 0.3 : 0 }
             );
           }
           currentSlide = idx;

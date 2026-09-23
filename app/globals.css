@@ -153,6 +153,27 @@
   --primary-gradient: linear-gradient(97.37deg, #8BC34A 1.29%, #1AA179 92.01%);
 }
 
+/* Site Overlays Start */
+.base-gradient {
+  background: linear-gradient(180deg, #F3F3F1 -7.28%, #F3F4F1 16.35%, #E0EDE0 87.23%);
+}
+.overlay-hover-bg {
+  background: linear-gradient(97.37deg, rgba(139, 195, 74, 0.2) 1.29%, rgba(26, 161, 121, 0.2) 88.53%);
+}
+.overlay-black-linear {
+  background: linear-gradient(360deg, rgba(12, 12, 12, 0.8) -0.09%, rgba(0, 0, 0, 0) 59.41%);
+}
+.overlay-linear-subtle{
+  background: linear-gradient(360deg, #0C0C0C 5.97%, rgba(0, 0, 0, 0) 70.45%);
+}
+.overlay-image-hover {
+  background: linear-gradient(360deg, #0C0C0C 0%, rgba(0, 0, 0, 0) 36.51%);
+}
+.overlay-bg-default {
+  background: #00000080;
+}
+/* Site Overlays End */
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -238,28 +259,6 @@ html.asg-touch-lock * {
     display: none;
   }
 }
-
-
-/* Site Overlays Start */
-/* .brand-gradient {
-  background: linear-gradient(97.37deg, #8BC34A 1.29%, #1AA179 92.01%);
-} */
-.overlay-hover-bg {
-  background: linear-gradient(97.37deg, rgba(139, 195, 74, 0.2) 1.29%, rgba(26, 161, 121, 0.2) 88.53%);
-}
-.overlay-black-linear {
-  background: linear-gradient(360deg, rgba(12, 12, 12, 0.8) -0.09%, rgba(0, 0, 0, 0) 59.41%);
-}
-.overlay-linear-subtle{
-  background: linear-gradient(360deg, #0C0C0C 5.97%, rgba(0, 0, 0, 0) 70.45%);
-}
-.overlay-image-hover {
-  background: linear-gradient(360deg, #0C0C0C 0%, rgba(0, 0, 0, 0) 36.51%);
-}
-.overlay-bg-default {
-  background: #00000080;
-}
-/* Site Overlays End */
 
 /* Gradient wash on hover — About page cards.
    `.card-gradient-hover` triggers on the element itself;
@@ -541,25 +540,4 @@ html.asg-touch-lock * {
 /* Fix Leaflet map z-index to stay below navbar */
 .leaflet-container {
   z-index: 1 !important;
-}
-
-/* ── Splash screen ──
-   Two-phase animation for a seamless splash → homepage transition:
-     Phase 1 (0–3.2s): Logo rises from below, holds at center.
-                       Overlay stays fully opaque.
-     Phase 2 (3.2–4.0s): Entire overlay fades out, revealing the
-                         homepage underneath. No abrupt unmount flash.
-   The easing starts gently (no initial jerk) and decelerates smoothly. */
-@keyframes splash-logo-rise {
-  0%        { opacity: 0; transform: translate3d(0, 50vh, 0); }
-  85%       { opacity: 1; transform: translate3d(0, 0, 0); }     /* 2.1s — slow rise  */
-  100%      { opacity: 1; transform: translate3d(0, 0, 0); }     /* 2.5s — brief hold */
-}
-.splash-logo {
-  animation: splash-logo-rise 2.5s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
-  will-change: transform, opacity;
-}
-/* Overlay fade-out — triggered by React after the logo animation ends */
-.splash-overlay-fade {
-  transition: opacity 0.8s ease;
 }

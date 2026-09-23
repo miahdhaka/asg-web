@@ -7,28 +7,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/** External-link glyph shown beside the "Visit website" label */
-function LinkArrow() {
-  return (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 12 12"
-      fill="none"
-      aria-hidden
-      className="lg:h-[1em] lg:w-[1em]"
-    >
-      <path
-        d="M2.5 9.5L9.5 2.5M4 2.5H9.5V8"
-        stroke="currentColor"
-        strokeWidth="1.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 export interface SisterConcern {
   sector: string;
   description: string;
@@ -94,17 +72,13 @@ const sisterConcerns: SisterConcern[] = [
 ];
 
 interface HeroProps {
-  /** Shared refs connecting WeAreASG's count-up to the stepper */
-  waaTriggerRef?: MutableRefObject<(() => void) | null>;
-  waaResetRef?: MutableRefObject<(() => void) | null>;
   /** Ref exposing a function to change the Hero's side content (from ASGHighlight) */
   heroSlideChangeRef?: MutableRefObject<((idx: number) => void) | null>;
 }
 
-export default function Hero({ waaTriggerRef, waaResetRef, heroSlideChangeRef }: HeroProps) {
+export default function Hero({ heroSlideChangeRef }: HeroProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const videoWrapRef = useRef<HTMLDivElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const leftContentRef = useRef<HTMLDivElement>(null);
   const rightContentRef = useRef<HTMLDivElement>(null);
@@ -116,7 +90,6 @@ export default function Hero({ waaTriggerRef, waaResetRef, heroSlideChangeRef }:
   useEffect(() => {
     const tickers: Array<() => void> = [];
     const ctx = gsap.context(() => {
-      // ─ Initial states ──────────────────────────────────────────
       // Video wrapper: centered, full-size
       gsap.set(videoWrapRef.current, {
         left: "50%",
@@ -134,21 +107,13 @@ export default function Hero({ waaTriggerRef, waaResetRef, heroSlideChangeRef }:
       // Center text: visible at natural position
       gsap.set(textRef.current, { y: 0, opacity: 1 });
 
-      // Phase boundaries
       const videoEnd = 0.30;   // video fully shrunk at 7th scroll
-      // Per-scroll progress unit derived from the video convention (7th scroll
-      // = videoEnd). Used to anchor the side content to an exact scroll count.
       const PER_SCROLL = videoEnd / 7; // ≈ 0.042857 progress per scroll
-      // Side content rises across a WIDE progress range so it moves only a
-      // little per scroll notch (slow, per-scroll rise) while staying tightly
-      // tied to scroll position — scroll up reverses it back down.
       const sideStart = PER_SCROLL * 2; // side content starts at exact 2nd scroll
-      const sideEnd = 0.55;    // side content fully risen (wide = slow)
+      const sideEnd = 0.55; // side content fully risen (wide = slow)
 
-      // Smoothing config — a light glide follower keeps motion from snapping
       // on each wheel/trackpad tick while remaining tied to scroll position.
       const SMOOTH = 0.12;
-      // power2.out: content lifts noticeably right at sideStart (so the rise is
       // clearly visible from the 4th scroll) then decelerates smoothly to rest.
       const sideEase = gsap.parseEase("power2.out");
       let targetProgress = 0;
@@ -178,7 +143,6 @@ export default function Hero({ waaTriggerRef, waaResetRef, heroSlideChangeRef }:
         });
       };
 
-      // Text fade boundaries — progressive shrink keeps copy inside the video
       // Scrolls 1-3: text fades equally; scroll 4: fully gone
       const textStart = 0.0;
       const textEnd = 0.2; // fully invisible early
@@ -194,9 +158,6 @@ export default function Hero({ waaTriggerRef, waaResetRef, heroSlideChangeRef }:
         };
       }
 
-      // Per-frame glide follower — eases scrollProgress toward the raw
-      // trigger progress so pinned visuals move smoothly instead of
-      // snapping on every wheel/trackpad tick.
       const tick = () => {
         scrollProgress += (targetProgress - scrollProgress) * SMOOTH;
         // Snap when effectively settled to avoid endless sub-pixel drift
@@ -205,8 +166,6 @@ export default function Hero({ waaTriggerRef, waaResetRef, heroSlideChangeRef }:
         }
         const p = scrollProgress;
 
-        // Center text: progressive rise + fade + shrink tied to scroll
-        // progress so the copy never outruns the shrinking video frame.
         // Fades equally across scrolls 1-3, fully gone by scroll 4.
         if (p <= textStart) {
           gsap.set(textRef.current, { y: 0, opacity: 1, scale: 1 });
@@ -222,8 +181,6 @@ export default function Hero({ waaTriggerRef, waaResetRef, heroSlideChangeRef }:
         }
 
         // Video: directly interpolated 0%→35% (full-size → small)
-        // Using direct interpolation guarantees correct values at every
-        // scroll position including 0 (no "to() tween not started" issue).
         const vw = p <= videoEnd
           ? 100 - (100 - 23) * (p / videoEnd)
           : 23;
@@ -237,8 +194,6 @@ export default function Hero({ waaTriggerRef, waaResetRef, heroSlideChangeRef }:
           borderRadius: `${br}px`,
         });
 
-        // Side content: eased interpolation across the wide sideStart–sideEnd
-        // range, driven by scroll-tied progress so the panels rise a little
         // per scroll (slow) and reverse straight back down on scroll up.
         if (p <= sideStart) {
           gsap.set([leftContentRef.current, rightContentRef.current], {
@@ -308,7 +263,7 @@ export default function Hero({ waaTriggerRef, waaResetRef, heroSlideChangeRef }:
         </video>
 
         {/* Dark overlay for text readability */}
-        <div ref={overlayRef} className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 bg-black/40" />
       </div>
 
       {/* Centered content — overflow-hidden clips text during rise/fall */}
@@ -329,7 +284,7 @@ export default function Hero({ waaTriggerRef, waaResetRef, heroSlideChangeRef }:
 
           {/* Title — Archivo Black, 3 lines */}
           <h1 className="font-archivo-black uppercase text-[28px] sm:text-5xl lg:text-[6rem] leading-[1.05]">
-            <span className="block">GENERATIONS OF <span style={{ background: "var(--primary-gradient)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>TRUST.</span></span>
+            <span className="block">GENERATIONS OF <span className="animate__tada" style={{ background: "var(--primary-gradient)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>TRUST.</span></span>
             <span className="block">ENGINEERED FOR</span>
             <span className="block">THE <span style={{ background: "var(--primary-gradient)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>FUTURE.</span></span>
           </h1>
@@ -381,19 +336,22 @@ export default function Hero({ waaTriggerRef, waaResetRef, heroSlideChangeRef }:
           </div>
           <a
             href={sisterConcerns[activeConcern]?.link ?? "#"}
-            className="group relative inline-flex w-fit items-center justify-center self-start overflow-hidden border px-5 py-2.5 text-xs font-medium leading-none lg:self-auto lg:px-[1.75em] lg:py-[0.9em] lg:text-[1.08em] mt-10"
+            className="group relative inline-flex w-fit items-center justify-center self-start overflow-hidden rounded-full border border-transparent px-5 py-2.5 text-xs font-medium leading-none lg:self-auto lg:px-[1.75em] lg:py-[0.9em] lg:text-[1.08em] mt-10"
             style={{
-              borderImage: "var(--primary-gradient) 1",
-              borderWidth: 1,
+              background:
+                "linear-gradient(#F3F3F1, #F3F3F1) padding-box, linear-gradient(97.37deg, #8BC34A 1.29%, #1AA179 92.01%) border-box",
             }}
           >
+            {/* Invisible spacer — preserves the button's intrinsic width/height */}
             <span className="invisible inline-flex items-center gap-1 whitespace-nowrap lg:gap-[0.33em]">
               Visit Website
-              <LinkArrow />
+              <SquareArrowOutUpRight className="w-4 h-4" />
             </span>
+
+            {/* Default: gradient text — slides down and out on hover */}
             <span
               aria-hidden
-              className="absolute inset-0 flex items-center justify-center gap-1 whitespace-nowrap text-[#1AA179] transition-transform duration-500 ease-in-out group-hover:translate-y-full lg:gap-[0.33em]"
+              className="absolute inset-0 flex items-center justify-center gap-1 whitespace-nowrap transition-transform duration-500 ease-in-out group-hover:translate-y-full lg:gap-[0.33em]"
             >
               <span
                 className="bg-clip-text text-transparent"
@@ -401,8 +359,10 @@ export default function Hero({ waaTriggerRef, waaResetRef, heroSlideChangeRef }:
               >
                 Visit Website
               </span>
-              <SquareArrowOutUpRight className="w-4 h-4" />
+              <SquareArrowOutUpRight className="w-4 h-4" color="#1AA179" />
             </span>
+
+            {/* Hover: gradient fill + white text — slides in from the top */}
             <span
               aria-hidden
               className="absolute inset-0 flex -translate-y-full items-center justify-center gap-1 whitespace-nowrap text-white transition-transform duration-500 ease-in-out group-hover:translate-y-0 lg:gap-[0.33em]"
