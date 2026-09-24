@@ -3,8 +3,9 @@
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
+  useEffect,
   useRef,
-  type MouseEvent as ReactMouseEvent,
+  useState,
   type PointerEvent as ReactPointerEvent,
 } from "react";
 
@@ -45,52 +46,108 @@ const cards: GreenerFutureCard[] = [
 
 export default function GreenerFuture() {
   const trackRef = useRef<HTMLDivElement>(null);
-  // Mouse-drag state so the track can be slid by cursor and a drag is not
-  // mistaken for a card click
-  const dragRef = useRef({ down: false, startX: 0, scrollLeft: 0, moved: false });
+  const [fullyVisibleCards, setFullyVisibleCards] = useState<Set<number>>(
+    new Set(),
+  );
 
-  // Advance the carousel by exactly one card (card width + gap)
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        setFullyVisibleCards((current) => {
+          const next = new Set(current);
+          let changed = false;
+
+          entries.forEach((entry) => {
+            const index = Number(
+              (entry.target as HTMLElement).dataset.cardIndex,
+            );
+            const isFullyVisible = entry.intersectionRatio >= 0.995;
+
+            if (isFullyVisible !== next.has(index)) {
+              changed = true;
+              if (isFullyVisible) next.add(index);
+              else next.delete(index);
+            }
+          });
+
+          return changed ? next : current;
+        });
+      },
+      { root: track, threshold: [0, 0.995, 1] },
+    );
+
+    const cardElements = track.querySelectorAll<HTMLElement>("[data-card]");
+    cardElements.forEach((card) => observer.observe(card));
+
+    return () => observer.disconnect();
+  }, []);
+
+  // --- Slider engine (Certifications-style, without the auto-drift) -------
+  // Mouse-drag state: dragging scrubs the track 1:1.
+  const dragRef = useRef({ down: false, startX: 0, scrollLeft: 0 });
+
+  // Width of one full card copy (measured from the DOM so track padding and
+  // gaps never skew the wrap seam) and the one-card pitch.
+  const pitches = (track: HTMLDivElement) => {
+    const cardEls = track.querySelectorAll<HTMLElement>("[data-card]");
+    const step =
+      cardEls.length > 1
+        ? cardEls[1].offsetLeft - cardEls[0].offsetLeft
+        : track.clientWidth;
+    const pitch =
+      cardEls.length > cards.length
+        ? cardEls[cards.length].offsetLeft - cardEls[0].offsetLeft
+        : track.scrollWidth / 2;
+    return { step, pitch };
+  };
+
+  // Keep the position normalized within the first copy [0, pitch).
+  const wrap = (track: HTMLDivElement, value: number) => {
+    const { pitch } = pitches(track);
+    if (pitch <= 0) return value;
+    let v = value;
+    while (v < 0) v += pitch;
+    while (v >= pitch) v -= pitch;
+    return v;
+  };
+
+  // Arrows advance exactly one card with native smooth scrolling, wrapping
+  // over the copy seam so the loop stays infinite in both directions.
   const scrollByCard = (direction: 1 | -1) => {
     const track = trackRef.current;
     if (!track) return;
-    const card = track.querySelector<HTMLElement>("[data-card]");
-    const gap = 20;
-    const step = card ? card.offsetWidth + gap : track.clientWidth;
-    track.scrollBy({ left: direction * step, behavior: "smooth" });
+    const { step, pitch } = pitches(track);
+    if (step <= 0 || pitch <= 0) return;
+
+    // Instantly re-base into the first copy (visually identical) so there is
+    // always another full copy ahead in the step direction
+    track.scrollLeft = wrap(track, track.scrollLeft);
+    let target = track.scrollLeft + direction * step;
+    if (target < 0) {
+      track.scrollLeft += pitch;
+      target += pitch;
+    }
+    track.scrollTo({ left: target, behavior: "smooth" });
   };
 
   const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
     const track = trackRef.current;
     if (!track || e.pointerType !== "mouse") return;
-    dragRef.current = {
-      down: true,
-      startX: e.clientX,
-      scrollLeft: track.scrollLeft,
-      moved: false,
-    };
+    dragRef.current = { down: true, startX: e.clientX, scrollLeft: track.scrollLeft };
   };
 
   const onPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
     const track = trackRef.current;
-    const drag = dragRef.current;
-    if (!track || !drag.down) return;
-    const dx = e.clientX - drag.startX;
-    if (Math.abs(dx) > 4) drag.moved = true;
-    track.scrollLeft = drag.scrollLeft - dx;
+    if (!track || !dragRef.current.down) return;
+    const dx = e.clientX - dragRef.current.startX;
+    track.scrollLeft = wrap(track, dragRef.current.scrollLeft - dx);
   };
 
   const endDrag = () => {
     dragRef.current.down = false;
-  };
-
-  // Clicking a card slides it to the centre; ignored right after a drag
-  const onCardClick = (e: ReactMouseEvent<HTMLDivElement>) => {
-    if (dragRef.current.moved) return;
-    e.currentTarget.scrollIntoView({
-      behavior: "smooth",
-      inline: "center",
-      block: "nearest",
-    });
   };
 
   return (
@@ -113,7 +170,7 @@ export default function GreenerFuture() {
         </p>
       </div>
 
-      {/* Card carousel — horizontal scroll track with edge arrow controls */}
+      {/* Card carousel — drag/arrow-driven track with edge arrow controls */}
       <div className="relative mt-12 lg:mt-[3em]">
         <div
           ref={trackRef}
@@ -121,14 +178,18 @@ export default function GreenerFuture() {
           onPointerMove={onPointerMove}
           onPointerUp={endDrag}
           onPointerLeave={endDrag}
-          className="flex cursor-grab active:cursor-grabbing select-none gap-5 overflow-x-auto px-6 md:px-12 lg:px-20 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex cursor-grab active:cursor-grabbing select-none gap-6 overflow-x-auto px-6 md:px-12 lg:px-20 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
-          {cards.map((card) => (
+          {/* Rendered twice so the one-card stepping can wrap seamlessly */}
+          {[...cards, ...cards].map((card, index) => (
             <div
-              key={card.label}
+              key={`${card.label}-${index}`}
               data-card
-              onClick={onCardClick}
-              className="relative aspect-[14/15] w-[75vw] shrink-0 snap-start cursor-pointer overflow-hidden rounded-[1.2rem] md:w-[calc((100vw-88px)/2.9)] lg:w-[calc((100vw-120px)/2.9)]"
+              data-card-index={index}
+              className="relative aspect-[14/15] w-[75vw] shrink-0 overflow-hidden transition-[border-radius] duration-700 ease-in-out md:w-[calc((100vw-88px)/2.9)] lg:w-[calc((100vw-120px)/2.9)]"
+              style={{
+                borderRadius: fullyVisibleCards.has(index) ? "1.2rem" : "7rem",
+              }}
             >
               <Image
                 src={card.image}
@@ -146,7 +207,7 @@ export default function GreenerFuture() {
                 className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent"
               />
 
-              <div className="absolute inset-x-0 bottom-0 p-8 lg:p-10">
+              <div className="absolute inset-x-0 bottom-0 p-8 lg:p-12">
                 <h3 className="font-neue-montreal text-[1.375rem] font-medium text-white lg:text-[1.75rem]">
                   {card.label}
                 </h3>

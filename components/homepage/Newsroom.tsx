@@ -145,20 +145,18 @@ export default function Newsroom() {
       className="relative flex w-full flex-col overflow-hidden py-6 lg:py-8 mb-6 lg:mb-8 h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Header — eyebrow + title left, button right */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between px-4 lg:px-20 mb-10 gap-4">
-        <div className="mt-2">
+      <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between px-4 lg:px-20 mb-12 gap-4">
+        <div className="mt-2 flex flex-col gap-7">
           {/* Eyebrow — drops in together with the title below */}
-          <div id="newsroom-eyebrow" className="flex items-center gap-3">
-            <span className="font-neue-montreal text-sm lg:text-base font-medium tracking-widest text-neutral-800 uppercase">
-              Newsroom
-            </span>
-            <span aria-hidden className="h-1.5 w-1.5 bg-neutral-800" />
+          <div id="newsroom-eyebrow" className="inline-flex items-center gap-1.5 font-space-mono font-medium text-[var(--neutral-800)] uppercase">
+            Newsroom
+            <span aria-hidden className="text-2xl leading-none bg-gradient-to-b from-[#4a9e4a] to-[#2d6b2d] bg-clip-text text-transparent">•</span>
           </div>
 
           {/* Title — drops in from above via the Hero's fade-chain reveal */}
           <h2
             id="newsroom-title"
-            className="mt-3 font-serif text-3xl sm:text-4xl lg:text-[4rem] leading-[1] font-normal text-neutral-800"
+            className="font-archivo-black uppercase text-2xl sm:text-4xl lg:text-[3rem] leading-[1.1] text-[var(--neutral-800)]"
           >
             Latest from ASG <br />newsroom
           </h2>
@@ -167,7 +165,12 @@ export default function Newsroom() {
         <Link
           href="/newsroom"
           data-label="More news"
-          className="primary-btn-flip-gradient text-sm sm:text-base lg:text-lg px-5 sm:px-6 lg:px-10 py-3 sm:py-3.5 lg:py-5"
+          className="primary-btn-flip-gradient rounded-full px-3 sm:px-4 lg:px-6 py-2.5 sm:py-3 lg:py-4 text-sm sm:text-base lg:text-lg"
+          style={{
+            borderImage: "none",
+            background:
+              "linear-gradient(#F3F3F1, #F3F3F1) padding-box, linear-gradient(97.37deg, #8BC34A 1.29%, #1AA179 92.01%) border-box",
+          }}
         >
           More news
         </Link>
@@ -200,7 +203,7 @@ export default function Newsroom() {
                 }`}
               >
                 {/* Image */}
-                <div className="relative aspect-[431/390] w-full overflow-hidden bg-[#D9D9D9] lg:aspect-auto lg:flex-1 lg:min-h-0">
+                <div className="relative aspect-[431/400] w-full overflow-hidden rounded-[1.2rem] bg-[#D9D9D9] lg:h-[70%] lg:aspect-auto lg:flex-none lg:min-h-0">
                   <Image
                     src={item.image}
                     alt={item.title}
@@ -208,6 +211,7 @@ export default function Newsroom() {
                     sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                     draggable={false}
                     className="pointer-events-none object-cover"
+                    style={{ borderRadius: "1.2rem" }}
                     quality={80}
                   />
                   {/* Hover overlay */}
@@ -220,20 +224,20 @@ export default function Newsroom() {
                 <div className="flex flex-col gap-1">
                   {/* Meta — date / category */}
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="font-neue-montreal text-sm sm:text-base lg:text-xl text-neutral-600">
+                    <span className="font-neue-montreal text-xs sm:text-sm lg:text-base text-neutral-600">
                       {item.date}
                     </span>
                     <span
                       aria-hidden
                       className="h-4 sm:h-5 w-px rotate-[30deg] bg-neutral-600"
                     />
-                    <span className="font-neue-montreal text-sm sm:text-base lg:text-xl text-neutral-600">
+                    <span className="font-neue-montreal text-xs sm:text-sm lg:text-base text-neutral-600">
                       {item.category}
                     </span>
                   </div>
 
                   {/* Title */}
-                  <h3 className="max-w-full lg:max-w-[21.5625rem] font-serif text-xl sm:text-2xl lg:text-3xl leading-7 sm:leading-8 lg:leading-10 text-neutral-800">
+                  <h3 className="max-w-full lg:max-w-[90%] font-archivo-black text-xl sm:text-2xl lg:text-3xl leading-7 sm:leading-8 text-neutral-800">
                     {item.title}
                   </h3>
                 </div>
