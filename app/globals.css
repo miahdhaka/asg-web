@@ -34,28 +34,6 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 
 
-  /* --- Unused shadcn sidebar tokens (kept for reference) ---
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  */
-
-  /* --- Unused shadcn chart tokens (kept for reference) ---
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  */
-
-
-
-
   --color-primary-black: var(--primary-black);
 
   /* Custom Fonts */
@@ -103,7 +81,7 @@
 :root {
   --text-primary: #262626;
   --text-secondary: #A1A1A1;  
-  --background: oklch(1 0 0);
+  --background: #F3F3F1;
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -175,6 +153,27 @@
   --primary-gradient: linear-gradient(97.37deg, #8BC34A 1.29%, #1AA179 92.01%);
 }
 
+/* Site Overlays Start */
+.base-gradient {
+  background: linear-gradient(180deg, #F3F3F1 -7.28%, #F3F4F1 16.35%, #E0EDE0 87.23%);
+}
+.overlay-hover-bg {
+  background: linear-gradient(97.37deg, rgba(139, 195, 74, 0.2) 1.29%, rgba(26, 161, 121, 0.2) 88.53%);
+}
+.overlay-black-linear {
+  background: linear-gradient(360deg, rgba(12, 12, 12, 0.8) -0.09%, rgba(0, 0, 0, 0) 59.41%);
+}
+.overlay-linear-subtle{
+  background: linear-gradient(360deg, #0C0C0C 5.97%, rgba(0, 0, 0, 0) 70.45%);
+}
+.overlay-image-hover {
+  background: linear-gradient(360deg, #0C0C0C 0%, rgba(0, 0, 0, 0) 36.51%);
+}
+.overlay-bg-default {
+  background: #00000080;
+}
+/* Site Overlays End */
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -210,6 +209,7 @@
     overflow-x: clip;
     overscroll-behavior-y: none;
     overflow-anchor: none;
+    user-select: none;
   }
 }
 
@@ -245,6 +245,12 @@ html.asg-touch-lock * {
   .font-test-tiempos-fine {
     font-family: var(--font-test-tiempos-fine), serif;
   }
+  .font-archivo-black {
+    font-family: var(--font-archivo-black), sans-serif;
+  }
+  .font-space-mono {
+    font-family: var(--font-space-mono), monospace;
+  }
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -253,28 +259,6 @@ html.asg-touch-lock * {
     display: none;
   }
 }
-
-
-/* Site Overlays Start */
-/* .brand-gradient {
-  background: linear-gradient(97.37deg, #8BC34A 1.29%, #1AA179 92.01%);
-} */
-.overlay-hover-bg {
-  background: linear-gradient(97.37deg, rgba(139, 195, 74, 0.2) 1.29%, rgba(26, 161, 121, 0.2) 88.53%);
-}
-.overlay-black-linear {
-  background: linear-gradient(360deg, rgba(12, 12, 12, 0.8) -0.09%, rgba(0, 0, 0, 0) 59.41%);
-}
-.overlay-linear-subtle{
-  background: linear-gradient(360deg, #0C0C0C 5.97%, rgba(0, 0, 0, 0) 70.45%);
-}
-.overlay-image-hover {
-  background: linear-gradient(360deg, #0C0C0C 0%, rgba(0, 0, 0, 0) 36.51%);
-}
-.overlay-bg-default {
-  background: #00000080;
-}
-/* Site Overlays End */
 
 /* Gradient wash on hover — About page cards.
    `.card-gradient-hover` triggers on the element itself;

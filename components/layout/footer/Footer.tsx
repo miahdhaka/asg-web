@@ -1,30 +1,59 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState, useEffect } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
+import { MapPin } from "lucide-react";
 
-gsap.registerPlugin(useGSAP);
-
-interface LinkColumn {
-  title: string;
-  links: { label: string; href: string }[];
+interface FooterLink {
+  label: string;
+  href: string;
 }
 
-interface OfficeCard {
+interface FooterColumn {
   title: string;
-  address: string;
+  links: FooterLink[];
 }
 
-const linkColumns: LinkColumn[] = [
+const footerColumns: FooterColumn[] = [
   {
     title: "About",
     links: [
       { label: "About US", href: "/about-us" },
-      { label: "FAQ's", href: "/faqs" },
+      { label: "Brands", href: "#" },
+      { label: "Sustainability", href: "/sustainability/environmental-social-governance" },
+      { label: "FAQ’s", href: "/faqs" },
       { label: "Newsroom", href: "/newsroom" },
+    ],
+  },
+  {
+    title: "Sistern Concern",
+    links: [
+      { label: "M/s Helal & Brothers Ltd.", href: "/concerns/helal-brothers" },
+      { label: "Amanat Shah Fabrics Ltd.", href: "/concerns/amanat-shah-fabrics" },
+      {
+        label: "Hazrat Amanat Shah Spinnings Mills Ltd.",
+        href: "/concerns/hazrat-amanat-shah-spinning-mills",
+      },
+      {
+        label: "Amanat Shah Weaving Processing Ltd.",
+        href: "/concerns/amanat-shah-weaving-processing",
+      },
+      { label: "Miah & Miah Enterprise", href: "/concerns/miah" },
+    ],
+  },
+  {
+    title: "Sustainability",
+    links: [
+      {
+        label: "ESG Resource",
+        href: "/sustainability/environmental-social-governance",
+      },
+      {
+        label: "Corporate Social Responsibility",
+        href: "/sustainability/corporate-social-responsibility",
+      },
+      {
+        label: "Women Empowerment",
+        href: "/sustainability/women-empowerment",
+      },
     ],
   },
   {
@@ -33,58 +62,6 @@ const linkColumns: LinkColumn[] = [
       { label: "Contact US", href: "/contact-us" },
       { label: "ASG Career", href: "/careers" },
     ],
-  },
-  {
-    title: "Sistern Concern",
-    links: [
-      { label: "M/s Helal & Brothers Ltd.", href: "/concerns/helal-brothers" },
-      { label: "Amanat Shah Fabrics Ltd.", href: "/concerns/amanat-shah-fabrics" },
-      { label: "Hazrat Amanat Shah Spinnings Mills Ltd.", href: "/concerns/hazrat-amanat-shah-spinning-mills" },
-      { label: "Miah & Miah Enterprise", href: "/concerns/miah" },
-      // { label: "Farm2Firm Management Ltd.", href: "/concerns/farm2firm" },
-      // { label: "Hazrat Amanat Shah Securities Ltd.", href: "/concerns/hazrat-amanat-shah-securities" },
-      // { label: "Amanat Shah Weaving Processing Ltd.", href: "/concerns/amanat-shah-weaving-processing" },
-      // { label: "Trust Knitwear Industries Ltd.", href: "/concerns/trust-knitwear-industries" },
-      // { label: "Amanat Shah Tex Solution", href: "/concerns/amanat-shah-tex-solution" },
-    ],
-  },
-  {
-    title: "Legal",
-    links: [
-      { label: "Terms of Use", href: "/terms-of-use" },
-      { label: "Privacy Policy", href: "/privacy-policy" },
-    ],
-  },
-];
-
-const offices: OfficeCard[] = [
-  {
-    title: "Head Office",
-    address: "House-232, Lane-03, DOHS, Baridhara, Dhaka-1206, Bangladesh",
-  },
-  {
-    title: "Corporate Head Office",
-    address: "City Center (level-24), 90/1 Motijheel C/A, Dhaka-1000, Bangladesh.",
-  },
-  {
-    title: "Head Office : Distribution",
-    address: "Amanat Shah Tower Shekherchar, Baburhat Narsingdi, Bangladesh",
-  },
-  {
-    title: "Showroom",
-    address: "Amanullah Complex 87, Islampur, Dhaka-1100 Bangladesh",
-  },
-  {
-    title: "Showroom",
-    address: "Nawab Ali Market 1st floor Darsapur Bazar Shajadpur, Shirazganj Bangladesh",
-  },
-  {
-    title: "Factory",
-    address: "Bhatpara, Madhabdi Road 1603, Pachdona, Narsindi, Bangladesh",
-  },
-  {
-    title: "Baikanthapur Tea Estate",
-    address: "Noapara Bazar Modhabpur-3330, Hobiganj Bangladesh",
   },
 ];
 
@@ -98,6 +75,7 @@ const socials = [
     label: "Facebook",
     href: "#",
     icon: "/icons/social-icon/facebook.png",
+    featured: true,
   },
   {
     label: "Instagram",
@@ -107,216 +85,107 @@ const socials = [
 ];
 
 export default function Footer() {
-  const footerRef = useRef<HTMLElement>(null);
-  const wordmarkRef = useRef<HTMLParagraphElement>(null);
-  const [locationOpen, setLocationOpen] = useState(false);
-  const locationContentRef = useRef<HTMLDivElement>(null);
-  const locationTweenRef = useRef<gsap.core.Tween | null>(null);
-
-  // Animate location dropdown open/close on mobile
-  useEffect(() => {
-    const content = locationContentRef.current;
-    if (!content) return;
-
-    locationTweenRef.current?.kill();
-
-    if (locationOpen) {
-      gsap.set(content, { height: "auto" });
-      const full = content.offsetHeight;
-      gsap.set(content, { height: 0 });
-      locationTweenRef.current = gsap.to(content, {
-        height: full,
-        duration: 0.5,
-        ease: "power2.inOut",
-        onComplete: () => gsap.set(content, { height: "auto" }),
-      });
-    } else {
-      gsap.set(content, { height: content.offsetHeight });
-      locationTweenRef.current = gsap.to(content, {
-        height: 0,
-        duration: 0.4,
-        ease: "power2.inOut",
-      });
-    }
-  }, [locationOpen]);
-
-  /* The oversized wordmark hides parked down behind the opaque offices
-     block and slides up into place when the footer scrolls into view —
-     deliberately unhurried (1.4s) — and drops back behind the block a
-     bit quicker (0.8s) when the footer leaves. Mid-flight reversals
-     (fast scrolling) scale the duration to the distance left, so the
-     tween redirects at a consistent speed instead of crawling. */
-  useGSAP(
-    () => {
-      const wordmark = wordmarkRef.current;
-      const footer = footerRef.current;
-      if (!wordmark || !footer) return;
-
-      // Park it fully under the offices block (which paints above it)
-      const PARKED = 140;
-      gsap.set(wordmark, { yPercent: PARKED });
-
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          const target = entry.isIntersecting ? 0 : PARKED;
-          const base = entry.isIntersecting ? 1.4 : 0.8;
-          // Fraction of the full travel still ahead of us (1 = full run)
-          const current = Number(gsap.getProperty(wordmark, "yPercent"));
-          const dist = Math.abs(current - target) / PARKED;
-          gsap.to(wordmark, {
-            yPercent: target,
-            duration: Math.max(0.3, base * dist),
-            ease: "power2.inOut",
-            overwrite: "auto",
-          });
-        },
-        { threshold: 0.35 }
-      );
-      observer.observe(footer);
-      return () => observer.disconnect();
-    },
-    { scope: footerRef }
-  );
-
   return (
-    <footer
-      ref={footerRef}
-      className="relative w-full shrink-0 overflow-hidden bg-primary-black text-white"
-    >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_70%_at_100%_100%,rgba(139,195,74,0.28),transparent_65%)]"
-      />
+    <footer className="w-full shrink-0 border-t border-white/70 bg-[#181818] font-neue-montreal text-white">
+      <div className="grid min-h-[10.25rem] gap-10 border-b border-white/10 px-6 py-9 md:px-12 lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:px-20">
+        <h2 className="max-w-[30rem] font-archivo-black text-2xl leading-[1.08] uppercase sm:text-[2rem]">
+          Manufacturing trust,
+          <br />
+          since generations.
+        </h2>
 
-      <div className="relative z-10">
-        {/* Link columns */}
-        <div className="grid grid-cols-2 gap-8 px-4 pt-11 pb-10 sm:grid-cols-[1fr_1fr_1.4fr_1fr] sm:px-20">
-          {linkColumns.map((column) => {
-            const isFullWidth = column.title === "Sistern Concern" || column.title === "Legal";
-            return (
-              <div key={column.title} className={isFullWidth ? "col-span-2 sm:col-span-1" : ""}>
-                <h3 className="font-neue-montreal text-base sm:text-lg tracking-wider text-white uppercase">
-                  {column.title}
-                </h3>
-                <ul className="mt-2 space-y-2">
-                  {column.links.map((link) => (
-                    <li key={link.label}>
-                      <Link
-                        href={link.href}
-                        className="font-neue-montreal text-sm sm:text-[0.9375rem] tracking-wider text-neutral-400 transition-colors duration-300 hover:text-white hover:underline"
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            );
-          })}
-        </div>
+        <Image
+          src="/logo/ASG-logo-mixed.png"
+          alt="Amanat Shah Group"
+          width={168}
+          height={66}
+          className="h-auto w-[10.5rem] object-contain"
+          quality={100}
+        />
 
-        {/* Oversized gradient wordmark — rises from behind the offices
-            block below when the footer enters the viewport */}
-        <p
-          ref={wordmarkRef}
-          aria-hidden
-          className="pointer-events-none my-0 text-center font-serif font-semibold text-[clamp(1.5rem,4.5vw,4.5rem)] leading-[0.8] tracking-[0.1em] [word-spacing:0.02em] whitespace-nowrap uppercase bg-[image:var(--primary-gradient)] bg-clip-text text-transparent opacity-70 px-0 sm:px-20"
-        >
-          Amanat Shah Group
-        </p>
-
-        {/* Office addresses — dropdown on mobile, grid on desktop */}
-        <div className="relative z-10 border-t border-white/10 bg-[var(--neutral-900)]">
-          {/* Mobile toggle */}
-          <button
-            type="button"
-            onClick={() => setLocationOpen((v) => !v)}
-            className="flex w-full cursor-pointer items-center justify-between px-6 py-5 lg:hidden"
-          >
-            <span className="font-neue-montreal text-base sm:text-lg font-medium tracking-wider text-white uppercase">
-              Our Locations
-            </span>
-            <svg
-              className={`size-4 text-neutral-400 transition-transform duration-300 ${locationOpen ? "rotate-180" : ""}`}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-
-          {/* Content: animated dropdown on mobile */}
-          <div
-            ref={locationContentRef}
-            className="overflow-hidden lg:hidden"
-            style={{ height: 0 }}
-          >
-            <div className="grid grid-cols-1 gap-6 px-6 py-8 sm:grid-cols-2 sm:px-20">
-              {offices.map((office) => (
-                <div key={`${office.title}-${office.address}`}>
-                  <h3 className="font-neue-montreal text-[15px] sm:text-lg font-medium tracking-wider text-white uppercase">
-                    {office.title}
-                  </h3>
-                  <p className="text-sm sm:text-base font-neue-montreal sm:leading-tight text-neutral-400 mt-2">
-                    {office.address}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-          {/* Desktop: always visible, outside the animated container */}
-          <div className="hidden grid-cols-7 gap-8 px-20 py-10 lg:grid" style={{ gridTemplateColumns: "repeat(7, minmax(0, 1fr))" }}>
-            {offices.map((office) => (
-              <div key={`${office.title}-${office.address}`}>
-                <h3 className="font-neue-montreal text-lg font-medium tracking-wider text-white uppercase">
-                  {office.title}
-                </h3>
-                <p className="font-neue-montreal leading-tight text-neutral-400 mt-2">
-                  {office.address}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Copyright + socials */}
-        <div className="relative flex flex-col items-center gap-4 px-6 py-6 sm:flex-row sm:justify-between sm:px-20">
-          <Image
-            src="/images/footer-copywrite-bg.webp"
-            alt=""
-            fill
-            sizes="100vw"
-            draggable={false}
-            className="pointer-events-none object-cover opacity-50"
-            quality={80}
-          />
-          <p className="text-sm sm:text-base relative z-10 font-neue-montreal text-white">
-            Copyright &copy; 2026 ASG Group. All Rights Reserved.
-          </p>
-          
-          <div className="relative z-10 flex items-center gap-4">
+        <div className="flex flex-col gap-3 lg:justify-self-end lg:pr-1">
+          <p className="text-base text-white/90">Follow us</p>
+          <div className="flex items-center gap-6">
             {socials.map((social) => (
               <Link
                 key={social.label}
                 href={social.href}
                 aria-label={social.label}
-                className="relative flex size-10 items-center justify-center rounded-full border border-white/25 text-white transition-colors duration-500 ease-in-out hover:border-transparent before:absolute before:inset-0 before:rounded-full before:bg-[image:var(--primary-gradient)] before:opacity-0 before:transition-opacity before:duration-500 before:ease-in-out hover:before:opacity-100"
+                className="relative flex size-11 items-center justify-center rounded-full bg-[#242424] transition-transform duration-300 hover:scale-110 before:absolute before:inset-0 before:rounded-full before:bg-[image:var(--primary-gradient)] before:opacity-0 before:transition-opacity before:duration-500 before:ease-in-out hover:before:opacity-100"
               >
                 <Image
                   src={social.icon}
-                  alt={social.label}
-                  width={20}
-                  height={20}
+                  alt=""
+                  width={22}
+                  height={22}
+                  className="relative z-10 size-[1.375rem] object-contain"
                   quality={100}
-                  draggable={false}
-                  className="size-5 object-contain brightness-0 invert"
                 />
               </Link>
             ))}
           </div>
         </div>
+      </div>
+
+      <div className="grid min-h-[27rem] lg:grid-cols-[27.25%_1fr]">
+        <div className="border-b border-white/10 px-6 py-12 md:px-12 lg:border-r lg:border-b-0 lg:px-20 lg:py-[4.25rem]">
+          <div className="flex items-center gap-5">
+            <span className="flex size-11 shrink-0 items-center justify-center rounded bg-[#252525]">
+              <MapPin className="size-5" strokeWidth={1.8} />
+            </span>
+            <h3 className="text-lg font-medium uppercase">Head Office</h3>
+          </div>
+
+          <address className="mt-3 max-w-[22rem] text-base leading-[1.6] text-white/80 not-italic sm:text-lg">
+            House-232, Lane-03, DOHS, Baridhara,
+            <br />
+            Dhaka-1206, Bangladesh.
+          </address>
+
+          <div className="mt-4 space-y-1 text-base leading-[1.55] text-white/80 sm:text-lg">
+            <p>+(88)09643226699 , +(88)029578403</p>
+            <a className="transition-colors hover:text-white" href="mailto:info@asg-bd.com">
+              info@asg-bd.com
+            </a>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-x-8 gap-y-10 px-6 py-12 md:px-12 lg:grid-cols-[0.8fr_1.2fr_1.05fr_0.75fr] lg:px-20 lg:py-[4.25rem]">
+          {footerColumns.map((column) => (
+            <div key={column.title}>
+              <h3 className="text-base font-medium uppercase sm:text-lg">
+                {column.title}
+              </h3>
+              <ul className="mt-3 space-y-2.5">
+                {column.links.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      href={link.href}
+                      className="text-sm leading-6 text-white/55 transition-colors duration-300 hover:text-white sm:text-base"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex min-h-[3.25rem] flex-col gap-4 rounded-t-[1.5rem] bg-gradient-to-r from-[#343434] via-[#292929] to-[#1c1c1c] px-6 py-4 text-sm tracking-wider md:px-12 lg:flex-row lg:items-center lg:justify-between lg:px-20">
+        <p>© 2026 ASG</p>
+        <nav aria-label="Footer legal navigation" className="flex flex-wrap items-center gap-x-10 gap-y-2 text-xs uppercase">
+          <Link className="relative pb-1 after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-in-out hover:after:scale-x-100" href="/terms-of-use">
+            Terms of Use
+          </Link>
+          <Link className="relative pb-1 after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-in-out hover:after:scale-x-100" href="/privacy-policy">
+            Privacy Policy
+          </Link>
+          <Link className="relative pb-1 after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-in-out hover:after:scale-x-100" href="#">
+            Cookie Policy
+          </Link>
+        </nav>
       </div>
     </footer>
   );
