@@ -153,10 +153,11 @@ export default function Newsroom() {
             <span aria-hidden className="text-2xl leading-none bg-gradient-to-b from-[#4a9e4a] to-[#2d6b2d] bg-clip-text text-transparent">•</span>
           </div>
 
-          {/* Title — drops in from above via the Hero's fade-chain reveal */}
+          {/* Title — matched to the subtitle/description style used by the
+              other homepage sections (e.g. GreenerFuture, AboutUs). */}
           <h2
             id="newsroom-title"
-            className="font-archivo-black uppercase text-2xl sm:text-4xl lg:text-[3rem] leading-[1.1] text-[var(--neutral-800)]"
+            className="text-base text-[#555] md:text-[1.25rem]"
           >
             Latest from ASG <br />newsroom
           </h2>
