@@ -3,9 +3,8 @@
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
-  useEffect,
+  useLayoutEffect,
   useRef,
-  useState,
   type PointerEvent as ReactPointerEvent,
 } from "react";
 
@@ -46,60 +45,60 @@ const cards: GreenerFutureCard[] = [
 
 export default function GreenerFuture() {
   const trackRef = useRef<HTMLDivElement>(null);
-  const [fullyVisibleCards, setFullyVisibleCards] = useState<Set<number>>(
-    new Set(),
-  );
-
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        setFullyVisibleCards((current) => {
-          const next = new Set(current);
-          let changed = false;
-
-          entries.forEach((entry) => {
-            const index = Number(
-              (entry.target as HTMLElement).dataset.cardIndex,
-            );
-            const isFullyVisible = entry.intersectionRatio >= 0.995;
-
-            if (isFullyVisible !== next.has(index)) {
-              changed = true;
-              if (isFullyVisible) next.add(index);
-              else next.delete(index);
-            }
-          });
-
-          return changed ? next : current;
-        });
-      },
-      { root: track, threshold: [0, 0.995, 1] },
-    );
-
-    const cardElements = track.querySelectorAll<HTMLElement>("[data-card]");
-    cardElements.forEach((card) => observer.observe(card));
-
-    return () => observer.disconnect();
-  }, []);
-
-  // --- Slider engine (Certifications-style, without the auto-drift) -------
   // Mouse-drag state: dragging scrubs the track 1:1.
   const dragRef = useRef({ down: false, startX: 0, scrollLeft: 0 });
+
+  // --- Radius engine -------------------------------------------------------
+  // ONLY the cards clipped by the viewport edges open into the big squircle;
+  // every fully-visible (middle) card keeps the tight radius and NEVER
+  // animates. The radius is written straight to the DOM from live geometry
+  // (no index-keyed React state) because the infinite-loop re-base jumps
+  // scrollLeft by one whole copy: an index-keyed set would remap to the other
+  // copy and make a stationary middle card flash its radius.
+  const cardEls = (track: HTMLDivElement) =>
+    track.querySelectorAll<HTMLElement>("[data-card]");
+
+  const updateRadius = (track: HTMLDivElement) => {
+    const els = cardEls(track);
+    if (!els.length) return;
+    // Sub-pixel guard so a resting card is never misjudged as clipped.
+    const tol = 1.5;
+    const viewLeft = track.scrollLeft + tol;
+    const viewRight = track.scrollLeft + track.clientWidth - tol;
+    els.forEach((el) => {
+      const inside =
+        el.offsetLeft >= viewLeft &&
+        el.offsetLeft + el.offsetWidth <= viewRight;
+      el.style.borderRadius = inside ? "1.2rem" : "7rem";
+    });
+  };
+
+  // Freeze the border-radius transition, apply an instant scroll jump and
+  // recompute, then thaw. Used for the seamless-loop re-base so the swapped-in
+  // copy adopts the correct radius with no visible animation.
+  const withTransitionFrozen = (
+    track: HTMLDivElement,
+    mutate: () => void,
+  ) => {
+    const els = cardEls(track);
+    els.forEach((el) => (el.style.transitionProperty = "none"));
+    mutate();
+    updateRadius(track);
+    void track.offsetWidth; // force reflow to commit the frozen values
+    els.forEach((el) => (el.style.transitionProperty = ""));
+  };
 
   // Width of one full card copy (measured from the DOM so track padding and
   // gaps never skew the wrap seam) and the one-card pitch.
   const pitches = (track: HTMLDivElement) => {
-    const cardEls = track.querySelectorAll<HTMLElement>("[data-card]");
+    const els = cardEls(track);
     const step =
-      cardEls.length > 1
-        ? cardEls[1].offsetLeft - cardEls[0].offsetLeft
+      els.length > 1
+        ? els[1].offsetLeft - els[0].offsetLeft
         : track.clientWidth;
     const pitch =
-      cardEls.length > cards.length
-        ? cardEls[cards.length].offsetLeft - cardEls[0].offsetLeft
+      els.length > cards.length
+        ? els[cards.length].offsetLeft - els[0].offsetLeft
         : track.scrollWidth / 2;
     return { step, pitch };
   };
@@ -114,6 +113,36 @@ export default function GreenerFuture() {
     return v;
   };
 
+  // Re-base into the first copy, freezing the radius across the jump.
+  const rebase = (track: HTMLDivElement) => {
+    const wrapped = wrap(track, track.scrollLeft);
+    if (wrapped === track.scrollLeft) return;
+    withTransitionFrozen(track, () => {
+      track.scrollLeft = wrapped;
+    });
+  };
+
+  // Follow real scrolling with a single coalesced rAF; edge cards cross the
+  // boundary and animate smoothly, middle cards stay put and never change.
+  useLayoutEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    let raf = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => updateRadius(track));
+    };
+
+    track.addEventListener("scroll", onScroll, { passive: true });
+    updateRadius(track);
+
+    return () => {
+      track.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
   // Arrows advance exactly one card with native smooth scrolling, wrapping
   // over the copy seam so the loop stays infinite in both directions.
   const scrollByCard = (direction: 1 | -1) => {
@@ -123,11 +152,13 @@ export default function GreenerFuture() {
     if (step <= 0 || pitch <= 0) return;
 
     // Instantly re-base into the first copy (visually identical) so there is
-    // always another full copy ahead in the step direction
-    track.scrollLeft = wrap(track, track.scrollLeft);
+    // always another full copy ahead in the step direction.
+    rebase(track);
     let target = track.scrollLeft + direction * step;
     if (target < 0) {
-      track.scrollLeft += pitch;
+      withTransitionFrozen(track, () => {
+        track.scrollLeft += pitch;
+      });
       target += pitch;
     }
     track.scrollTo({ left: target, behavior: "smooth" });
@@ -143,7 +174,18 @@ export default function GreenerFuture() {
     const track = trackRef.current;
     if (!track || !dragRef.current.down) return;
     const dx = e.clientX - dragRef.current.startX;
-    track.scrollLeft = wrap(track, dragRef.current.scrollLeft - dx);
+    const next = dragRef.current.scrollLeft - dx;
+    const wrapped = wrap(track, next);
+    if (wrapped !== next) {
+      // Crossed the copy seam: jump with the transition frozen and shift the
+      // drag base by the same amount so the scrub stays continuous.
+      withTransitionFrozen(track, () => {
+        track.scrollLeft = wrapped;
+      });
+      dragRef.current.scrollLeft += wrapped - next;
+    } else {
+      track.scrollLeft = wrapped;
+    }
   };
 
   const endDrag = () => {
@@ -185,11 +227,8 @@ export default function GreenerFuture() {
             <div
               key={`${card.label}-${index}`}
               data-card
-              data-card-index={index}
               className="relative aspect-[14/15] w-[75vw] shrink-0 overflow-hidden transition-[border-radius] duration-700 ease-in-out md:w-[calc((100vw-88px)/2.9)] lg:w-[calc((100vw-120px)/2.9)]"
-              style={{
-                borderRadius: fullyVisibleCards.has(index) ? "1.2rem" : "7rem",
-              }}
+              style={{ borderRadius: "1.2rem" }}
             >
               <Image
                 src={card.image}
