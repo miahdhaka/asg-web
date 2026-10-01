@@ -14,6 +14,9 @@ type OtherBoardMembersProps = {
   /** Roster to show. Defaults to the board landing page's set — everyone but
       the chairman and MD, who have their own message sections above it. */
   members?: CarouselMember[];
+  /** "carousel" = draggable looping track (detail pages); "grid" = static
+      responsive grid (board landing page, Figma node 7899-52313). */
+  layout?: "carousel" | "grid";
 };
 
 /* The track renders three copies of the roster and keeps the scroll position
@@ -24,6 +27,7 @@ export default function OtherBoardMembers({
   id = "other-board-members",
   heading = "Other Board Members",
   members = otherMembersFor("chairman", "managing-director"),
+  layout = "carousel",
 }: OtherBoardMembersProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   /* CSS snap must be off while dragging — snap-mandatory re-snaps every
@@ -164,6 +168,60 @@ export default function OtherBoardMembers({
       drag.current.moved = false;
     }
   };
+
+  // Grid layout (board landing page): a static responsive grid — three
+  // columns on desktop, wrapping the roster into rows. No scroll/drag logic.
+  if (layout === "grid") {
+    return (
+      <section
+        id={id}
+        className="w-full bg-[#F3F3F1] px-4 sm:px-6 lg:px-[5em] py-12 lg:py-[5em]"
+      >
+        <h2 className="font-test-tiempos-fine text-xl sm:text-3xl lg:text-[2.6em] text-neutral-800">
+          {heading}
+        </h2>
+
+        <div className="mt-3 grid grid-cols-1 gap-4 sm:mt-8 sm:grid-cols-2 lg:mt-[2.5em] lg:grid-cols-3 lg:gap-[1.35em]">
+          {members.map((member) => {
+            const cardContent = (
+              <div className="relative w-full aspect-[429/582]">
+                <div className="absolute inset-x-0 top-0 z-10 flex flex-col items-center text-center px-3 pt-5 sm:pt-10 lg:pt-[6em]">
+                  <h3 className="font-archivo-black font-medium text-base lg:text-[1.6em] text-neutral-800">
+                    {member.name}
+                  </h3>
+                  <p className="sm:mt-1 text-xs sm:text-sm lg:text-[1.2em] text-neutral-600 font-medium tracking-wide">
+                    {member.role}
+                  </p>
+                </div>
+
+                <Image
+                  src={member.image}
+                  alt={`${member.name} — ${member.role}`}
+                  fill
+                  sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+                  quality={90}
+                  className="object-contain object-bottom"
+                />
+              </div>
+            );
+
+            const cardClass =
+              "group relative flex flex-col overflow-hidden rounded-[20px] bg-white cursor-pointer shadow-[0_8px_24px_0_rgba(0,0,0,0.06)]";
+
+            return member.href ? (
+              <Link key={member.name} href={member.href} className={cardClass}>
+                {cardContent}
+              </Link>
+            ) : (
+              <div key={member.name} className={cardClass}>
+                {cardContent}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section

@@ -24,6 +24,7 @@ export const navCategories: NavCategory[] = [
       { label: "Hazrat Amanat Shah Securities Ltd.", href: "/concerns/hazrat-amanat-shah-securities", image: "/logo/sister-concern/securities-clr.png" },
       { label: "Farm2Firm", href: "/concerns/farm2firm", image: "/logo/sister-concern/farm2farm-clr.png" },
       { label: "Amanat shah text solution", href: "/concerns/amanat-shah-tex-solution", image: "/logo/sister-concern/tex-solution-clr.png" },
+      { label: "ASG Dynamic", href: "/concerns/asg-dynamic", image: "/logo/sister-concern/asg-dynamic.png" },
     ],
   },
   {

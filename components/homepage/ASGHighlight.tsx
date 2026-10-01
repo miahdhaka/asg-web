@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -43,13 +43,28 @@ const SLIDES = [
 
 interface ASGHighlightProps {
   onSlideChange?: (concernIdx: number) => void;
+  /** Wrapper around the section that follows (About Us) — its slow rise over
+      this pinned section is driven from the cover phase in the tick below. */
+  nextSectionRef?: RefObject<HTMLElement | null>;
 }
 
-export default function ASGHighlight({ onSlideChange }: ASGHighlightProps) {
+// Extra scroll (as a fraction of one viewport height) given to the cover phase.
+// The rising section always has to travel exactly one viewport height, so the
+// only way to make it move SLOWER than the scroll is to widen the window it
+// travels in: 1 viewport of rise now spans (1 + COVER_SLOW) viewports of
+// scrolling, i.e. the rise runs at 1 / (1 + COVER_SLOW) of native speed.
+const COVER_SLOW = 0.6;
+
+export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighlightProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const capsuleRef = useRef<HTMLDivElement>(null);
   const stripRef = useRef<HTMLDivElement>(null);
   const slidesRef = useRef<(HTMLDivElement | null)[]>([]);
+  // Per-number gradient layer. Its opacity is driven by how far the number sits
+  // from the capsule center, so a number is white/transparent at the center and
+  // fades into the brand gradient as it moves toward the top/bottom overlay
+  // zones (where the black gradient overlays sit above it).
+  const numGradRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const gradientOverlayRef = useRef<HTMLDivElement>(null);
   const gradientOverlay3Ref = useRef<HTMLDivElement>(null);
   const gradientOverlay4Ref = useRef<HTMLDivElement>(null);
@@ -114,14 +129,58 @@ export default function ASGHighlight({ onSlideChange }: ASGHighlightProps) {
       let currentSlide = 0;
       let lastRendered = -1;
 
-      ScrollTrigger.create({
+      // One viewport height in px — the exact distance About Us has to travel
+      // during the cover phase (from the viewport bottom edge to fully covering
+      // this section). Used to scale the slow-rise offset below.
+      const vhPx = sectionRef.current!.offsetHeight;
+      const riseEl = nextSectionRef?.current ?? null;
+      const coverStart = n / (n + 1 + COVER_SLOW);
+
+      /* Cover phase: this section fades 1 → 0 while About Us rides up over it.
+         About Us is held COVER_SLOW viewports ABOVE its real layout slot for the
+         animation phase — that is what parks its top edge exactly at the viewport
+         bottom when the cover begins — and the pull-up decays to 0 linearly across
+         the cover, so it lands precisely on its natural position with no snap and
+         no gap/overlap with the sections below. Linear in progress on purpose: the
+         rise keeps a constant 1/(1+COVER_SLOW) of scroll speed and maps identically
+         in both directions, so it reads as ordinary scrolling, just slower.
+         This runs from INSIDE ScrollTrigger's own update cycle, not the separate
+         gsap.ticker: the pin is applied there, so writing the compensating offset
+         from anywhere else leaves it a frame out of phase with the pin, which is
+         what made the section heave forward in one burst on each scroll tick. */
+      const applyCover = (p: number) => {
+        const fade =
+          p > coverStart
+            ? Math.min(1, ((p - coverStart) * (n + 1 + COVER_SLOW)) / (1 + COVER_SLOW))
+            : 0;
+        gsap.set(sectionRef.current, { opacity: 1 - fade });
+        if (riseEl) gsap.set(riseEl, { y: -COVER_SLOW * vhPx * (1 - fade) });
+      };
+
+      const st = ScrollTrigger.create({
         trigger: sectionRef.current,
         start: "top top",
-        end: `+=${n * 100}%`,
+        // n segments drive the content animation; then ONE extra segment plus
+        // the COVER_SLOW tail keeps the section pinned while the About Us
+        // section slides up and covers it (cover-stack effect). pinSpacing:false
+        // means the scroll distance comes from the real spacer div rendered
+        // after the section ((n + COVER_SLOW) * 100vh) — About Us's top is held
+        // at the viewport bottom exactly when the animation finishes, then rides
+        // over the fixed section across the widened cover window below.
+        end: `+=${(n + 1 + COVER_SLOW) * 100}%`,
         pin: true,
-        pinSpacing: true,
-        onUpdate: (self) => { targetProgress = self.progress; },
+        pinSpacing: false,
+        onUpdate: (self) => {
+          // Raw 0→1 across the whole pin range. The content timeline chases it
+          // through the smoothed follower below; the cover applies it directly.
+          targetProgress = self.progress;
+          applyCover(self.progress);
+        },
+        // Re-assert the cover position after any refresh/resize, when ScrollTrigger
+        // has just recalculated the pin range from the (transformed) layout.
+        onRefresh: (self) => applyCover(self.progress),
       });
+      applyCover(st.progress);
 
       tick = () => {
         scrollProgress += (targetProgress - scrollProgress) * SMOOTH;
@@ -134,7 +193,34 @@ export default function ASGHighlight({ onSlideChange }: ASGHighlightProps) {
         // idle section doesn't repaint the full-screen background every frame.
         if (scrollProgress === lastRendered) return;
         lastRendered = scrollProgress;
-        tl.progress(scrollProgress);
+
+        // The content timeline only occupies the first n/(n+1+COVER_SLOW) of the
+        // pin range; everything after it is the widened About Us cover.
+        const animProgress = Math.min(1, scrollProgress * ((n + 1 + COVER_SLOW) / n));
+        tl.progress(animProgress);
+
+        // Number gradient: read the strip's current Y and fade each number's
+        // gradient layer in by its distance from the capsule center. Numbers stay
+        // white through the middle; the white→gradient blend then eases across
+        // the whole top / bottom crossing (from where the number starts to clip
+        // at the edge until it fully clears), eased with smoothstep so the color
+        // change reads soft at both ends of the ramp instead of linear.
+        const stripY = gsap.getProperty(stripRef.current!, "y") as number;
+        const halfH = capsuleH / 2;
+        const whiteZone = halfH * 0.55; // white through the middle, fades while crossing
+        numGradRefs.current.forEach((el, i) => {
+          if (!el) return;
+          const numCenterY = stripY + i * itemH + itemH / 2;
+          const dist = Math.abs(numCenterY - halfH);
+          const raw = Math.min(1, Math.max(0, (dist - whiteZone) / (halfH - whiteZone)));
+          const t = raw * raw * (3 - 2 * raw); // smoothstep ease
+          gsap.set(el, { opacity: t });
+        });
+
+        // Cover phase (this section's fade-out + About Us's slow rise) is not here
+        // on purpose — it is applied synchronously from ScrollTrigger's own update
+        // cycle in applyCover() above, so it can never fall a frame out of phase
+        // with the pin. See the comment there.
 
         // Content-change trigger. Number i is centered at t = i; adding a
         // half-segment offset fires the change at t = i − 0.5, i.e. while the
@@ -142,7 +228,7 @@ export default function ASGHighlight({ onSlideChange }: ASGHighlightProps) {
         // its height) rather than waiting for it to reach the center. Same
         // threshold in both directions, so reverse scrolling changes back when
         // the number reaches the bottom again.
-        const idx = Math.min(n, Math.max(0, Math.floor(scrollProgress * n + 0.5)));
+        const idx = Math.min(n, Math.max(0, Math.floor(animProgress * n + 0.5)));
         if (idx !== currentSlide) {
           const prevIdx = currentSlide;
           const dir = idx > prevIdx ? 1 : -1; // down: out↑ / in from below
@@ -182,6 +268,7 @@ export default function ASGHighlight({ onSlideChange }: ASGHighlightProps) {
     };
   }, []);
   return (
+    <>
     <section
       ref={sectionRef}
       className="relative w-full h-[var(--vh)] lg:h-screen overflow-hidden"
@@ -275,20 +362,34 @@ export default function ASGHighlight({ onSlideChange }: ASGHighlightProps) {
               className="absolute inset-0 flex flex-col items-center"
               style={{ willChange: "transform" }}
             >
-              {SLIDES.map((s) => (
-                <span
+              {SLIDES.map((s, i) => (
+                <div
                   key={s.number}
-                  className="font-archivo-black text-5xl sm:text-7xl lg:text-[8.5rem] leading-none select-none shrink-0"
-                  style={{
-                    color: "white",
-                    height: "clamp(100px, 12vw, 180px)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
+                  className="relative shrink-0 flex items-center justify-center"
+                  style={{ height: "clamp(100px, 12vw, 180px)" }}
                 >
-                  {s.number}
-                </span>
+                  {/* Base layer — always solid white, reads clean at the center */}
+                  <span className="font-archivo-black text-white text-5xl sm:text-7xl lg:text-[8.5rem] leading-none select-none">
+                    {s.number}
+                  </span>
+                  {/* Gradient layer — opacity driven by distance from center. At
+                      the top/bottom zones it reaches full brand gradient and the
+                      black overlays above tint it to the "gradient + black" look. */}
+                  <span
+                    ref={(el) => { numGradRefs.current[i] = el; }}
+                    className="font-archivo-black text-5xl sm:text-7xl lg:text-[8.5rem] leading-none select-none absolute inset-0 flex items-center justify-center"
+                    style={{
+                      backgroundImage: "var(--primary-gradient)",
+                      WebkitBackgroundClip: "text",
+                      backgroundClip: "text",
+                      color: "transparent",
+                      opacity: 0,
+                      willChange: "opacity",
+                    }}
+                  >
+                    {s.number}
+                  </span>
+                </div>
               ))}
             </div>
             {/* Top dark overlay */}
@@ -348,5 +449,17 @@ export default function ASGHighlight({ onSlideChange }: ASGHighlightProps) {
         </div>
       </div>
     </section>
+    {/* Flow spacer — with pinSpacing:false this div (not a GSAP pin-spacer)
+        supplies the scroll distance. --vh is the FULL viewport height
+        (100lvh), and the section is one --vh tall, so (n + COVER_SLOW) × --vh
+        = the animation range plus the extra tail the widened cover needs. That
+        tail is what lets About Us take (1 + COVER_SLOW) viewports of scrolling
+        for its one-viewport rise, i.e. the slower, smoother entrance. */}
+    <div
+      aria-hidden
+      className="pointer-events-none w-full"
+      style={{ height: `calc(var(--vh, 100vh) * ${SLIDES.length - 1 + COVER_SLOW})` }}
+    />
+    </>
   );
 }

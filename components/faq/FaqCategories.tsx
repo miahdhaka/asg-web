@@ -6,14 +6,14 @@ export default function FaqCategories() {
   return (
     <section
       id="faq-categories"
-      className="bg-white px-4 py-10 sm:px-8 lg:px-20 lg:py-20"
+      className="px-4 py-10 sm:px-8 lg:px-20 lg:py-20"
     >
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-[1.3333rem]">
         {faqCategories.map((category) => (
           <Link
             key={category.slug}
             href={`/faqs/${category.slug}`}
-            className="group relative flex h-[15rem] sm:h-[21.5rem] lg:h-[28.6667rem] flex-col justify-between overflow-hidden bg-gray-50 p-5 lg:p-6"
+            className="group relative flex h-[15rem] sm:h-[21.5rem] lg:h-[28.6667rem] flex-col justify-between overflow-hidden rounded-[1.5rem] bg-gray-50 p-5 lg:p-6"
           >
             {/* Hover state layer — soft brand-gradient wash */}
             <div
@@ -54,8 +54,8 @@ export default function FaqCategories() {
             <div
               className={`relative z-10 ${
                 category.wideIcon
-                  ? "h-[3rem] w-[6rem] lg:h-[4.5rem] lg:w-[9rem]"
-                  : "size-12 lg:size-[3.375rem]"
+                  ? "h-[3rem] w-[6rem] lg:h-[4.75rem] lg:w-[9.5rem]"
+                  : "size-14 lg:size-[4.5rem]"
               }`}
             >
               <Image
@@ -66,13 +66,13 @@ export default function FaqCategories() {
                 quality={100}
                 className={`${
                   category.wideIcon
-                    ? "h-[3rem] w-[6rem] lg:h-[4.5rem] lg:w-[9rem]"
-                    : "size-12 lg:size-[3.375rem]"
-                } object-contain transition-all duration-700 ease-in-out group-hover:opacity-0 group-hover:scale-110`}
+                    ? "h-[3rem] w-[6rem] lg:h-[4.75rem] lg:w-[9.5rem]"
+                    : "size-14 lg:size-[4.5rem]"
+                } object-contain transition-all duration-700 ease-in-out group-hover:opacity-0`}
               />
               <span
                 aria-hidden
-                className="absolute inset-0 bg-[image:var(--primary-gradient)] opacity-0 scale-100 transition-all duration-700 ease-in-out group-hover:opacity-100 group-hover:scale-110"
+                className="absolute inset-0 bg-[image:var(--primary-gradient)] opacity-0 scale-100 transition-all duration-700 ease-in-out group-hover:opacity-100"
                 style={{
                   maskImage: `url(${category.icon})`,
                   maskSize: "contain",
@@ -87,10 +87,10 @@ export default function FaqCategories() {
             </div>
 
             <div className="relative z-10 flex flex-col gap-2 sm:gap-3 lg:gap-4">
-              <h2 className="font-test-tiempos-fine text-lg sm:text-2xl font-medium leading-8 text-neutral-800 lg:text-[2rem] lg:leading-[2.6667rem]">
+              <h2 className="font-archivo-black text-xl sm:text-2xl leading-8 text-neutral-800 lg:text-[2rem] lg:leading-[2.6667rem]">
                 {category.title}
               </h2>
-              <p className="text-sm sm:text-base lg:text-[1.3333rem] leading-6 text-neutral-800 lg:leading-8">
+              <p className="font-neue-montreal text-[0.9375rem] sm:text-base lg:text-[1.3333rem] leading-6 text-neutral-800 lg:leading-8">
                 {category.description}
               </p>
             </div>

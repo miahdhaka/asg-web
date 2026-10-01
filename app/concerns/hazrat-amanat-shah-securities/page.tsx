@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
-import HasslHero from "@/components/concerns/hazrat-amanat-shah-securities/HasslHero";
-import HasslIntro from "@/components/concerns/hazrat-amanat-shah-securities/HasslIntro";
-import HasslCapabilities from "@/components/concerns/hazrat-amanat-shah-securities/HasslCapabilities";
+import PageHeroFull from "@/components/common/PageHeroFull";
+import ConcernIntro from "@/components/concerns/common/ConcernIntro";
+import ConcernCoreValues from "@/components/concerns/common/ConcernCoreValues";
+import {
+  securitiesHero,
+  securitiesCompany,
+  securitiesIntroParagraphs,
+  securitiesIntroStats,
+  securitiesCoreValues,
+} from "@/components/concerns/data/securitiesData";
 
 export const metadata: Metadata = {
   title: "Hazrat Amanat Shah Securities Ltd. | ASG - Amanat Shah Group",
@@ -12,9 +19,26 @@ export const metadata: Metadata = {
 export default function HasslPage() {
   return (
     <main>
-      <HasslHero />
-      <HasslIntro />
-      <HasslCapabilities />
+      <PageHeroFull
+        title={securitiesHero.title}
+        subtitle={securitiesHero.subtitle}
+        videoSrc={securitiesHero.videoSrc}
+        alt={securitiesHero.alt}
+      />
+      <ConcernIntro
+        sectionId="hassl-intro"
+        logoSrc={securitiesCompany.logoSrc}
+        logoAlt={securitiesCompany.logoAlt}
+        websiteUrl={securitiesCompany.websiteUrl}
+        paragraphs={securitiesIntroParagraphs}
+        stats={securitiesIntroStats}
+      />
+      <ConcernCoreValues
+        sectionId="hassl-core-values"
+        heading={securitiesCoreValues.heading}
+        description={securitiesCoreValues.description}
+        cards={securitiesCoreValues.cards}
+      />
     </main>
   );
 }

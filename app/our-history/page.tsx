@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/common/PageHero";
 import HistoryTimeline from "@/components/our-history/HistoryTimeline";
+import HistoryYearNav from "@/components/our-history/HistoryYearNav";
 
 export const metadata: Metadata = {
   title: "Our History | ASG - Amanat Shah Group",
@@ -14,10 +15,11 @@ export default function OurHistoryPage() {
       <PageHero
         title="Our History"
         subtitle="At A Glance into The History of Amanat Shah Group"
-        mobileSrc="/images/our-history/history-hero.png"
-        desktopSrc="/images/our-history/history-hero.png"
+        mobileSrc="/images/our-history/history-hero.jpg"
+        desktopSrc="/images/our-history/history-hero.jpg"
         alt="Our History"
       />
+      <HistoryYearNav />
       <div className="pb-10 sm:pb-0">
         <HistoryTimeline />
       </div>

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import gsap from "gsap";
 import {
   useLayoutEffect,
   useRef,
@@ -45,6 +46,9 @@ const cards: GreenerFutureCard[] = [
 
 export default function GreenerFuture() {
   const trackRef = useRef<HTMLDivElement>(null);
+  // The GSAP tween currently gliding the track — every arrow slide animates
+  // with GSAP for a consistent, interruptible ease (matches ConcernProcessing).
+  const slideTween = useRef<gsap.core.Tween | null>(null);
   // Mouse-drag state: dragging scrubs the track 1:1.
   const dragRef = useRef({ down: false, startX: 0, scrollLeft: 0 });
 
@@ -140,10 +144,12 @@ export default function GreenerFuture() {
     return () => {
       track.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(raf);
+      slideTween.current?.kill();
     };
   }, []);
 
-  // Arrows advance exactly one card with native smooth scrolling, wrapping
+  // Arrows advance exactly one card with a GSAP glide — a single, smooth,
+  // interruptible ease (power2.inOut) matching ConcernProcessing — wrapping
   // over the copy seam so the loop stays infinite in both directions.
   const scrollByCard = (direction: 1 | -1) => {
     const track = trackRef.current;
@@ -161,12 +167,20 @@ export default function GreenerFuture() {
       });
       target += pitch;
     }
-    track.scrollTo({ left: target, behavior: "smooth" });
+    slideTween.current?.kill();
+    slideTween.current = gsap.to(track, {
+      scrollLeft: target,
+      duration: 0.6,
+      ease: "power2.inOut",
+      overwrite: true,
+    });
   };
 
   const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
     const track = trackRef.current;
     if (!track || e.pointerType !== "mouse") return;
+    // Stop any in-flight glide so the manual scrub takes immediate control.
+    slideTween.current?.kill();
     dragRef.current = { down: true, startX: e.clientX, scrollLeft: track.scrollLeft };
   };
 
@@ -189,7 +203,21 @@ export default function GreenerFuture() {
   };
 
   const endDrag = () => {
+    const track = trackRef.current;
+    if (!track || !dragRef.current.down) return;
     dragRef.current.down = false;
+    // Settle onto the nearest card boundary — one card at a time, matching
+    // ConcernProcessing — so a released drag never rests misaligned mid-card.
+    const { step } = pitches(track);
+    if (step <= 0) return;
+    const target = Math.round(track.scrollLeft / step) * step;
+    slideTween.current?.kill();
+    slideTween.current = gsap.to(track, {
+      scrollLeft: target,
+      duration: 0.5,
+      ease: "power2.out",
+      overwrite: true,
+    });
   };
 
   return (

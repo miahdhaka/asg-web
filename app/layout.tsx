@@ -74,7 +74,13 @@ export default function RootLayout({
       </head>
       <body className={`${neueMontreal.variable} ${tiemposFine.variable} ${archivoBlack.variable} ${spaceMono.variable} min-h-screen flex flex-col font-neue-montreal`}>
         <Header />
-        {children}
+        {/* Opaque content layer — paints over the footer's fixed -z-10
+            wordmark band so it stays hidden until the end-of-page reveal.
+            flex-1 + flex-col keeps the body flex context pages like
+            not-found rely on; bg matches the canvas, so no visual change. */}
+        <div className="flex flex-1 flex-col bg-background">
+          {children}
+        </div>
         <Footer />
       </body>
     </html>

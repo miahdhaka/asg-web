@@ -69,6 +69,12 @@ const sisterConcerns: SisterConcern[] = [
     logo: "/logo/sister-concern/weaving-clr.png",
     link: "https://www.asg-bd.com/ASWPL.php",
   },
+  {
+    sector: "TECHNOLOGY",
+    description: "Digital transformation, custom software, ERP solutions and business analytics.",
+    logo: "/logo/sister-concern/asg-dynamic.png",
+    link: "/concerns/asg-dynamic",
+  },
 ];
 
 interface HeroProps {
@@ -89,6 +95,23 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
 
   useEffect(() => {
     const tickers: Array<() => void> = [];
+    const cleanups: Array<() => void> = [];
+    const timers: Array<ReturnType<typeof setTimeout>> = [];
+    const later = (fn: () => void, ms: number) => {
+      const id = setTimeout(() => {
+        const i = timers.indexOf(id);
+        if (i > -1) timers.splice(i, 1);
+        fn();
+      }, ms);
+      timers.push(id);
+      return id;
+    };
+    const dropTimer = (id: ReturnType<typeof setTimeout> | null) => {
+      if (!id) return;
+      clearTimeout(id);
+      const i = timers.indexOf(id);
+      if (i > -1) timers.splice(i, 1);
+    };
     const ctx = gsap.context(() => {
       // Video wrapper: centered, full-size
       gsap.set(videoWrapRef.current, {
@@ -119,27 +142,153 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
       let targetProgress = 0;
       let scrollProgress = 0; // smoothed progress used everywhere
 
+      // ── Side content: one concern per scroll gesture ───────────────────────
+      // A whole burst of wheel events counts as ONE scroll. The deltas accumulate
+      // while the input keeps coming and the panels step exactly once after it
+      // goes quiet — pulling ten notches at once never plays ten changes, and the
+      // change lands where the scrolling stopped. Every concern then holds for
+      // 0.4s.
+      const LAST_IDX = sisterConcerns.length - 1;
+      const STEP_MS = 400;          // a concern stays shown for at least 0.4s
+      const GESTURE_IDLE_MS = 160;  // this quiet gap ends the current scroll gesture
+
+      let busy = false;             // a step transition or its hold is running
+      let lastStepAt = 0;           // when the current step began (0 = never)
+      let pendingDir = 0;           // at most one step waits for the current one
+      let gestureSum = 0;
+      let gestureTimer: ReturnType<typeof setTimeout> | null = null;
+      let cadenceTimer: ReturnType<typeof setTimeout> | null = null;
+      let wheelSeen = false;        // wheel device → gesture stepping, else position
+
+      // Concern band on the scroll timeline — used only by the wheel-less
+      // fallback (touch, keyboard, scrollbar drag send no wheel events).
+      const concernStart = sideEnd;
+      const segLen = (1 - concernStart) / sisterConcerns.length;
+      const idxFromProgress = (p: number) =>
+        p > concernStart
+          ? Math.min(LAST_IDX, Math.floor((p - concernStart) / segLen))
+          : 0;
+
       // Slide transition for sector/desc when switching concerns
-      const slideConcerns = () => {
+      const runSlide = (idx: number, done: () => void) => {
         const els = [leftSlideRef.current, rightSlideRef.current].filter(Boolean);
-        gsap.killTweensOf(els);
+        if (els.length === 0) {
+          activeConcernRef.current = idx;
+          setActiveConcern(idx);
+          done();
+          return;
+        }
         gsap.to(els, {
           y: "-40px",
           opacity: 0,
-          duration: 0.3,
+          duration: 0.18, // keeps the whole swap inside the 0.4s a concern is up
           ease: "power3.in",
           onComplete: () => {
-            setActiveConcern(activeConcernRef.current);
+            activeConcernRef.current = idx;
+            setActiveConcern(idx);
             requestAnimationFrame(() => {
               gsap.set(els, { y: "40px" });
               gsap.to(els, {
                 y: 0,
                 opacity: 1,
-                duration: 0.3,
+                duration: 0.18,
                 ease: "power3.out",
+                onComplete: done,
               });
             });
           },
+        });
+      };
+
+      let st: ScrollTrigger | null = null;
+
+      // Where the scroll waits: at the point the side panels finish rising until
+      // every concern has been shown, then at the very bottom of the pin — so the
+      // next pixel of downward travel hands the page to the next section at once.
+      // Nothing visual changes between those two points, so moving along the band
+      // is invisible.
+      const bandStart = () => st!.start + (st!.end - st!.start) * sideEnd + 1;
+      const holdY = () =>
+        activeConcernRef.current === LAST_IDX ? st!.end - 1 : bandStart();
+      const park = () => {
+        const y = holdY();
+        if (Math.abs(window.scrollY - y) > 1) window.scrollTo(0, y);
+      };
+
+      // Play the waiting step once the current concern has had its turn.
+      const stepNow = () => {
+        dropTimer(cadenceTimer);
+        cadenceTimer = null;
+        if (pendingDir === 0) return;
+        const wait = STEP_MS - (performance.now() - lastStepAt);
+        if (wait > 0) {
+          cadenceTimer = later(stepNow, wait);
+          return;
+        }
+        const dir = pendingDir;
+        pendingDir = 0;
+        // Clamp here, not in requestStep: the index can already have moved on
+        // while this step waited for its turn, and a stale direction would walk
+        // past the last concern into an empty card.
+        const next = Math.min(LAST_IDX, Math.max(0, activeConcernRef.current + dir));
+        if (next === activeConcernRef.current) return;
+        busy = true;
+        lastStepAt = performance.now();
+        runSlide(next, () => {
+          busy = false;
+          if (pendingDir !== 0) stepNow();
+          // Re-arm the waiting point for the concern that is now up: the last one
+          // puts it at the bottom of the pin, so leaving needs no further scroll.
+          else if (wheelSeen) park();
+        });
+      };
+
+      const requestStep = (dir: number) => {
+        const next = activeConcernRef.current + dir;
+        if (next < 0 || next > LAST_IDX) return;
+        if (pendingDir === dir) return; // another step this way is already waiting
+        pendingDir = dir;
+        if (!busy) stepNow();
+      };
+
+      // One burst → one intent: the step fires when the wheel goes quiet.
+      const addGesture = (dy: number) => {
+        gestureSum += dy;
+        dropTimer(gestureTimer);
+        gestureTimer = later(() => {
+          gestureTimer = null;
+          const dir = Math.sign(gestureSum);
+          gestureSum = 0;
+          if (dir !== 0) requestStep(dir);
+        }, GESTURE_IDLE_MS);
+      };
+
+      // Direct set for the moments the panels are hidden (intro, ASGHighlight):
+      // no point spending seconds stepping where nothing is visible.
+      const setConcern = (idx: number) => {
+        if (idx === activeConcernRef.current && !busy) return;
+        dropTimer(gestureTimer);
+        dropTimer(cadenceTimer);
+        gestureTimer = null;
+        cadenceTimer = null;
+        pendingDir = 0;
+        gestureSum = 0;
+        busy = false;
+        const els = [leftSlideRef.current, rightSlideRef.current].filter(Boolean);
+        gsap.killTweensOf(els);
+        gsap.set(els, { y: 0, opacity: 1 });
+        activeConcernRef.current = idx;
+        setActiveConcern(idx);
+      };
+
+      // Wheel-less fallback: the concern follows the scroll phase, one slide at a
+      // time, exactly the way the section behaved before gesture stepping.
+      const moveConcernTo = (idx: number) => {
+        if (busy || idx === activeConcernRef.current) return;
+        busy = true;
+        lastStepAt = performance.now();
+        runSlide(idx, () => {
+          busy = false;
         });
       };
 
@@ -147,15 +296,10 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
       const textStart = 0.0;
       const textEnd = 0.2; // fully invisible early
 
-      // Expose function for ASGHighlight to change side content
+      // Expose function for ASGHighlight to change side content. The Hero is off
+      // screen while that section runs, so the change is applied directly.
       if (heroSlideChangeRef) {
-        heroSlideChangeRef.current = (idx: number) => {
-          if (idx !== activeConcernRef.current) {
-            activeConcernRef.current = idx;
-            setActiveConcern(idx);
-            if (scrollProgress > sideEnd) slideConcerns();
-          }
-        };
+        heroSlideChangeRef.current = (idx: number) => setConcern(idx);
       }
 
       const tick = () => {
@@ -213,23 +357,11 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
             opacity: t,
           });
         }
-
-        // Switch concern dynamically based on scroll progress
-        const concernStart = sideEnd;
-        const concernRange = 1 - concernStart;
-        const segLen = concernRange / sisterConcerns.length;
-        const newIdx = p > concernStart
-          ? Math.min(sisterConcerns.length - 1, Math.floor((p - concernStart) / segLen))
-          : 0;
-        if (newIdx !== activeConcernRef.current) {
-          activeConcernRef.current = newIdx;
-          if (p > sideEnd) slideConcerns();
-        }
       };
       tickers.push(tick);
       gsap.ticker.add(tick);
 
-      ScrollTrigger.create({
+      st = ScrollTrigger.create({
         trigger: sectionRef.current,
         start: "top top",
         end: "+=" + (80 + sisterConcerns.length * 17) + "%",
@@ -237,12 +369,88 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         pinSpacing: true,
         onUpdate: (self) => {
           targetProgress = self.progress;
+          // No wheel events on this device → no gesture source, so there the
+          // concern keeps following the scroll phase and the pin is left alone.
+          if (!wheelSeen) moveConcernTo(idxFromProgress(self.progress));
         },
       });
+
+      // ── Hold the pin until every concern has been shown ────────────────────
+      // The intro (video shrink, centre text, panels rising) stays purely
+      // scroll-driven. Once the panels are up the scroll waits at that point and
+      // each scroll gesture steps one concern. The step that shows the last
+      // concern moves the waiting point to the bottom of the pin, so scrolling on
+      // from there leaves right away — no glide, no pause in between.
+      // The hold lives strictly inside the pin: below the pin the Hero has nothing
+      // to say about where the page scrolls, otherwise the next section (which
+      // pushes its own concern index here) would get dragged back up.
+      let lastY = 0;
+
+      const onWheel = (e: WheelEvent) => {
+        if (!st || !e.deltaY || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+        wheelSeen = true;
+        const scale = e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? window.innerHeight : 1;
+        const dy = e.deltaY * scale;
+
+        // Already past the pin: the Hero is behind the viewer, leave the page be.
+        if (window.scrollY > st.end) return;
+
+        if (window.scrollY < bandStart() - 1) {
+          // Still inside the intro: the scroll drives it as before, but this
+          // gesture is parked the moment it would cross into the concern band.
+          if (dy > 0 && window.scrollY + dy >= bandStart()) {
+            e.preventDefault();
+            park();
+          }
+          return;
+        }
+
+        const atLast = activeConcernRef.current === LAST_IDX;
+        const atFirst = activeConcernRef.current === 0;
+        // All concerns shown going down, or nothing to undo going up: the scroll
+        // carries on by itself, which is what releases (or rewinds) the section.
+        if ((dy > 0 && atLast) || (dy < 0 && atFirst)) return;
+
+        e.preventDefault();
+        park();
+        addGesture(dy);
+      };
+
+      // Holds the line for travel that escapes the wheel gate (keyboard,
+      // scrollbar, momentum) — and counts that push as one scroll gesture too.
+      const onScroll = () => {
+        if (!st || !wheelSeen) return;
+        const y = window.scrollY;
+        const down = y > lastY;
+        lastY = y;
+
+        if (y > st.end) return; // past the pin: nothing to hold anymore
+        if (y < bandStart() - 1) {
+          // Back in the intro: the story starts over from the first concern.
+          if (activeConcernRef.current !== 0) setConcern(0);
+          return;
+        }
+        if (down && y > bandStart() + 1 && activeConcernRef.current !== LAST_IDX) {
+          park();
+          addGesture(1);
+        }
+      };
+
+      const section = sectionRef.current;
+      if (section) {
+        section.addEventListener("wheel", onWheel, { passive: false });
+        window.addEventListener("scroll", onScroll, { passive: true });
+        cleanups.push(() => {
+          section.removeEventListener("wheel", onWheel);
+          window.removeEventListener("scroll", onScroll);
+        });
+      }
     });
 
     return () => {
       tickers.forEach((t) => gsap.ticker.remove(t));
+      cleanups.forEach((c) => c());
+      timers.forEach((t) => clearTimeout(t));
       ctx.revert();
     };
   }, []);

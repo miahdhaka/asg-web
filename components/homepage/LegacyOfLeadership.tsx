@@ -106,6 +106,17 @@ export default function LegacyOfLeadership() {
             />
           </div>
 
+          {/* Bottom mask — the scroll reveal briefly lifts the portrait from
+              y:80, so its lower edge transiently dips below the card. This
+              strip paints the section background over the area just below the
+              card to hide that dip; the intended top overflow (head above the
+              card) is left untouched. Sits above the portrait (z-20) but below
+              the text blocks (z-30), and only covers below the card bottom. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-full z-[25] h-24 bg-[#F3F3F1]"
+          />
+
           <div className="absolute inset-x-6 top-[18.75rem] z-30 text-white md:inset-x-10 md:top-[23.5rem] lg:inset-x-auto lg:top-1/2 lg:left-[5rem] lg:-translate-y-1/2 lg:w-[18.375rem]">
             <h3 className="font-archivo-black text-3xl leading-[1.08] uppercase lg:text-[2rem]">
               Mohammad

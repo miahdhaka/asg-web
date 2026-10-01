@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
-import TexSolutionHero from "@/components/concerns/amanat-shah-tex-solution/TexSolutionHero";
-import TexSolutionIntro from "@/components/concerns/amanat-shah-tex-solution/TexSolutionIntro";
-import TexSolutionCapabilities from "@/components/concerns/amanat-shah-tex-solution/TexSolutionCapabilities";
+import PageHeroFull from "@/components/common/PageHeroFull";
+import ConcernIntro from "@/components/concerns/common/ConcernIntro";
+import ConcernCoreValues from "@/components/concerns/common/ConcernCoreValues";
+import {
+  texHero,
+  texCompany,
+  texIntroParagraphs,
+  texIntroStats,
+  texCoreValues,
+} from "@/components/concerns/data/texData";
 
 export const metadata: Metadata = {
   title: "Amanat Shah Tex Solution | ASG - Amanat Shah Group",
@@ -12,9 +19,26 @@ export const metadata: Metadata = {
 export default function AmanatShahTexSolutionPage() {
   return (
     <main>
-      <TexSolutionHero />
-      <TexSolutionIntro />
-      <TexSolutionCapabilities />
+      <PageHeroFull
+        title={texHero.title}
+        subtitle={texHero.subtitle}
+        videoSrc={texHero.videoSrc}
+        alt={texHero.alt}
+      />
+      <ConcernIntro
+        sectionId="tex-solution-intro"
+        logoSrc={texCompany.logoSrc}
+        logoAlt={texCompany.logoAlt}
+        websiteUrl={texCompany.websiteUrl}
+        paragraphs={texIntroParagraphs}
+        stats={texIntroStats}
+      />
+      <ConcernCoreValues
+        sectionId="tex-solution-core-values"
+        heading={texCoreValues.heading}
+        description={texCoreValues.description}
+        cards={texCoreValues.cards}
+      />
     </main>
   );
 }

@@ -7,7 +7,6 @@ import * as THREE from "three";
 /* Same textures as globe.gl/example/clouds */
 const EARTH_TEX = "https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-blue-marble.jpg";
 const BUMP_TEX = "https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-topology.png";
-const NIGHT_SKY = "https://cdn.jsdelivr.net/npm/three-globe/example/img/night-sky.png";
 const CLOUDS_IMG = "/images/about-us/clouds.png";
 const CLOUDS_ALT = 0.004;
 const CLOUDS_ROTATION_SPEED = -0.006; // deg/frame
@@ -99,7 +98,9 @@ export default function GlobeInner() {
           globeOffset={[dimensions.width * 0.22, 0]}
           globeImageUrl={EARTH_TEX}
           bumpImageUrl={BUMP_TEX}
-          backgroundImageUrl={NIGHT_SKY}
+          /* Plain black scene background — the reference has no starfield, and
+             Section.tsx paints its green wash over this canvas with
+             mix-blend-mode: screen, which adds light on top of black. */
           backgroundColor="#000000"
           onGlobeReady={handleGlobeReady}
           enablePointerInteraction={false}

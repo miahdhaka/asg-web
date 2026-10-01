@@ -52,6 +52,12 @@ export default function HomePage() {
     heroSlideChangeRef.current?.(concernIdx);
   }, []);
 
+  // Wrapper handed to ASGHighlight so its cover phase can drive About Us's
+  // slow, eased rise over the still-pinned section. The z-20 sits on the
+  // wrapper (not just the section) because the transform ASGHighlight applies
+  // makes this a stacking context — it has to outrank the pinned section.
+  const aboutRiseRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     // Hide scrollbar visually but keep scroll functionality
     const style = document.createElement("style");
@@ -83,8 +89,17 @@ export default function HomePage() {
       {mainMounted && (
         <main style={{ opacity: splashDone ? 1 : 0, transition: "opacity 0.8s ease" }}>
           <Hero heroSlideChangeRef={heroSlideChangeRef} />
-          <ASGHighlight onSlideChange={handleHighlightSlideChange} />
-          <AboutUs />
+          <ASGHighlight onSlideChange={handleHighlightSlideChange} nextSectionRef={aboutRiseRef} />
+          <div
+            ref={aboutRiseRef}
+            className="relative z-20"
+            // Own GPU layer — ASGHighlight writes this transform every frame
+            // during the cover, and compositing it keeps the glide from
+            // re-rasterizing the whole section.
+            style={{ transform: "translateZ(0)", willChange: "transform" }}
+          >
+            <AboutUs />
+          </div>
           <RockSteadySection />
           <GreenerFuture />
           <CertificationsCompliance />

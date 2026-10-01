@@ -63,6 +63,10 @@ export default function CertificationsCompliance() {
     if (!el) return;
     posRef.current = el.scrollLeft;
     let raf = 0;
+    // Smoothed progress value. The raw p teleports 1 → 0 when the strip
+    // wraps back to the first tile; lerping the displayed value makes the
+    // segment glide back across the track smoothly instead of snapping.
+    let displayP = posRef.current / (el.scrollWidth / 2 || 1);
 
     const tick = () => {
       if (isArrowScrollingRef.current) {
@@ -75,9 +79,12 @@ export default function CertificationsCompliance() {
       const half = el.scrollWidth / 2;
       if (half > 0 && progressRef.current) {
         const p = posRef.current / half;
+        displayP += (p - displayP) * 0.12;
+        // Snap once settled so an idle bar doesn't drift sub-pixel forever.
+        if (Math.abs(p - displayP) < 0.001) displayP = p;
         // Segment is 1/3 of the line; sliding it 0→200% of its own width
         // sweeps it across the remaining 2/3 of the track.
-        progressRef.current.style.transform = `translateX(${p * 200}%)`;
+        progressRef.current.style.transform = `translateX(${displayP * 200}%)`;
       }
       raf = requestAnimationFrame(tick);
     };

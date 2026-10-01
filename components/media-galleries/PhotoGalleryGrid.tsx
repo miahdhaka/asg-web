@@ -33,7 +33,7 @@ export function PhotoCard({
           : undefined
       }
     >
-      <div className="relative aspect-[429/257] w-full overflow-hidden bg-[#D9D9D9] rounded-[4px]">
+      <div className="relative aspect-[429/257] w-full overflow-hidden bg-[#D9D9D9] rounded-[1.25rem]">
         <Image
           src={card.image}
           alt={card.label}
@@ -49,7 +49,7 @@ export function PhotoCard({
           className="absolute inset-0 overlay-image-hover opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100"
         />
       </div>
-      <p className="font-test-tiempos-fine text-base sm:text-[1.125rem] leading-[1.5rem] text-neutral-800 lg:text-[1.5rem] lg:leading-[1.75rem]">
+      <p className="font-archivo-black text-base sm:text-[1.125rem] leading-[1.5rem] text-neutral-800 lg:text-[1.5rem] lg:leading-[1.75rem]">
         {card.label}
       </p>
     </div>

@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
-import PageHero from "@/components/common/PageHero";
-import EsgIntro from "@/components/sustainability/EsgIntro";
-import EsgCertifications from "@/components/sustainability/EsgCertifications";
-import EsgInitiatives from "@/components/sustainability/EsgInitiatives";
+import PageHeroFull from "@/components/common/PageHeroFull";
+import EsgRenewable from "@/components/sustainability/EsgRenewable";
+import EsgWater from "@/components/sustainability/EsgWater";
+import EsgStatCards from "@/components/sustainability/EsgStatCards";
+import EsgZld from "@/components/sustainability/EsgZld";
+import EsgRecognition from "@/components/sustainability/EsgRecognition";
+import { esgHero } from "@/components/sustainability/esgData";
 
 export const metadata: Metadata = {
   title: "Environmental & Social Governance | ASG - Amanat Shah Group",
@@ -13,17 +16,19 @@ export const metadata: Metadata = {
 export default function EnvironmentalSocialGovernancePage() {
   return (
     <main>
-      <PageHero
-        title="Environmental & Social Governance"
-        subtitle="Family business legacy for more than 130 years."
-        mobileSrc="/images/sustainability/esg/hero.webp"
-        desktopSrc="/images/sustainability/esg/hero.webp"
-        alt="Aerial view of lush green forest near Amanat Shah Group premises"
-        emblemSrc="/images/sustainability/esg/hero-emblem.webp"
+      <PageHeroFull
+        title={esgHero.title}
+        subtitle={esgHero.subtitle}
+        mobileSrc={esgHero.image}
+        desktopSrc={esgHero.image}
+        alt={esgHero.alt}
+        emblemSrc={esgHero.emblem}
       />
-      <EsgIntro />
-      <EsgCertifications />
-      <EsgInitiatives />
+      <EsgRenewable />
+      <EsgWater />
+      <EsgStatCards />
+      <EsgZld />
+      <EsgRecognition />
     </main>
   );
 }

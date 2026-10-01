@@ -1,8 +1,16 @@
 import type { Metadata } from "next";
-import SpinningHero from "@/components/concerns/hazrat-amanat-shah-spinning-mills/SpinningHero";
-import SpinningIntro from "@/components/concerns/hazrat-amanat-shah-spinning-mills/SpinningIntro";
-import SpinningCapabilities from "@/components/concerns/hazrat-amanat-shah-spinning-mills/SpinningCapabilities";
-import SpinningProcessing from "@/components/concerns/hazrat-amanat-shah-spinning-mills/SpinningProcessing";
+import PageHeroFull from "@/components/common/PageHeroFull";
+import ConcernIntro from "@/components/concerns/common/ConcernIntro";
+import ConcernCoreValues from "@/components/concerns/common/ConcernCoreValues";
+import ConcernProcessing from "@/components/concerns/common/ConcernProcessing";
+import {
+  spinningHero,
+  spinningCompany,
+  spinningIntroParagraphs,
+  spinningIntroStats,
+  spinningCoreValues,
+  spinningProcessing,
+} from "@/components/concerns/data/spinningData";
 
 export const metadata: Metadata = {
   title: "Hazrat Amanat Shah Spinning Mills Ltd. | ASG - Amanat Shah Group",
@@ -13,10 +21,31 @@ export const metadata: Metadata = {
 export default function HazratAmanatShahSpinningMillsPage() {
   return (
     <main>
-      <SpinningHero />
-      <SpinningIntro />
-      <SpinningCapabilities />
-      <SpinningProcessing />
+      <PageHeroFull
+        title={spinningHero.title}
+        subtitle={spinningHero.subtitle}
+        videoSrc={spinningHero.videoSrc}
+        alt={spinningHero.alt}
+      />
+      <ConcernIntro
+        sectionId="spinning-intro"
+        logoSrc={spinningCompany.logoSrc}
+        logoAlt={spinningCompany.logoAlt}
+        websiteUrl={spinningCompany.websiteUrl}
+        paragraphs={spinningIntroParagraphs}
+        stats={spinningIntroStats}
+      />
+      <ConcernCoreValues
+        sectionId="spinning-core-values"
+        heading={spinningCoreValues.heading}
+        description={spinningCoreValues.description}
+        cards={spinningCoreValues.cards}
+      />
+      <ConcernProcessing
+        sectionId="spinning-processing"
+        title={spinningProcessing.title}
+        slides={spinningProcessing.slides}
+      />
     </main>
   );
 }
