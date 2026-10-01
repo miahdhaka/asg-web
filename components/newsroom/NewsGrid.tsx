@@ -6,6 +6,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { newsArticles, type NewsItem } from "./newsData";
+import { blogPosts } from "./blogData";
 
 gsap.registerPlugin(useGSAP);
 
@@ -13,6 +14,9 @@ const featured = newsArticles[0];
 const sideCard = newsArticles[1];
 /** Small-card pool (everything after featured + side) */
 const smallCards = newsArticles.slice(2);
+
+/** Static blog slug — all small cards link here until per-card mapping exists */
+const blogSlug = blogPosts[0]?.slug ?? "global-heritage-bangladeshi-lungi";
 
 const INITIAL_SMALL_COUNT = 6;
 const LOAD_MORE_COUNT = 6;
@@ -37,9 +41,9 @@ function CardMeta({ date, category }: { date: string; category: string }) {
 /** Small card — image on top, meta + title below */
 function SmallCard({ item }: { item: NewsItem }) {
   return (
-    <Link href={`/newsroom/${item.slug}`} data-news-card className="group flex flex-col gap-4 border-b border-neutral-200 pb-4 sm:border-b-0 sm:pb-0">
+    <Link href={`/newsroom/blog-page/${blogSlug}`} data-news-card className="group flex flex-col gap-4 border-b border-neutral-200 pb-4 sm:border-b-0 sm:pb-0">
       {/* Image */}
-      <div className="relative h-80 sm:h-[28rem] w-full overflow-hidden bg-[#D9D9D9] rounded-[4px]">
+      <div className="relative h-80 sm:h-[28rem] w-full overflow-hidden bg-[#D9D9D9] rounded-[1.25rem]">
         <Image
           src={item.image}
           alt={item.title}
@@ -61,7 +65,7 @@ function SmallCard({ item }: { item: NewsItem }) {
         <CardMeta date={item.date} category={item.category} />
 
         {/* Title */}
-        <h3 className="max-w-[26.5625rem] text-left font-serif text-lg tracking-wide sm:text-[1.8rem] leading-[1.5rem] sm:leading-[2.2rem] font-normal text-neutral-800">
+        <h3 className="max-w-[26.5625rem] text-left font-archivo-black text-lg tracking-wide sm:text-[1.8rem] leading-[1.5rem] sm:leading-[2.2rem] text-neutral-800">
           {item.title}
         </h3>
       </div>
@@ -72,9 +76,9 @@ function SmallCard({ item }: { item: NewsItem }) {
 /** Featured (large) card — wide image, meta + title right-aligned below */
 function FeaturedCard({ item }: { item: NewsItem }) {
   return (
-    <Link href={`/newsroom/${item.slug}`} className="group flex flex-col gap-4 border-b border-neutral-200 pb-4 sm:border-b-0 sm:pb-0">
+    <Link href={`/newsroom/press-release/${item.slug}`} className="group flex flex-col gap-4 border-b border-neutral-200 pb-4 sm:border-b-0 sm:pb-0">
       {/* Image */}
-      <div className="relative h-80 sm:h-[28rem] w-full overflow-hidden bg-[#D9D9D9] rounded-[4px]">
+      <div className="relative h-80 sm:h-[28rem] w-full overflow-hidden bg-[#D9D9D9] rounded-[1.25rem]">
         <Image
           src={item.image}
           alt={item.title}
@@ -93,7 +97,7 @@ function FeaturedCard({ item }: { item: NewsItem }) {
 
       <div className="flex flex-col gap-1">
         <CardMeta date={item.date} category={item.category} />
-        <h3 className="max-w-[25.5625rem] text-left font-serif text-lg sm:text-[1.5rem] leading-[2rem] sm:leading-[2rem] font-normal text-neutral-800">
+        <h3 className="max-w-[25.5625rem] text-left font-archivo-black text-lg sm:text-[1.5rem] leading-[2rem] sm:leading-[2rem] text-neutral-800">
           {item.title}
         </h3>
       </div>
@@ -185,13 +189,44 @@ export default function NewsGrid() {
               />
             </svg>
           ) : (
+            /* Rounded pill with a 1px gradient ring — same treatment as the
+               "Visit website" button (dual-background technique; border-image
+               can't follow border-radius), with the slide-in flip hover. */
             <button
               type="button"
               onClick={handleLoadMore}
-              data-label="Load more"
-              className="primary-btn-flip-gradient font-medium cursor-pointer leading-[1.5rem] px-[2.75rem] py-[1rem] text-[1rem]"
+              className="group relative inline-flex cursor-pointer items-center justify-center overflow-hidden rounded-full border border-transparent px-[2.75rem] py-[1rem] text-[1rem] font-medium leading-none"
+              style={{
+                background:
+                  "linear-gradient(var(--background)) padding-box, var(--primary-gradient) border-box",
+              }}
             >
-              Load more
+              {/* Invisible spacer — preserves the button's intrinsic size */}
+              <span className="invisible inline-flex items-center whitespace-nowrap">
+                Load more
+              </span>
+
+              {/* Default: gradient text — slides down and out on hover */}
+              <span
+                aria-hidden
+                className="absolute inset-0 flex items-center justify-center whitespace-nowrap text-[#1AA179] transition-transform duration-500 ease-in-out group-hover:translate-y-full"
+              >
+                <span
+                  className="bg-clip-text text-transparent"
+                  style={{ backgroundImage: "var(--primary-gradient)" }}
+                >
+                  Load more
+                </span>
+              </span>
+
+              {/* Hover: gradient fill + white text — slides in from the top */}
+              <span
+                aria-hidden
+                className="absolute inset-0 flex -translate-y-full items-center justify-center whitespace-nowrap text-white transition-transform duration-500 ease-in-out group-hover:translate-y-0"
+                style={{ background: "var(--primary-gradient)" }}
+              >
+                Load more
+              </span>
             </button>
           )}
         </div>

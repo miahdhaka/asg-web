@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
-import Farm2FirmHero from "@/components/concerns/farm2firm/Farm2FirmHero";
-import Farm2FirmIntro from "@/components/concerns/farm2firm/Farm2FirmIntro";
-import Farm2FirmCapabilities from "@/components/concerns/farm2firm/Farm2FirmCapabilities";
+import PageHeroFull from "@/components/common/PageHeroFull";
+import ConcernIntro from "@/components/concerns/common/ConcernIntro";
+import ConcernCoreValues from "@/components/concerns/common/ConcernCoreValues";
+import {
+  farmHero,
+  farmCompany,
+  farmIntroParagraphs,
+  farmIntroStats,
+  farmCoreValues,
+} from "@/components/concerns/data/farmData";
 
 export const metadata: Metadata = {
   title: "Farm2Firm Management Ltd | ASG - Amanat Shah Group",
@@ -12,9 +19,26 @@ export const metadata: Metadata = {
 export default function Farm2FirmPage() {
   return (
     <main>
-      <Farm2FirmHero />
-      <Farm2FirmIntro />
-      <Farm2FirmCapabilities />
+      <PageHeroFull
+        title={farmHero.title}
+        subtitle={farmHero.subtitle}
+        videoSrc={farmHero.videoSrc}
+        alt={farmHero.alt}
+      />
+      <ConcernIntro
+        sectionId="farm2firm-intro"
+        logoSrc={farmCompany.logoSrc}
+        logoAlt={farmCompany.logoAlt}
+        websiteUrl={farmCompany.websiteUrl}
+        paragraphs={farmIntroParagraphs}
+        stats={farmIntroStats}
+      />
+      <ConcernCoreValues
+        sectionId="farm2firm-core-values"
+        heading={farmCoreValues.heading}
+        description={farmCoreValues.description}
+        cards={farmCoreValues.cards}
+      />
     </main>
   );
 }

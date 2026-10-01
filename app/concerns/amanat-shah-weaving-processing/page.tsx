@@ -1,8 +1,16 @@
 import type { Metadata } from "next";
-import WeavingHero from "@/components/concerns/amanat-shah-weaving-processing/WeavingHero";
-import WeavingIntro from "@/components/concerns/amanat-shah-weaving-processing/WeavingIntro";
-import WeavingCapabilities from "@/components/concerns/amanat-shah-weaving-processing/WeavingCapabilities";
-import WeavingProcessing from "@/components/concerns/amanat-shah-weaving-processing/WeavingProcessing";
+import PageHeroFull from "@/components/common/PageHeroFull";
+import ConcernIntro from "@/components/concerns/common/ConcernIntro";
+import ConcernCoreValues from "@/components/concerns/common/ConcernCoreValues";
+import ConcernProcessing from "@/components/concerns/common/ConcernProcessing";
+import {
+  weavingHero,
+  weavingCompany,
+  weavingIntroParagraphs,
+  weavingIntroStats,
+  weavingCoreValues,
+  weavingProcessing,
+} from "@/components/concerns/data/weavingData";
 
 export const metadata: Metadata = {
   title: "Amanat Shah Weaving Processing Ltd. | ASG - Amanat Shah Group",
@@ -13,10 +21,31 @@ export const metadata: Metadata = {
 export default function AmanatShahWeavingProcessingPage() {
   return (
     <main>
-      <WeavingHero />
-      <WeavingIntro />
-      <WeavingCapabilities />
-      <WeavingProcessing />
+      <PageHeroFull
+        title={weavingHero.title}
+        subtitle={weavingHero.subtitle}
+        videoSrc={weavingHero.videoSrc}
+        alt={weavingHero.alt}
+      />
+      <ConcernIntro
+        sectionId="weaving-intro"
+        logoSrc={weavingCompany.logoSrc}
+        logoAlt={weavingCompany.logoAlt}
+        websiteUrl={weavingCompany.websiteUrl}
+        paragraphs={weavingIntroParagraphs}
+        stats={weavingIntroStats}
+      />
+      <ConcernCoreValues
+        sectionId="weaving-core-values"
+        heading={weavingCoreValues.heading}
+        description={weavingCoreValues.description}
+        cards={weavingCoreValues.cards}
+      />
+      <ConcernProcessing
+        sectionId="weaving-processing"
+        title={weavingProcessing.title}
+        slides={weavingProcessing.slides}
+      />
     </main>
   );
 }

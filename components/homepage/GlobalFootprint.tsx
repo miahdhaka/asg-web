@@ -28,10 +28,15 @@ const mapPins: MapPin[] = [
 ];
 
 // Brand logo tiles rendered from /public/images/global-footprint/.
-const brands: string[] = Array.from(
-  { length: 16 },
-  (_, i) => `/images/global-footprint/img${i + 1}.png`
-);
+const brands: string[] = [
+  "/images/global-footprint/c&a.png",
+  "/images/global-footprint/celio.png",
+  "/images/global-footprint/kiabi.png",
+  "/images/global-footprint/levis.png",
+  "/images/global-footprint/next.png",
+  "/images/global-footprint/premark.png",
+  "/images/global-footprint/walmart.png",
+];
 
 export default function GlobalFootprint() {
   // Render the list twice so we can loop seamlessly.
@@ -216,11 +221,11 @@ export default function GlobalFootprint() {
       <div className="relative mt-4 lg:mt-6 pb-[10%] sm:pb-0">
         {/* Row 1: Right to Left */}
         <div className="no-scrollbar overflow-hidden select-none">
-          <div className="animate-marquee-left flex w-max gap-2 sm:gap-3 lg:gap-4">
+          <div className="animate-marquee-left flex w-max">
             {loopedBrands.map((brand, index) => (
               <div
                 key={`left-${brand}-${index}`}
-                className="flex h-14 sm:h-16 lg:h-24 w-[10rem] sm:w-[12rem] lg:w-[17.5rem] flex-shrink-0 items-center justify-center bg-[#10161a]"
+                className="mr-2 flex h-14 sm:mr-3 sm:h-16 lg:mr-4 lg:h-24 w-[10rem] sm:w-[12rem] lg:w-[17.5rem] flex-shrink-0 items-center justify-center bg-[#10161a]"
               >
                 <Image
                   src={brand}
@@ -238,11 +243,11 @@ export default function GlobalFootprint() {
 
         {/* Row 2: Left to Right */}
         <div className="no-scrollbar mt-2 sm:mt-3 lg:mt-4 overflow-hidden select-none">
-          <div className="animate-marquee-right flex w-max gap-2 sm:gap-3 lg:gap-4">
+          <div className="animate-marquee-right flex w-max">
             {loopedBrands.map((brand, index) => (
               <div
                 key={`right-${brand}-${index}`}
-                className="flex h-14 sm:h-16 lg:h-24 w-[10rem] sm:w-[12rem] lg:w-[17.5rem] flex-shrink-0 items-center justify-center bg-[#10161a]"
+                className="mr-2 flex h-14 sm:mr-3 sm:h-16 lg:mr-4 lg:h-24 w-[10rem] sm:w-[12rem] lg:w-[17.5rem] flex-shrink-0 items-center justify-center bg-[#10161a]"
               >
                 <Image
                   src={brand}

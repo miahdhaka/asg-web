@@ -17,7 +17,7 @@ interface Milestone {
   imageAlt: string;
 }
 
-const milestones: Milestone[] = [
+export const milestones: Milestone[] = [
   {
     year: "1896",
     title: "The Legacy Begins",
@@ -313,7 +313,7 @@ export default function HistoryTimeline() {
   );
 
   return (
-    <section ref={sectionRef} className="relative w-full bg-white">
+    <section ref={sectionRef} className="relative w-full">
       {/* ── Continuous centre line — grows dot-by-dot on scroll ── */}
       <div
         ref={lineRef}

@@ -192,10 +192,9 @@ export default function ContactForm() {
       {/* Send Message button — flip hover (gradient fill → gradient outline) */}
       <button
         type="button"
-        className="group relative self-start inline-flex overflow-hidden text-sm sm:text-lg text-nowrap tracking-wide cursor-pointer px-5 sm:px-10 py-2.5 sm:py-5"
+        className="group relative self-start inline-flex overflow-hidden rounded-full border border-transparent text-sm sm:text-lg text-nowrap tracking-wide cursor-pointer px-5 sm:px-10 py-2.5 sm:py-5"
         style={{
-          borderImage: "var(--primary-gradient) 1",
-          borderWidth: 1,
+          background: "linear-gradient(var(--background)) padding-box, var(--primary-gradient) border-box",
         }}
       >
         {/* Invisible spacer */}

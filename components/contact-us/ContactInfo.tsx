@@ -17,7 +17,7 @@ function InfoBlock({
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-3 sm:gap-4">
-        <div className="flex h-[2.5rem] w-[2.5rem] sm:h-[3.2rem] sm:w-[3.2rem] shrink-0 items-center justify-center rounded bg-gray-100">
+        <div className="flex h-[2.5rem] w-[2.5rem] sm:h-[3.2rem] sm:w-[3.2rem] shrink-0 items-center justify-center rounded-lg bg-white">
           <Icon size={18} className="sm:hidden text-neutral-800" strokeWidth={1.5} />
           <Icon size={24} className="hidden sm:block text-neutral-800" strokeWidth={1.5} />
         </div>
@@ -40,7 +40,7 @@ export default function ContactInfo() {
     <div className="flex flex-col">
       {/* Corporate Headquarters */}
       <div className="flex w-full flex-col gap-5">
-        <p className="text-xl lg:text-[1.5rem] leading-7 lg:leading-[2.3rem] text-neutral-800 font-test-tiempos-fine">
+        <p className="text-xl lg:text-[1.5rem] leading-7 lg:leading-[2.3rem] text-neutral-800 font-archivo-black">
           CORPORATE HEADQUARTERS
         </p>
 
@@ -77,7 +77,7 @@ export default function ContactInfo() {
 
       {/* Opening Hours */}
       <div className="mt-6 lg:mt-8 flex w-full flex-col gap-3 sm:gap-5">
-        <p className="text-xl lg:text-[1.5rem] leading-7 lg:leading-[2.3rem] text-neutral-800 font-test-tiempos-fine">
+        <p className="text-xl lg:text-[1.5rem] leading-7 lg:leading-[2.3rem] text-neutral-800 font-archivo-black">
           OPENING HOURS
         </p>
 

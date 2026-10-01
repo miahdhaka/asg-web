@@ -33,7 +33,7 @@ export function LogoCard({
           : undefined
       }
     >
-      <div className="card-gradient-target card-gradient-fast flex aspect-[429/257] w-full items-center justify-center bg-gray-50 rounded-[4px]">
+      <div className="card-gradient-target card-gradient-fast flex aspect-[429/257] w-full items-center justify-center bg-gray-50 rounded-[1.25rem]">
         <Image
           src={card.image}
           alt={card.label}
@@ -44,7 +44,7 @@ export function LogoCard({
           quality={100}
         />
       </div>
-      <p className="font-test-tiempos-fine text-base sm:text-[1.125rem] leading-[1.5rem] text-neutral-800 lg:text-[1.5rem] lg:leading-[1.75rem]">
+      <p className="font-archivo-black text-base sm:text-[1.125rem] leading-[1.5rem] text-neutral-800 lg:text-[1.5rem] lg:leading-[1.75rem]">
         {card.label}
       </p>
     </div>

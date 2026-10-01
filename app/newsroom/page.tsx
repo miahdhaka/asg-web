@@ -16,6 +16,7 @@ export default function NewsroomPage() {
         mobileSrc="/images/newsroom/news-hero.png"
         desktopSrc="/images/newsroom/news-hero.png"
         alt="ASG Group news releases"
+        objectPosition="top"
       />
       <NewsGrid />
     </main>

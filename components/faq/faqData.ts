@@ -25,18 +25,18 @@ export const faqCategories: FaqCategory[] = [
       {
         question: "In how many countries does ASG Group operate?",
         answer:
-          "ASG Group serves customers across Asia, Europe and North America through its manufacturing units, distribution partners and export network.",
+          "ASG Group operates across a dynamic global network with an active footprint in over 25+ countries spanning Asia, the Middle East, Africa, and Europe. Our expansive geographic presence allows us to manage cross-border supply chains and business portfolios seamlessly.",
       },
       {
         question:
           "When was the Group established, and what is its core philosophy?",
         answer:
-          "The Group carries a family business legacy of more than 130 years, built on sustainable growth, ethical trade and long-term community development.",
+          "ASG Group operates across a dynamic global network with an active footprint in over 25+ countries spanning Asia, the Middle East, Africa, and Europe. Our expansive geographic presence allows us to manage cross-border supply chains and business portfolios seamlessly.",
       },
       {
         question: "What is the organizational structure of ASG Group?",
         answer:
-          "ASG Group operates as a diversified holding company. Each concern — textile, apparel, finance, retail, agriculture, real estate, chemical and IT — is run by its own management team reporting to the Board of Directors.",
+          "ASG Group operates across a dynamic global network with an active footprint in over 25+ countries spanning Asia, the Middle East, Africa, and Europe. Our expansive geographic presence allows us to manage cross-border supply chains and business portfolios seamlessly.",
       },
     ],
   },

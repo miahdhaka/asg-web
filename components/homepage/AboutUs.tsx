@@ -15,30 +15,46 @@ export default function AboutUs() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 0.8,
-        },
-      });
+      /* The page wrapper around this section carries ASGHighlight's slow-rise
+         translateY. ScrollTrigger measures through getBoundingClientRect, which
+         includes ancestor transforms, so a refresh taken while the rise is still
+         holding the section up would cache a start/end that fires this shrink
+         early and leaves it shifted for the rest of the session. By the time the
+         image actually reaches the viewport top the rise is finished (offset 0),
+         so the correct reference is the section's NATURAL position — read the
+         ancestor displacement at refresh time and add it back to cancel it out. */
+      const riseShift = () => {
+        const wrapper = sectionRef.current?.parentElement;
+        if (!wrapper) return 0;
+        const t = getComputedStyle(wrapper).transform;
+        if (!t || t === "none") return 0;
+        return new DOMMatrix(t).m42; // negative while the rise holds it up
+      };
 
-      // Stay small as section enters viewport
-      tl.fromTo(imageRef.current, { scale: 0.85 }, { scale: 0.85, duration: 0.5, ease: "none" });
-      // Scale up as section reaches middle
-      tl.to(imageRef.current, { scale: 1, duration: 0.5, ease: "power1.inOut" });
-      // Brief hold at full size for smooth transition
-      tl.to(imageRef.current, { scale: 1, duration: 0.2, ease: "none" });
-      // Scale down immediately after reaching full size (same range as scale up)
-      tl.to(imageRef.current, { scale: 0.85, duration: 0.5, ease: "power1.inOut" });
+      /* Image stays at full size while the header is visible. The shrink
+         begins once the header has crossed out of the viewport top (image
+         top hits viewport top) and continues until the image is gone. */
+      gsap.fromTo(
+        imageRef.current,
+        { scale: 1 },
+        {
+          scale: 0.85,
+          ease: "none",
+          scrollTrigger: {
+            trigger: imageRef.current,
+            start: () => `top+=${-riseShift()} top`,
+            end: () => `bottom+=${-riseShift()} top`,
+            scrub: 0.8,
+          },
+        }
+      );
     }, sectionRef);
 
     return () => ctx.revert();
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative w-full py-16 md:px-12 lg:px-20 lg:py-22">
+    <section ref={sectionRef} className="relative z-20 bg-background w-full py-16 md:px-12 lg:px-20 lg:py-22">
       <div>
         {/* Top row: label + heading on left, description + CTA on right */}
         <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between lg:max-w-[90%]">

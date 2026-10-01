@@ -209,7 +209,7 @@ export default function PhotoLightbox({
           <a
             href={item.image}
             download
-            className="group relative inline-flex cursor-pointer items-center gap-2 overflow-hidden px-3 py-2 sm:px-[1.5rem] sm:py-[0.8rem] font-medium leading-none text-white shadow-lg shadow-black/30 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_0.75rem_2rem_-0.375rem_rgba(26,161,121,0.6)]"
+            className="group relative inline-flex cursor-pointer items-center gap-2 overflow-hidden rounded-full px-3 py-2 sm:px-[1.5rem] sm:py-[0.8rem] font-medium leading-none text-white shadow-lg shadow-black/30 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_0.75rem_2rem_-0.375rem_rgba(26,161,121,0.6)]"
             style={{ background: "var(--primary-gradient)" }}
           >
             {/* Shine sweep — parked off the left edge, glides across on hover */}
@@ -235,17 +235,18 @@ export default function PhotoLightbox({
                image is contained inside it, never cropped or stretched.
                The top bar spans the same width, keeping the download and
                close buttons aligned with the stage edges on every slide. */}
-        <div className="relative h-[30vh] sm:h-[min(62vh,46rem)] w-[90vw] sm:w-[58vw] max-w-[92vw] bg-white">
+        <div className="relative h-[30vh] sm:h-[min(62vh,46rem)] w-[90vw] sm:w-[58vw] max-w-[92vw] bg-white rounded-[1.25rem]">
+          {/* Plain chevron arrows parked outside the stage edges */}
           <button
             type="button"
             onClick={goPrev}
             aria-label="Previous image"
-            className="absolute left-1.5 top-1/2 z-10 flex h-8 w-8 sm:h-11 sm:w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-[#D9D9D9] text-neutral-800 shadow-lg shadow-black/20 transition duration-200 hover:scale-105 hover:bg-white sm:left-4"
+            className="absolute left-1.5 sm:-left-14 lg:-left-20 top-1/2 z-10 flex -translate-y-1/2 cursor-pointer items-center justify-center p-1 text-white transition duration-200 hover:scale-110 hover:opacity-70"
           >
-            <ChevronLeft className="h-4 w-4 sm:h-6 sm:w-6" strokeWidth={2} />
+            <ChevronLeft className="h-6 w-6 sm:h-9 sm:w-9" strokeWidth={1.5} />
           </button>
 
-          <div className="flex h-full w-full items-center justify-center rounded-[4px] overflow-hidden">
+          <div className="flex h-full w-full items-center justify-center rounded-[1.25rem] overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               ref={imgRef}
@@ -264,9 +265,9 @@ export default function PhotoLightbox({
             type="button"
             onClick={goNext}
             aria-label="Next image"
-            className="absolute right-1.5 top-1/2 z-10 flex h-8 w-8 sm:h-11 sm:w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-[#D9D9D9] text-neutral-800 shadow-lg shadow-black/20 transition duration-200 hover:scale-105 hover:bg-white sm:right-4"
+            className="absolute right-1.5 sm:-right-14 lg:-right-20 top-1/2 z-10 flex -translate-y-1/2 cursor-pointer items-center justify-center p-1 text-white transition duration-200 hover:scale-110 hover:opacity-70"
           >
-            <ChevronRight className="h-4 w-4 sm:h-6 sm:w-6" strokeWidth={2} />
+            <ChevronRight className="h-6 w-6 sm:h-9 sm:w-9" strokeWidth={1.5} />
           </button>
         </div>
 

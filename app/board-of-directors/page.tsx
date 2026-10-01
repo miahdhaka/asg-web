@@ -10,10 +10,10 @@ export const metadata: Metadata = {
 };
 
 const chairmanBio =
-  "Mohammad Helal Miah, born in 1930, has been Chairman of Amanat Shah Group (ASG) since 31 January 2024. Coming from a family business legacy, he began his journey with an emblematic retail shop and gradually extended his vision to cover the entire value-chain to retain the quality of products, establishing the names Standard and Amanat Shah as trusted brands. With the passage of time, he brought Spinning, Weaving, Knitting, Processing, Dyeing, Printing, Finishing, and Knit-Garments units under his dexterous convoy, collectively forming the Amanat Shah Group (ASG).";
+  "ASG's leadership is rooted in a founding family's 130-year entrepreneurial legacy — carried forward today by a management team focused on manufacturing discipline, product innovation and long-term partnership with global brands.";
 
 const managingDirectorBio =
-  'Rezaul Karim serves as the Managing Director of Amanat Shah Group (ASG), spearheading the group\u2019s strategic vision and operational excellence. Carrying forward a rich family legacy, he is committed to integrating modern management practices with the group\u2019s foundational values of craftsmanship and quality. Under his leadership, ASG continues to expand its footprint across textiles, diversified industrial sectors, and innovative new ventures, ensuring that the legacy of "Standard" and "Amanat Shah" remains a symbol of trust and excellence in the global market.';
+  "ASG's leadership is rooted in a founding family's 130-year entrepreneurial legacy — carried forward today by a management team focused on manufacturing discipline, product innovation and long-term partnership with global brands."
 
 export default function BoardOfDirectorsPage() {
   return (
@@ -28,8 +28,7 @@ export default function BoardOfDirectorsPage() {
       />
       <MessageSection
         id="chairman-message"
-        variant="light"
-        headingLines={["MESSAGE FROM THE", "CHAIRMAN_"]}
+
         name="Mohammad Helal Miah"
         role="Chairman"
         bio={chairmanBio}
@@ -42,19 +41,20 @@ export default function BoardOfDirectorsPage() {
       />
       <MessageSection
         id="managing-director-message"
-        variant="dark"
-        headingLines={["MESSAGE FROM THE", "MANAGING DIRECTOR_"]}
         name="Rezaul Karim"
-        role="Managing Director"
+        role="Director"
         bio={managingDirectorBio}
         href="/board-of-directors/managing-director"
+        dividerClass="bg-[#0e2417]"
+        textClass="text-[#0e2417]"
+        overlay="linear-gradient(90deg, #E0EDE0 23.33%, #E0EDE0 73.71%)"
         image={{
-          src: "/images/board-of-directors/managing-director.png",
+          src: "/images/board-of-directors/director.png",
           width: 530,
           height: 550,
         }}
       />
-      <OtherBoardMembers />
+      <OtherBoardMembers layout="grid" />
     </main>
   );
 }

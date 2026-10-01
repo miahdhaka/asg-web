@@ -13,6 +13,8 @@ interface PageHeroProps {
   alt: string;
   /** Optional emblem rendered top-center on desktop (e.g. sustainability pages). */
   emblemSrc?: string;
+  /** CSS object-position for the background image. Defaults to "bottom". */
+  objectPosition?: string;
   /** Optional section id for scroll-target / GSAP hooks. */
   id?: string;
 }
@@ -32,6 +34,7 @@ export default function PageHero({
   desktopSrc,
   alt,
   emblemSrc,
+  objectPosition = "bottom",
   id,
 }: PageHeroProps) {
   const sameSrc = mobileSrc === desktopSrc;
@@ -41,7 +44,7 @@ export default function PageHero({
       id={id}
       className={
         sameSrc
-          ? "relative w-full min-h-[28rem] lg:h-[41.5625rem]"
+          ? "relative w-full min-h-[32rem] lg:h-[47rem]"
           : "relative w-full"
       }
     >
@@ -55,6 +58,7 @@ export default function PageHero({
           priority
           quality={90}
           sizes="100vw"
+          style={{ objectPosition }}
           className="object-cover"
         />
       ) : (
@@ -67,7 +71,8 @@ export default function PageHero({
             height={290}
             priority
             quality={90}
-            className="block lg:hidden min-h-[28rem] w-full h-auto object-cover object-[50%_40%]"
+            className="block lg:hidden min-h-[32rem] w-full h-auto object-cover"
+            style={{ objectPosition }}
           />
           {/* Desktop-only image */}
           <Image
@@ -77,7 +82,8 @@ export default function PageHero({
             height={1080}
             priority
             quality={90}
-            className="hidden lg:block lg:h-[41.5625rem] w-full object-cover object-[50%_40%]"
+            className="hidden lg:block lg:h-[47rem] w-full object-cover"
+            style={{ objectPosition }}
           />
         </>
       )}
@@ -98,12 +104,12 @@ export default function PageHero({
         />
       )}
 
-      {/* Title + subtitle — bottom-left */}
-      <div className="flex flex-col gap-1 lg:gap-0.5 absolute left-4 sm:left-8 lg:left-[5em] bottom-6 sm:bottom-10 lg:bottom-[5em] z-10">
-        <h1 className="text-2xl sm:text-4xl lg:text-6xl text-white font-test-tiempos-fine tracking-wider">
+      {/* Title + subtitle — bottom-center */}
+      <div className="absolute inset-x-0 bottom-32 sm:bottom-36 lg:bottom-[13em] z-10 flex flex-col items-center gap-1 lg:gap-0.5 px-4 text-center">
+        <h1 className="text-[1.75rem] sm:text-[2.75rem] lg:text-[3.75rem] text-white font-archivo-black uppercase">
           {title}
         </h1>
-        <p className="text-xs sm:text-sm tracking-wider text-white lg:text-base font-medium pt-0 sm:pt-2">
+        <p className="text-[0.8125rem] sm:text-[0.9375rem] lg:text-[1.0625rem] tracking-wider text-white font-neue-montreal font-light  pt-0 sm:pt-2">
           {subtitle}
         </p>
       </div>

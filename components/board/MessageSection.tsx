@@ -3,126 +3,154 @@ import Link from "next/link";
 
 export type MessageSectionProps = {
   id: string;
-  /** Eyebrow-style heading lines, rendered stacked (e.g. ["MESSAGE FROM THE", "CHAIRMAN_"]) */
-  headingLines: string[];
   name: string;
   role: string;
   bio: string;
   image: { src: string; width: number; height: number };
-  /** "light" = white bg, photo left; "dark" = primary-black bg, photo right */
-  variant: "light" | "dark";
-  /** Detail-page route for the CTA — renders a Link instead of a button */
+  /** Detail-page route for the "Read full bio" CTA */
   href?: string;
+  /** Small uppercase org label under the divider (defaults to ASG) */
+  orgLabel?: string;
+  /** Divider color class between the role and org label. */
+  dividerClass?: string;
+  /** Optional CSS background painted over the panel image to tint a variant
+   *  section. Layout stays identical; only the card background differs. */
+  overlay?: string;
+  /** Text color class for the left (name/role) and right (bio) content.
+   *  Defaults to white; override for lighter variant backgrounds. */
+  textClass?: string;
 };
 
+/**
+ * Board message panel — based on the homepage "Legacy of Leadership" section
+ * (LegacyOfLeadership.tsx) wrapper, panel background and portrait positioning,
+ * with the header removed. Differences per spec: no section header, no quote
+ * mark, no image hover/transition, and a left-aligned rounded-gradient "Read
+ * full bio" button under the copy.
+ */
 export default function MessageSection({
   id,
-  headingLines,
   name,
   role,
   bio,
   image,
-  variant,
   href,
+  orgLabel = "Amanat Shah Group",
+  dividerClass = "bg-[#2B5349]",
+  overlay,
+  textClass = "text-white",
 }: MessageSectionProps) {
-  const dark = variant === "dark";
-
   return (
-    <section 
-      id={id} 
-      className={`w-full px-4 sm:px-6 lg:px-[5em] py-10 lg:py-[5em] ${
-        dark ? "bg-[var(--primary-black)]" : "bg-white"
-      }`}
+    <section
+      id={id}
+      className="relative flex w-full flex-col overflow-hidden bg-[#F3F3F1] pt-16 pb-8"
     >
-      {/* Section heading */}
-      <h2
-        className={` tracking-wide text-xl sm:text-3xl lg:text-[2.6em] leading-[1.3] lg:leading-[1.2] font-test-tiempos-fine ${
-          dark ? "text-white" : "text-neutral-800"
-        }`}
-      >
-        {headingLines.map((line) => (
-          <span key={line} className="block">
-            {line}
-          </span>
-        ))}
-      </h2>
+      <div className="flex flex-1 flex-col px-6 pb-4 md:px-12 lg:px-20">
+        <div className="relative mt-28 min-h-[47rem] flex-1 md:min-h-[51rem] lg:mt-[7.125rem] lg:min-h-[36rem]">
+          {/* Panel background */}
+          <div className="absolute inset-0 overflow-hidden rounded-t-[2.5rem]">
+            <div aria-hidden className="absolute inset-0">
+              <Image
+                src="/images/home-legacy/lagacy-bg.png"
+                alt=""
+                fill
+                sizes="(min-width: 1024px) calc(100vw - 7.5rem), calc(100vw - 3rem)"
+                className="object-cover"
+                quality={90}
+              />
+            </div>
+            {overlay && (
+              <div
+                aria-hidden
+                className="absolute inset-0"
+                style={{ background: overlay }}
+              />
+            )}
+          </div>
 
-      <div
-        className={`flex flex-col gap-0 sm:gap-8 lg:gap-[4.7em] md:w-[85%] mx-auto mt-3 sm:mt-8 lg:mt-[3em] lg:items-start ${
-          dark ? "lg:flex-row-reverse" : "lg:flex-row"
-        }`}
-      >
-        {/* Portrait */}
-        <Image
-          src={image.src}
-          alt={`${name} — ${role}`}
-          width={image.width}
-          height={image.height}
-          quality={90}
-          className={`w-[90%] lg:w-[44.2em] h-auto max-w-[28rem] lg:max-w-none bg-gray-100 shrink-0 mx-auto lg:mx-0 ${
-            dark ? "" : ""
-          }`}
-        />
+          {/* Portrait — same positioning as the legacy section. No hover. */}
+          <div className="absolute -top-16 left-1/2 z-20 h-[32rem] w-[86%] max-w-[30rem] -translate-x-1/2 md:-top-20 md:h-[38rem] lg:top-auto lg:bottom-0 lg:left-[25.87%] lg:h-[44rem] lg:w-[38%] lg:max-w-[31rem] lg:translate-x-0">
+            <Image
+              src={image.src}
+              alt={`${name}, ${role} of Amanat Shah Group`}
+              fill
+              sizes="(min-width: 1024px) 38vw, (min-width: 768px) 32rem, 86vw"
+              className="origin-bottom object-contain object-bottom transition-none"
+              quality={90}
+            />
+          </div>
 
-        {/* Quote / name / role / divider / bio / cta */}
-        <div className="flex-1 lg:pt-[5.5em]">
-          <Image
-            src={
-              dark
-                ? "/images/board-of-directors/dark-qoutes.png"
-                : "/images/board-of-directors/light-qoutes.png"
-            }
-            alt=""
-            aria-hidden
-             width={168}
-            height={168}
-            quality={100}
-            className="hidden sm:block w-16 h-16 sm:w-20 sm:h-20 lg:w-[3.5em] lg:h-[3.5em]"
-          />
-          <h3
-            className={`mt-4 font-test-tiempos-fine text-lg sm:text-3xl lg:text-[2.6em] ${
-              dark ? "text-white" : "text-neutral-900"
-            }`}
-          >
-            {name}
-          </h3>
-          <p
-            className={`mt-0 sm:mt-1 text-xs sm:text-sm md:text-base lg:text-[1.25em] tracking-wide ${
-              dark ? "text-neutral-300" : "text-neutral-600"
-            }`}
-          >
-            {role}
-          </p>
+          {/* Bottom mask — hides the transient portrait dip below the card. */}
           <div
             aria-hidden
-            className={`mt-3 lg:mt-[1em] border-b ${
-              dark ? "border-neutral-700" : "border-neutral-200"
-            }`}
+            className="pointer-events-none absolute inset-x-0 top-full z-[25] h-24 bg-[#F3F3F1]"
           />
-          <p
-            className={`mt-3 sm:mt-5 lg:mt-[1.8em] text-sm sm:text-base lg:text-[1.15em] tracking-wide ${
-              dark ? "text-neutral-400" : "text-neutral-700"
-            }`}
-          >
-            {bio}
-          </p>
-          {href ? (
-            <Link
-              href={href}
-              data-label="Read full bio"
-              className="primary-btn-flip-gradient inline-block cursor-pointer text-sm lg:text-lg px-5 py-2.5 lg:px-9 lg:py-4.5 mt-4 sm:mt-8 lg:mt-[2em]"
-            >
-              Read full bio
-            </Link>
-          ) : (
-            <button
-              type="button"
-              data-label="Read full bio"
-              className="primary-btn-flip-gradient cursor-pointer text-base lg:text-lg px-8 py-4 lg:px-9 lg:py-4.5 mt-8 lg:mt-[2em]"
-            >
-              Read full bio
-            </button>
-          )}
+
+          {/* Name / role / divider / org label — left */}
+          <div className={`absolute inset-x-6 top-[18.75rem] z-30 md:inset-x-10 md:top-[23.5rem] lg:inset-x-auto lg:top-1/2 lg:left-[5rem] lg:-translate-y-1/2 lg:w-[18.375rem] ${textClass}`}>
+            <h3 className="font-archivo-black text-3xl leading-[1.08] uppercase lg:text-[2rem]">
+              {name}
+            </h3>
+            <p className="mt-6 text-base leading-6 lg:text-[1.25rem]">{role}</p>
+            <div className={`my-6 h-px w-full ${dividerClass}`} />
+            <p className="font-archivo-black text-base leading-5 uppercase lg:text-[1.1rem]">
+              {orgLabel}
+            </p>
+          </div>
+
+          {/* Bio + CTA — right, left-aligned */}
+          <div className={`absolute inset-x-6 bottom-10 z-30 flex flex-col gap-8 text-left md:inset-x-10 lg:inset-x-auto lg:right-[5rem] lg:top-1/2 lg:bottom-auto lg:w-[36rem] lg:-translate-y-1/2 lg:gap-[2.5rem] ${textClass}`}>
+            <p className="text-xl leading-7 lg:text-[1.7rem] lg:leading-9">
+              {bio}
+            </p>
+            {href && (
+              <Link
+                href={href}
+                className="group relative inline-flex w-fit shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full px-[1.5em] py-[0.9em] text-[0.9rem] font-medium leading-none lg:text-[1.1rem]"
+              >
+                {/* 1px gradient ring with a transparent interior — a masked
+                    border-box layer, so the card background shows through
+                    (unlike the padding-box fill used on light sections). */}
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 rounded-full"
+                  style={{
+                    padding: "1px",
+                    background: "var(--primary-gradient)",
+                    WebkitMask:
+                      "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+                    WebkitMaskComposite: "xor",
+                    mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+                    maskComposite: "exclude",
+                  }}
+                />
+                {/* Invisible spacer — preserves the button's intrinsic size */}
+                <span className="invisible whitespace-nowrap">Read full bio</span>
+
+                {/* Default: gradient text — slides down and out on hover */}
+                <span
+                  aria-hidden
+                  className="absolute inset-0 flex items-center justify-center whitespace-nowrap transition-transform duration-500 ease-in-out group-hover:translate-y-full"
+                >
+                  <span
+                    className="bg-clip-text text-transparent"
+                    style={{ backgroundImage: "var(--primary-gradient)" }}
+                  >
+                    Read full bio
+                  </span>
+                </span>
+
+                {/* Hover: gradient fill + white text — slides in from the top */}
+                <span
+                  aria-hidden
+                  className="absolute inset-0 flex -translate-y-full items-center justify-center whitespace-nowrap text-white transition-transform duration-500 ease-in-out group-hover:translate-y-0"
+                  style={{ background: "var(--primary-gradient)" }}
+                >
+                  Read full bio
+                </span>
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </section>

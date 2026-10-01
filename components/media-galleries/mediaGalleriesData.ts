@@ -97,6 +97,10 @@ export const logoCards: LogoCard[] = [
     image: "/logo/sister-concern/tex-solution-clr.png",
     label: "Amanat Shah Text Solution",
   },
+  {
+    image: "/logo/sister-concern/asg-dynamic.png",
+    label: "ASG Dynamic",
+  },
 ];
 
 /* ------------------------------------------------------------------ */

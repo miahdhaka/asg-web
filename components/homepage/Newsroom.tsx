@@ -153,11 +153,11 @@ export default function Newsroom() {
             <span aria-hidden className="text-2xl leading-none bg-gradient-to-b from-[#4a9e4a] to-[#2d6b2d] bg-clip-text text-transparent">•</span>
           </div>
 
-          {/* Title — matched to the subtitle/description style used by the
-              other homepage sections (e.g. GreenerFuture, AboutUs). */}
+          {/* Title — same Archivo Black uppercase token set as the other
+              homepage section headings (AboutUs, GreenerFuture, etc.). */}
           <h2
             id="newsroom-title"
-            className="text-base text-[#555] md:text-[1.25rem]"
+            className="font-archivo-black uppercase text-2xl sm:text-4xl lg:text-[3rem] leading-[1.1] text-[var(--neutral-800)]"
           >
             Latest from ASG <br />newsroom
           </h2>
@@ -198,7 +198,7 @@ export default function Newsroom() {
             {loopedNews.map((item, index) => (
               <Link
                 key={`${item.image}-${index}`}
-                href={`/newsroom/${item.slug}`}
+                href={`/newsroom/press-release/${item.slug}`}
                 className={`group flex w-[78%] shrink-0 flex-col sm:w-[52%] lg:w-auto lg:shrink lg:h-full lg:min-h-0 gap-3 sm:gap-4 ${
                   index >= news.length ? "lg:hidden" : ""
                 }`}
