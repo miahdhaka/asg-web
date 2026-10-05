@@ -23,15 +23,15 @@ export default function MessageBody({
   return (
     <section
       id={id}
-      className="w-full bg-white px-4 sm:px-6 lg:px-[5em] pt-6 sm:pt-12 lg:pt-[5em]"
+      className="w-full bg-background px-4 sm:px-6 lg:px-[5em] py-10 sm:py-14 lg:py-[4em]"
     >
-      <div className="mx-auto w-full max-w-full lg:w-[64.1em]">
-        <h2 className="font-test-tiempos-fine font-medium text-xl sm:text-2xl lg:text-[2em] lg:leading-[1.33] text-neutral-800">
+      <div className="mx-auto w-full max-w-full lg:w-[74.1em]">
+        <h2 className="font-archivo-black font-medium text-xl sm:text-2xl lg:text-[2em] lg:leading-[1.33] text-neutral-800">
           {heading}
         </h2>
 
         {lead && (
-          <p className="mt-4 lg:mt-[1em] text-base sm:text-lg lg:text-[1.5em] lg:leading-[1.56] text-neutral-800">
+          <p className="mt-2 lg:mt-[1em] text-xl lg:text-[1.5em] lg:leading-[1.56] text-neutral-800">
             {lead}
           </p>
         )}
@@ -39,31 +39,28 @@ export default function MessageBody({
         {paragraphs.map((paragraph) => (
           <p
             key={paragraph.slice(0, 40)}
-            className="mt-4 lg:mt-[1.33em] text-sm sm:text-base lg:text-[1.17em] lg:leading-[1.43] text-justify text-neutral-500"
+            className="mt-4 lg:mt-[1.33em] text-base lg:text-[1.17em] lg:leading-[1.43] text-justify text-neutral-500 tracking-wider"
           >
             {paragraph}
           </p>
         ))}
 
         {/* Sign-off */}
-        <div className="mt-4 lg:mt-[1.33em]">
-          <p className="text-sm sm:text-base lg:text-[1.33em] lg:leading-[1.5] text-neutral-800">
+        <div className="mt-5 lg:mt-[1.33em]">
+          <p className="text-xl lg:text-[1.33em] lg:leading-[1.5] text-neutral-800 tracking-wide">
             Sincerely,
           </p>
-          <p className="mt-0.5 font-medium text-base sm:text-lg lg:text-[1.67em] lg:leading-[1.4] text-neutral-800">
+          <p className="font-archivo-black mt-0.5 font-medium text-[22px] lg:text-[1.67em] lg:leading-[1.4] text-neutral-800">
             {signOff.name}
           </p>
-          <p className="text-sm lg:text-[1.17em] lg:leading-[1.43] text-neutral-700">
+          <p className="mt-1 text-base lg:text-[1.17em] lg:leading-[1.43] text-neutral-700 tracking-wider">
             {signOff.role}
           </p>
-          <p className="mt-3 lg:mt-[1em] text-sm sm:text-base lg:text-[1.33em] lg:leading-[1.5] text-neutral-800">
+          <p className="mt-5 lg:mt-[1em] text-xl lg:text-[1.33em] lg:leading-[1.5] text-neutral-800 tracking-wider">
             {signOff.org}
           </p>
         </div>
       </div>
-
-      {/* Closing divider — spans the full content width */}
-      <div aria-hidden className="mt-8 lg:mt-[2.67em] border-b border-neutral-200" />
     </section>
   );
 }

@@ -85,7 +85,7 @@ export default function FaqAccordion({ title, items }: FaqAccordionProps) {
                   }`}
                 >
                   <div className="overflow-hidden">
-                    <p className="pb-4 px-4 text-xs leading-5 sm:leading-6 text-neutral-800 lg:pb-[2rem] lg:px-[2rem] lg:text-[1.125rem] lg:leading-[1.7rem]">
+                    <p className="pb-4 px-4 text-sm leading-5 sm:leading-6 text-neutral-800 lg:pb-[2rem] lg:px-[2rem] lg:text-[1.125rem] lg:leading-[1.7rem] tracking-wider">
                       {item.answer}
                     </p>
                   </div>

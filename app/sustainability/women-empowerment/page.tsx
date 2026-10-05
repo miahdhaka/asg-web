@@ -19,7 +19,6 @@ export default function WomenEmpowermentPage() {
         mobileSrc="/images/sustainability/we/hero.png"
         desktopSrc="/images/sustainability/we/hero.png"
         alt="Women Empowerment — Amanat Shah Group"
-        emblemSrc="/images/sustainability/csr/hero-emblem.png"
       />
       <WeIntro />
       <WeImageRow />

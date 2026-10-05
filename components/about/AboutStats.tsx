@@ -10,7 +10,6 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 interface Stat {
   label: string;
   value: number;
-  /** Rendered after the animated number, e.g. "+" */
   suffix?: string;
 }
 
@@ -24,8 +23,6 @@ const stats: Stat[] = [
 export default function AboutStats() {
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Count each number up from 0 whenever the section scrolls into view;
-  // leaving the section (either direction) resets so the count-up replays.
   useGSAP(
     () => {
       gsap.utils.toArray<HTMLElement>("[data-count]").forEach((el) => {
@@ -52,18 +49,20 @@ export default function AboutStats() {
   );
 
   return (
-    <section ref={sectionRef} id="about-stats" className="w-full bg-white px-4 sm:px-6 lg:px-[5em] pb-10 sm:pb-12 lg:pb-[5em]">
-      <div className="grid grid-cols-2 gap-2 sm:gap-4 lg:gap-5 lg:grid-cols-4">
+    <section ref={sectionRef} id="about-stats" className="w-full px-4 sm:px-6 lg:px-[5em] py-6 sm:py-10 lg:py-[3rem] mb-[2.2rem]">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-5">
         {stats.map((stat) => (
-          <div key={stat.label} className="flex flex-col">
-            <div className="border-b border-gray-100 bg-gray-50 px-3 sm:px-5 lg:px-5.5 py-4 sm:py-8 lg:py-16">
-              <p className="text-3xl sm:text-5xl lg:text-6xl text-neutral-900 font-serif font-medium leading-none">
+          <div key={stat.label} className="rounded-2xl overflow-hidden">
+            <div className="border-b border-[#F3F4F6] bg-white px-3 py-8 sm:px-4 sm:py-14 lg:px-5 lg:py-[3rem]">
+              <p className="font-archivo-black text-4xl sm:text-6xl lg:text-[4rem] leading-[1.2] text-[#262626]">
                 <span data-count={stat.value}>0</span>
                 {stat.suffix}
               </p>
             </div>
-            <div className="bg-gray-50 px-2.5 sm:px-5 lg:px-6 py-3 sm:py-5 lg:py-7">
-              <span className="text-[11px] sm:text-base lg:text-xl text-neutral-800 tracking-wide sm:tracking-wider">{stat.label}</span>
+            <div className="bg-white px-3 py-6 sm:px-4 sm:py-10 lg:px-5 lg:py-9">
+              <span className="font-neue-montreal text-base sm:text-xl lg:text-[1.35rem] leading-6 text-[#262626]">
+                {stat.label}
+              </span>
             </div>
           </div>
         ))}

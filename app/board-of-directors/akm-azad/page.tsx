@@ -27,7 +27,7 @@ export default function AkmAzadPage() {
         role="Entrepreneur"
         org="AMANAT SHAH GROUP"
         portrait={{
-          src: "/images/board-of-directors/akm-azad.png",
+          src: "/images/board-of-directors/akm-azad.webp",
           width: 7236,
           height: 9848,
         }}

@@ -1,95 +1,104 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
+import { useState } from "react";
 
 const paragraphs = [
-  "One of the most reputable and diverse corporate empires in Bangladesh, Amanat Shah Group has been proudly upholding a tradition of excellence, integrity and entrepreneurship for almost 130 years. With operations in textiles, manufacturing, agriculture, financial services, real estate, information technology, industrial solutions, and other new sectors, the Group has developed from its traditional roots into a contemporary multi-sector Organization.",
-  "Amanat Shah Group is committed to delivering sustainable growth through innovation, operational excellence, advanced technology and responsible business practices with a clear strategic vision and strong leadership.",
-  "Built on the pillars of Quality, Reliability, Talent, System, Innovation and worldwide Responsibility, the Group continuously creates long-term value for customers, employees, shareholders and society. Today, ASG stands as a symbol of trust, resilience and sustainable business success, serving both local and international markets while shaping a stronger future for generations to come.",
+  "For generations, we have remained committed to one direction: building a sustainable, skilled, creative and technology-driven organization for the next generation.",
+  "Amanat Shah Group carries 130 years of Bangladeshi heritage, growing from a trusted name in textiles into a diversified business enterprise spanning Textiles, Agriculture, Finance and Technology.",
+  "Today, we deliver high-impact products across national and global markets, partnering with leading brands and businesses worldwide.",
+  "Driven by technology, innovation and leadership, we continue to evolve with changing markets, businesses and consumers.",
+  "Trust, quality, transparency and technology are embedded in our culture.",
+  "For more than a century, we have helped carry traditional Bangladeshi clothing to global markets. Connecting heritage with modern fashion, living and lifestyle.",
 ];
 
 const quickLinks = [
-  { label: "OUR CONCERNS", href: "#" },
+  { label: "OUR CONCERNS", href: "/concerns" },
   { label: "LEADERSHIP", href: "/board-of-directors" },
-  { label: "OUR HISTORY", href: "our-history" },
+  { label: "OUR HISTORY", href: "/our-history" },
 ];
 
 export default function AboutIntro() {
   const [expanded, setExpanded] = useState(false);
 
-  const toggle = () => setExpanded((prev) => !prev);
-
   return (
-    <section id="about-intro" className="w-full bg-white px-4 sm:px-6 lg:px-[5em] py-6 sm:py-10 sm:py-12 lg:py-[5em]">
-      {/* Lead statement */}
-      <h2 className="text-xl sm:text-3xl lg:text-[2.5rem] sm:leading-[1.3] lg:leading-[1.2] text-neutral-800 font-medium max-w-full lg:max-w-[56.25rem] font-test-tiempos-fine">
-        One of the most reputable and diverse corporate empires in Bangladesh,
-        Amanat Shah Group has been Family business legacy.
-      </h2>
+    <section id="about-intro" className="w-ful px-4 sm:px-6 lg:px-[5em] pt-14 sm:pt-16 lg:pt-[5.5rem] pb-10 sm:pb-16 lg:pb-[2rem]">
+      <div className="mx-auto max-w-[1080px]">
+        {/* Title block */}
+        <div className="flex flex-col gap-4 max-w-[700px]">
+          <h2 className="font-archivo-black text-2xl sm:text-[1.85rem] lg:text-[2.1rem] leading-tight text-[#262626]">
+            A Traditional Clothing Heritage Growing Generation After Generation.
+          </h2>
+          <div className="border-b border-[#EAEAEA]" />
+        </div>
 
-      {/* Body copy — indented column */}
-      <div className="relative flex flex-col gap-0 sm:gap-6 w-full lg:w-[55rem] lg:mx-auto mt-6 sm:mt-8 lg:mt-11">
-        {/* Paragraphs — truncated on mobile, full on desktop */}
-        <div
-          className={`overflow-hidden transition-[max-height] duration-700 ease-in-out lg:overflow-visible ${
-            expanded ? "max-h-[50rem]" : "max-h-48"
-          } lg:max-h-none`}
-        >
-          <p
-            className={`text-sm sm:text-base lg:text-lg text-neutral-800 text-justify tracking-wide leading-[1.6] line-clamp-animate ${expanded ? "clamp-expanded" : "clamp-collapsed"}`}
-          >
-            {paragraphs.map((text, i) => (
-              <span key={text.slice(0, 24)}>
-                {i > 0 && <><br /><br /></>}
+        {/* Body paragraphs */}
+        <div className="mt-6">
+          <div className="flex flex-col gap-4">
+            {paragraphs.slice(0, 2).map((text, i) => (
+              <p
+                key={i}
+                className="font-neue-montreal text-base sm:text-lg leading-7 sm:leading-8 lg:leading-9 text-[#262626]"
+              >
                 {text}
-              </span>
+                {i === 1 && !expanded && (
+                  <button
+                    type="button"
+                    onClick={() => setExpanded(true)}
+                    className="cursor-pointer lg:hidden ml-1 font-medium bg-clip-text text-transparent transition-opacity duration-300"
+                    style={{ backgroundImage: "var(--primary-gradient)" }}
+                  >
+                    ...Show more
+                  </button>
+                )}
+              </p>
             ))}
-          </p>
+          </div>
 
-          {/* Quick links — visible when expanded or on desktop */}
+          {/* Mobile-collapsible remaining paragraphs (always visible on desktop) */}
           <div
-            className="overflow-hidden transition-all duration-500 ease-in-out lg:max-h-[10rem] lg:opacity-100 mt-4"
-            style={{
-              maxHeight: expanded ? "10rem" : "0",
-              opacity: expanded ? 1 : 0,
-            }}
+            className={`grid transition-all duration-500 ease-in-out lg:!mt-4 lg:!grid-rows-[1fr] lg:!opacity-100 ${
+              expanded ? "mt-4 grid-rows-[1fr] opacity-100" : "mt-0 grid-rows-[0fr] opacity-0"
+            }`}
           >
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-x-6 gap-y-3 lg:gap-8">
-              {quickLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className="text-sm sm:text-base lg:text-lg text-neutral-800 tracking-wide underline underline-offset-2 gradient-text-hover"
-                >
-                  {link.label}
-                </Link>
-              ))}
+            <div className="overflow-hidden">
+              <div className="flex flex-col gap-4">
+                {paragraphs.slice(2).map((text, i) => (
+                  <p
+                    key={i}
+                    className="font-neue-montreal text-base sm:text-lg leading-7 sm:leading-8 lg:leading-9 text-[#262626]"
+                  >
+                    {text}
+                  </p>
+                ))}
+              </div>
+
+              {/* Quick links */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-x-10 gap-y-2 mt-6">
+                {quickLinks.map((link) => (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className="font-neue-montreal text-base text-[#262626] bg-clip-text underline decoration-[#262626] underline-offset-2 transition-all duration-500 hover:text-transparent hover:decoration-[#1AA179]"
+                    style={{ backgroundImage: "var(--primary-gradient)" }}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+
+              {/* Show less (mobile only, appears under the quick links when expanded) */}
+              <button
+                type="button"
+                onClick={() => setExpanded(false)}
+                className="lg:hidden cursor-pointer mt-6 font-medium bg-clip-text text-transparent transition-opacity duration-300"
+                style={{ backgroundImage: "var(--primary-gradient)" }}
+              >
+                ...Show less
+              </button>
             </div>
           </div>
         </div>
-
-        {/* "Read more" / "Show less" — mobile only */}
-        <button
-          onClick={toggle}
-          className="gradient-text-showmore group ml-auto flex lg:hidden cursor-pointer items-center gap-1.5 tracking-wider text-sm sm:text-[0.95rem] font-medium transition-opacity duration-500 ease-in-out"
-          style={{ opacity: expanded ? 0 : 1, pointerEvents: expanded ? "none" : "auto" }}
-        >
-          <span className="relative inline-block after:absolute after:-bottom-0.5 after:left-0 after:h-[1.5px] after:w-full after:scale-x-0 after:origin-right after:bg-[var(--primary-gradient)] after:transition-transform after:duration-300 group-hover:after:scale-x-100 group-hover:after:origin-left">
-            Read more
-          </span>
-          <span className="transition-transform duration-300 group-hover:translate-x-0.5">&#8594;</span>
-        </button>
-        <button
-          onClick={toggle}
-          className="gradient-text-showmore group ml-auto flex lg:hidden cursor-pointer items-center gap-1.5 tracking-wider text-sm sm:text-[0.95rem] font-medium transition-opacity duration-500 ease-in-out"
-          style={{ opacity: expanded ? 1 : 0, pointerEvents: expanded ? "auto" : "none", visibility: expanded ? "visible" : "hidden", height: expanded ? "auto" : 0, overflow: "hidden" }}
-        >
-          <span className="relative inline-block after:absolute after:-bottom-0.5 after:left-0 after:h-[1.5px] after:w-full after:scale-x-0 after:origin-right after:bg-[var(--primary-gradient)] after:transition-transform after:duration-300 group-hover:after:scale-x-100 group-hover:after:origin-left">
-            Show less
-          </span>
-          <span className="transition-transform duration-300 group-hover:-translate-y-0.5">&#8593;</span>
-        </button>
       </div>
     </section>
   );

@@ -1,7 +1,7 @@
 /* One-off image optimizer — converts the heavy photographic PNGs under
    /public into resized, high-quality WebP files (same path, .webp ext).
    Run: node scripts/optimize-images.mjs */
-import { readdirSync, statSync } from "fs";
+import { readdirSync, statSync, existsSync } from "fs";
 import { join, extname } from "path";
 import sharp from "sharp";
 
@@ -16,14 +16,19 @@ const jobs = [
   { path: "images/our-business", maxW: 1600, q: 82 }, // 40vw carousel cards
   { path: "images/newsroom", maxW: 1200, q: 82 }, // 33vw news cards
   { path: "images/navbar", maxW: 900, q: 80 }, // mega-menu hover cards
+  { path: "images/board-of-directors", maxW: 1200, q: 82 }, // 530px portrait cards + 1920px hero @ ~1.5x
+  { path: "images/home-legacy", maxW: 2048, q: 80 }, // full-bleed leadership panel bg + portrait
 ];
 
 const collect = (p) => {
   const abs = join(pub, p);
-  if (statSync(abs).isFile()) return [abs];
-  return readdirSync(abs)
-    .filter((f) => extname(f).toLowerCase() === ".png")
-    .map((f) => join(abs, f));
+  const files = statSync(abs).isFile()
+    ? [abs]
+    : readdirSync(abs)
+        .filter((f) => extname(f).toLowerCase() === ".png")
+        .map((f) => join(abs, f));
+  // Skip already-optimized files so re-runs only process new directories.
+  return files.filter((f) => !existsSync(f.replace(/\.png$/i, ".webp")));
 };
 
 let beforeTotal = 0;

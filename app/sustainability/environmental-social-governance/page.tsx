@@ -22,7 +22,6 @@ export default function EnvironmentalSocialGovernancePage() {
         mobileSrc={esgHero.image}
         desktopSrc={esgHero.image}
         alt={esgHero.alt}
-        emblemSrc={esgHero.emblem}
       />
       <EsgRenewable />
       <EsgWater />

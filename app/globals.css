@@ -1,6 +1,4 @@
 @import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -99,6 +97,7 @@
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
+  --radius: 0.625rem;
 
   --primary-black: #020412;
 
@@ -487,10 +486,10 @@ html.asg-touch-lock * {
 /* Dual-direction infinite marquee animations */
 @keyframes marquee-left {
   from {
-    transform: translateX(-50%);
+    transform: translateX(0);
   }
   to {
-    transform: translateX(0);
+    transform: translateX(-50%);
   }
 }
 @keyframes marquee-right {
@@ -509,6 +508,31 @@ html.asg-touch-lock * {
 }
 .animate-marquee-left:hover,
 .animate-marquee-right:hover {
+  animation-play-state: paused;
+}
+
+/* Globe section's bottom logo strip — left-to-right, deliberately slower than
+   the shared 30s marquees. Its own keyframes so the homepage two-row marquee
+   keeps its current timing.
+   A rightward marquee cannot run 0 → +50%: the track's tiles are packed from
+   x=0 and `overflow-hidden` clips everything left of that, so sliding right
+   just drags the track's own left edge across the screen and leaves a void.
+   Instead the track (3 identical copies) starts one full copy to the LEFT and
+   glides back to its flush position, travelling exactly one copy width — so the
+   frame it lands on is pixel-identical to the frame it left, and there is
+   always a copy waiting off-screen on the left to feed in. */
+@keyframes marquee-globe {
+  from {
+    transform: translateX(calc(-100% / 3));
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.animate-marquee-globe {
+  animation: marquee-globe 80s linear infinite;
+}
+.animate-marquee-globe:hover {
   animation-play-state: paused;
 }
 

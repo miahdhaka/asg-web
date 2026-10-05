@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import PageHero from "@/components/common/PageHero";
+import PageHeroFull from "@/components/common/PageHeroFull";
 import AboutIntro from "@/components/about/AboutIntro";
 import AboutStats from "@/components/about/AboutStats";
 import VisionMission from "@/components/about/VisionMission";
@@ -33,7 +33,7 @@ const coreValues: ValueCardItem[] = [
     description: "We foster teamwork and partnerships to achieve shared goals and sustainable growth.",
   },
   {
-    icon: "/icons/about-us/commitment.png"  ,
+    icon: "/icons/about-us/commitment.png",
     title: "Commitment",
     description: "We are dedicated to integrity and long-term value creation for all our stakeholders.",
   },
@@ -80,20 +80,21 @@ const coreCompetencies: ValueCardItem[] = [
 export default function AboutUsPage() {
   return (
     <main>
-      <PageHero
+      <PageHeroFull
         id="about-hero"
-        title="Amanat Shah Group"
-        subtitle="Family business legacy for more than 130 years."
+        title="House of Trust"
+        subtitle={"130 Years of Legacy, Continuing into the Fourth \nGeneration of Success"}
         mobileSrc="/images/about-us/about-hero-mobile.png"
         desktopSrc="/images/about-us/about-hero.png"
         alt="Amanat Shah Group"
+        imagePosition="center"
       />
       <AboutIntro />
       <AboutStats />
       <VisionMission />
       <Achievements />
-      <ValueCardsSection id="core-values" heading="Core Values" items={coreValues} variant="muted" />
-      <ValueCardsSection id="core-competency" heading="Core Competency" items={coreCompetencies} variant="light" />
+      <ValueCardsSection id="core-values" heading="Core Values" items={coreValues} variant="light" />
+      <ValueCardsSection id="core-competency" heading="Core Competency" items={coreCompetencies} variant="muted" />
     </main>
   );
 }

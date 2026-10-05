@@ -3,58 +3,19 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger);
-
+/* No scroll-driven animation on this section. ASGHighlight's cover phase
+   already glides the parent wrapper (aboutRiseRef in app/page.tsx) up over
+   the pinned section, which is the only entrance motion this block gets.
+   Once the cover completes, the section — heading, description, CTA and
+   building image — scrolls with the page exactly like every other homepage
+   section. Adding a scrubbed scale tween on top of the cover-rise re-reads
+   its own start/end through getBoundingClientRect, which is offset by the
+   still-changing parent transform, so the image's scale phase drifts out of
+   sync with its visual position and reads as a bounce on arrival. */
 export default function AboutUs() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      /* The page wrapper around this section carries ASGHighlight's slow-rise
-         translateY. ScrollTrigger measures through getBoundingClientRect, which
-         includes ancestor transforms, so a refresh taken while the rise is still
-         holding the section up would cache a start/end that fires this shrink
-         early and leaves it shifted for the rest of the session. By the time the
-         image actually reaches the viewport top the rise is finished (offset 0),
-         so the correct reference is the section's NATURAL position — read the
-         ancestor displacement at refresh time and add it back to cancel it out. */
-      const riseShift = () => {
-        const wrapper = sectionRef.current?.parentElement;
-        if (!wrapper) return 0;
-        const t = getComputedStyle(wrapper).transform;
-        if (!t || t === "none") return 0;
-        return new DOMMatrix(t).m42; // negative while the rise holds it up
-      };
-
-      /* Image stays at full size while the header is visible. The shrink
-         begins once the header has crossed out of the viewport top (image
-         top hits viewport top) and continues until the image is gone. */
-      gsap.fromTo(
-        imageRef.current,
-        { scale: 1 },
-        {
-          scale: 0.85,
-          ease: "none",
-          scrollTrigger: {
-            trigger: imageRef.current,
-            start: () => `top+=${-riseShift()} top`,
-            end: () => `bottom+=${-riseShift()} top`,
-            scrub: 0.8,
-          },
-        }
-      );
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
-    <section ref={sectionRef} className="relative z-20 bg-background w-full py-16 md:px-12 lg:px-20 lg:py-22">
+    <section className="relative z-20 bg-background w-full py-16 md:px-12 lg:px-20 lg:py-22">
       <div>
         {/* Top row: label + heading on left, description + CTA on right */}
         <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between lg:max-w-[90%]">
@@ -120,8 +81,7 @@ export default function AboutUs() {
         </div>
 
         {/* Building image */}
-        <div 
-          ref={imageRef}
+        <div
           className="mt-12 lg:mt-[5em]"
           style={{ borderRadius: '1.2rem', overflow: 'hidden' }}
         >

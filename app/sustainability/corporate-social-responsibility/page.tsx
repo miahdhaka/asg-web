@@ -19,7 +19,6 @@ export default function CorporateSocialResponsibilityPage() {
         mobileSrc="/images/sustainability/csr/hero.png"
         desktopSrc="/images/sustainability/csr/hero.png"
         alt="Corporate Social Responsibility — Amanat Shah Group community initiatives"
-        emblemSrc="/images/sustainability/csr/hero-emblem.png"
       />
       <CsrIntro />
       <CsrImageRow />

@@ -27,7 +27,7 @@ export default function MahamudulHasanPage() {
         role="Entrepreneur"
         org="AMANAT SHAH GROUP"
         portrait={{
-          src: "/images/board-of-directors/mahamudul-hasan.png",
+          src: "/images/board-of-directors/mahamudul-hasan.webp",
           width: 7236,
           height: 9771,
         }}

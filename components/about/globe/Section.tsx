@@ -1,5 +1,6 @@
 "use client";
 
+import { useLayoutEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 
@@ -30,8 +31,50 @@ const GlobeInner = dynamic(
 );
 
 export default function RockSteadySection() {
-  // Render the list twice so we can loop seamlessly.
-  const loopedBrands = [...brands, ...brands];
+  // `marquee-globe` glides the track from translateX(calc(-100% / 3)) to
+  // translateX(0) — one third of the track to the right, which lands on a frame
+  // pixel-identical to the one it started from. Two conditions make that
+  // seamless, rather than an endless row that visibly restarts:
+  //   • `copies` is a multiple of 3, so the 1/3 shift is exactly a whole number
+  //     of brand lists;
+  //   • the track stays wide enough that both extremes still cover the screen —
+  //     the left edge never slides past 0 and the right edge never pulls back
+  //     off-screen, which means a copy is always waiting off-screen on the left
+  //     to feed in as the strip moves right.
+  const [copies, setCopies] = useState(3);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const container = containerRef.current;
+    const track = trackRef.current;
+    if (!container || !track) return;
+
+    const apply = () => {
+      const tile = track.firstElementChild as HTMLElement | null;
+      const viewport = container.clientWidth;
+      if (!tile || viewport === 0) return;
+      // One tile's stride (itself + its right margin) × the list length is the
+      // width of a single copy. Measuring a tile rather than the whole track
+      // keeps the value independent of `copies`, so the count can settle in a
+      // single pass instead of compounding off an already-multiplied track.
+      const stride = tile.offsetWidth + parseFloat(getComputedStyle(tile).marginRight || "0");
+      if (stride <= 0) return;
+      const perCopy = stride * brands.length;
+      const needed = Math.max(3, Math.ceil(viewport / perCopy) * 3);
+      setCopies((c) => (c === needed ? c : needed));
+    };
+
+    apply();
+    // Re-check whenever the track's own layout changes, e.g. the aspect-ratio
+    // boxes of not-yet-decoded logos resolve to their real widths.
+    const ro = new ResizeObserver(apply);
+    ro.observe(container);
+    ro.observe(track);
+    return () => ro.disconnect();
+  }, []);
+
+  const loopedBrands = Array.from({ length: copies }, () => brands).flat();
 
   return (
     <section className="relative isolate h-dvh w-full overflow-hidden bg-black">
@@ -83,12 +126,12 @@ export default function RockSteadySection() {
       {/* Brand logo marquee — single row, anchored to the bottom of the
           section above the globe and the fade overlay */}
       <div className="pointer-events-auto absolute inset-x-0 bottom-0 z-30 pb-6 lg:pb-10">
-        {/* Right to Left */}
-        <div className="no-scrollbar overflow-hidden select-none">
-          <div className="animate-marquee-left flex w-max">
+        {/* Left to Right */}
+        <div ref={containerRef} className="no-scrollbar overflow-hidden select-none">
+          <div ref={trackRef} className="animate-marquee-globe flex w-max">
             {loopedBrands.map((brand, index) => (
               <div
-                key={`left-${brand.src}-${index}`}
+                key={`globe-${brand.src}-${index}`}
                 className="mr-2 flex h-14 shrink-0 items-center justify-center sm:mr-3 sm:h-16 lg:mr-4 lg:h-24"
               >
                 <Image

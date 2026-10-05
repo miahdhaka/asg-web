@@ -142,15 +142,38 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
       let targetProgress = 0;
       let scrollProgress = 0; // smoothed progress used everywhere
 
-      // ── Side content: one concern per scroll gesture ───────────────────────
-      // A whole burst of wheel events counts as ONE scroll. The deltas accumulate
-      // while the input keeps coming and the panels step exactly once after it
-      // goes quiet — pulling ten notches at once never plays ten changes, and the
-      // change lands where the scrolling stopped. Every concern then holds for
-      // 0.4s.
+      // ── Side content: one concern per scroll ───────────────────────────────
+      // One deliberate scroll — a mouse notch, or a trackpad push of the same
+      // weight — moves the panels exactly one concern. The deltas accumulate
+      // while the input keeps coming, pulling ten notches at once never plays ten
+      // changes, and the change lands where the scrolling stopped. Every concern
+      // then holds for 0.4s.
       const LAST_IDX = sisterConcerns.length - 1;
       const STEP_MS = 400;          // a concern stays shown for at least 0.4s
       const GESTURE_IDLE_MS = 160;  // this quiet gap ends the current scroll gesture
+
+      // ── Same stepping on every OS ─────────────────────────────────────────
+      // Hardware is measured in TRAVEL, never in event timing. A Windows mouse
+      // wheel fires a handful of big deltas (≈100px per notch in Chrome, whole
+      // lines in Firefox) and stops dead once the event is canceled. A Mac
+      // trackpad fires a dense stream of tiny deltas that keeps flowing while the
+      // finger moves and for roughly a second after it lifts — Safari drags
+      // scrollY along even though every one of those events was canceled.
+      // Waiting only for the burst to go quiet therefore stalls on a trackpad (a
+      // continuous push never goes quiet, so no step plays while the pin holds),
+      // and the leftover inertia then reads as extra scrolls and doubles the
+      // steps. So one notch is one notch either way: a big single delta is a
+      // notch by itself, a stream of small ones steps once enough of them add up
+      // to a notch of travel.
+      const WHEEL_NOTCH_PX = 100;    // one mouse notch ≈ 100px of native scroll
+      const TRACKPAD_NOTCH_PX = 280; // a deliberate trackpad push, in px
+      const STRONG_DELTA = 50;       // one delta this big is already a wheel notch
+      const IDLE_NOTCH_PX = 24;      // a wheel burst that went quiet steps at this much
+      const INERTIA_QUIET_MS = 260;  // input quieter than this is not a real scroll
+      let trackpad = false;          // dense sub-notch stream seen → Mac-style input
+      let notchPx = WHEEL_NOTCH_PX;  // travel that buys one step, on this hardware
+      let lastDeltaAt = 0;           // when the last wheel event arrived
+      let peakDelta = 0;             // hardest push of the current burst
 
       let busy = false;             // a step transition or its hold is running
       let lastStepAt = 0;           // when the current step began (0 = never)
@@ -169,8 +192,10 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
           ? Math.min(LAST_IDX, Math.floor((p - concernStart) / segLen))
           : 0;
 
-      // Slide transition for sector/desc when switching concerns
-      const runSlide = (idx: number, done: () => void) => {
+      // Slide transition for sector/desc when switching concerns.
+      // direction: 1 = forward (scroll down) → out-top, in-from-bottom
+      //           -1 = backward (scroll up)  → out-bottom, in-from-top
+      const runSlide = (idx: number, done: () => void, direction: 1 | -1 = 1) => {
         const els = [leftSlideRef.current, rightSlideRef.current].filter(Boolean);
         if (els.length === 0) {
           activeConcernRef.current = idx;
@@ -178,16 +203,18 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
           done();
           return;
         }
+        const outY = direction === 1 ? "-40px" : "40px";
+        const inY = direction === 1 ? "40px" : "-40px";
         gsap.to(els, {
-          y: "-40px",
+          y: outY,
           opacity: 0,
-          duration: 0.18, // keeps the whole swap inside the 0.4s a concern is up
+          duration: 0.18,
           ease: "power3.in",
           onComplete: () => {
             activeConcernRef.current = idx;
             setActiveConcern(idx);
             requestAnimationFrame(() => {
-              gsap.set(els, { y: "40px" });
+              gsap.set(els, { y: inY });
               gsap.to(els, {
                 y: 0,
                 opacity: 1,
@@ -201,6 +228,12 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
       };
 
       let st: ScrollTrigger | null = null;
+
+      // When the Hero's pin is left downward (scrolling past it), set to true.
+      // This blocks ASGHighlight from changing the Hero's concern while it's
+      // off-screen, so re-entering the pin from below shows the exact concern
+      // the user last saw — no flicker of concern 0.
+      let pinLeft = false;
 
       // Where the scroll waits: at the point the side panels finish rising until
       // every concern has been shown, then at the very bottom of the pin — so the
@@ -240,7 +273,7 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
           // Re-arm the waiting point for the concern that is now up: the last one
           // puts it at the bottom of the pin, so leaving needs no further scroll.
           else if (wheelSeen) park();
-        });
+        }, dir > 0 ? 1 : -1);
       };
 
       const requestStep = (dir: number) => {
@@ -251,15 +284,31 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         if (!busy) stepNow();
       };
 
-      // One burst → one intent: the step fires when the wheel goes quiet.
+      // Travel is spent in notch-sized chunks. A trackpad has to answer while the
+      // finger is still moving — a continuous stream never goes quiet, so only
+      // waiting for the idle gap is what left the pin feeling dead on a Mac. A
+      // mouse wheel already breathes between notches, so it keeps the rhythm it
+      // always had on Windows: one burst, one step, plus whatever the burst
+      // summed to once it went quiet (a stray pixel doesn't count as a scroll).
       const addGesture = (dy: number) => {
         gestureSum += dy;
+        if (trackpad) {
+          while (Math.abs(gestureSum) >= notchPx) {
+            const dir = Math.sign(gestureSum);
+            gestureSum -= dir * notchPx;
+            requestStep(dir);
+          }
+        }
         dropTimer(gestureTimer);
         gestureTimer = later(() => {
           gestureTimer = null;
-          const dir = Math.sign(gestureSum);
+          const sum = gestureSum;
           gestureSum = 0;
-          if (dir !== 0) requestStep(dir);
+          peakDelta = 0;
+          // A quiet push still owes one step. A trackpad only counts if it was a
+          // good half-notch, since the mid-burst loop already spent the rest of it.
+          const min = trackpad ? notchPx * 0.5 : IDLE_NOTCH_PX;
+          if (Math.abs(sum) >= min) requestStep(Math.sign(sum));
         }, GESTURE_IDLE_MS);
       };
 
@@ -273,6 +322,7 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         cadenceTimer = null;
         pendingDir = 0;
         gestureSum = 0;
+        peakDelta = 0;
         busy = false;
         const els = [leftSlideRef.current, rightSlideRef.current].filter(Boolean);
         gsap.killTweensOf(els);
@@ -285,21 +335,26 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
       // time, exactly the way the section behaved before gesture stepping.
       const moveConcernTo = (idx: number) => {
         if (busy || idx === activeConcernRef.current) return;
+        const direction = idx > activeConcernRef.current ? 1 : -1;
         busy = true;
         lastStepAt = performance.now();
         runSlide(idx, () => {
           busy = false;
-        });
+        }, direction);
       };
 
       // Scrolls 1-3: text fades equally; scroll 4: fully gone
       const textStart = 0.0;
       const textEnd = 0.2; // fully invisible early
 
-      // Expose function for ASGHighlight to change side content. The Hero is off
-      // screen while that section runs, so the change is applied directly.
+      // Expose function for ASGHighlight to change side content. While the Hero
+      // is off-screen (pinLeft) the concern stays untouched so re-entry shows
+      // the last concern the user was looking at.
       if (heroSlideChangeRef) {
-        heroSlideChangeRef.current = (idx: number) => setConcern(idx);
+        heroSlideChangeRef.current = (idx: number) => {
+          if (pinLeft) return;
+          setConcern(idx);
+        };
       }
 
       const tick = () => {
@@ -373,6 +428,14 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
           // concern keeps following the scroll phase and the pin is left alone.
           if (!wheelSeen) moveConcernTo(idxFromProgress(self.progress));
         },
+        // Block side-content changes while the Hero is off-screen below.
+        onLeave: () => {
+          pinLeft = true;
+        },
+        // Unmute on re-entry — the concern never changed so it's still the last one.
+        onEnterBack: () => {
+          pinLeft = false;
+        },
       });
 
       // ── Hold the pin until every concern has been shown ────────────────────
@@ -391,6 +454,23 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         wheelSeen = true;
         const scale = e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? window.innerHeight : 1;
         const dy = e.deltaY * scale;
+        const ady = Math.abs(dy);
+
+        // Which hardware is this? Dense sub-notch deltas arriving back to back can
+        // only be a trackpad, so its notch of travel is measured wider — otherwise
+        // one swipe would spend itself on six concerns at once. A mouse wheel
+        // keeps the plain 100px notch, exactly like it always did on Windows.
+        const now = performance.now();
+        if (now - lastDeltaAt < 60 && ady < STRONG_DELTA) {
+          trackpad = true;
+          notchPx = TRACKPAD_NOTCH_PX;
+        }
+        lastDeltaAt = now;
+        if (ady > peakDelta) peakDelta = ady;
+        // Momentum tail: the shrunken residue that keeps arriving after the finger
+        // has left the trackpad. It is decay, not intent, so it never feeds the
+        // accumulator — the pin is re-anchored below either way.
+        const inertia = ady < 8 && ady < peakDelta * 0.25;
 
         // Already past the pin: the Hero is behind the viewer, leave the page be.
         if (window.scrollY > st.end) return;
@@ -413,11 +493,15 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
 
         e.preventDefault();
         park();
-        addGesture(dy);
+        if (!inertia) addGesture(dy);
       };
 
       // Holds the line for travel that escapes the wheel gate (keyboard,
-      // scrollbar, momentum) — and counts that push as one scroll gesture too.
+      // scrollbar, touch). Safari never cancels trackpad inertia on
+      // preventDefault(), so scrollY keeps creeping past the anchor here even
+      // though every wheel event was canceled — that drift is re-anchored only,
+      // and is counted as a scroll just for input that sends no wheel events at
+      // all, so momentum can no longer queue steps the user never made.
       const onScroll = () => {
         if (!st || !wheelSeen) return;
         const y = window.scrollY;
@@ -430,9 +514,11 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
           if (activeConcernRef.current !== 0) setConcern(0);
           return;
         }
-        if (down && y > bandStart() + 1 && activeConcernRef.current !== LAST_IDX) {
+        if (down && activeConcernRef.current !== LAST_IDX) {
+          const beyondAnchor = y > bandStart() + notchPx * 0.6;
+          const wheelIsSilent = performance.now() - lastDeltaAt > INERTIA_QUIET_MS;
+          if (beyondAnchor && wheelIsSilent) requestStep(1);
           park();
-          addGesture(1);
         }
       };
 

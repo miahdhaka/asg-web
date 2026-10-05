@@ -82,7 +82,7 @@ export default function LegacyOfLeadership() {
           <div className="absolute inset-0 overflow-hidden rounded-t-[1.5rem]">
             <div aria-hidden className="absolute inset-0">
               <Image
-                src="/images/home-legacy/lagacy-bg.png"
+                src="/images/home-legacy/lagacy-bg.webp"
                 alt=""
                 fill
                 sizes="(min-width: 1024px) calc(100vw - 7.5rem), calc(100vw - 3rem)"
@@ -97,7 +97,7 @@ export default function LegacyOfLeadership() {
             className="group absolute -top-16 left-1/2 z-20 h-[32rem] w-[86%] max-w-[30rem] -translate-x-1/2 md:-top-20 md:h-[38rem] lg:top-auto lg:bottom-0 lg:left-[25.87%] lg:h-[45rem] lg:w-[38%] lg:max-w-[32rem] lg:translate-x-0"
           >
             <Image
-              src="/images/home-legacy/helal-sir-leadership.png"
+              src="/images/home-legacy/helal-sir-leadership.webp"
               alt="Mohammad Helal Miah, Chairman of Amanat Shah Group"
               fill
               sizes="(min-width: 1024px) 38vw, (min-width: 768px) 32rem, 86vw"

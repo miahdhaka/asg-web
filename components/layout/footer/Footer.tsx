@@ -99,8 +99,8 @@ export default function Footer() {
           <Image
             src="/logo/ASG-logo-mixed.png"
             alt="Amanat Shah Group"
-            width={168}
-            height={66}
+            width={320}
+            height={160}
             className="h-auto w-[10.5rem] object-contain"
             quality={100}
           />

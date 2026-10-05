@@ -64,8 +64,8 @@ export default function HistoryYearNav() {
   }, []);
 
   return (
-    /* ── Year navigation bar ── */
-    <div className="sticky top-[var(--header-height)] z-30 w-full border-b border-gray-100 bg-white">
+    /* ── Year navigation bar — sits under the hero, pins to top on scroll ── */
+    <div className="sticky top-0 z-30 w-full border-b border-gray-100 bg-white">
       <div className="relative flex items-center">
         {/* Left arrow */}
         {canScrollLeft && (
