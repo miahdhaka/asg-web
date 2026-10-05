@@ -6,49 +6,49 @@ import "./globals.css";
 
 const neueMontreal = localFont({
   src: [
-    { path: "../public/fonts/neue-montreal/NeueMontreal-Light.otf", weight: "300", style: "normal" },
-    { path: "../public/fonts/neue-montreal/NeueMontreal-LightItalic.otf", weight: "300", style: "italic" },
-    { path: "../public/fonts/neue-montreal/NeueMontreal-Regular.otf", weight: "400", style: "normal" },
-    { path: "../public/fonts/neue-montreal/NeueMontreal-Italic.otf", weight: "400", style: "italic" },
-    { path: "../public/fonts/neue-montreal/NeueMontreal-Medium.otf", weight: "500", style: "normal" },
-    { path: "../public/fonts/neue-montreal/NeueMontreal-MediumItalic.otf", weight: "500", style: "italic" },
-    { path: "../public/fonts/neue-montreal/NeueMontreal-Bold.otf", weight: "700", style: "normal" },
-    { path: "../public/fonts/neue-montreal/NeueMontreal-BoldItalic.otf", weight: "700", style: "italic" },
+    { path: "../public/fonts/neue-montreal/NeueMontreal-Light.woff2", weight: "300", style: "normal" },
+    { path: "../public/fonts/neue-montreal/NeueMontreal-LightItalic.woff2", weight: "300", style: "italic" },
+    { path: "../public/fonts/neue-montreal/NeueMontreal-Regular.woff2", weight: "400", style: "normal" },
+    { path: "../public/fonts/neue-montreal/NeueMontreal-Italic.woff2", weight: "400", style: "italic" },
+    { path: "../public/fonts/neue-montreal/NeueMontreal-Medium.woff2", weight: "500", style: "normal" },
+    { path: "../public/fonts/neue-montreal/NeueMontreal-MediumItalic.woff2", weight: "500", style: "italic" },
+    { path: "../public/fonts/neue-montreal/NeueMontreal-Bold.woff2", weight: "700", style: "normal" },
+    { path: "../public/fonts/neue-montreal/NeueMontreal-BoldItalic.woff2", weight: "700", style: "italic" },
   ],
   variable: "--font-neue-montreal",
 });
 
 const tiemposFine = localFont({
   src: [
-    { path: "../public/fonts/tiempos/TestTiemposFine-Light-BF66457a5102792.otf", weight: "300", style: "normal" },
-    { path: "../public/fonts/tiempos/TestTiemposFine-LightItalic-BF66457a50eb132.otf", weight: "300", style: "italic" },
-    { path: "../public/fonts/tiempos/TestTiemposFine-Regular-BF66457a50e8bc9.otf", weight: "400", style: "normal" },
-    { path: "../public/fonts/tiempos/TestTiemposFine-RegularItalic-BF66457a50e36f9.otf", weight: "400", style: "italic" },
-    { path: "../public/fonts/tiempos/TestTiemposFine-Medium-BF66457a50e62cd.otf", weight: "500", style: "normal" },
-    { path: "../public/fonts/tiempos/TestTiemposFine-MediumItalic-BF66457a511be83.otf", weight: "500", style: "italic" },
-    { path: "../public/fonts/tiempos/TestTiemposFine-Semibold-BF66457a50f016a.otf", weight: "600", style: "normal" },
-    { path: "../public/fonts/tiempos/TestTiemposFine-SemiboldItalic-BF66457a50b0e18.otf", weight: "600", style: "italic" },
-    { path: "../public/fonts/tiempos/TestTiemposFine-Bold-BF66457a510211b.otf", weight: "700", style: "normal" },
-    { path: "../public/fonts/tiempos/TestTiemposFine-BoldItalic-BF66457a50b8568.otf", weight: "700", style: "italic" },
-    { path: "../public/fonts/tiempos/TestTiemposFine-Black-BF66457a508fe8f.otf", weight: "900", style: "normal" },
-    { path: "../public/fonts/tiempos/TestTiemposFine-BlackItalic-BF66457a510424a.otf", weight: "900", style: "italic" },
+    { path: "../public/fonts/tiempos/TestTiemposFine-Light-BF66457a5102792.woff2", weight: "300", style: "normal" },
+    { path: "../public/fonts/tiempos/TestTiemposFine-LightItalic-BF66457a50eb132.woff2", weight: "300", style: "italic" },
+    { path: "../public/fonts/tiempos/TestTiemposFine-Regular-BF66457a50e8bc9.woff2", weight: "400", style: "normal" },
+    { path: "../public/fonts/tiempos/TestTiemposFine-RegularItalic-BF66457a50e36f9.woff2", weight: "400", style: "italic" },
+    { path: "../public/fonts/tiempos/TestTiemposFine-Medium-BF66457a50e62cd.woff2", weight: "500", style: "normal" },
+    { path: "../public/fonts/tiempos/TestTiemposFine-MediumItalic-BF66457a511be83.woff2", weight: "500", style: "italic" },
+    { path: "../public/fonts/tiempos/TestTiemposFine-Semibold-BF66457a50f016a.woff2", weight: "600", style: "normal" },
+    { path: "../public/fonts/tiempos/TestTiemposFine-SemiboldItalic-BF66457a50b0e18.woff2", weight: "600", style: "italic" },
+    { path: "../public/fonts/tiempos/TestTiemposFine-Bold-BF66457a510211b.woff2", weight: "700", style: "normal" },
+    { path: "../public/fonts/tiempos/TestTiemposFine-BoldItalic-BF66457a50b8568.woff2", weight: "700", style: "italic" },
+    { path: "../public/fonts/tiempos/TestTiemposFine-Black-BF66457a508fe8f.woff2", weight: "900", style: "normal" },
+    { path: "../public/fonts/tiempos/TestTiemposFine-BlackItalic-BF66457a510424a.woff2", weight: "900", style: "italic" },
   ],
   variable: "--font-test-tiempos-fine",
 });
 
 const archivoBlack = localFont({
   src: [
-    { path: "../public/fonts/archivo-black/ArchivoBlack-Regular.ttf", weight: "400", style: "normal" },
+    { path: "../public/fonts/archivo-black/ArchivoBlack-Regular.woff2", weight: "400", style: "normal" },
   ],
   variable: "--font-archivo-black",
 });
 
 const spaceMono = localFont({
   src: [
-    { path: "../public/fonts/space-mono/SpaceMono-Regular.ttf", weight: "400", style: "normal" },
-    { path: "../public/fonts/space-mono/SpaceMono-Italic.ttf", weight: "400", style: "italic" },
-    { path: "../public/fonts/space-mono/SpaceMono-Bold.ttf", weight: "700", style: "normal" },
-    { path: "../public/fonts/space-mono/SpaceMono-BoldItalic.ttf", weight: "700", style: "italic" },
+    { path: "../public/fonts/space-mono/SpaceMono-Regular.woff2", weight: "400", style: "normal" },
+    { path: "../public/fonts/space-mono/SpaceMono-Italic.woff2", weight: "400", style: "italic" },
+    { path: "../public/fonts/space-mono/SpaceMono-Bold.woff2", weight: "700", style: "normal" },
+    { path: "../public/fonts/space-mono/SpaceMono-BoldItalic.woff2", weight: "700", style: "italic" },
   ],
   variable: "--font-space-mono",
 });

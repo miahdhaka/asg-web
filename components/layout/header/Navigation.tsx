@@ -1,122 +1,128 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navCategories } from "./navData";
-import type { NavCategory } from "./types";
-import MegaMenu from "./MegaMenu";
+import type { NavCategory, MegaMenuItem } from "./types";
 
-/* Gradient bottom-border shown on hover, pinned to the header's bottom edge */
-const GRADIENT_BORDER = "linear-gradient(97.37deg, #8BC34A 1.29%, #1AA179 88.53%)";
-
-function HoverBorder({ active }: { active?: boolean }) {
+/* ─── Shared label + green gradient bottom border ───
+   Hovering (or the mega menu being open on) an item draws a gradient border
+   line under it. Plain direct links (e.g. Contact) skip the underline —
+   only mega-menu categories get it. */
+function NavLabel({
+  label,
+  active,
+  underline = true,
+}: {
+  label: string;
+  active: boolean;
+  underline?: boolean;
+}) {
   return (
-    <span
-      aria-hidden
-      className={`pointer-events-none absolute -bottom-[1.5625rem] left-0 h-0.5 w-full origin-left transition-transform duration-300 ease-in-out ${
-        active ? "scale-x-100" : "scale-x-0 group-hover/navitem:scale-x-100"
-      }`}
-      style={{ background: GRADIENT_BORDER }}
-    />
+    <span className="relative inline-block">
+      {label}
+      {underline && (
+        <span
+          className={`absolute -bottom-[28px] left-0 right-0 z-10 h-[3px] origin-left bg-[image:var(--primary-gradient)] transition-transform duration-300 ease-out ${
+            active ? "scale-x-100" : "scale-x-0"
+          }`}
+        />
+      )}
+    </span>
   );
 }
 
 /* ─── Nav item ─── */
-function NavItem({ category }: { category: NavCategory }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
+function NavItem({
+  category,
+  activeLabel,
+  onMenuChange,
+  ready,
+}: {
+  category: NavCategory;
+  /** The mega menu currently open (drives the green underline). */
+  activeLabel: string | null;
+  /** Report the hovered category up so the pill expands downward. */
+  onMenuChange?: (label: string | null, items: MegaMenuItem[] | null) => void;
+  /** Pill is fully open — mega menu may only open once this is true. */
+  ready?: boolean;
+}) {
+  const [hovering, setHovering] = useState(false);
   const pathname = usePathname();
 
-  // Close menu when route changes — defensive fallback so the portal
-  // cannot remain visible after navigation completes.
+  const hasMega = !!(category.megaMenu && category.megaItems);
+  const active = activeLabel === category.label;
+
+  /* Open the mega menu on hover, but only once the pill is FULLY open.
+     We never close from here — the Header closes when the cursor leaves the
+     whole pill, so moving down into the mega keeps it open. Depending on
+     [hovering, ready] means if the cursor is already resting on the item when
+     `ready` flips true, the menu still opens (no need to re-hover). */
   useEffect(() => {
-    setIsOpen(false);
+    if (hasMega && hovering && ready) {
+      onMenuChange?.(category.label, category.megaItems!);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hovering, ready]);
+
+  // Reset on route change
+  useEffect(() => {
+    setHovering(false);
   }, [pathname]);
 
-  const handleMouseEnter = () => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setIsOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    timeoutRef.current = setTimeout(() => setIsOpen(false), 150);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, []);
-
-  // Plain link
-  if (category.href && !category.megaMenu && !category.children) {
+  // Plain direct link (no mega menu) — preserves normal navigation
+  if (category.href && !hasMega) {
     return (
       <Link
         href={category.href}
-        className="group/navitem relative px-2 text-base font-medium uppercase text-nowrap cursor-pointer text-[var(--neutral-800)] transition-colors duration-200 ease-in-out font-neue-montreal"
+        onMouseEnter={() => onMenuChange?.(null, null)}
+        className="group/navitem relative cursor-pointer text-lg font-medium text-nowrap text-neutral-800 transition-colors duration-200 ease-in-out font-neue-montreal hover:text-neutral-950"
       >
-        {category.label}
-        <HoverBorder />
+        <NavLabel label={category.label} active={false} underline={false} />
       </Link>
     );
   }
 
-  // Mega menu or dropdown
-  const hasDropdown = category.megaMenu || (category.children && category.children.length > 0);
-
+  // Mega-menu trigger — hovering opens the pill's downward expansion
   return (
     <div
       className="group/navitem relative"
-      onMouseEnter={hasDropdown ? handleMouseEnter : undefined}
-      onMouseLeave={hasDropdown ? handleMouseLeave : undefined}
+      onMouseEnter={hasMega ? () => setHovering(true) : undefined}
+      onMouseLeave={hasMega ? () => setHovering(false) : undefined}
     >
       <button
         type="button"
-        className="px-2 text-base font-medium uppercase text-nowrap cursor-pointer text-[var(--neutral-800)] transition-colors duration-200 ease-in-out font-neue-montreal"
+        className={`relative cursor-pointer text-lg font-medium text-nowrap transition-colors duration-200 ease-in-out font-neue-montreal ${
+          active ? "text-neutral-950" : "text-neutral-800 hover:text-neutral-950"
+        }`}
       >
-        {category.label}
+        <NavLabel label={category.label} active={active} />
       </button>
-
-      <HoverBorder active={isOpen} />
-
-      {/* Mega menu */}
-      {category.megaMenu && category.megaItems && (
-        <MegaMenu
-          items={category.megaItems}
-          isOpen={isOpen}
-          variant={category.megaVariant}
-          onNavigate={() => setIsOpen(false)}
-        />
-      )}
-
-      {/* Simple dropdown */}
-      {category.children && !category.megaMenu && isOpen && (
-        <div className="absolute top-full left-0 z-50 min-w-48 pt-2">
-          <div className="rounded-lg border border-border bg-background p-2 shadow-lg">
-            {category.children.map((child) => (
-              <Link
-                key={child.label}
-                href={child.href}
-                onClick={() => setIsOpen(false)}
-                className="block rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-              >
-                {child.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
 
 /* ─── Main Navigation ─── */
-export default function Navigation() {
+export default function Navigation({
+  activeLabel,
+  onMenuChange,
+  ready,
+}: {
+  activeLabel: string | null;
+  onMenuChange?: (label: string | null, items: MegaMenuItem[] | null) => void;
+  ready?: boolean;
+}) {
   return (
-    <nav className="flex items-center gap-4">
+    <nav className="flex items-center gap-10">
       {navCategories.map((category) => (
-        <NavItem key={category.label} category={category} />
+        <NavItem
+          key={category.label}
+          category={category}
+          activeLabel={activeLabel}
+          onMenuChange={onMenuChange}
+          ready={ready}
+        />
       ))}
     </nav>
   );

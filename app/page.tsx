@@ -5,27 +5,24 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplashScreen from "@/components/homepage/SplashScreen";
 import Hero from "@/components/homepage/Hero";
-import OurBusiness from "@/components/homepage/OurBusiness";
-import GlobalFootprint from "@/components/homepage/GlobalFootprint";
 import GreenerFuture from "@/components/homepage/GreenerFuture";
-import Sustainability from "@/components/homepage/Sustainability";
 import CertificationsCompliance from "@/components/homepage/CertificationsCompliance";
 import LegacyOfLeadership from "@/components/homepage/LegacyOfLeadership";
-import WeAreASG from "@/components/homepage/WeAreASG";
 import Newsroom from "@/components/homepage/Newsroom";
-import IntroSection from "@/components/homepage/IntroSection";
 import ASGHighlight from "@/components/homepage/ASGHighlight";
 import AboutUs from "@/components/homepage/AboutUs";
 import RockSteadySection from "@/components/about/globe/Section";
 
 export default function HomePage() {
-  // Clean up any residual GSAP/ScrollTrigger state from a previous visit
+  // Clean up residual ScrollTrigger state from a previous visit
   // (e.g. browser back button). useGSAP in child components handles their own
-  // cleanup, but ScrollTrigger may leave pinned styles on <html>/<body>.
+  // tween cleanup; ScrollTrigger may leave pinned styles on <html>/<body>.
+  // NOTE: do NOT call gsap.globalTimeline.clear() here — it kills ALL
+  // animations globally, including the Header's mega-close tween that is
+  // mid-flight when the user navigates away, leaving the panel stuck open.
   useLayoutEffect(() => {
     return () => {
       ScrollTrigger.getAll().forEach(st => st.kill());
-      gsap.globalTimeline.clear();
     };
   }, []);
 

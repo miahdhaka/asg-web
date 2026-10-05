@@ -53,7 +53,15 @@ interface ASGHighlightProps {
 // only way to make it move SLOWER than the scroll is to widen the window it
 // travels in: 1 viewport of rise now spans (1 + COVER_SLOW) viewports of
 // scrolling, i.e. the rise runs at 1 / (1 + COVER_SLOW) of native speed.
-const COVER_SLOW = 0.6;
+// Set to 0 so the About Us wrapper's y stays pinned at 0 through the whole
+// cover — About Us then rides its natural document slot at 1:1 scroll speed
+// like every other homepage section instead of getting an extra slow-rise
+// glide over the pinned section (that added motion was reading as a bounce
+// on top of the pin release, especially on fast wheel deltas). The cover
+// fade on this section still runs across the last 100vh of the pin range,
+// which now exactly matches the About Us entry window (about-top hits the
+// viewport bottom when ScrollTrigger progress reaches coverStart = n/(n+1)).
+const COVER_SLOW = 0;
 
 export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighlightProps) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -148,13 +156,41 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
          gsap.ticker: the pin is applied there, so writing the compensating offset
          from anywhere else leaves it a frame out of phase with the pin, which is
          what made the section heave forward in one burst on each scroll tick. */
+      /* A longer quickTo tail retargets every scroll tick instead of gsap.set-ing
+         instantly. Fast wheel deltas (100+ px per tick) otherwise snapped the rise
+         from -30px → 0 in a single frame — the visible "bari" on arrival. 320 ms
+         with power3.out gives enough inertia that a burst of wheel ticks settles
+         softly while still tracking the scroll so the pin and the rise stay
+         visually in phase. */
+      const riseTo = riseEl
+        ? gsap.quickTo(riseEl, "y", { duration: 0.32, ease: "power3.out" })
+        : null;
+      const fadeTo = gsap.quickTo(sectionRef.current, "opacity", { duration: 0.32, ease: "power3.out" });
+
       const applyCover = (p: number) => {
         const fade =
           p > coverStart
             ? Math.min(1, ((p - coverStart) * (n + 1 + COVER_SLOW)) / (1 + COVER_SLOW))
             : 0;
+        fadeTo(1 - fade);
+        if (riseTo) riseTo(-COVER_SLOW * vhPx * (1 - fade));
+      };
+
+      /* Snap variant — writes state immediately with no tween tail. Used for the
+         initial mount and every ScrollTrigger refresh/resize, where the smoothed
+         follower would otherwise animate the section into place over 150 ms
+         (visible drop-in on load, or a slide after a viewport resize). */
+      const snapCover = (p: number) => {
+        const fade =
+          p > coverStart
+            ? Math.min(1, ((p - coverStart) * (n + 1 + COVER_SLOW)) / (1 + COVER_SLOW))
+            : 0;
+        const y = -COVER_SLOW * vhPx * (1 - fade);
+        // Kill any in-flight quickTo tween so the immediate set sticks.
+        gsap.killTweensOf(sectionRef.current);
+        if (riseEl) gsap.killTweensOf(riseEl);
         gsap.set(sectionRef.current, { opacity: 1 - fade });
-        if (riseEl) gsap.set(riseEl, { y: -COVER_SLOW * vhPx * (1 - fade) });
+        if (riseEl) gsap.set(riseEl, { y });
       };
 
       const st = ScrollTrigger.create({
@@ -178,9 +214,11 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
         },
         // Re-assert the cover position after any refresh/resize, when ScrollTrigger
         // has just recalculated the pin range from the (transformed) layout.
-        onRefresh: (self) => applyCover(self.progress),
+        // Snap so the correction is instantaneous — a tween here would slide
+        // the section visibly every time the window is resized.
+        onRefresh: (self) => snapCover(self.progress),
       });
-      applyCover(st.progress);
+      snapCover(st.progress);
 
       tick = () => {
         scrollProgress += (targetProgress - scrollProgress) * SMOOTH;

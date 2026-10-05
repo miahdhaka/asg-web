@@ -8,62 +8,79 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Menu } from "lucide-react";
 import Navigation from "./Navigation";
+import MegaMenu from "./MegaMenu";
+import type { MegaMenuItem } from "./types";
 import Search from "./Search";
 import MobileSidebar from "./MobileSidebar";
 
 gsap.registerPlugin(useGSAP);
 
+/* Which mega menu is currently open (by category label + its items) */
+interface ActiveMenu {
+  label: string;
+  items: MegaMenuItem[];
+}
+
+/* Derive the current page label from pathname (shown in the compact pill) */
+function getCurrentPageLabel(pathname: string): string {
+  if (pathname === "/") return "Home";
+  if (pathname.startsWith("/about-us")) return "About";
+  if (pathname.startsWith("/board-of-directors")) return "Management";
+  if (pathname.startsWith("/our-history")) return "History";
+  if (pathname.startsWith("/concerns")) return "Concerns";
+  if (pathname.startsWith("/sustainability")) return "Sustainability";
+  if (pathname.startsWith("/newsroom")) return "Media & Press";
+  if (pathname.startsWith("/media-galleries")) return "Media & Press";
+  if (pathname.startsWith("/contact-us")) return "Contact";
+  if (pathname.startsWith("/careers")) return "Careers";
+  if (pathname.startsWith("/faqs")) return "FAQs";
+  if (pathname.startsWith("/privacy-policy")) return "Privacy";
+  if (pathname.startsWith("/terms-of-use")) return "Terms";
+  return "ASG";
+}
+
 export default function Header() {
   const headerRef = useRef<HTMLElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const overlayTweenRef = useRef<gsap.core.Tween | null>(null);
-  const [scrolled, setScrolled] = useState(false);
+  const rowRef = useRef<HTMLDivElement>(null);
+  const pillRef = useRef<HTMLDivElement>(null);
+  const navWrapRef = useRef<HTMLDivElement>(null);
+  const labelRef = useRef<HTMLSpanElement>(null);
+  const navInnerRef = useRef<HTMLDivElement>(null);
+  const megaWrapRef = useRef<HTMLDivElement>(null);
+  const megaContentRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const [hovered, setHovered] = useState(false);
+  const [navReady, setNavReady] = useState(false);
+  const [activeMenu, setActiveMenu] = useState<ActiveMenu | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchText, setSearchText] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
 
   const closeSidebar = useCallback(() => setSidebarOpen(false), []);
-  // On the homepage the center logo is always visible
-  const isHome = pathname === "/";
+  const currentPageLabel = getCurrentPageLabel(pathname);
 
-  /* Publish the navbar's real height as --header-height. Every full-height
-     section sizes itself with calc(100vh - var(--header-height)), and the
-     header grows/shrinks with the fluid root font size, so a hard-coded
-     value would leave the sections a few pixels off on every screen. */
+  /* The pill is "expanded" (full nav shown) while hovered, while search is
+     open, or while a mega menu is open — mega keeps it wide so the submenu
+     has room and the header never collapses mid-interaction. */
+  const expanded = hovered || searchOpen || activeMenu !== null;
+
+  /* Publish the collapsed header-row height as --header-height so other
+     sections (search panel, page offsets) stay stable regardless of whether
+     the mega menu is expanded. */
   useEffect(() => {
-    const el = headerRef.current;
+    const el = rowRef.current;
     if (!el) return;
-
-    const publish = () => {
+    const publish = () =>
       document.documentElement.style.setProperty(
         "--header-height",
         `${el.getBoundingClientRect().height}px`
       );
-    }; 
     publish();
-
     const observer = new ResizeObserver(publish);
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 0);
-    };
-
-    // Hero plays its phases while the page is scroll-locked at the top,
-    // so it broadcasts its state for the navbar background to follow
-    const handleHeroPhase = (e: Event) => {
-      setScrolled((e as CustomEvent).detail === true || window.scrollY > 0);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    window.addEventListener("hero-phase", handleHeroPhase);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("hero-phase", handleHeroPhase);
-    };
   }, []);
 
   // Lock body scroll while search is open
@@ -77,117 +94,362 @@ export default function Header() {
     }
   }, [searchOpen]);
 
-  // Close search when navigating (Next.js client-side route change)
+  // Close overlays whenever the route changes
   useEffect(() => {
-    if (searchOpen) setSearchOpen(false);
+    setSearchOpen(false);
+    setSearchText("");
+    setActiveMenu(null);
   }, [pathname]);
 
-  // Animate the full-page overlay in/out when search opens/closes
-  useGSAP(
-    () => {
-      const overlay = overlayRef.current;
-      if (!overlay) return;
+  // Focus the in-pill search input as soon as search opens
+  useEffect(() => {
+    if (!searchOpen) return;
+    const id = requestAnimationFrame(() => searchInputRef.current?.focus());
+    return () => cancelAnimationFrame(id);
+  }, [searchOpen]);
 
-      overlayTweenRef.current?.kill();
+  /* Click-outside + Escape close the mega menu (desktop). */
+  useEffect(() => {
+    if (!activeMenu) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setActiveMenu(null);
+    };
+    const onDown = (e: MouseEvent) => {
+      if (pillRef.current && !pillRef.current.contains(e.target as Node)) {
+        setActiveMenu(null);
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("mousedown", onDown);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("mousedown", onDown);
+    };
+  }, [activeMenu]);
 
-      if (searchOpen) {
-        overlayTweenRef.current = gsap.fromTo(
-          overlay,
-          { opacity: 0 },
-          { opacity: 1, duration: 0.4, ease: "power3.out" },
-        );
+  /* Hovering a nav item (once the pill is fully open) opens its mega menu;
+     lifting null closes it. Opening one closes search. */
+  const handleMenuChange = useCallback(
+    (label: string | null, items: MegaMenuItem[] | null) => {
+      if (label && items) {
+        setSearchOpen(false);
+        setActiveMenu({ label, items });
       } else {
-        overlayTweenRef.current = gsap.to(overlay, {
-          opacity: 0,
-          duration: 0.25,
-          ease: "power2.in",
-        });
+        setActiveMenu(null);
       }
     },
-    { dependencies: [searchOpen] },
+    []
   );
+
+  const handleSearchChange = useCallback((open: boolean) => {
+    setSearchOpen(open);
+    if (open) setActiveMenu(null);
+    else setSearchText("");
+  }, []);
+
+  /* Compact → expand width animation: the pill starts small showing the
+     current-page label, and smoothly grows to reveal the full nav on hover.
+     One persistent paused timeline plays forward on expand and reverses on
+     collapse, so mid-flight direction changes stay perfectly smooth. */
+  const swapTlRef = useRef<gsap.core.Timeline | null>(null);
+
+  useGSAP(
+    () => {
+      const wrap = navWrapRef.current;
+      const label = labelRef.current;
+      const nav = navInnerRef.current;
+      if (!wrap || !label || !nav) return;
+
+      const labelW = label.offsetWidth;
+      const navW = nav.offsetWidth;
+
+      // Rebuild only if the measured widths changed (new page label, resize)
+      const cached = swapTlRef.current?.vars.data as
+        | { lw: number; nw: number }
+        | undefined;
+      if (!swapTlRef.current || cached?.lw !== labelW || cached?.nw !== navW) {
+        swapTlRef.current?.kill();
+        const tl = gsap.timeline({
+          paused: true,
+          data: { lw: labelW, nw: navW },
+        });
+        tl.fromTo(wrap, { width: labelW }, {
+          width: navW,
+          duration: 0.8,
+          ease: "power3.inOut",
+        }, 0)
+          .fromTo(label, { opacity: 1 }, {
+          opacity: 0,
+          duration: 0.4,
+          ease: "power1.inOut",
+        }, 0)
+          .fromTo(nav, { opacity: 0 }, {
+          opacity: 1,
+          duration: 0.5,
+          ease: "power1.inOut",
+        }, 0.4);
+        // Always start a rebuilt timeline CLOSED. If the rebuild fires on the
+        // same tick that expanded turned true (web fonts finishing late change
+        // the measured widths right when the first hover happens), jumping it
+        // to progress(1) would SNAP the pill open — starting at 0 lets the
+        // expand branch below play the fresh timeline smoothly.
+        tl.progress(0);
+        swapTlRef.current = tl;
+      }
+
+      if (expanded) {
+        // Nav items stay inert until the pill is FULLY open — hovering an item
+        // mid-animation must not pop the mega menu under the cursor.
+        const tl = swapTlRef.current;
+        if (tl.progress() === 1) setNavReady(true);
+        else {
+          tl.eventCallback("onComplete", () => setNavReady(true));
+          tl.play();
+        }
+      } else {
+        setNavReady(false);
+        swapTlRef.current.eventCallback("onComplete", null);
+        swapTlRef.current.reverse();
+      }
+    },
+    { dependencies: [expanded, currentPageLabel] }
+  );
+
+  /* Mega menu = the SAME pill expanding downward. Height is measured from the
+     content and tweened px↔px (open / switch / close all smooth); the submenu
+     fades + slides up on open and cross-fades when switching categories. */
+  const megaTlRef = useRef<gsap.core.Timeline | null>(null);
+  const wasOpenRef = useRef(false);
+  const prevLabelRef = useRef<string | null>(null);
+
+  useGSAP(
+    () => {
+      const wrap = megaWrapRef.current;
+      const content = megaContentRef.current;
+      if (!wrap || !content) return;
+
+      const open = activeMenu !== null || searchOpen;
+      if (!open && !wasOpenRef.current) return; // first mount while closed
+
+      // One pseudo-key for the panel content: the mega category's label, or
+      // a fixed id for the search results — lets open/switch/close all be
+      // measured the same way regardless of which mode drove the change.
+      const key = activeMenu?.label ?? (searchOpen ? "__search__" : null);
+
+      const comingFromClosed = !wasOpenRef.current;
+      const switching =
+        open &&
+        prevLabelRef.current !== null &&
+        prevLabelRef.current !== key;
+
+      wasOpenRef.current = open;
+      prevLabelRef.current = key;
+
+      megaTlRef.current?.kill();
+      const tl = gsap.timeline();
+
+      if (open) {
+        const target = content.scrollHeight;
+        tl.to(wrap, { height: target, duration: 0.5, ease: "power3.out" }, 0);
+        if (comingFromClosed) {
+          tl.fromTo(
+            content,
+            { opacity: 0, y: 18 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },
+            0.12
+          );
+        } else if (switching) {
+          // Gentle crossfade (no full opacity flash) so switching between
+          // categories reads as the SAME panel smoothly morphing its content.
+          tl.fromTo(
+            content,
+            { opacity: 0.35, y: 8 },
+            { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" },
+            0
+          );
+        }
+      } else {
+        tl.to(content, { opacity: 0, y: 10, duration: 0.25, ease: "power2.in" }, 0);
+        tl.to(wrap, { height: 0, duration: 0.5, ease: "power3.inOut" }, 0.05);
+      }
+      megaTlRef.current = tl;
+    },
+    { dependencies: [activeMenu, searchOpen] }
+  );
+
+  /* Hover-out grace: wait briefly before collapsing so edge jitter doesn't
+     start/abort the shrink animation. Leaving the WHOLE pill closes the mega
+     (the mega lives inside the pill, so moving into it never fires this). */
+  const leaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const handleEnter = () => {
+    if (leaveTimer.current) clearTimeout(leaveTimer.current);
+    setHovered(true);
+  };
+  const handleLeave = () => {
+    leaveTimer.current = setTimeout(() => {
+      setHovered(false);
+      setActiveMenu(null);
+    }, 150);
+  };
+
+  /* Safety net: if the mega-close tween is ever killed externally (e.g. by a
+     global gsap kill on route change), the wrap would be stuck at a non-zero
+     height. Force-collapse after the 500 ms animation window. */
+  useEffect(() => {
+    if (activeMenu || searchOpen) return;
+    const id = setTimeout(() => {
+      const wrap = megaWrapRef.current;
+      if (wrap && !activeMenu && !searchOpen && wrap.getBoundingClientRect().height > 1) {
+        gsap.set(wrap, { height: 0 });
+      }
+    }, 600);
+    return () => clearTimeout(id);
+  }, [activeMenu, searchOpen]);
 
   return (
     <>
-      {/* Full-page dark overlay — sits behind the navbar (z-50) and search panel */}
+      {/* Soft blurred backdrop behind search — click to close */}
       {searchOpen && (
         <div
-          ref={overlayRef}
-          className="fixed inset-0 z-40 bg-black/50 cursor-pointer"
-          style={{ opacity: 0 }}
-          onClick={() => setSearchOpen(false)}
+          className="fixed inset-0 z-40 bg-white/10 backdrop-blur-md cursor-pointer transition-opacity duration-300"
+          onClick={() => handleSearchChange(false)}
         />
       )}
 
-      <header ref={headerRef} className={`fixed top-0 left-0 right-0 z-50 w-full border-b border-border backdrop-blur transition-colors duration-500 ease-in-out ${
-        scrolled || searchOpen ? "bg-white" : "bg-background/60"
-      }`}>
-        <div className="grid grid-cols-3 items-center px-6">
-          {/* Left: hamburger on mobile, full navigation on desktop */}
-          <div className="h-full flex items-center py-2 sm:py-5">
-            {/* Mobile hamburger icon */}
-            <button
-              type="button"
-              onClick={() => setSidebarOpen(true)}
-              className="lg:hidden cursor-pointer rounded-full p-1.5 transition-colors hover:bg-neutral-100"
-              aria-label="Open menu"
+      <header
+        ref={headerRef}
+        className="fixed top-5 left-0 right-0 z-50 flex justify-center pointer-events-none"
+      >
+        {/* One floating capsule: compact pill that grows HORIZONTALLY on hover
+            (nav) and DOWNWARD on click (mega). Fixed 30px radius stays a clean
+            pill collapsed and keeps nice corners when expanded. */}
+        <div
+          ref={pillRef}
+          onMouseEnter={handleEnter}
+          onMouseLeave={handleLeave}
+          className="pointer-events-auto flex flex-col overflow-hidden rounded-[30px] bg-white/80 backdrop-blur-[15px] shadow-[0px_8px_24px_0px_#00000014] border border-white/60"
+        >
+          {/* Header row: logo · nav (swap zone) · right icons */}
+          <div ref={rowRef} className="flex items-center gap-4 px-8 h-[80px]">
+            <Link
+              href="/"
+              id="header-logo"
+              className="flex items-center shrink-0 relative z-10"
+              aria-label="ASG Home"
             >
-              <Menu className="size-4.5 sm:size-6 text-neutral-800" />
-            </button>
-            {/* Desktop navigation */}
-            <div className="hidden lg:block">
-              <Navigation />
+              <Image
+                src="/logo/asg-icon.png"
+                alt="Amanat Shah Group"
+                width={44}
+                height={44}
+                priority
+                className="h-11 w-11 object-contain"
+              />
+            </Link>
+
+            {/* Desktop swap zone: page label (compact) ↔ full nav (expanded).
+                Width animated by GSAP; label stays in flow, nav overlays it. */}
+            <div
+              ref={navWrapRef}
+              className="relative z-20 hidden lg:flex items-center self-stretch overflow-clip [overflow-clip-margin:8px]"
+            >
+              <span
+                ref={labelRef}
+                className="inline-block whitespace-nowrap px-1 text-lg font-normal tracking-wide text-neutral-800 font-neue-montreal"
+              >
+                {currentPageLabel}
+              </span>
+
+              <div
+                ref={navInnerRef}
+                className={`absolute left-0 top-1/2 -translate-y-1/2 px-32 ${
+                  expanded ? "pointer-events-auto" : "pointer-events-none"
+                }`}
+              >
+                <Navigation
+                  activeLabel={activeMenu?.label ?? null}
+                  onMenuChange={handleMenuChange}
+                  ready={navReady}
+                />
+              </div>
+
+              {/* Search mode: gradient-bordered input overlays the same zone
+                  the nav occupies — the pill is already fully expanded. */}
+              {searchOpen && (
+                <div className="absolute inset-0 z-20 flex items-center">
+                  <div className="flex h-12 w-full items-center rounded-full bg-[image:var(--primary-gradient)] p-[2px]">
+                    <input
+                      ref={searchInputRef}
+                      type="text"
+                      value={searchText}
+                      onChange={(e) => setSearchText(e.target.value)}
+                      placeholder="How can we help you today?"
+                      className="block h-full w-full rounded-full border-0 bg-white px-5 text-base md:text-lg font-neue-montreal text-neutral-800 placeholder:text-neutral-500 focus:outline-none"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Mobile spacer pushes the right controls to the edge */}
+            <div className="flex-1 lg:hidden" />
+
+            {/* Right icons: compact pill shows the hamburger (3-line) icon,
+                which opens the sidebar; expanding the pill crossfades to
+                search so the corner is never empty mid-animation. */}
+            <div className="grid shrink-0 z-10 place-items-center">
+              <button
+                type="button"
+                onClick={() => setSidebarOpen(true)}
+                className={`col-start-1 row-start-1 cursor-pointer rounded-full p-1.5 transition-opacity duration-300 ${
+                  expanded ? "pointer-events-none opacity-0" : "opacity-100"
+                }`}
+                aria-label="Open menu"
+              >
+                <Menu className="size-6 text-neutral-700" strokeWidth={1.8} />
+              </button>
+
+              <div
+                className={`col-start-1 row-start-1 transition-opacity duration-300 ${
+                  expanded ? "opacity-100" : "pointer-events-none opacity-0"
+                }`}
+              >
+                <Search isOpen={searchOpen} onOpenChange={handleSearchChange} />
+              </div>
             </div>
           </div>
 
-          {/* Logo - center */}
-          <div className="flex items-center justify-center">
-            {isHome ? (
-              <a
-                href="/"
-                id="header-logo"
-                className="flex items-center"
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.location.reload();
-                }}
-              >
-                <Image
-                  src="/logo/ASG-logo.png"
-                  alt="Amanat Shah Group"
-                  width={104}
-                  height={64}
-                  priority
-                  className="w-[5rem] h-[2rem] sm:w-26 sm:h-16 object-contain"
+          {/* Mega menu zone — the pill growing DOWNWARDS */}
+          <div
+            ref={megaWrapRef}
+            className="hidden lg:block overflow-hidden"
+            style={{ height: 0 }}
+          >
+            <div ref={megaContentRef}>
+              {/* Subtle divider under the header */}
+              <div className="mx-8 border-t border-[#E9E9E9]/70" />
+              {activeMenu && (
+                <MegaMenu
+                  items={activeMenu.items}
+                  onNavigate={() => setActiveMenu(null)}
                 />
-              </a>
-            ) : (
-              <Link
-                href="/"
-                id="header-logo"
-                scroll={true}
-                className="flex items-center"
-              >
-                <Image
-                  src="/logo/ASG-logo.png"
-                  alt="Amanat Shah Group"
-                  width={104}
-                  height={64}
-                  priority
-                  className="w-[5rem] h-[2rem] sm:w-26 sm:h-16 object-contain"
-                />
-              </Link>
-            )}
-          </div>
-
-          {/* Search - right */}
-          <div className="flex items-center justify-end py-3 sm:py-5">
-            <Search onOpenChange={setSearchOpen} />
+              )}
+              {searchOpen && !activeMenu && (
+                <div className="flex min-h-[60vh] flex-col items-center justify-center px-6 pb-12 text-center">
+                  <h2 className="font-archivo-black text-4xl tracking-tight text-[#1F1F1F] md:text-6xl">
+                    No Results Found
+                  </h2>
+                  <p className="mt-4 text-base md:text-lg font-neue-montreal text-neutral-700">
+                    Please try again with a different search query.
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Mobile sidebar navigation — rendered outside <header> so its z-index is not trapped */}
+      {/* Mobile sidebar navigation */}
       <MobileSidebar isOpen={sidebarOpen} onClose={closeSidebar} />
     </>
   );

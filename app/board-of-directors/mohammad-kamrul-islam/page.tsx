@@ -27,7 +27,7 @@ export default function MohammadKamrulIslamPage() {
         role="Entrepreneur"
         org="AMANAT SHAH GROUP"
         portrait={{
-          src: "/images/board-of-directors/mohammad-kamrul-islam.png",
+          src: "/images/board-of-directors/mohammad-kamrul-islam.webp",
           width: 7236,
           height: 9771,
         }}

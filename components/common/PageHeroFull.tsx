@@ -15,6 +15,8 @@ interface PageHeroFullProps {
   alt: string;
   /** Optional emblem rendered top-center on desktop. */
   emblemSrc?: string;
+  /** Anchor for the background media's vertical position. Defaults to "bottom". */
+  imagePosition?: "bottom" | "center";
   /** Optional section id for scroll-target / GSAP hooks. */
   id?: string;
 }
@@ -22,15 +24,12 @@ interface PageHeroFullProps {
 /**
  * Full-screen sibling of PageHero — identical caption treatment
  * (bottom-centred uppercase Archivo Black title over Neue Montreal subtitle,
- * behind the `overlay-linear-subtle` gradient), but the band always fills the
- * viewport instead of the fixed 32rem/47rem height.
+ * behind the `overlay-linear-subtle` gradient). On mobile the band matches
+ * PageHero's `42rem` height; on desktop it always fills the viewport.
  *
- * Height follows the site's navbar-aware convention (see Header.tsx):
- * `calc(var(--vh) - var(--header-height))` below lg — a phone's 100vh is the
- * toolbar-HIDDEN height, so `--vh` is the measured visible height — and
- * `calc(100vh - var(--header-height))` on desktop. Together with the
- * `margin-top` offset that pushes the band below the fixed navbar, the navbar
- * plus hero occupy exactly one screen.
+ * The section starts flush at the very top of the page — the floating pill
+ * navbar overlays it rather than pushing it down. Desktop height uses plain
+ * `100vh`.
  *
  * Background media is absolutely positioned to fill the band, so it stretches
  * to the viewport height rather than its intrinsic aspect ratio.
@@ -43,9 +42,12 @@ export default function PageHeroFull({
   videoSrc,
   alt,
   emblemSrc,
+  imagePosition = "bottom",
   id,
 }: PageHeroFullProps) {
   const sameSrc = mobileSrc === desktopSrc;
+  /* Tailwind needs static class names — map the prop to a full utility */
+  const posClass = imagePosition === "center" ? "object-center" : "object-bottom";
 
   /* ── Background media: video, one shared image, or a mobile/desktop pair ── */
   const background = videoSrc ? (
@@ -55,7 +57,8 @@ export default function PageHeroFull({
       loop
       muted
       playsInline
-      className="absolute inset-0 size-full object-cover object-bottom"
+      preload="metadata"
+      className={`absolute inset-0 size-full object-cover ${posClass}`}
     >
       <source src={videoSrc} type="video/webm" />
     </video>
@@ -69,7 +72,7 @@ export default function PageHeroFull({
         priority
         quality={90}
         sizes="100vw"
-        className="object-cover object-bottom"
+        className={`object-cover ${posClass}`}
       />
     ) : (
       <>
@@ -81,7 +84,7 @@ export default function PageHeroFull({
           priority
           quality={90}
           sizes="100vw"
-          className="object-cover object-bottom lg:hidden"
+          className={`object-cover ${posClass} lg:hidden`}
         />
         {/* Desktop-only image */}
         <Image
@@ -91,7 +94,7 @@ export default function PageHeroFull({
           priority
           quality={90}
           sizes="100vw"
-          className="hidden object-cover object-bottom lg:block"
+          className={`hidden object-cover ${posClass} lg:block`}
         />
       </>
     )
@@ -100,8 +103,7 @@ export default function PageHeroFull({
   return (
     <section
       id={id}
-      style={{ marginTop: "var(--header-height)" }}
-      className="relative w-full overflow-hidden h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
+      className="relative w-full overflow-hidden min-h-[42rem] lg:h-screen"
     >
       {background}
 
@@ -126,7 +128,7 @@ export default function PageHeroFull({
         <h1 className="whitespace-pre-line leading-[1.05] text-[1.3125rem] sm:text-[2.625rem] lg:text-[3.625rem] text-white font-archivo-black uppercase">
           {title}
         </h1>
-        <p className="text-[0.8125rem] sm:text-[0.9375rem] lg:text-[1.125rem] tracking-wider text-white font-neue-montreal font-light">
+        <p className="whitespace-pre-line lg:whitespace-normal text-sm lg:text-[1.125rem] leading-relaxed tracking-widest text-white font-neue-montreal font-light max-w-[80%] mx-auto">
           {subtitle}
         </p>
       </div>

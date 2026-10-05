@@ -16,6 +16,8 @@ export default function SplashScreen({ onFadeStart, onFadeComplete }: SplashScre
   const onFadeStartRef = useRef(onFadeStart);
   const onFadeCompleteRef = useRef(onFadeComplete);
   const holdTimer = useRef<number | null>(null);
+  const fadeStarted = useRef(false);
+  const doneNotified = useRef(false);
   onFadeStartRef.current = onFadeStart;
   onFadeCompleteRef.current = onFadeComplete;
 
@@ -68,19 +70,50 @@ export default function SplashScreen({ onFadeStart, onFadeComplete }: SplashScre
     []
   );
 
+  // Phase 1 → 2: start the overlay fade-out (guarded so event + fallback
+  // timers can both call it safely).
+  const startFade = useCallback(() => {
+    if (fadeStarted.current) return;
+    fadeStarted.current = true;
+    setFading(true);
+    onFadeStartRef.current?.();
+  }, []);
+
+  // Safety net: the whole sequence normally advances on `animationend`
+  // events, but those never fire when animations are disabled
+  // (prefers-reduced-motion) or are skipped while the tab is hidden.
+  // These hard deadlines guarantee the splash always dismisses.
+  useEffect(() => {
+    // Logo rise is 2s + 450ms hold — allow generous slack for slow main threads
+    const fadeFallback = window.setTimeout(startFade, 4000);
+    return () => window.clearTimeout(fadeFallback);
+  }, [startFade]);
+
+  useEffect(() => {
+    if (!fading) return;
+    // Overlay fade is 0.8s — unmount shortly after even without animationend
+    const completeFallback = window.setTimeout(() => {
+      if (doneNotified.current) return;
+      doneNotified.current = true;
+      onFadeCompleteRef.current?.();
+    }, 1500);
+    return () => window.clearTimeout(completeFallback);
+  }, [fading]);
+
   // Phase 1: logo rise animation ends → hold briefly → start the overlay fade-out (Phase 2)
   const handleLogoAnimationEnd = useCallback(() => {
-    holdTimer.current = window.setTimeout(() => {
-      setFading(true);
-      onFadeStartRef.current?.();
-    }, 450);
-  }, []);
+    if (fadeStarted.current) return;
+    if (holdTimer.current !== null) window.clearTimeout(holdTimer.current);
+    holdTimer.current = window.setTimeout(startFade, 450);
+  }, [startFade]);
 
   // Phase 2: overlay fade-out animation ends → safe to unmount.
   // Ignores animationend events bubbled up from child elements (e.g. the logo).
   const handleOverlayAnimationEnd = useCallback(
     (e: AnimationEvent<HTMLDivElement>) => {
       if (e.target !== e.currentTarget) return;
+      if (doneNotified.current) return;
+      doneNotified.current = true;
       onFadeCompleteRef.current?.();
     },
     []

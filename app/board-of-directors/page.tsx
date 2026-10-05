@@ -21,20 +21,20 @@ export default function BoardOfDirectorsPage() {
       <PageHero
         id="board-hero"
         title="Board of Directors"
-        subtitle="The task of the board of directors is to manage the company's"
-        mobileSrc="/images/board-of-directors/board-hero-mobile.png"
-        desktopSrc="/images/board-of-directors/board-hero-desktop.png"
+        subtitle={'The task of the board of directors is to \nmanage the companys'}
+        mobileSrc="/images/board-of-directors/board-hero-mobile.webp"
+        desktopSrc="/images/board-of-directors/board-hero-desktop.webp"
         alt="Board of Directors of Amanat Shah Group"
       />
       <MessageSection
         id="chairman-message"
-
         name="Mohammad Helal Miah"
         role="Chairman"
         bio={chairmanBio}
         href="/board-of-directors/chairman"
+        mobileBgImage="/images/board-of-directors/chairman-mobile-bg.png"
         image={{
-          src: "/images/board-of-directors/chairman.png",
+          src: "/images/board-of-directors/chairman.webp",
           width: 530,
           height: 530,
         }}
@@ -45,13 +45,15 @@ export default function BoardOfDirectorsPage() {
         role="Director"
         bio={managingDirectorBio}
         href="/board-of-directors/managing-director"
-        dividerClass="bg-[#0e2417]"
+        reduceTopGap
+        dividerClass="bg-white"
         textClass="text-[#0e2417]"
-        overlay="linear-gradient(90deg, #E0EDE0 23.33%, #E0EDE0 73.71%)"
+        bgImage="/images/board-of-directors/director-bg.png"
+        mobileBgImage="/images/board-of-directors/director-mobile-bg.png"
         image={{
-          src: "/images/board-of-directors/director.png",
+          src: "/images/board-of-directors/director.webp",
           width: 530,
-          height: 550,
+          height: 530,
         }}
       />
       <OtherBoardMembers layout="grid" />

@@ -109,37 +109,37 @@ export const logoCards: LogoCard[] = [
 
 export const directorCards: DirectorCard[] = [
   {
-    image: "/images/board-of-directors/chairman.png",
+    image: "/images/board-of-directors/chairman.webp",
     name: "Mohammad Helal Miah",
     title: "Chairman",
   },
   {
-    image: "/images/board-of-directors/managing-director.png",
+    image: "/images/board-of-directors/managing-director.webp",
     name: "Rezaul Karim",
     title: "Director",
   },
   {
-    image: "/images/board-of-directors/rezawan-kabir-shihab.png",
+    image: "/images/board-of-directors/rezawan-kabir-shihab.webp",
     name: "Rezawan Kabir Shihab",
     title: "Director",
   },
   {
-    image: "/images/board-of-directors/md-jubayer-amin.png",
+    image: "/images/board-of-directors/md-jubayer-amin.webp",
     name: "Md. Jubayer Amin",
     title: "Director",
   },
   {
-    image: "/images/board-of-directors/akm-azad.png",
+    image: "/images/board-of-directors/akm-azad.webp",
     name: "Akm Azad",
     title: "Entrepreneur",
   },
   {
-    image: "/images/board-of-directors/mahamudul-hasan.png",
+    image: "/images/board-of-directors/mahamudul-hasan.webp",
     name: "Mahamudul Hasan",
     title: "Entrepreneur",
   },
   {
-    image: "/images/board-of-directors/mohammad-kamrul-islam.png",
+    image: "/images/board-of-directors/mohammad-kamrul-islam.webp",
     name: "Mohammad Kamrul Islam",
     title: "Entrepreneur",
   },

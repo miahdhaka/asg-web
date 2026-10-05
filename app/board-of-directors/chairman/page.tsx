@@ -33,8 +33,8 @@ export default function ChairmanMessagePage() {
           height: 9848,
         }}
         /* Sized to fill the hero height at this portrait's aspect ratio, with
-           the left edge aligned to the other detail pages */
-        portraitClassName="lg:w-[31.37em] lg:right-[26.13em]"
+           the left edge aligned to the other detail pages. Mirrored horizontally. */
+        portraitClassName="lg:w-[31.37em] lg:right-[20.13em]"
       />
       <MessageBody
         id="chairman-full-message"
@@ -47,7 +47,9 @@ export default function ChairmanMessagePage() {
           org: "AMANAT SHAH GROUP",
         }}
       />
-      <OtherBoardMembers members={otherMembersFor("chairman")} />
+      <div className="sm:mb-6">
+        <OtherBoardMembers members={otherMembersFor("chairman")} />
+      </div>
     </main>
   );
 }

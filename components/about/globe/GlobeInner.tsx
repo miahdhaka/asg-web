@@ -55,21 +55,13 @@ export default function GlobeInner() {
     controls.minDistance = dist;
     controls.maxDistance = dist;
 
-    /* --- Cloud layer (exact copy from globe.gl/example/clouds) --- */
+    /* --- Cloud layer (adapted from globe.gl/example/clouds) ---
+       react-globe.gl only forwards a fixed allow-list of methods to the ref
+       (scene/camera/controls/getGlobeRadius…), so `globeMaterial()` isn't
+       available here. We don't need the material — `getGlobeRadius()` gives us
+       the radius directly for sizing the cloud sphere. */
     const scene = ctrl.scene();
-
-    /* Find globe radius from the globe mesh */
-    let globeRadius = 100;
-    const mat = ctrl.globeMaterial() as THREE.MeshPhongMaterial;
-    scene.traverse((obj: THREE.Object3D) => {
-      const mesh = obj as THREE.Mesh;
-      if (mesh.isMesh && mesh.material === mat) {
-        const geom = mesh.geometry as THREE.SphereGeometry;
-        if (geom?.type === "SphereGeometry" && geom.parameters.radius < 200) {
-          globeRadius = geom.parameters.radius;
-        }
-      }
-    });
+    const globeRadius = ctrl.getGlobeRadius();
 
     const loader = new THREE.TextureLoader();
     loader.setCrossOrigin("anonymous");

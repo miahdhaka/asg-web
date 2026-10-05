@@ -35,7 +35,7 @@ export default async function FaqCategoryPage({
     <main>
       <PageHero
         title="FAQ's"
-        subtitle="Family business legacy for more than 130 years."
+        subtitle={'Family business legacy for more\nthan 130 years.'}
         mobileSrc="/images/faq/hero.webp"
         desktopSrc="/images/faq/hero.webp"
         alt="ASG Group shipping and logistics operations"

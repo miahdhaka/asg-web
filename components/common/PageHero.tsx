@@ -44,7 +44,7 @@ export default function PageHero({
       id={id}
       className={
         sameSrc
-          ? "relative w-full min-h-[32rem] lg:h-[47rem]"
+          ? "relative w-full min-h-[42rem] lg:h-[47rem]"
           : "relative w-full"
       }
     >
@@ -71,7 +71,7 @@ export default function PageHero({
             height={290}
             priority
             quality={90}
-            className="block lg:hidden min-h-[32rem] w-full h-auto object-cover"
+            className="block lg:hidden min-h-[42rem] w-full h-auto object-cover"
             style={{ objectPosition }}
           />
           {/* Desktop-only image */}
@@ -105,11 +105,11 @@ export default function PageHero({
       )}
 
       {/* Title + subtitle — bottom-center */}
-      <div className="absolute inset-x-0 bottom-32 sm:bottom-36 lg:bottom-[13em] z-10 flex flex-col items-center gap-1 lg:gap-0.5 px-4 text-center">
-        <h1 className="text-[1.75rem] sm:text-[2.75rem] lg:text-[3.75rem] text-white font-archivo-black uppercase">
+      <div className="absolute inset-x-0 bottom-32 sm:bottom-36 lg:bottom-[13em] z-10 flex flex-col items-center gap-2.5 sm:gap-4.5 lg:gap-[1.375rem] px-4 text-center">
+        <h1 className="whitespace-pre-line leading-[1.05] text-[1.3125rem] sm:text-[2.625rem] lg:text-[3.625rem] text-white font-archivo-black uppercase">
           {title}
         </h1>
-        <p className="text-[0.8125rem] sm:text-[0.9375rem] lg:text-[1.0625rem] tracking-wider text-white font-neue-montreal font-light  pt-0 sm:pt-2">
+        <p className="whitespace-pre-line lg:whitespace-normal text-sm lg:text-[1.125rem] leading-relaxed tracking-widest text-white font-neue-montreal font-light max-w-[80%] mx-auto">
           {subtitle}
         </p>
       </div>

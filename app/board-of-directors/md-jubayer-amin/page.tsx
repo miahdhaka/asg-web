@@ -25,7 +25,7 @@ export default function MdJubayerAminPage() {
         role="Director (Miah)"
         org="AMANAT SHAH GROUP"
         portrait={{
-          src: "/images/board-of-directors/md-jubayer-amin.png",
+          src: "/images/board-of-directors/md-jubayer-amin.webp",
           width: 7236,
           height: 9848,
         }}
