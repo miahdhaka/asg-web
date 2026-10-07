@@ -41,6 +41,7 @@ export const trustCoreValues = {
   heading: "Technical Infrastructure & Quality Assurance",
   description:
     "Trust Knitwear Industries Ltd. operates an integrated knitwear facility supported by modern, high-precision machinery from leading manufacturers across Germany, Switzerland, Singapore, Greece, Austria and Japan.",
+    
   cards: [
     {
       title: "Advanced Production Systems",
