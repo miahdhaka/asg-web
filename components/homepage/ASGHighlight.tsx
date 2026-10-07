@@ -12,7 +12,7 @@ const SLIDES = [
     icon: "/icons/employee_experience.png",
     titleLine1: "YEARS",
     titleLine2: "EXPERIENCE",
-    description: "Building trust across Bangladesh's textile and business landscape since our founding.",
+    description: "Carrying Bangladesh's textile trust to global landscapes and lifestyles, built on 130 years of experience.",
     concernIdx: 0,
   },
   {
@@ -20,7 +20,7 @@ const SLIDES = [
     icon: "/icons/employee.png",
     titleLine1: "EMPLOYEE",
     titleLine2: "",
-    description: "Building trust across Bangladesh's textile and business landscape since our founding.",
+    description: "Our 15,000+ employees lead the Group's legacy forward, decade after decade, as a trusted family.",
     concernIdx: 1,
   },
   {
@@ -28,7 +28,7 @@ const SLIDES = [
     icon: "/icons/award.png",
     titleLine1: "GOVERNMENT",
     titleLine2: "AWARD",
-    description: "Building trust across Bangladesh's textile and business landscape since our founding.",
+    description: "Recognized with 15+ government awards, we are a proud partner in Bangladesh's socio-economic development.",
     concernIdx: 4,
   },
   {
@@ -36,7 +36,7 @@ const SLIDES = [
     icon: "/icons/fun-world.png",
     titleLine1: "COUNTRIES",
     titleLine2: "REACHED",
-    description: "Building trust across Bangladesh's textile and business landscape since our founding.",
+    description: "From Bangladesh to 17+ countries, delivering quality products and reliable service to customers worldwide.",
     concernIdx: 6,
   },
 ];
@@ -238,20 +238,20 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
         tl.progress(animProgress);
 
         // Number gradient: read the strip's current Y and fade each number's
-        // gradient layer in by its distance from the capsule center. Numbers stay
-        // white through the middle; the white→gradient blend then eases across
-        // the whole top / bottom crossing (from where the number starts to clip
-        // at the edge until it fully clears), eased with smoothstep so the color
-        // change reads soft at both ends of the ramp instead of linear.
+        // gradient layer in by its distance from the capsule center. White is
+        // reserved for EXACTLY the center only — as soon as a number moves off
+        // center (on its way in from the top/bottom) it is already the brand
+        // green gradient, ramping linearly with distance so nothing but the
+        // perfectly-centered number reads white.
         const stripY = gsap.getProperty(stripRef.current!, "y") as number;
         const halfH = capsuleH / 2;
-        const whiteZone = halfH * 0.55; // white through the middle, fades while crossing
         numGradRefs.current.forEach((el, i) => {
           if (!el) return;
           const numCenterY = stripY + i * itemH + itemH / 2;
           const dist = Math.abs(numCenterY - halfH);
-          const raw = Math.min(1, Math.max(0, (dist - whiteZone) / (halfH - whiteZone)));
-          const t = raw * raw * (3 - 2 * raw); // smoothstep ease
+          // Linear ramp from the center: white (0) only when perfectly centered,
+          // reaching the full green gradient (1) by the time it reaches the edge.
+          const t = Math.min(1, dist / halfH);
           gsap.set(el, { opacity: t });
         });
 

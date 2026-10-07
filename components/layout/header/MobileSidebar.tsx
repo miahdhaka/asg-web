@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { X, ChevronDown } from "lucide-react";
+import { X, ChevronRight, Search as SearchIcon } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { navCategories } from "./navData";
@@ -55,7 +55,8 @@ function SidebarMenuItem({
         ease: "power3.out",
         onComplete: () => gsap.set(subList, { height: "auto" }),
       });
-      gsap.to(chevron, { rotation: 180, duration: 0.3, ease: "power2.out" });
+      // Chevron points right when collapsed, rotates down when expanded
+      gsap.to(chevron, { rotation: 90, duration: 0.3, ease: "power2.out" });
 
       // Stagger children in
       if (itemsWrap) {
@@ -78,13 +79,13 @@ function SidebarMenuItem({
     }
   }, [isExpanded]);
 
-  // Plain link (no subcategories)
+  // Plain link (no subcategories) — e.g. "Contact"
   if (items.length === 0 && category.href) {
     return (
       <Link
         href={category.href}
         onClick={onClose}
-        className="flex items-center justify-between py-4 text-base font-medium uppercase tracking-wider text-neutral-800 transition-colors duration-200 hover:text-neutral-600"
+        className="flex items-center justify-between border-b border-neutral-200 py-5 font-neue-montreal text-base font-medium text-neutral-900 transition-colors duration-200 active:bg-neutral-50"
       >
         {category.label}
       </Link>
@@ -92,22 +93,20 @@ function SidebarMenuItem({
   }
 
   return (
-    <div className="border-b border-neutral-100">
+    <div className="border-b border-neutral-200">
       {/* Label row — click to expand/collapse */}
       <button
         type="button"
         onClick={onToggle}
-        className={`flex w-full cursor-pointer items-center justify-between py-4 text-base font-medium uppercase tracking-wider transition-colors duration-200 ${
-          isExpanded ? "text-neutral-900" : "text-neutral-700 hover:text-neutral-500"
-        }`}
+        className="flex w-full cursor-pointer items-center justify-between py-5 font-neue-montreal text-base font-medium text-neutral-900 transition-colors duration-200"
       >
         <span>{category.label}</span>
         <span ref={chevronRef} className="flex items-center">
-          <ChevronDown className="size-4 text-neutral-400" />
+          <ChevronRight className="size-5 text-neutral-500" />
         </span>
       </button>
 
-      {/* Subcategory list — animated height */}
+      {/* Subcategory list — animated height, plain text rows with dividers */}
       <div
         ref={subListRef}
         className="overflow-hidden"
@@ -115,18 +114,16 @@ function SidebarMenuItem({
       >
         <div
           ref={itemsWrapRef}
-          className="flex flex-col pb-4 pl-2"
+          className="flex flex-col pb-1"
         >
           {items.map((item) => (
             <Link
               key={item.label}
               href={item.href}
               onClick={onClose}
-              className="border-b border-neutral-100 py-2 pl-2 transition-colors duration-200 last:border-b-0 last:pb-0 active:bg-neutral-50"
+              className="border-b border-neutral-100 py-3.5 font-neue-montreal text-[15px] text-neutral-700 transition-colors duration-200 last:border-b-0 active:bg-neutral-50"
             >
-              <span className="block border-l-[2.5px] border-neutral-300 pl-2 text-sm font-medium text-neutral-600">
-                {item.label}
-              </span>
+              {item.label}
             </Link>
           ))}
         </div>
@@ -138,9 +135,7 @@ function SidebarMenuItem({
 /* ─── Main Sidebar ─── */
 export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   const sidebarRef = useRef<HTMLDivElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
   const tweenRef = useRef<gsap.core.Tween | null>(null);
-  const overlayTweenRef = useRef<gsap.core.Tween | null>(null);
 
   // Track which menu is currently expanded — only one at a time
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
@@ -170,15 +165,13 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
-  // Animate sidebar + overlay in/out
+  // Animate the full-screen panel in/out
   useGSAP(
     () => {
       const sidebar = sidebarRef.current;
-      const overlay = overlayRef.current;
-      if (!sidebar || !overlay) return;
+      if (!sidebar) return;
 
       tweenRef.current?.kill();
-      overlayTweenRef.current?.kill();
 
       if (isOpen) {
         tweenRef.current = gsap.fromTo(
@@ -186,20 +179,10 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
           { x: "-100%" },
           { x: "0%", duration: 0.35, ease: "power3.out" },
         );
-        overlayTweenRef.current = gsap.fromTo(
-          overlay,
-          { opacity: 0 },
-          { opacity: 1, duration: 0.3, ease: "power2.out" },
-        );
       } else {
         tweenRef.current = gsap.to(sidebar, {
           x: "-100%",
           duration: 0.3,
-          ease: "power2.in",
-        });
-        overlayTweenRef.current = gsap.to(overlay, {
-          opacity: 0,
-          duration: 0.2,
           ease: "power2.in",
         });
       }
@@ -210,60 +193,63 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   if (!isOpen) return null;
 
   return (
-    <>
-      {/* Backdrop overlay */}
-      <div
-        ref={overlayRef}
-        className="fixed inset-0 z-[60] bg-black/50"
-        style={{ opacity: 0 }}
-        onClick={onClose}
-      />
+    <div
+      ref={sidebarRef}
+      className="fixed inset-0 z-[70] flex w-full flex-col bg-white"
+      style={{ transform: "translateX(-100%)" }}
+    >
+      {/* Top bar — close (left) · logo (center) · search (right) */}
+      <div className="relative flex shrink-0 items-center justify-between border-b border-neutral-200 px-5 py-4">
+        <button
+          type="button"
+          onClick={onClose}
+          className="cursor-pointer rounded-full p-1.5 transition-colors hover:bg-neutral-100"
+          aria-label="Close menu"
+        >
+          <X className="size-7 text-neutral-800" />
+        </button>
 
-      {/* Sidebar panel */}
-      <div
-        ref={sidebarRef}
-        className="fixed inset-y-0 left-0 z-[70] flex w-[90%] sm:w-[280px] flex-col bg-white shadow-xl"
-        style={{ transform: "translateX(-100%)" }}
-      >
-        {/* Header */}
-        <div className="flex shrink-0 items-center justify-between border-b border-border px-5 py-4">
-          <Link href="/" onClick={onClose}>
-            <Image
-              src="/logo/ASG-logo.png"
-              alt="Amanat Shah Group"
-              width={80}
-              height={48}
-              className="h-12 w-auto object-contain"
-              priority
-            />
-          </Link>
-          <button
-            type="button"
-            onClick={onClose}
-            className="cursor-pointer rounded-full p-1.5 transition-colors hover:bg-neutral-100"
-            aria-label="Close menu"
-          >
-            <X className="size-5 text-neutral-700" />
-          </button>
-        </div>
+        <Link
+          href="/"
+          onClick={onClose}
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          aria-label="ASG Home"
+        >
+          <Image
+            src="/logo/asg-icon.png"
+            alt="Amanat Shah Group"
+            width={48}
+            height={48}
+            className="h-11 w-11 object-contain"
+            priority
+          />
+        </Link>
 
-        {/* Navigation links */}
-        <nav className="flex-1 overflow-y-auto px-5 py-2">
-          {navCategories.map((category) => (
-            <SidebarMenuItem
-              key={category.label}
-              category={category}
-              isExpanded={activeMenu === category.label}
-              onToggle={() =>
-                setActiveMenu((prev) =>
-                  prev === category.label ? null : category.label,
-                )
-              }
-              onClose={onClose}
-            />
-          ))}
-        </nav>
+        <button
+          type="button"
+          className="cursor-pointer rounded-full p-1.5 transition-colors hover:bg-neutral-100"
+          aria-label="Search"
+        >
+          <SearchIcon className="size-7 text-neutral-800" />
+        </button>
       </div>
-    </>
+
+      {/* Navigation links */}
+      <nav className="flex-1 overflow-y-auto px-5">
+        {navCategories.map((category) => (
+          <SidebarMenuItem
+            key={category.label}
+            category={category}
+            isExpanded={activeMenu === category.label}
+            onToggle={() =>
+              setActiveMenu((prev) =>
+                prev === category.label ? null : category.label,
+              )
+            }
+            onClose={onClose}
+          />
+        ))}
+      </nav>
+    </div>
   );
 }

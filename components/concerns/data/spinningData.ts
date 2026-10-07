@@ -16,9 +16,9 @@ export const spinningHero = {
 /* ── Intro ── */
 export const spinningCompany = {
   name: "Hazrat Amanat Shah Spinning Mills Ltd.",
-  logoSrc: "/logo/sister-concern/spinning-mills-clr.png",
+  logoSrc: "/logo/sister-concern-update/spinning-mills-clr.png",
   logoAlt: "Hazrat Amanat Shah Spinning Mills Ltd. logo",
-  websiteUrl: "https://www.asg-bd.com/HASSML.php",
+  websiteUrl: "https://hassml.com/",
 };
 
 export const spinningIntroParagraphs = [

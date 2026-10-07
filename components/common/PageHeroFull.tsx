@@ -128,7 +128,7 @@ export default function PageHeroFull({
         <h1 className="whitespace-pre-line leading-[1.05] text-[1.3125rem] sm:text-[2.625rem] lg:text-[3.625rem] text-white font-archivo-black uppercase">
           {title}
         </h1>
-        <p className="whitespace-pre-line lg:whitespace-normal text-sm lg:text-[1.125rem] leading-relaxed tracking-widest text-white font-neue-montreal font-light max-w-[80%] mx-auto">
+        <p className="text-sm lg:text-[1.125rem] leading-relaxed tracking-widest text-white font-neue-montreal font-light max-w-[550px] mx-auto">
           {subtitle}
         </p>
       </div>

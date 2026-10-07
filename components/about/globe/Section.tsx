@@ -1,8 +1,12 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 // Brand logo tiles — exactly the logos in /public/images/global-footprint/.
 // Each entry carries its true intrinsic width (all share a 264px height) so the
@@ -76,11 +80,20 @@ export default function RockSteadySection() {
 
   const loopedBrands = Array.from({ length: copies }, () => brands).flat();
 
+  // The globe is a heavy dynamic import (react-globe.gl + WebGL + textures) that
+  // finishes well after the Hero/ASGHighlight/AboutUs ScrollTriggers were measured
+  // on the first visit, leaving their recorded scroll ranges stale — which made
+  // the first downward scroll overshoot to the footer. Re-measure once the globe
+  // is ready so the sections line back up. Keeps layout/height untouched.
+  const handleGlobeReady = useCallback(() => {
+    ScrollTrigger.refresh();
+  }, []);
+
   return (
     <section className="relative isolate h-dvh w-full overflow-hidden bg-black">
       {/* Globe canvas — full bleed */}
       <div className="absolute inset-0">
-        <GlobeInner />
+        <GlobeInner onReady={handleGlobeReady} />
       </div>
 
       {/* Dark-green wash — screen-blended so it ADDS light over the black globe
@@ -111,14 +124,13 @@ export default function RockSteadySection() {
       <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center lg:justify-start">
         <div className="w-full px-6 sm:px-10 lg:w-[43%] lg:px-0 lg:pl-[12em]">
           <div className="flex items-center gap-2 mb-3">
-            <span className="font-neue-montreal font-normal uppercase tracking-widest text-neutral-400">GLOBAL REACH</span>
-            <span className="size-2 rounded-full bg-[image:var(--primary-gradient)]" />
+            <span className="inline-flex items-center gap-1.5 font-space-mono font-medium text-white uppercase">GLOBAL REACH <span className="text-2xl leading-none bg-gradient-to-b from-[#4a9e4a] to-[#2d6b2d] bg-clip-text text-transparent">•</span></span>
           </div>
           <h2 className="text-2xl sm:text-4xl lg:text-[3rem] text-white font-archivo-black uppercase leading-[1.1] mb-4 lg:mb-5">
             Bangladesh<br />at the center.
           </h2>
-          <p className="text-base md:text-[1.25rem] text-neutral-400">
-            A single manufacturing hub in Bangladesh, connected to sourcing offices, buyers and retail partners across four regions. A single manufacturing hub in Bangladesh, connected to sourcing offices, buyers and retail partners across four regions.
+          <p className="text-base md:text-[1.25rem] text-[#99B3AD]">
+            With over 30 years of export expertise, serving 30+ brands in 25 countries across 4 regions, ASG became the colony of trust in modern clothing brands. Backed by quality, transparency and commitment to its bones started late 19th century.
           </p>
         </div>
       </div>

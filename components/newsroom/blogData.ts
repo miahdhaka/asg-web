@@ -19,17 +19,21 @@ export interface BlogPost {
   label: string;
   category: string;
   publishedAt: string;
+  /** Bold standfirst paragraph shown between the hero and the body. */
+  lead: string;
 
-  /* ── Two portrait photos side-by-side under the title ── */
+  /* ── Single wide hero image under the title ── */
   heroImages: string[];
 
   /* ── Main article paragraphs ── */
   body: string[];
 
-  /* ── "A look inside…" wide photo + 4-image gallery row ── */
+  /* ── "A look inside…" wide photo/video + 4-image gallery row ── */
   eventSection: {
     heading: string;
     wideImage: string;
+    /** Optional wide video — takes priority over wideImage when present. */
+    wideVideo?: string;
     galleryImages: string[];
   };
 
@@ -56,18 +60,20 @@ export const blogPosts: BlogPost[] = [
     slug: "global-heritage-bangladeshi-lungi",
     title:
       "Global heritage on Bangladeshi lungi: Amanat Shah creates lungi for new generation",
-    label: "Blog",
+    label: "Press release",
     category: "Corporate",
-    publishedAt: "3 June, 2026",
+    publishedAt: "31 March, 2024, 01:40 pm",
+    lead: "Popular lungi brand Amanat Shah continues its Caribbean series this Eid with global heritage alifa printed on the lungi alongside the traditional check-stripe patterns.",
 
     heroImages: [
-      "/images/newsroom/news-card-b.png",
+      "/images/newsroom/news-hero.png",
       "/images/newsroom/news-card-c.png",
     ],
 
     body: [
-      "Karim began formal education and enrollment in Confucius across the 6th with a quiet heritage who arrived on the scene through the workshop through a series of events.",
-      "The event showcased the group's long-standing commitment to craftsmanship, community and innovation — values that have defined the Amanat Shah legacy for over a century.",
+      "Unter der kreativen Leitung von David Beckham und designt von BOSS präsentiert sich die Garderobe dieser Saison mit einer unverkennbaren sommerlichen Leichtigkeit. Luftige Stoffe treffen auf eine Palette aus sanften Neutralfarben und lebhaften Akzenten – die Kollektion vereint mühelos tragbare Essentials, smarte Casual-Favoriten und elegante Tailoring-Pieces.",
+      "Unter der kreativen Leitung von David Beckham und designt von BOSS präsentiert sich die Garderobe dieser Saison mit einer unverkennbaren sommerlichen Leichtigkeit. Luftige Stoffe treffen auf eine Palette aus sanften Neutralfarben und lebhaften Akzenten – die Kollektion vereint mühelos tragbare Essentials, smarte Casual-Favoriten und elegante Tailoring-Pieces.",
+      "The Caribbean series of lungis features visuals of many world heritage, snow-covered landscapes, and Bangladeshi traditions like boats docked at the ghats, bullock carts, and mountains."
     ],
 
     eventSection: {
@@ -86,15 +92,15 @@ export const blogPosts: BlogPost[] = [
       items: [
         {
           image: "/images/newsroom/news_1.webp",
-          caption: "Promising commercial development",
+          caption: "President’s industrial development",
         },
         {
           image: "/images/newsroom/news_2.webp",
-          caption: "Researchful industrial development research",
+          caption: "President’s industrial development award.",
         },
         {
           image: "/images/newsroom/news_3.webp",
-          caption: "Economical industrial development research",
+          caption: "President’s industrial development award.",
         },
       ],
     },
@@ -102,7 +108,7 @@ export const blogPosts: BlogPost[] = [
     collectionSection: {
       heading: "The new MIAH collection",
       description:
-        "The latest collection draws from a century of textile heritage, reinterpreted for the modern consumer. Each piece reflects the craftsmanship, quality and cultural identity that define MIAH by Amanat Shah Group.",
+        "Unter der kreativen Leitung von David Beckham und designt von BOSS präsentiert sich die Garderobe dieser Saison mit einer unverkennbaren sommerlichen Leichtigkeit. Luftige Stoffe treffen auf eine Palette aus sanften Neutralfarben und lebhaften Akzenten – die Kollektion vereint mühelos tragbare Essentials, smarte Casual-Favoriten und elegante Tailoring-Pieces.",
       photos: [
         "/images/newsroom/news-card-c.png",
         "/images/newsroom/news-card-d.png",

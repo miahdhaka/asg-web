@@ -77,7 +77,7 @@ function NavItem({
       <Link
         href={category.href}
         onMouseEnter={() => onMenuChange?.(null, null)}
-        className="group/navitem relative cursor-pointer text-lg font-medium text-nowrap text-neutral-800 transition-colors duration-200 ease-in-out font-neue-montreal hover:text-neutral-950"
+        className="group/navitem relative cursor-pointer text-[19.5px] font-medium text-nowrap text-neutral-800 transition-colors duration-200 ease-in-out font-neue-montreal hover:text-neutral-950"
       >
         <NavLabel label={category.label} active={false} underline={false} />
       </Link>
@@ -93,7 +93,7 @@ function NavItem({
     >
       <button
         type="button"
-        className={`relative cursor-pointer text-lg font-medium text-nowrap transition-colors duration-200 ease-in-out font-neue-montreal ${
+        className={`relative cursor-pointer text-[19.5px] font-medium text-nowrap transition-colors duration-200 ease-in-out font-neue-montreal ${
           active ? "text-neutral-950" : "text-neutral-800 hover:text-neutral-950"
         }`}
       >

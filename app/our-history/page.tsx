@@ -14,7 +14,7 @@ export default function OurHistoryPage() {
     <main>
       <PageHero
         title="Our History"
-        subtitle={'At A Glance into The History of\nAmanat Shah Group'}
+        subtitle="At A Glance into The History of Amanat Shah Group"
         mobileSrc="/images/our-history/history-hero.jpg"
         desktopSrc="/images/our-history/history-hero.jpg"
         alt="Our History"

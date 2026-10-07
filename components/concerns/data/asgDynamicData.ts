@@ -15,7 +15,7 @@ export const dynamicHero = {
 /* ── Intro ── */
 export const dynamicCompany = {
   name: "ASG Dynamic",
-  logoSrc: "/logo/sister-concern/asg-dynamic.png",
+  logoSrc: "/logo/sister-concern-update/asg-dynamic.png",
   logoAlt: "ASG Dynamic logo",
   websiteUrl: "#",
 };

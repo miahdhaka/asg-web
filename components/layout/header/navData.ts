@@ -16,10 +16,10 @@ export const navCategories: NavCategory[] = [
     megaVariant: "logo",
     megaItems: [
       { label: "Helal&Brothers Ltd.", href: "/concerns/helal-brothers", image: "/logo/sister-concern/helal-brothers-clr.png" },
-      { label: "Miah & Miah Enterprise ", href: "/concerns/miah", image: "/logo/sister-concern/miah-clr.png" },
+      { label: "Hazrat Amanat Shah Spinning Mils Ltd.", href: "/concerns/hazrat-amanat-shah-spinning-mills", image: "/logo/sister-concern/spinning-mills-clr.png" },
       { label: "Amanat Shah Weaving Processing Ltd. ", href: "/concerns/amanat-shah-weaving-processing", image: "/logo/sister-concern/weaving-clr.png" },
       { label: "Amanat Shah Fabrics Ltd.", href: "/concerns/amanat-shah-fabrics", image: "/logo/sister-concern/fabrics-clr.png" },
-      { label: "Hazrat Amanat Shah Spinning Mils Ltd.", href: "/concerns/hazrat-amanat-shah-spinning-mills", image: "/logo/sister-concern/spinning-mills-clr.png" },
+      { label: "Miah & Miah Enterprise ", href: "/concerns/miah", image: "/logo/sister-concern/miah-clr.png" },
       { label: "Trust Knitwear Industries Ltd.", href: "/concerns/trust-knitwear-industries", image: "/logo/sister-concern/trust-knitwear-clr.png" },
       { label: "Hazrat Amanat Shah Securities Ltd.", href: "/concerns/hazrat-amanat-shah-securities", image: "/logo/sister-concern/securities-clr.png" },
       { label: "Farm2Firm", href: "/concerns/farm2firm", image: "/logo/sister-concern/farm2farm-clr.png" },
@@ -40,7 +40,7 @@ export const navCategories: NavCategory[] = [
     label: "Media & Press",
     megaMenu: true,
     megaItems: [
-      { label: "News", href: "/newsroom", image: "/images/navbar/media-press-clr-1.png" },
+      { label: "News & Stories", href: "/newsroom", image: "/images/navbar/media-press-clr-1.png" },
       { label: "Media Gallery", href: "/media-galleries", image: "/images/navbar/media-press-clr-2.png" },
     ],
   },

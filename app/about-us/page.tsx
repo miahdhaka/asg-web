@@ -83,7 +83,7 @@ export default function AboutUsPage() {
       <PageHeroFull
         id="about-hero"
         title="House of Trust"
-        subtitle={"130 Years of Legacy, Continuing into the Fourth \nGeneration of Success"}
+        subtitle="130 Years of Legacy, Continuing into the Fourth Generation of Success"
         mobileSrc="/images/about-us/about-hero-mobile.png"
         desktopSrc="/images/about-us/about-hero.png"
         alt="Amanat Shah Group"

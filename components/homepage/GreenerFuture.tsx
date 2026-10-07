@@ -21,25 +21,25 @@ const cards: GreenerFutureCard[] = [
   {
     label: "Sustainability",
     description:
-      "Growing toward greener manufacturing by optimizing Renewable Energy and Closed-loop Water Systems (CLWS)",
+      "Growing toward greener manufacturing by optimizing Renewable Energy and Closed-loop Water Systems (CLWS).",
     image: "/images/sustainability/sustainability.webp",
   },
   {
     label: "Innovation",
     description:
-      "Advancing future-ready fashion and industrialization through enriched technologies.",
+      "Advancing future-ready fashion and industrialization through best technologies and real-time values.",
     image: "/images/sustainability/innovation.webp",
   },
   {
     label: "Quality & Compliance",
     description:
-      "End-to-end transparent production, operating entirely with international compliance-backed quality control at every step.",
+      "End-to-end transparent production, operating with international compliance at every step of the process.",
     image: "/images/sustainability/quality-&-compliance.webp",
   },
   {
     label: "Social Business Commitment",
     description:
-      "By optimizing raw material consumption and minimizing waste across our supply chain, we maximize output while reducing our overall environmental impact.",
+      "Help solopreneurs, women and youngsters to become skillfully valuable to the global fashion with impact.",
     image: "/images/sustainability/social-business-commitment.webp",
   },
 ];
@@ -228,15 +228,13 @@ export default function GreenerFuture() {
       {/* Header row — heavy uppercase title left, supporting copy right */}
       <div className="flex flex-col gap-10 px-6 md:px-12 lg:flex-row lg:items-end lg:justify-between lg:max-w-[90%] lg:px-20">
         <h2 className="font-archivo-black uppercase text-2xl sm:text-4xl lg:text-[3rem] leading-[1.1] text-[var(--neutral-800)] lg:max-w-[55%]">
-          Shaping a Greener
+          Guiding Greener Future
           <br />
-          Future in Textiles
+          Beyond Textiles
         </h2>
 
         <p className="text-base text-[#555] md:text-[1.25rem] lg:max-w-[40%] lg:pt-2">
-          ASG stands behind eco-conscious manufacturing. Maintained through
-          global fashion compliance at every step of craftsmanship, caring for
-          end-customer satisfaction at every level.
+          ASG stands behind eco-conscious manufacturing. Maintained through global fashion compliance at every step of craftsmanship, caring for end-customer satisfaction.
         </p>
       </div>
 

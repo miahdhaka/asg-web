@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import PageHero from "@/components/common/PageHero";
 import ContactInfo from "@/components/contact-us/ContactInfo";
 import ContactForm from "@/components/contact-us/ContactForm";
-import OfficeSection from "@/components/contact-us/OfficeSection";
-import { sisterConcernCards, salesPointCards } from "@/components/contact-us/contactData";
+import AllLocationsSection from "@/components/contact-us/AllLocationsSection";
 
 export const metadata: Metadata = {
   title: "Contact Us | ASG - Amanat Shah Group",
@@ -16,7 +15,7 @@ export default function ContactUsPage() {
     <main>
       <PageHero
         title="Contact Us"
-        subtitle="Get in touch with us"
+        subtitle="We welcome your inquiries, business proposals, partnerships, and opportunities for collaboration."
         mobileSrc="/images/contact-us/hero-bg.png"
         desktopSrc="/images/contact-us/hero-bg.png"
         alt="ASG Group contact us"
@@ -24,33 +23,22 @@ export default function ContactUsPage() {
 
       {/* Contact info + form section — split by a vertical divider */}
       <section className="lg:grid lg:grid-cols-[36.4rem_1fr]">
-        {/* Left column — HQ info + hours (divider runs full column height) */}
-        <div className="border-b lg:border-b-0 lg:border-r border-gray-100 px-4 sm:px-8 lg:px-[5rem] pt-6 sm:pt-10 lg:pt-[5rem] pb-10 sm:pb-16 lg:pb-[4.5rem]">
+        {/* Left column — HQ info + hours */}
+        <div className="border-b lg:border-b-0 lg:border-r border-gray-200 pl-4 sm:pl-8 lg:pl-[5rem] pt-6 sm:pt-10 lg:pt-[5rem] pb-6 sm:pb-16 lg:pb-[4.5rem]">
           <ContactInfo />
         </div>
 
         {/* Right column — form */}
-        <div className="px-4 sm:px-8 lg:px-[5rem] pt-10 lg:pt-[5rem] pb-10 sm:pb-16 lg:pb-[6.5rem]">
+        <div className="px-4 sm:px-8 lg:px-[5rem] pt-6 sm:pt-10 lg:pt-[5rem] pb-10 sm:pb-16 lg:pb-[5.5rem]">
           <ContactForm />
         </div>
       </section>
 
       {/* Divider */}
-      <hr className="border-t border-gray-100" />
+      <hr className="border-t border-gray-200" />
 
-      {/* Sister Concerns Office — ends with a trailing divider */}
-      <OfficeSection
-        heading="Sister Concerns Office"
-        cards={sisterConcernCards}
-        trailingDivider
-      />
-
-      {/* Sales Point */}
-      <OfficeSection
-        heading="Sales Point"
-        cards={salesPointCards}
-        className="pb-[3.75rem]"
-      />
+      {/* ASG All Location section */}
+      <AllLocationsSection />
     </main>
   );
 }

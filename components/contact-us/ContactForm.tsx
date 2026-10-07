@@ -54,7 +54,7 @@ export default function ContactForm() {
   }, [activeTab]);
 
   return (
-    <div className="flex w-full flex-col gap-5 sm:gap-10.5">
+    <div className="flex w-full flex-col gap-5 sm:gap-8">
       {/* SVG Gradient Definition for Icon */}
       <svg className="absolute h-0 w-0" aria-hidden="true">
         <defs>
@@ -65,70 +65,60 @@ export default function ContactForm() {
         </defs>
       </svg>
       {/* Tabs */}
-      <div className="relative grid grid-cols-4 border-b border-gray-100">
+      <div className="flex gap-2 w-full border-b border-gray-200 overflow-x-auto scrollbar-hide">
         {formTabs.map((tab, i) => (
           <button
             key={tab}
             onClick={() => setActiveTab(i)}
-            className={`relative cursor-pointer px-2 sm:px-3.5 py-3 sm:py-4 text-xs sm:text-base lg:text-[1.3rem] text-neutral-800 transition-colors ${
+            className={`relative cursor-pointer shrink-0 py-3 sm:py-4 text-base lg:text-[1.3rem] transition-colors tracking-wide min-w-[5.3rem] sm:min-w-[200px] ${
               i === activeTab
-                ? "bg-[linear-gradient(150deg,rgba(139,195,74,0.1)_0%,rgba(26,161,121,0.1)_81%)]"
-                : ""
+                ? "text-neutral-900 font-medium"
+                : "text-neutral-500 hover:text-neutral-700"
             }`}
           >
             {tab}
+            {i === activeTab && (
+              <span className="absolute bottom-0 left-0 h-[2.5px] w-full bg-[linear-gradient(150deg,#8BC34A_0%,#1AA179_81%)]" />
+            )}
           </button>
         ))}
-        {/* Sliding gradient indicator */}
-        <span
-          aria-hidden
-          className="absolute bottom-0 h-[3px] w-1/4 bg-[linear-gradient(150deg,#8BC34A_0%,#1AA179_81%)] transition-transform duration-300 ease-in-out"
-          style={{ transform: `translateX(${activeTab * 100}%)` }}
-        />
       </div>
 
       {/* Form fields with fade transition */}
-      <div key={activeTab} className="flex flex-col gap-4 sm:gap-8 animate-fade-in">
+      <div key={activeTab} className="flex flex-col gap-3 animate-fade-in">
         {/* Full name */}
         <div className="flex flex-col gap-1.5 sm:gap-0">
-          <label className="sm:hidden text-xs font-medium text-neutral-800">Full Name</label>
-          <div className="border border-neutral-200 rounded-md sm:input-gradient-border-hover">
-            <input
-              type="text"
-              placeholder={fields.namePlaceholder}
-              className="h-9 lg:h-[3.5rem] w-full bg-white px-3 sm:px-4 text-xs lg:text-[1rem] text-neutral-800 placeholder:text-neutral-600 focus:outline-none rounded-md"
-            />
-          </div>
+          <input
+            type="text"
+            placeholder={fields.namePlaceholder}
+            className="h-12 lg:h-[3.8rem] w-full bg-white px-4 sm:px-5 text-sm lg:text-[1.1rem] text-neutral-800 placeholder:text-neutral-400 focus:outline-none rounded-md"
+          />
         </div>
 
         {/* Mobile number */}
         <div className="flex flex-col gap-1.5 sm:gap-0">
-          <label className="sm:hidden text-xs font-medium text-neutral-800">Mobile Number</label>
-          <div className="border border-neutral-200 rounded-md sm:input-gradient-border-hover">
-            <input
-              type="tel"
-              placeholder={fields.mobilePlaceholder}
-              className="h-9 lg:h-[3.5rem] w-full bg-white px-3 sm:px-4 text-xs lg:text-[1rem] text-neutral-800 placeholder:text-neutral-600 focus:outline-none rounded-md"
-            />
-          </div>
+          <input
+            type="tel"
+            placeholder={fields.mobilePlaceholder}
+            className="h-12 lg:h-[3.8rem] w-full bg-white px-4 sm:px-5 text-sm lg:text-[1.1rem] text-neutral-800 placeholder:text-neutral-400 focus:outline-none rounded-md"
+          />
         </div>
 
         {/* Topic / Product dropdown */}
         <div className="flex flex-col gap-1.5 sm:gap-0">
-          <label className="sm:hidden text-xs font-medium text-neutral-800">Topic</label>
           <div ref={dropdownRef} className="relative self-stretch">
             {/* Trigger button */}
             <button
               type="button"
               onClick={() => hasSearchableDropdown && setDropdownOpen((o) => !o)}
-              className="flex h-9 lg:h-[3.5rem] w-full items-center gap-2 bg-white px-3 sm:px-3.5 border border-neutral-200 rounded-md sm:input-gradient-border-hover text-left cursor-pointer"
+              className="flex h-12 lg:h-[3.8rem] w-full items-center gap-2 bg-white px-4 sm:px-5 rounded-md text-left cursor-pointer"
             >
-              <span className="flex-1 text-xs lg:text-[1rem] text-neutral-600 truncate">
+              <span className="flex-1 text-sm lg:text-[1.1rem] text-neutral-400 truncate">
                 {selectedOption || fields.dropdownPlaceholder}
               </span>
               <ChevronDown
-                size={16}
-                className={`shrink-0 text-neutral-800 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
+                size={18}
+                className={`shrink-0 text-neutral-500 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
               />
             </button>
 
@@ -136,27 +126,27 @@ export default function ContactForm() {
             {dropdownOpen && hasSearchableDropdown && (
               <div className="absolute left-0 right-0 top-full z-30 mt-1 overflow-hidden rounded-md border border-neutral-200 bg-white shadow-lg">
                 {/* Search bar */}
-                <div className="flex items-center gap-2 border-b border-gray-100 px-3 py-2">
-                  <Search className="size-4 shrink-0 text-neutral-400" />
+                <div className="flex items-center gap-2.5 border-b border-gray-100 px-4 py-3">
+                  <Search className="size-[18px] shrink-0 text-neutral-400" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search..."
-                    className="w-full bg-transparent text-sm text-neutral-800 placeholder:text-neutral-400 focus:outline-none"
+                    className="w-full bg-transparent text-base text-neutral-800 placeholder:text-neutral-400 focus:outline-none"
                     autoFocus
                   />
                 </div>
 
                 {/* Options list */}
-                <ul className="max-h-48 overflow-y-auto py-1">
+                <ul className="max-h-64 overflow-y-auto py-1.5">
                   {filteredOptions.length > 0 ? (
                     filteredOptions.map((opt) => (
                       <li key={opt}>
                         <button
                           type="button"
                           onClick={() => selectOption(opt)}
-                          className={`w-full cursor-pointer px-4 py-2.5 text-left text-sm transition-colors hover:bg-gray-50 ${
+                          className={`w-full cursor-pointer px-5 py-3.5 text-left text-base transition-colors hover:bg-[linear-gradient(150deg,rgba(139,195,74,0.1)_0%,rgba(26,161,121,0.1)_81%)] ${
                             selectedOption === opt
                               ? "bg-gray-50 font-medium text-neutral-800"
                               : "text-neutral-600"
@@ -167,7 +157,7 @@ export default function ContactForm() {
                       </li>
                     ))
                   ) : (
-                    <li className="px-4 py-3 text-sm text-neutral-400">
+                    <li className="px-5 py-3.5 text-base text-neutral-400">
                       No results found
                     </li>
                   )}
@@ -179,13 +169,10 @@ export default function ContactForm() {
 
         {/* Message */}
         <div className="flex flex-col gap-1.5 sm:gap-0">
-          <label className="sm:hidden text-xs font-medium text-neutral-800">Message</label>
-          <div className="border border-neutral-200 rounded-md sm:input-gradient-border-hover">
-            <textarea
-              placeholder={fields.messagePlaceholder}
-              className="h-[10rem] lg:h-[16.5rem] w-full resize-none bg-white px-3 sm:px-4 py-2.5 sm:py-3.5 text-xs lg:text-[1rem] text-neutral-800 placeholder:text-neutral-600 focus:outline-none rounded-md"
-            />
-          </div>
+          <textarea
+            placeholder={fields.messagePlaceholder}
+            className="h-[10rem] lg:h-[12rem] w-full resize-none bg-white px-4 sm:px-5 py-3 sm:py-4 text-sm lg:text-[1.1rem] text-neutral-800 placeholder:text-neutral-400 focus:outline-none rounded-md"
+          />
         </div>
       </div>
 

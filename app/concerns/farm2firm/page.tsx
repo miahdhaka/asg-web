@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import PageHeroFull from "@/components/common/PageHeroFull";
 import ConcernIntro from "@/components/concerns/common/ConcernIntro";
 import ConcernCoreValues from "@/components/concerns/common/ConcernCoreValues";
+import ConcernProcessing from "@/components/concerns/common/ConcernProcessing";
 import {
   farmHero,
   farmCompany,
   farmIntroParagraphs,
   farmIntroStats,
   farmCoreValues,
+  farmProcessing,
 } from "@/components/concerns/data/farmData";
 
 export const metadata: Metadata = {
@@ -38,6 +40,11 @@ export default function Farm2FirmPage() {
         heading={farmCoreValues.heading}
         description={farmCoreValues.description}
         cards={farmCoreValues.cards}
+      />
+      <ConcernProcessing
+        sectionId="farm2firm-processing"
+        title={farmProcessing.title}
+        slides={farmProcessing.slides}
       />
     </main>
   );

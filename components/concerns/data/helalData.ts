@@ -16,9 +16,9 @@ export const helalHero = {
 /* ── Intro ── */
 export const helalCompany = {
   name: "M/s Helal & Brothers",
-  logoSrc: "/logo/sister-concern/helal-brothers-clr.png",
+  logoSrc: "/logo/sister-concern-update/helal-brothers-clr.png",
   logoAlt: "M/s Helal & Brothers Ltd. logo",
-  websiteUrl: "https://www.asg-bd.com/H&B",
+  websiteUrl: "https://amanatshahlungi.com/",
 };
 
 export const helalIntroParagraphs = [

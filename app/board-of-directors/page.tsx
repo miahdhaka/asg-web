@@ -21,7 +21,7 @@ export default function BoardOfDirectorsPage() {
       <PageHero
         id="board-hero"
         title="Board of Directors"
-        subtitle={'The task of the board of directors is to \nmanage the companys'}
+        subtitle="The task of the board of directors is to manage the companys"
         mobileSrc="/images/board-of-directors/board-hero-mobile.webp"
         desktopSrc="/images/board-of-directors/board-hero-desktop.webp"
         alt="Board of Directors of Amanat Shah Group"

@@ -1,28 +1,34 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/common/PageHero";
-import CsrIntro from "@/components/sustainability/CsrIntro";
-import CsrImageRow from "@/components/sustainability/CsrImageRow";
-import CsrInitiatives from "@/components/sustainability/CsrInitiatives";
+import CsrCommunityImpact from "@/components/sustainability/CsrCommunityImpact";
+import CsrPeopleFirst from "@/components/sustainability/CsrPeopleFirst";
+import CsrEducationBanner from "@/components/sustainability/CsrEducationBanner";
+import CsrPillars from "@/components/sustainability/CsrPillars";
+import CsrPartnerCta from "@/components/sustainability/CsrPartnerCta";
+import { csrHero } from "@/components/sustainability/csrData";
 
 export const metadata: Metadata = {
   title: "Corporate Social Responsibility | ASG - Amanat Shah Group",
   description:
-    "Amanat Shah Group's CSR initiatives — education, healthcare, staff welfare, and community development across Bangladesh.",
+    "Amanat Shah Group's CSR commitments — uplifting local communities, a people-first workplace, and education-led social growth.",
 };
 
 export default function CorporateSocialResponsibilityPage() {
   return (
     <main>
       <PageHero
-        title="Corporate Social Responsibility"
-        subtitle="Family business legacy for more than 130 years."
-        mobileSrc="/images/sustainability/csr/hero.png"
-        desktopSrc="/images/sustainability/csr/hero.png"
-        alt="Corporate Social Responsibility — Amanat Shah Group community initiatives"
+        title={csrHero.title}
+        subtitle={csrHero.subtitle}
+        mobileSrc={csrHero.image}
+        desktopSrc={csrHero.image}
+        alt={csrHero.alt}
+        emblemSrc={csrHero.emblem}
       />
-      <CsrIntro />
-      <CsrImageRow />
-      <CsrInitiatives />
+      <CsrCommunityImpact />
+      <CsrPeopleFirst />
+      <CsrEducationBanner />
+      <CsrPillars />
+      <CsrPartnerCta />
     </main>
   );
 }

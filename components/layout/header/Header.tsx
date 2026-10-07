@@ -6,7 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { Menu } from "lucide-react";
+import { Menu, Search as SearchIcon } from "lucide-react";
 import Navigation from "./Navigation";
 import MegaMenu from "./MegaMenu";
 import type { MegaMenuItem } from "./types";
@@ -49,6 +49,7 @@ export default function Header() {
   const megaWrapRef = useRef<HTMLDivElement>(null);
   const megaContentRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const mobileBarRef = useRef<HTMLDivElement>(null);
 
   const [hovered, setHovered] = useState(false);
   const [navReady, setNavReady] = useState(false);
@@ -56,6 +57,9 @@ export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  /* Pill radius: stays 30px while the mega zone is visible and only snaps back
+     to full-round once the collapse (rise-up) tween has fully finished. */
+  const [megaRadius, setMegaRadius] = useState(false);
   const pathname = usePathname();
 
   const closeSidebar = useCallback(() => setSidebarOpen(false), []);
@@ -70,16 +74,23 @@ export default function Header() {
      sections (search panel, page offsets) stay stable regardless of whether
      the mega menu is expanded. */
   useEffect(() => {
-    const el = rowRef.current;
-    if (!el) return;
-    const publish = () =>
-      document.documentElement.style.setProperty(
-        "--header-height",
-        `${el.getBoundingClientRect().height}px`
-      );
+    const desktop = rowRef.current;
+    const mobile = mobileBarRef.current;
+    if (!desktop && !mobile) return;
+    const publish = () => {
+      // Use whichever bar is visible — the floating desktop pill (hidden below
+      // lg) or the full-width mobile top bar (hidden at lg+). A display:none
+      // element measures 0, so the visible bar always wins.
+      const h =
+        desktop?.getBoundingClientRect().height ||
+        mobile?.getBoundingClientRect().height ||
+        0;
+      document.documentElement.style.setProperty("--header-height", `${h}px`);
+    };
     publish();
     const observer = new ResizeObserver(publish);
-    observer.observe(el);
+    if (desktop) observer.observe(desktop);
+    if (mobile) observer.observe(mobile);
     return () => observer.disconnect();
   }, []);
 
@@ -249,6 +260,7 @@ export default function Header() {
       const tl = gsap.timeline();
 
       if (open) {
+        setMegaRadius(true);
         const target = content.scrollHeight;
         tl.to(wrap, { height: target, duration: 0.5, ease: "power3.out" }, 0);
         if (comingFromClosed) {
@@ -271,6 +283,8 @@ export default function Header() {
       } else {
         tl.to(content, { opacity: 0, y: 10, duration: 0.25, ease: "power2.in" }, 0);
         tl.to(wrap, { height: 0, duration: 0.5, ease: "power3.inOut" }, 0.05);
+        // Only restore the full-round pill after the panel has fully risen.
+        tl.call(() => setMegaRadius(false));
       }
       megaTlRef.current = tl;
     },
@@ -316,18 +330,60 @@ export default function Header() {
         />
       )}
 
+      {/* Mobile top bar — full-width (hamburger · centered logo · search).
+          Replaces the floating desktop pill below lg so mobile matches the
+          reference design; hidden at lg+ where the pill takes over. */}
+      <div
+        ref={mobileBarRef}
+        className="fixed inset-x-0 top-0 z-50 flex items-center justify-between rounded-b-[1.75rem] border-b border-neutral-200 bg-white/85 px-5 py-4 backdrop-blur-[15px] lg:hidden"
+      >
+        <button
+          type="button"
+          onClick={() => setSidebarOpen(true)}
+          className="cursor-pointer rounded-full p-1.5 transition-colors hover:bg-neutral-100"
+          aria-label="Open menu"
+        >
+          <Menu className="size-7 text-neutral-800" strokeWidth={1.8} />
+        </button>
+
+        <Link
+          href="/"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          aria-label="ASG Home"
+        >
+          <Image
+            src="/logo/asg-icon.png"
+            alt="Amanat Shah Group"
+            width={48}
+            height={48}
+            className="h-11 w-11 object-contain"
+            priority
+          />
+        </Link>
+
+        <button
+          type="button"
+          className="cursor-pointer rounded-full p-1.5 transition-colors hover:bg-neutral-100"
+          aria-label="Search"
+        >
+          <SearchIcon className="size-7 text-neutral-800" />
+        </button>
+      </div>
+
       <header
         ref={headerRef}
-        className="fixed top-5 left-0 right-0 z-50 flex justify-center pointer-events-none"
+        className="fixed top-5 left-0 right-0 z-50 hidden justify-center pointer-events-none lg:flex"
       >
         {/* One floating capsule: compact pill that grows HORIZONTALLY on hover
-            (nav) and DOWNWARD on click (mega). Fixed 30px radius stays a clean
-            pill collapsed and keeps nice corners when expanded. */}
+            (nav) and DOWNWARD on click (mega). Full round while collapsed AND
+            while hover-expanded; only the mega/search drop takes the 30px. */}
         <div
           ref={pillRef}
           onMouseEnter={handleEnter}
           onMouseLeave={handleLeave}
-          className="pointer-events-auto flex flex-col overflow-hidden rounded-[30px] bg-white/80 backdrop-blur-[15px] shadow-[0px_8px_24px_0px_#00000014] border border-white/60"
+          className={`pointer-events-auto flex flex-col overflow-hidden bg-white/80 backdrop-blur-[15px] shadow-[0px_8px_24px_0px_#00000014] border border-white/60 ${
+            megaRadius ? "rounded-[30px]" : "rounded-full"
+          }`}
         >
           {/* Header row: logo · nav (swap zone) · right icons */}
           <div ref={rowRef} className="flex items-center gap-4 px-8 h-[80px]">
@@ -355,7 +411,7 @@ export default function Header() {
             >
               <span
                 ref={labelRef}
-                className="inline-block whitespace-nowrap px-1 text-lg font-normal tracking-wide text-neutral-800 font-neue-montreal"
+                className="inline-block whitespace-nowrap px-1 text-[19.5px] font-medium text-neutral-800 font-neue-montreal"
               >
                 {currentPageLabel}
               </span>
