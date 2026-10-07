@@ -16,51 +16,6 @@ export default function CareerBoard() {
   const gridRef = useRef<HTMLDivElement>(null);
   const loadingTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  // Typing-animation for the search-input placeholder
-  const PLACEHOLDER_FULL = "Search job title";
-  const TYPING_SPEED = 100;
-  const PAUSE_AFTER_FULL = 2200;
-  const DELETING_SPEED = 50;
-
-  const [placeholder, setPlaceholder] = useState("");
-  const placeholderIdx = useRef(0);
-  const placeholderDir = useRef<"typing" | "pausing" | "deleting">("typing");
-
-  useEffect(() => {
-    let tid: ReturnType<typeof setTimeout>;
-
-    const tick = () => {
-      const dir = placeholderDir.current;
-      if (dir === "typing") {
-        const next = placeholderIdx.current + 1;
-        setPlaceholder(PLACEHOLDER_FULL.slice(0, next));
-        placeholderIdx.current = next;
-        if (next >= PLACEHOLDER_FULL.length) {
-          placeholderDir.current = "pausing";
-          tid = setTimeout(tick, PAUSE_AFTER_FULL);
-        } else {
-          tid = setTimeout(tick, TYPING_SPEED);
-        }
-      } else if (dir === "pausing") {
-        placeholderDir.current = "deleting";
-        tid = setTimeout(tick, DELETING_SPEED);
-      } else {
-        const next = placeholderIdx.current - 1;
-        setPlaceholder(PLACEHOLDER_FULL.slice(0, next));
-        placeholderIdx.current = next;
-        if (next <= 0) {
-          placeholderDir.current = "typing";
-          tid = setTimeout(tick, TYPING_SPEED); // immediately re-type
-        } else {
-          tid = setTimeout(tick, DELETING_SPEED);
-        }
-      }
-    };
-
-    tid = setTimeout(tick, TYPING_SPEED);
-    return () => clearTimeout(tid);
-  }, []);
-
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return jobs.filter((job) => {
@@ -93,17 +48,17 @@ export default function CareerBoard() {
   }, [filtered]);
 
   return (
-    <section id="career-board" className="bg-white">
+    <section id="career-board" className="bg-background">
       {/* Heading + search controls */}
       <div className="relative z-10 w-full max-w-[70rem] mx-auto pt-6 sm:pt-10 lg:pt-[5rem] px-4 sm:px-8">
-        <h2 className="text-center font-test-tiempos-fine text-neutral-800 text-xl sm:text-3xl lg:text-[2.5rem] lg:leading-[3rem]">
+        <h2 className="text-center font-archivo-black text-neutral-800 text-xl sm:text-3xl lg:text-[2.5rem] lg:leading-[3rem]">
           AVAILABLE JOBS - {filtered.length}
         </h2>
 
         {/* Search bar with embedded gradient button */}
         <div className="mt-5 lg:mt-[1.3333rem]">
-          <div className="input-gradient-border-hover bg-gray-50">
-            <div className="flex items-stretch h-12 sm:h-12 lg:h-[4rem]">
+          <div className="input-gradient-border-hover rounded-xl bg-white">
+            <div className="flex items-stretch h-[3.25rem] sm:h-[3.25rem] lg:h-[3.65rem]">
               {/* Input area */}
               <div className="flex flex-1 items-center gap-2 px-3.5 lg:gap-[0.6667rem] lg:px-[1.1667rem]">
                 <Image src="/icons/career/search.svg" alt="" width={20} height={20} quality={100} className="shrink-0 size-4 lg:size-[1.6667rem]" />
@@ -111,7 +66,6 @@ export default function CareerBoard() {
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder={placeholder}
                   className="min-w-0 flex-1 bg-transparent text-sm text-neutral-800 placeholder:text-neutral-400 focus:outline-none lg:text-[1.3333rem]"
                 />
               </div>
@@ -131,7 +85,7 @@ export default function CareerBoard() {
               {/* Gradient search button */}
               <button
                 type="button"
-                className="group relative flex h-full shrink-0 items-center justify-center gap-1 lg:gap-[0.3333rem] text-sm text-white cursor-pointer bg-[image:var(--primary-gradient)] px-5 lg:px-[1.6667rem] lg:text-[1.1667rem] transition-all duration-300 ease-out tracking-wider"
+                className="group relative flex h-full shrink-0 cursor-pointer items-center justify-center gap-1 overflow-hidden rounded-r-xl bg-[image:var(--primary-gradient)] px-5 text-sm tracking-wider text-white transition-all duration-300 ease-out lg:gap-[0.3333rem] lg:px-[1.6667rem] lg:text-[1.1667rem]"
               >
                 {/* Shine sweep — parked off the left edge, glides across on hover */}
                 <span
@@ -169,14 +123,11 @@ export default function CareerBoard() {
         </div>
       </div>
 
-      {/* Divider above the grid */}
-      <hr className="mt-8 border-t border-gray-100 lg:mt-[3.5rem]" />
-
       {/* Jobs grid */}
       <div className="w-full px-4 sm:px-8 lg:px-[5rem] pb-10 lg:pb-[5rem]">
         {/* Gradient spinner */}
         <div
-          className={`flex justify-center py-12 transition-opacity duration-300 ${
+          className={`flex justify-center py-7 transition-opacity duration-300 ${
             loading ? "opacity-100" : "opacity-0 pointer-events-none h-0 overflow-hidden"
           }`}
         >
@@ -201,7 +152,7 @@ export default function CareerBoard() {
         {!loading && (
         <>
         {filtered.length > 0 ? (
-          <div ref={gridRef} className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:mt-[3.3333rem] lg:grid-cols-4 lg:gap-[1.3333rem]">
+          <div ref={gridRef} className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-[1.3333rem]">
             {filtered.map((job) => (
               <JobCard key={job.id} job={job} />
             ))}

@@ -146,10 +146,7 @@ export default function LegacyOfLeadership() {
             </svg>
 
             <p className="text-xl leading-7 lg:text-[1.7rem] lg:leading-9">
-              ASG&apos;s leadership is rooted in a founding family&apos;s 130-year
-              entrepreneurial legacy — carried forward today by a management
-              team focused on manufacturing discipline, product innovation and
-              long-term partnership with global brands.
+              When someone, somewhere in the world, wears our clothes with a smile... We feel they've become a part of the ASG family. Our mission is to keep extending this family for generations as long as the trust isn't disrupted.
             </p>
           </div>
         </div>

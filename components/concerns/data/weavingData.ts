@@ -16,9 +16,9 @@ export const weavingHero = {
 /* ── Intro ── */
 export const weavingCompany = {
   name: "Amanat Shah Weaving Processing Ltd.",
-  logoSrc: "/logo/sister-concern/weaving-clr.png",
+  logoSrc: "/logo/sister-concern-update/weaving-clr.png",
   logoAlt: "Amanat Shah Weaving Processing Ltd. logo",
-  websiteUrl: "https://www.asg-bd.com/ASWPL.php",
+  websiteUrl: "#",
 };
 
 export const weavingIntroParagraphs = [

@@ -208,7 +208,6 @@
     overflow-x: clip;
     overscroll-behavior-y: none;
     overflow-anchor: none;
-    user-select: none;
   }
 }
 
@@ -387,42 +386,45 @@ html.asg-touch-lock * {
 .input-gradient-border-hover {
   position: relative;
   isolation: isolate;
-  border: 1px solid oklch(0.961 0 0); /* neutral-100 */
-  transition: border-color 0.3s ease-in-out;
 }
-.input-gradient-border-hover::before {
+.input-gradient-border-hover::before,
+.input-gradient-border-hover::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 1;
-  border: 1px solid transparent;
-  border-image: var(--primary-gradient) 1;
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
+  border: 2.5px solid transparent;
+  border-radius: inherit;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
   pointer-events: none;
 }
-.input-gradient-border-hover:hover,
-.input-gradient-border-hover:focus-within,
-.input-gradient-border-active {
-  border-color: transparent;
+/* Static neutral base ring */
+.input-gradient-border-hover::before {
+  background: oklch(0.961 0 0) border-box; /* neutral-100 */
 }
-.input-gradient-border-hover:hover::before,
-.input-gradient-border-hover:focus-within::before,
-.input-gradient-border-active::before {
+/* Gradient ring fades in over the base ring */
+.input-gradient-border-hover::after {
+  background: var(--primary-gradient) border-box;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+.input-gradient-border-hover:hover::after,
+.input-gradient-border-hover:focus-within::after,
+.input-gradient-border-active::after {
   opacity: 1;
 }
 
-/* Error state — red border overrides gradient */
-.input-gradient-border-hover.input-gradient-border-error,
-.input-gradient-border-hover.input-gradient-border-error:hover,
-.input-gradient-border-hover.input-gradient-border-error:focus-within,
-.input-gradient-border-hover.input-gradient-border-error.input-gradient-border-active {
-  border-color: #ef4444;
+/* Error state — red base ring, gradient suppressed */
+.input-gradient-border-hover.input-gradient-border-error::before {
+  background: #ef4444 border-box;
 }
-.input-gradient-border-hover.input-gradient-border-error::before,
-.input-gradient-border-hover.input-gradient-border-error:hover::before,
-.input-gradient-border-hover.input-gradient-border-error:focus-within::before,
-.input-gradient-border-hover.input-gradient-border-error.input-gradient-border-active::before {
+.input-gradient-border-hover.input-gradient-border-error::after,
+.input-gradient-border-hover.input-gradient-border-error:hover::after,
+.input-gradient-border-hover.input-gradient-border-error:focus-within::after,
+.input-gradient-border-hover.input-gradient-border-error.input-gradient-border-active::after {
   opacity: 0;
 }
 

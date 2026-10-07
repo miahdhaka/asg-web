@@ -140,7 +140,7 @@ export default function ConcernIntro({
           href={websiteUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="group relative inline-flex w-fit shrink-0 items-center justify-center overflow-hidden rounded-full border border-transparent px-[3.2em] py-[0.95em] text-[0.875rem] font-medium leading-none lg:text-[1.15em]"
+          className="group relative inline-flex w-fit shrink-0 items-center justify-center overflow-hidden rounded-full border border-transparent px-[2.6em] py-[1.15em] text-[0.875rem] font-medium leading-none lg:text-[1.15em]"
           style={{
             /* Interior uses the page background token so the pill doesn't read
                as a white chip; the border-box layer paints the 1px ring. */

@@ -15,7 +15,7 @@ export const texHero = {
 /* ── Intro ── */
 export const texCompany = {
   name: "Amanat Shah Tex Solution",
-  logoSrc: "/logo/sister-concern/tex-solution-clr.png",
+  logoSrc: "/logo/sister-concern-update/tex-solution-clr.png",
   logoAlt: "Amanat Shah Tex Solution logo",
   websiteUrl: "#",
 };

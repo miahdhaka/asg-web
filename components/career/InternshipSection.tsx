@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function InternshipSection() {
   return (
-    <section id="career-internship" className="bg-gray-50 py-10 sm:py-12 lg:py-[5rem]">
+    <section id="career-internship" className="bg-background py-10 sm:py-12 lg:py-[5rem]">
       <div className="mx-auto flex w-full max-w-[98.5rem] flex-col items-center gap-8 px-4 sm:px-8 lg:flex-row lg:gap-[4rem] lg:px-[5rem]">
         {/* Photo */}
         <div className="relative aspect-[547/356] w-full shrink-0 overflow-hidden lg:h-[29.6667rem] lg:w-[45.5833rem] lg:aspect-auto">
@@ -20,7 +20,7 @@ export default function InternshipSection() {
         <div className="w-full lg:w-[35rem]">
           <div className="flex flex-col gap-4 sm:gap-6">
             <div className="flex flex-col gap-4 sm:gap-6">
-              <h2 className="font-test-tiempos-fine text-2xl sm:text-3xl lg:text-[3rem] leading-8 text-neutral-800 lg:leading-[3.3333rem]">
+              <h2 className="font-archivo-black text-2xl sm:text-3xl lg:text-[3rem] leading-8 text-neutral-800 lg:leading-[3.3333rem]">
                 Join the Internship Program at
               </h2>
               <p className="text-base leading-7 font-medium text-neutral-800 lg:text-[1.5rem] lg:leading-[2rem]">

@@ -15,9 +15,9 @@ export const miahHero = {
 /* ── Intro ── */
 export const miahCompany = {
   name: "MIAH",
-  logoSrc: "/logo/sister-concern/miah-clr.png",
+  logoSrc: "/logo/sister-concern-update/miah-clr.png",
   logoAlt: "MIAH logo",
-  websiteUrl: "https://miahbd.com/",
+  websiteUrl: "https://miah.shop/",
 };
 
 export const miahIntroParagraphs = [

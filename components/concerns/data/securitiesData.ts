@@ -16,7 +16,7 @@ export const securitiesHero = {
 /* ── Intro ── */
 export const securitiesCompany = {
   name: "Hazrat Amanat Shah Securities Limited",
-  logoSrc: "/logo/sister-concern/securities-clr.png",
+  logoSrc: "/logo/sister-concern-update/securities-clr.png",
   logoAlt: "Hazrat Amanat Shah Securities Limited logo",
   websiteUrl: "https://www.hasslbd.com/",
 };

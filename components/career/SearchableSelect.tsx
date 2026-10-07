@@ -95,11 +95,11 @@ export default function SearchableSelect({
   return (
     <label className="flex w-full flex-col gap-2 sm:max-w-[32.3333rem] tracking-wide">
       <span className="text-sm text-neutral-800 lg:text-[1.1667rem]">{label}</span>
-      <div ref={containerRef} className={`input-gradient-border-hover relative block bg-white ${open ? "input-gradient-border-active" : ""}`}>
+      <div ref={containerRef} className={`input-gradient-border-hover relative block rounded-xl bg-white ${open ? "input-gradient-border-active" : ""}`}>
         {/* Trigger button */}
         <button
           type="button"
-          className="flex w-full items-center justify-between bg-white px-3.5 py-2.5 text-left text-xs text-neutral-600 cursor-pointer focus:outline-none lg:px-[1.1667rem] lg:py-[0.8333rem] lg:text-[1rem]"
+          className="flex h-[3.25rem] w-full items-center justify-between rounded-xl bg-white px-3.5 text-left text-xs text-neutral-600 cursor-pointer focus:outline-none lg:h-[3.65rem] lg:px-[1.1667rem] lg:text-[1rem]"
           onClick={() => {
             setOpen(!open);
             setSearch("");

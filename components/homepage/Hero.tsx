@@ -9,7 +9,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 export interface SisterConcern {
   sector: string;
-  description: string;
+  sectorDesc: string;
+  concernDesc: string;
   logo: string;
   link: string;
 }
@@ -17,62 +18,74 @@ export interface SisterConcern {
 const sisterConcerns: SisterConcern[] = [
   {
     sector: "TEXTILE",
-    description: "Ring, open-end and compact yarn spinning across counts and blends.",
-    logo: "/logo/sister-concern/spinning-mills-clr.png",
-    link: "https://www.asg-bd.com/HASSML.php",
+    sectorDesc: "Trusted as a long term partner for consistent, brand-match quality, helping them to grow at global scale.",
+    concernDesc: "Consistent, high-quality yarn for reliable textile production.",
+    logo: "/logo/sister-concern-update/spinning-mills-clr.png",
+    link: "/concerns/hazrat-amanat-shah-spinning-mills",
+  },
+  {
+    sector: "TEXTILE",
+    sectorDesc: "Trusted as a long term partner for consistent, brand-match quality, helping them to grow at global scale.",
+    concernDesc: "Precision weaving and processing for quality woven fabrics.",
+    logo: "/logo/sister-concern-update/weaving-clr.png",
+    link: "/concerns/amanat-shah-weaving-processing",
+  },
+  {
+    sector: "TEXTILE",
+    sectorDesc: "Trusted as a long term partner for consistent, brand-match quality, helping them to grow at global scale.",
+    concernDesc: "Premium woven fabrics made for global fashion brands.",
+    logo: "/logo/sister-concern-update/fabrics-clr.png",
+    link: "/concerns/amanat-shah-fabrics",
   },
   {
     sector: "RETAIL",
-    description: "Ring, open-end and compact yarn spinning across counts and blends.",
-    logo: "/logo/sister-concern/helal-brothers-clr.png",
-    link: "https://www.asg-bd.com/H&B",
-  },
-  {
-    sector: "TEXTILE",
-    description: "Ring, open-end and compact yarn spinning across counts and blends.",
-    logo: "/logo/sister-concern/fabrics-clr.png",
-    link: "https://amanatshahfabrics.com/",
-  },
-  {
-    sector: "GERMANE",
-    description: "Ring, open-end and compact yarn spinning across counts and blends.",
-    logo: "/logo/sister-concern/trust-knitwear-clr.png",
-    link: "https://www.trustknitwear.com/index.html",
-  },
-  {
-    sector: "FINANCE",
-    description: "Ring, open-end and compact yarn spinning across counts and blends.",
-    logo: "/logo/sister-concern/securities-clr.png",
-    link: "https://www.hasslbd.com/",
-  },
-  {
-    sector: "AGRICULTURE",
-    description: "Ring, open-end and compact yarn spinning across counts and blends.",
-    logo: "/logo/sister-concern/farm2farm-clr.png",
-    link: "https://asg-bd.com/Farm2Firm.php",
+    sectorDesc: "Spread Amanot Shah Group's own brand helps national and traditional consumers to experience high-end clothing all year long.",
+    concernDesc: "Traditional apparel crafted for local and global markets.",
+    logo: "/logo/sister-concern-update/helal-brothers-clr.png",
+    link: "/concerns/helal-brothers",
   },
   {
     sector: "ECOMMERCE",
-    description: "Ring, open-end and compact yarn spinning across counts and blends.",
-    logo: "/logo/sister-concern/miah-clr.png",
-    link: "https://miahbd.com/",
+    sectorDesc: "Spread Amanot Shah Group's own brand helps national and traditional consumers to experience high-end clothing all year long.",
+    concernDesc: "Bangladeshi fashion rooted in heritage and modern style.",
+    logo: "/logo/sister-concern-update/miah-clr.png",
+    link: "/concerns/miah",
+  },
+
+
+  {
+    sector: "APPAREL",
+    sectorDesc: "Scale with superior apparel customized to your brand. Create unique market ownership leveraging speed and timely delivery.",
+    concernDesc: "High-quality knit fabrics made for global fashion brands.",
+    logo: "/logo/sister-concern-update/trust-knitwear-clr.png",
+    link: "/concerns/trust-knitwear-industries",
+  },
+  {
+    sector: "FINANCE",
+    sectorDesc: "Expand capital market expertise, investment solutions, when supporting clients with trusted financial guidance zeroing in investment mistakes from the beginning.",
+    concernDesc: "Trusted investment services for confident capital market decisions.",
+    logo: "/logo/sister-concern-update/securities-clr.png",
+    link: "/concerns/hazrat-amanat-shah-securities",
+  },
+  {
+    sector: "AGRICULTURE",
+    sectorDesc: "Producing premium-quality tea through advanced farming practices adding agricultural heritage with modern cultivation strategies.",
+    concernDesc: "Quality tea grown with care, rooted in Bangladesh\u2019s tea heritage.",
+    logo: "/logo/sister-concern-update/farm2farm-clr.png",
+    link: "/concerns/farm2firm",
   },
   {
     sector: "CHEMICAL",
-    description: "Ring, open-end and compact yarn spinning across counts and blends.",
-    logo: "/logo/sister-concern/tex-solution-clr.png",
-    link: "#",
-  },
-  {
-    sector: "TEXTILE",
-    description: "Ring, open-end and compact yarn spinning across counts and blends.",
-    logo: "/logo/sister-concern/weaving-clr.png",
-    link: "https://www.asg-bd.com/ASWPL.php",
+    sectorDesc: "Deliver best-in-class chemical solutions for industrial manufacturing. Maintain end-to-end global safety compliance across every action.",
+    concernDesc: "Reliable chemical solutions for safe and efficient textile production.",
+    logo: "/logo/sister-concern-update/tex-solution-clr.png",
+    link: "/concerns/amanat-shah-tex-solution",
   },
   {
     sector: "TECHNOLOGY",
-    description: "Digital transformation, custom software, ERP solutions and business analytics.",
-    logo: "/logo/sister-concern/asg-dynamic.png",
+    sectorDesc: "Build Enterprise Software, ERP Solutions, and Digital products to equip business for sustainable growth.",
+    concernDesc: "ERP, enterprise software and digital business solutions.",
+    logo: "/logo/sister-concern-update/asg-dynamic.png",
     link: "/concerns/asg-dynamic",
   },
 ];
@@ -609,23 +622,23 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
               </span>
             </div>
             <p className="w-[90%] font-neue-montreal text-xs sm:text-sm lg:text-[1.15rem] text-[var(--neutral-600)] mt-2">
-              {sisterConcerns[activeConcern]?.description ?? ""}
+              {sisterConcerns[activeConcern]?.sectorDesc ?? ""}
             </p>
           </div>
         </div>
       </div>
 
       {/* Right side content — rises from below */}
-      <div ref={rightContentRef} className="max-w-[28rem] absolute right-6 lg:right-[4%] top-0 bottom-0 z-20 flex items-center text-[var(--neutral-800)]">
-        <div className="text-left">
+      <div ref={rightContentRef} className="w-[15rem] sm:w-[20rem] lg:w-[28rem] absolute right-6 lg:right-[4%] top-0 bottom-0 z-20 flex items-start lg:items-center text-[var(--neutral-800)]">
+        <div className="w-full text-left">
           <div ref={rightSlideRef}>
             <img
               src={sisterConcerns[activeConcern]?.logo ?? ""}
               alt="Sister concern"
-              className="h-9 sm:h-12 lg:h-[4.5rem] w-auto object-contain"
+              className="h-10 w-36 object-contain sm:h-14 sm:w-44 lg:h-[5rem] lg:w-56"
             />
             <p className="w-[90%] font-neue-montreal text-xs sm:text-sm lg:text-[1.15rem] text-[var(--neutral-600)] mt-1">
-              {sisterConcerns[activeConcern]?.description ?? ""}
+              {sisterConcerns[activeConcern]?.concernDesc ?? ""}
             </p>
           </div>
           <a
@@ -638,7 +651,7 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
           >
             {/* Invisible spacer — preserves the button's intrinsic width/height */}
             <span className="invisible inline-flex items-center gap-1 whitespace-nowrap lg:gap-[0.33em]">
-              Visit Website
+              Visit Details
               <SquareArrowOutUpRight className="w-4 h-4" />
             </span>
 
@@ -651,7 +664,7 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
                 className="bg-clip-text text-transparent"
                 style={{ backgroundImage: "var(--primary-gradient)" }}
               >
-                Visit Website
+                Visit Details
               </span>
               <SquareArrowOutUpRight className="w-4 h-4" color="#1AA179" />
             </span>
@@ -662,7 +675,7 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
               className="absolute inset-0 flex -translate-y-full items-center justify-center gap-1 whitespace-nowrap text-white transition-transform duration-500 ease-in-out group-hover:translate-y-0 lg:gap-[0.33em]"
               style={{ background: "var(--primary-gradient)" }}
             >
-              Visit Website
+              Visit Details
               <SquareArrowOutUpRight className="w-4 h-4" />
             </span>
           </a>

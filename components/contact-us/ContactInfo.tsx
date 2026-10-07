@@ -1,102 +1,61 @@
-import { MapPinned, Phone, Mail } from "lucide-react";
-import { headquarters, openingHours } from "./contactData";
-
-/* ------------------------------------------------------------------ */
-/*  Info block (icon chip + label + value)                             */
-/* ------------------------------------------------------------------ */
-
-function InfoBlock({
-  icon: Icon,
-  label,
-  children,
-}: {
-  icon: React.ElementType;
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-3">
-      <div className="flex items-center gap-3 sm:gap-4">
-        <div className="flex h-[2.5rem] w-[2.5rem] sm:h-[3.2rem] sm:w-[3.2rem] shrink-0 items-center justify-center rounded-lg bg-white">
-          <Icon size={18} className="sm:hidden text-neutral-800" strokeWidth={1.5} />
-          <Icon size={24} className="hidden sm:block text-neutral-800" strokeWidth={1.5} />
-        </div>
-        <span className="text-base lg:text-[1.2rem] leading-5 font-medium text-gray-800">
-          {label}
-        </span>
-      </div>
-      <span className="text-neutral-800">
-        {children}
-      </span>
-    </div>
-  );
-}
+import { Building2 } from "lucide-react";
+import { headquarters } from "./contactData";
 
 /* ------------------------------------------------------------------ */
 /*  Main component                                                     */
 /* ------------------------------------------------------------------ */
 export default function ContactInfo() {
   return (
-    <div className="flex flex-col">
-      {/* Corporate Headquarters */}
-      <div className="flex w-full flex-col gap-5">
-        <p className="text-xl lg:text-[1.5rem] leading-7 lg:leading-[2.3rem] text-neutral-800 font-archivo-black">
-          CORPORATE HEADQUARTERS
-        </p>
+    <div className="flex flex-col gap-6 sm:gap-8">
+      {/* Heading */}
+      <p className="text-xl lg:text-[1.5rem] leading-7 lg:leading-[2.3rem] text-neutral-800 font-archivo-black uppercase pr-4 sm:pr-8 lg:pr-[5rem]">
+        Let's Build<br />Togethers
+      </p>
 
-        <div className="flex flex-col justify-center gap-8">
-          {/* Location */}
-          <InfoBlock icon={MapPinned} label="Location">
-            <p className="text-sm lg:text-[1.15rem] text-neutral-800">
-              {headquarters.location}
-            </p>
-          </InfoBlock>
+      {/* Head Office info block */}
+      <div className="flex flex-col gap-5 pr-4 sm:pr-8 lg:pr-[5rem]">
+        <div className="flex items-center gap-3">
+          <div className="flex h-[2.5rem] w-[2.5rem] sm:h-[3rem] sm:w-[3rem] shrink-0 items-center justify-center rounded-lg bg-white border border-gray-200">
+            <Building2 size={18} className="sm:hidden text-neutral-800" strokeWidth={1.5} />
+            <Building2 size={22} className="hidden sm:block text-neutral-800" strokeWidth={1.5} />
+          </div>
+          <span className="font-archivo-black text-sm lg:text-[1.15rem] font-semibold text-gray-800 uppercase tracking-wide">
+            Head Office
+          </span>
+        </div>
 
-          {/* Help / Phone */}
-          <InfoBlock icon={Phone} label="Help">
-            <div className="flex flex-col gap-[0.6875rem]">
-              {headquarters.phones.map((phone) => (
-                <p key={phone} className="text-sm lg:text-[1.15rem] text-neutral-800">
-                  {phone}
-                </p>
-              ))}
-            </div>
-          </InfoBlock>
+        <div className="text-sm lg:text-[1.1rem] text-neutral-700 flex flex-col gap-1.5 sm:gap-3 pl-1">
+          {/* Address */}
+          <p className="leading-relaxed">
+            {headquarters.location}
+          </p>
 
-          {/* Say Hello / Email */}
-          <InfoBlock icon={Mail} label="Say Hello">
-            <p className="text-sm lg:text-[1.15rem] text-neutral-800">
-              {headquarters.email}
-            </p>
-          </InfoBlock>
+          {/* Phones */}
+          <p>
+            {headquarters.phones.join(', ')}
+          </p>
+
+          {/* Email */}
+          <p>
+            {headquarters.email}
+          </p>
         </div>
       </div>
 
-      {/* Divider — spans the full left column */}
-      <hr className="mt-4 lg:mt-8 border-t border-gray-100" />
+      {/* Divider */}
+      <hr className="border-t border-gray-200" />
 
       {/* Opening Hours */}
-      <div className="mt-6 lg:mt-8 flex w-full flex-col gap-3 sm:gap-5">
-        <p className="text-xl lg:text-[1.5rem] leading-7 lg:leading-[2.3rem] text-neutral-800 font-archivo-black">
-          OPENING HOURS
+      <div className="flex flex-col gap-3 pr-4 sm:pr-8 lg:pr-[5rem]">
+        <p className="text-sm lg:text-[1.15rem] font-semibold text-gray-800 uppercase tracking-wide">
+          Opening Hours
         </p>
-
-        <div className="flex flex-col gap-1 sm:gap-3">
-          {openingHours.map((item) => (
-            <div key={item.day} className="flex items-center gap-6">
-              <span
-                className={`w-24 lg:w-[6.5rem] shrink-0 text-sm lg:text-[1.2rem] leading-8 font-medium text-nowrap ${
-                  item.closed ? "text-[#B61753]" : "text-gray-800"
-                }`}
-              >
-                {item.day}
-              </span>
-              <span className="text-left text-sm lg:text-[1.2rem] text-neutral-800">
-                {item.time}
-              </span>
-            </div>
-          ))}
-        </div>
+        <p className="text-sm lg:text-[1.1rem] text-neutral-700">
+          Sat-Thu, 10:00 AM - 7:00 PM
+        </p>
+        <p className="text-sm lg:text-[1.1rem]">
+          <span className="text-red-600 font-medium">Closed: </span>Friday
+        </p>
       </div>
     </div>
   );

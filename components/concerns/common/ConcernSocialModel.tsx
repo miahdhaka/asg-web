@@ -84,11 +84,20 @@ export default function ConcernSocialModel({
             </div>
           </div>
 
-          {/* Pillar icons + copy */}
+          {/* Pillar icons + copy — mobile/tablet render as cards matching the
+              About Us Core Values look (light-gray card, green gradient wash
+              fading in on hover); on desktop `lg:contents` dissolves the
+              wrapper so the icon and copy become wheel nodes. */}
           {pillars.map((pillar) => (
-            <div key={pillar.title} className="flex flex-col sm:flex-row items-start gap-3 rounded-[1.25rem] border border-gray-200 bg-background p-3 shadow-sm transition duration-200 max-lg:hover:-translate-y-0.5 max-lg:hover:border-[#1AA179]/40 max-lg:hover:shadow-lg lg:contents lg:rounded-none lg:bg-transparent lg:shadow-none">
+            <div key={pillar.title} className="group relative flex flex-col items-start gap-4 overflow-hidden rounded-2xl bg-gray-50 p-6 lg:contents lg:overflow-visible lg:rounded-none lg:bg-transparent lg:p-0">
+              {/* Hover gradient wash — fades an overlay because background-image
+                  can't transition. Mobile/tablet only; hidden at lg. */}
               <div
-                className={`flex h-16 sm:h-10 lg:h-[5.33em] w-16 sm:w-10 lg:w-[5.33em] shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white lg:absolute lg:mt-0 ${pillar.iconClass}`}
+                aria-hidden
+                className="pointer-events-none absolute inset-0 bg-[linear-gradient(150deg,rgba(139,195,74,0.2)_0%,rgba(26,161,121,0.2)_81%)] opacity-0 transition-opacity duration-700 ease-out max-lg:group-hover:opacity-100 lg:hidden"
+              />
+              <div
+                className={`relative flex size-[55px] shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white sm:size-[80px] lg:absolute lg:mt-0 lg:h-[5.33em] lg:w-[5.33em] ${pillar.iconClass}`}
               >
                 <Image
                   src={pillar.icon}
@@ -97,14 +106,30 @@ export default function ConcernSocialModel({
                   width={pillar.iconSize}
                   height={pillar.iconSize}
                   quality={100}
-                  className="h-[88%] w-[88%] sm:h-[70%] lg:h-[68%] lg:w-[68%] object-contain"
+                  className="h-[70%] w-[70%] object-contain transition-all duration-700 ease-out max-lg:group-hover:opacity-0 lg:h-[68%] lg:w-[68%]"
+                />
+                {/* Gradient-masked recolor that fades in on hover — mirrors the
+                    About Us Core Values icon transition. Mobile/tablet only. */}
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 m-auto h-[70%] w-[70%] bg-[image:var(--primary-gradient)] opacity-0 transition-all duration-700 ease-out max-lg:group-hover:opacity-100 lg:hidden"
+                  style={{
+                    maskImage: `url(${pillar.icon})`,
+                    maskSize: "contain",
+                    maskRepeat: "no-repeat",
+                    maskPosition: "center",
+                    WebkitMaskImage: `url(${pillar.icon})`,
+                    WebkitMaskSize: "contain",
+                    WebkitMaskRepeat: "no-repeat",
+                    WebkitMaskPosition: "center",
+                  }}
                 />
               </div>
-              <div className={`lg:absolute lg:mt-0 ${pillar.frameClass}`}>
-                <h3 className="font-archivo-black text-base text-neutral-800 lg:text-[1.5em] lg:leading-[1.56]">
+              <div className={`relative lg:absolute lg:mt-0 ${pillar.frameClass}`}>
+                <h3 className="font-archivo-black text-lg text-neutral-800 lg:text-[1.5em] lg:leading-[1.56]">
                   {pillar.title}
                 </h3>
-                <p className="mt-0.5 text-xs leading-5 text-neutral-800 lg:mt-[0.33em] lg:text-[1em] lg:leading-[1.33]">
+                <p className="mt-1 text-sm leading-6 text-neutral-800 lg:mt-[0.33em] lg:text-[1em] lg:leading-[1.33]">
                   {pillar.body}
                 </p>
               </div>

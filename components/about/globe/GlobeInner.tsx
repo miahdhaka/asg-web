@@ -8,10 +8,11 @@ import * as THREE from "three";
 const EARTH_TEX = "https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-blue-marble.jpg";
 const BUMP_TEX = "https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-topology.png";
 const CLOUDS_IMG = "/images/about-us/clouds.png";
+const STARS_TEX = "https://cdn.jsdelivr.net/npm/three-globe/example/img/night-sky.png";
 const CLOUDS_ALT = 0.004;
 const CLOUDS_ROTATION_SPEED = -0.006; // deg/frame
 
-export default function GlobeInner() {
+export default function GlobeInner({ onReady }: { onReady?: () => void }) {
   const globeRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
@@ -55,6 +56,11 @@ export default function GlobeInner() {
     controls.minDistance = dist;
     controls.maxDistance = dist;
 
+    /* react-globe.gl only fires onGlobeReady once the earth + starfield textures
+       have decoded, so the scene is fully in place here — let the parent
+       re-measure the page so the scroll-jacked sections above line back up. */
+    onReady?.();
+
     /* --- Cloud layer (adapted from globe.gl/example/clouds) ---
        react-globe.gl only forwards a fixed allow-list of methods to the ref
        (scene/camera/controls/getGlobeRadius…), so `globeMaterial()` isn't
@@ -78,7 +84,7 @@ export default function GlobeInner() {
       };
       rotateClouds();
     });
-  }, []);
+  }, [onReady]);
 
   return (
     <div ref={containerRef} className="w-full h-full">
@@ -90,10 +96,11 @@ export default function GlobeInner() {
           globeOffset={[dimensions.width * 0.22, 0]}
           globeImageUrl={EARTH_TEX}
           bumpImageUrl={BUMP_TEX}
-          /* Plain black scene background — the reference has no starfield, and
-             Section.tsx paints its green wash over this canvas with
-             mix-blend-mode: screen, which adds light on top of black. */
+          /* Black scene base + starfield background image. Section.tsx paints
+             its green wash over this canvas with mix-blend-mode: screen, which
+             adds light on top of black — the stars stay visible underneath. */
           backgroundColor="#000000"
+          backgroundImageUrl={STARS_TEX}
           onGlobeReady={handleGlobeReady}
           enablePointerInteraction={false}
         />

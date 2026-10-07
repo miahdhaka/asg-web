@@ -6,8 +6,8 @@ import type { CoreValueCard } from "@/components/concerns/common/ConcernCoreValu
 
 /* ── Hero ── */
 export const farmHero = {
-  title: "Sustainable Agriculture\nPremium Tea Production",
-  subtitle: "Integrating agricultural heritage with modern, responsible farming since 1955.",
+  title: "Modern Tea-processing",
+  subtitle: "Professionally managed tea cultivation and processing, from estate to market.",
   videoSrc: "/videos/concerns/farm to farm_out.webm",
   alt: "Farm2Firm Management Ltd. production footage",
 };
@@ -15,16 +15,19 @@ export const farmHero = {
 /* ── Intro ── */
 export const farmCompany = {
   name: "Farm2Firm Management Ltd",
-  logoSrc: "/logo/sister-concern/farm2farm-clr.png",
+  logoSrc: "/logo/sister-concern-update/farm2farm-clr.png",
   logoAlt: "Farm2Firm Management Ltd logo",
-  websiteUrl: "https://asg-bd.com/Farm2Firm.php",
+  websiteUrl: "#",
 };
 
 export const farmIntroParagraphs = [
-  "Amanat Shah Fabrics Ltd. is a trusted signature in worldwide Woven Manufacturing. Integrating latest technology along with human touch, living the legacy as a partner in delivering the world’s finest fabric and 100% export-oriented manufacturing with decades of expertise.",
-  "Blending Technology, Expertise and Quality to produce the finest fabric is the goal of everything we do. From  sourcing to customer satisfaction, we help international brands get the highest quality fabrics for samplingbulk orders, samples and customized fabric requirements.",
-  "With 400,000 square feet of specialized production space and 4,000+ highly skilled employees, ASFL maintains high standards of safety and global compliance while consistently serving elite brands across Europe, North America, Africa, Australia and the Middle East.",
-  "As a part of a century-old legacy and leading family-owned conglomerate in BD, ASFL aims to become the world’s trusted name in quality and sustainable fabric manufacturing for Global Brands."
+  "Farm2Firm represents Amanat Shah Group’s expansion into agricultural and tea-estate operations, managing the Baikunthapur Tea Estate in Madhabpur, Habiganj.",
+  "ASG acquired the estate in 2005, developing it through professional estate management, plantation development and modern tea-processing capabilities.",
+  "Spanning 875.78 hectares, including 330.56 hectares of tea plantation, the estate integrates cultivation, harvesting and factory processing.",
+  "Farm2Firm manages the sequences from plantation to processed tea.",
+  "Its factory operates modern processing equipment, including a Rotavane, CTC machine, Continuous Fermentation Machine and VFBD dryer. Which supports controlled production and consistent black-tea quality.",
+  "The entire operation is supported by around 700 daily workers and 14 supervisory staff. The company also builds worker welfare facilities including housing, medical services, literacy programs and schools for employees’ children.",
+  "Under Amanat Shah Group’s umbrella, Farm2Firm represents the Group’s agricultural capability, producing quality black tea for its trusted consumers for the last decade."
 ];
 
 export const farmIntroStats: StatItem[] = [
@@ -41,23 +44,32 @@ export const farmCoreValues = {
   cards: [
     {
       title: "Sustainable Farming",
-      body: "Implementing environmentally responsible practices that protect the land and promote biodiversity",
-      icon: "/icons/concern/farm-core_value-1.png",
+      body: "Implement environmentally responsible practices that protect the land, promote biodiversity and shaping a greener future.",
+      icon: "/icons/concern/farm-core_value-4.png",
     },
     {
-      title: "Quality Excellence",
-      body: "A rigorous commitment to consistency and premium standards throughout the harvesting and manufacturing stages",
-      icon: "/icons/concern/farm-core_value-2.png",
-    },
-    {
-      title: "Community Empowerment",
-      body: "Fostering local growth and social responsibility through ethical supply chain management",
+      title: "Excellence in Results",
+      body: "Committed to delivering consistency and premium quality at every stage of harvesting and manufacturing like every other concern.",
       icon: "/icons/concern/farm-core_value-3.png",
     },
     {
-      title: "Heritage & Innovation",
-      body: "Combining traditional agricultural expertise with modern industrial efficiency",
-      icon: "/icons/concern/farm-core_value-4.png",
+      title: "Community Empowerment",
+      body: "Supporting local development and social responsibility through ethical practices across the entire operation.",
+      icon: "/icons/concern/farm-core_value-2.png",
+    },
+    {
+      title: "Innovation-Backed Heritage",
+      body: "Combining traditional agricultural expertise with modern industrial efficiency to build a sustainable legacy providing lasting value.",
+      icon: "/icons/concern/farm-core_value-1.png",
     },
   ] as CoreValueCard[],
+};
+
+/* ── Processing strip ── */
+export const farmProcessing = {
+  title: "Farm2Firm Management Processing\nExcellence",
+  slides: [1, 2, 3, 4].map((n) => ({
+    src: `/images/concerns/farm2firm/processing-${n}.jpg`,
+    alt: "Tea processing at the Farm2Firm facility",
+  })),
 };

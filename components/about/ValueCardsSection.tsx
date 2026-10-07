@@ -45,7 +45,7 @@ export default function ValueCardsSection({ id, heading, items, variant }: Value
                   width={80}
                   height={80}
                   quality={100}
-                  className="size-[70px] object-contain transition-all duration-700 ease-out group-hover:opacity-0 lg:group-hover:scale-110"
+                  className="size-[70px] object-contain transition-all duration-700 ease-out group-hover:opacity-0"
                 />
                 {item.hoverIcon ? (
                   <Image
@@ -55,12 +55,12 @@ export default function ValueCardsSection({ id, heading, items, variant }: Value
                     width={80}
                     height={80}
                     quality={100}
-                    className="absolute inset-0 size-[70px] object-contain opacity-0 transition-all duration-700 ease-out group-hover:opacity-100 lg:group-hover:scale-110"
+                    className="absolute inset-0 size-[70px] object-contain opacity-0 transition-all duration-700 ease-out group-hover:opacity-100"
                   />
                 ) : (
                   <span
                     aria-hidden
-                    className="absolute inset-0 size-[70px] bg-[image:var(--primary-gradient)] opacity-0 transition-all duration-700 ease-out group-hover:opacity-100 lg:group-hover:scale-110"
+                    className="absolute inset-0 size-[70px] bg-[image:var(--primary-gradient)] opacity-0 transition-all duration-700 ease-out group-hover:opacity-100"
                     style={{
                       maskImage: `url(${item.icon})`,
                       maskSize: "contain",

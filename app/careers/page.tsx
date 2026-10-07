@@ -12,12 +12,11 @@ export default function CareersPage() {
   return (
     <main>
       <PageHero
-        title="Find Your Opportunity"
+        title={"Find Your\nOpportunity"}
         subtitle="Family business legacy for more than 130 years."
         mobileSrc="/images/career/hero.webp"
         desktopSrc="/images/career/hero.webp"
         alt="ASG Group team members at work"
-        emblemSrc="/logo/asg-monogram.png"
       />
       <CareerBoard />
       <InternshipSection />

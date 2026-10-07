@@ -15,7 +15,7 @@ export const fabricsHero = {
 /* ── Intro ── */
 export const fabricsCompany = {
   name: "Amanat Shah Fabrics Ltd.",
-  logoSrc: "/logo/sister-concern/fabrics-clr.png",
+  logoSrc: "/logo/sister-concern-update/fabrics-clr.png",
   logoAlt: "Amanat Shah Fabrics Ltd. logo",
   websiteUrl: "https://amanatshahfabrics.com/",
 };

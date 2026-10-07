@@ -128,9 +128,12 @@ export default function CertificationsCompliance() {
     }, 500);
   };
 
-  // --- Mouse / pointer drag to scroll (GreenerFuture-style) --------------
+  // --- Pointer drag to scroll (GreenerFuture-style) ----------------------
+  // Scrub for any pointer (mouse, pen, touch) so a cursor can drag the strip
+  // exactly like on desktop. `touch-pan-y` on the track disables the browser's
+  // native horizontal pan, so JS-controlled scrolling never fights it (that
+  // fight was what looked like a stutter/flicker on mobile).
   const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
-    if (e.pointerType !== "mouse") return;
     dragRef.current = { down: true, startX: e.clientX, startPos: posRef.current };
   };
 
@@ -143,7 +146,12 @@ export default function CertificationsCompliance() {
   };
 
   const endDrag = () => {
+    if (!dragRef.current.down) return;
     dragRef.current.down = false;
+    // Re-sync the auto-scroll position to wherever the strip actually is after
+    // a drag, so playback resumes smoothly instead of snapping.
+    const el = trackRef.current;
+    if (el) posRef.current = wrap(el, el.scrollLeft);
   };
 
   return (
@@ -182,7 +190,7 @@ export default function CertificationsCompliance() {
           onPointerMove={onPointerMove}
           onPointerUp={endDrag}
           onPointerLeave={endDrag}
-          className="no-scrollbar flex cursor-grab active:cursor-grabbing items-stretch overflow-x-auto select-none overscroll-x-none"
+          className="no-scrollbar flex cursor-grab touch-pan-y items-stretch overflow-x-auto select-none overscroll-x-none active:cursor-grabbing"
         >
           {loopedLogos.map((logo, index) => (
             <div

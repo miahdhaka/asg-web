@@ -1,41 +1,79 @@
-export interface CsrInitiativeCard {
-  title: string;
+/* ------------------------------------------------------------------ */
+/*  CSR page content — Corporate Social Responsibility                 */
+/*  (app/sustainability/corporate-social-responsibility)              */
+/*  Built from Figma node 7740-50376.                                  */
+/* ------------------------------------------------------------------ */
+
+export const csrHero = {
+  title: "Creating a Lasting Positive Impact on Society",
+  subtitle:
+    "Beyond manufacturing, we are deeply committed to uplifting local communities, ensuring ethical practices, and fostering sustainable social growth.",
+  image: "/images/sustainability/csr/impact-hero.webp",
+  emblem: "/images/sustainability/csr/hero-emblem.png",
+  alt: "Corporate Social Responsibility — Amanat Shah Group community initiatives",
+};
+
+/* Wide image with the white caption card overlapping its bottom edge */
+export const csrCommunityImpact = {
+  image: "/images/sustainability/csr/community-impact.webp",
+  alt: "ASG community outreach and welfare programme",
+  title: "Uplifting Local Communities",
+  description:
+    "We actively invest in community outreach programs, infrastructure support, and welfare initiatives to improve the quality of life around our operational areas.",
+};
+
+/* White band — photo left, heading + text right */
+export const csrPeopleFirst = {
+  image: "/images/sustainability/csr/people-first.webp",
+  alt: "Safe and inclusive workplace across ASG industrial units",
+  title: "People-First Workplace Culture",
+  description:
+    "Ensuring safe, fair, and inclusive environments across all our industrial units, prioritizing the health, safety, and rights of every worker.",
+};
+
+/* Large rounded banner with bottom gradient and anchored caption */
+export const csrEducationBanner = {
+  image: "/images/sustainability/csr/education-banner.webp",
+  alt: "Empowering communities through education and skills training",
+  title: "Empowering Through Education",
+  description:
+    "Supporting educational programs and skills training to create better opportunities for the younger generation and future workforce.",
+};
+
+/* Staggered three-pillar commitment row */
+export const csrPillarsHeading = "Impact & Community Initiatives";
+
+export interface CsrPillar {
+  title?: string;
+  /** Big number rendered before the title (third pillar: "100% Ethical standards"). */
+  value?: string;
   description: string;
-  image: string;
 }
 
-export const csrIntroStatement =
-  "One of the most reputable and diverse corporate empires in Bangladesh, Amanat Shah Group has been Family business legacy.";
-
-export const csrParagraphs = [
-  "In an era where Corporate Social Responsibility (CSR) is increasingly recognized as a crucial component of business operations, Amanat Shah Group stands out for its comprehensive and impactful CSR programs. The Group's initiatives span across education, health and social welfare underscoring a deep commitment to enhancing the well-being of communities in Bangladesh.",
-  "Education is a cornerstone of Amanat Shah Group's CSR strategy. The group has established several educational institutions across Bangladesh, reflecting its belief in the transformative power of education. In Narsingdi, Amanat Shah Group has set up schools to provide quality education to children. In addition to schools, Amanat Shah Group supports a madrasa and an orphanage in Bancharampur, Brahmanbaria. These facilities provide a safe and nurturing environment for children who might otherwise lack access to education and care. The madrasa emphasizes both religious and secular education, ensuring a well-rounded approach to learning.",
-];
-
-export const csrImageRow = [
-  { src: "/images/sustainability/csr/image-row-1.png", alt: "CSR community initiative" },
-  { src: "/images/sustainability/csr/image-row-2.png", alt: "CSR community initiative" },
-  { src: "/images/sustainability/csr/image-row-3.png", alt: "CSR community initiative" },
-  { src: "/images/sustainability/csr/image-row-4.png", alt: "CSR community initiative" },
-];
-
-export const csrInitiativeCards: CsrInitiativeCard[] = [
+export const csrPillars: CsrPillar[] = [
   {
-    title: "Education",
+    title: "Community First",
     description:
-      "Corporate Social Responsibility (CSR) education fosters awareness of ethical business practices and societal impact. It equips individuals with skills to address environmental, social, and governance (ESG) challenges, promoting sustainable decision-making. CSR education enhances leadership, accountability, and community engagement in organizations.",
-    image: "/images/sustainability/csr/card-education.png",
+      "Continuous engagement in local welfare and social betterment projects",
   },
   {
-    title: "Medical Camp",
+    title: "Sustainable Growth",
     description:
-      "Corporate social responsibility (CSR) in the medical field focuses on improving healthcare access, promoting public health, and fostering community well-being. Hospitals, pharmaceutical companies, and healthcare providers implement initiatives like free clinics, disease prevention programs, and health education to serve society ethically.",
-    image: "/images/sustainability/csr/card-medical.png",
+      "Aligning our corporate goals with long-term societal well-being.",
   },
   {
-    title: "Staff quarter",
+    value: "100%",
+    title: "Ethical standards",
     description:
-      "Corporate Social Responsibility (CSR) initiatives for staff quarters focus on enhancing employee well-being by providing safe, comfortable housing with essential amenities. These initiatives foster a supportive work-life balance, boost morale, and demonstrate the company's commitment to employee welfare and community development.",
-    image: "/images/sustainability/csr/card-staff.png",
+      "Strict adherence to fair labor practices and worker safety regulations.",
   },
 ];
+
+/* Bottom call-to-action */
+export const csrCta = {
+  title: "Partner with Us",
+  highlight: "For A Better Tomorrow",
+  description:
+    "Discover how our social initiatives are driving meaningful change across communities.",
+  buttonText: "Download CSR Report",
+};

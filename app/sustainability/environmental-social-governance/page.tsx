@@ -4,8 +4,8 @@ import EsgRenewable from "@/components/sustainability/EsgRenewable";
 import EsgWater from "@/components/sustainability/EsgWater";
 import EsgStatCards from "@/components/sustainability/EsgStatCards";
 import EsgZld from "@/components/sustainability/EsgZld";
-import EsgRecognition from "@/components/sustainability/EsgRecognition";
 import { esgHero } from "@/components/sustainability/esgData";
+import CertificationsCompliance from "@/components/homepage/CertificationsCompliance";
 
 export const metadata: Metadata = {
   title: "Environmental & Social Governance | ASG - Amanat Shah Group",
@@ -27,7 +27,7 @@ export default function EnvironmentalSocialGovernancePage() {
       <EsgWater />
       <EsgStatCards />
       <EsgZld />
-      <EsgRecognition />
+      <CertificationsCompliance />
     </main>
   );
 }
