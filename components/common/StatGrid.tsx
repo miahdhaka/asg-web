@@ -94,7 +94,7 @@ export default function StatGrid({ stats, columns = 4, className }: StatGridProp
 
         return (
           <div key={stat.label} className="flex flex-col">
-            <div className="rounded-t-[1.25rem] border-b border-gray-100 bg-white lg:h-[11.17em] pt-6 lg:pt-[2.67em] px-6 sm:px-8 lg:px-[2.75em] pb-4 lg:pb-0 overflow-hidden">
+            <div className="flex-1 lg:flex-none rounded-t-[1.25rem] border-b border-gray-100 bg-white lg:h-[11.17em] pt-6 lg:pt-[2.67em] px-6 sm:px-8 lg:px-[2.75em] pb-4 lg:pb-0 overflow-hidden">
               <span className="font-archivo-black text-[1.375rem] tracking-tight sm:text-[1.75rem] lg:text-[4em] text-neutral-800 lg:leading-[1.17]">
                 {isNumeric ? (
                   <span
@@ -116,7 +116,7 @@ export default function StatGrid({ stats, columns = 4, className }: StatGridProp
               )}
             </div>
             <div className="flex items-center rounded-b-[1.25rem] bg-white lg:h-[4.67em] px-5 py-3 lg:py-0">
-              <span className="font-neue-montreal text-xs sm:text-sm lg:text-[1.33em] capitalize sm:uppercase text-neutral-800 lg:leading-[1.5]">
+              <span className="font-neue-montreal text-[13px] sm:text-sm lg:text-[1.33em] capitalize sm:uppercase text-neutral-800 lg:leading-[1.5] tracking-wider">
                 {stat.label}
               </span>
             </div>

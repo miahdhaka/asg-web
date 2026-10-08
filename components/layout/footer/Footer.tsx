@@ -176,7 +176,7 @@ export default function Footer() {
         </div>
 
         <div className="flex min-h-[3.25rem] flex-col gap-4 rounded-t-[1.5rem] bg-gradient-to-r from-[#343434] via-[#292929] to-[#1c1c1c] px-6 py-4 text-sm tracking-wider md:px-12 lg:flex-row lg:items-center lg:justify-between lg:px-20">
-          <p>© 2026 ASG</p>
+          <p className="text-center sm:text-left">© 2026 ASG</p>
           <nav aria-label="Footer legal navigation" className="flex flex-wrap items-center gap-x-10 gap-y-2 text-xs uppercase">
             <Link className="relative pb-1 after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-in-out hover:after:scale-x-100" href="/terms-of-use">
               Terms of Use

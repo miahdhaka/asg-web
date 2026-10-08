@@ -235,7 +235,7 @@ export default function PhotoLightbox({
                image is contained inside it, never cropped or stretched.
                The top bar spans the same width, keeping the download and
                close buttons aligned with the stage edges on every slide. */}
-        <div className="relative h-[30vh] sm:h-[min(62vh,46rem)] w-[90vw] sm:w-[58vw] max-w-[92vw] bg-white rounded-[1.25rem]">
+        <div className="relative h-[30vh] sm:h-[min(62vh,46rem)] w-[90vw] sm:w-[58vw] max-w-[92vw] bg-white rounded-[1rem] sm:rounded-[1.25rem]">
           {/* Plain chevron arrows parked outside the stage edges */}
           <button
             type="button"
@@ -246,7 +246,7 @@ export default function PhotoLightbox({
             <ChevronLeft className="h-6 w-6 sm:h-9 sm:w-9" strokeWidth={1.5} />
           </button>
 
-          <div className="flex h-full w-full items-center justify-center rounded-[1.25rem] overflow-hidden">
+          <div className="flex h-full w-full items-center justify-center rounded-[1rem] sm:rounded-[1.25rem] overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               ref={imgRef}
@@ -272,12 +272,12 @@ export default function PhotoLightbox({
         </div>
 
         {/* ── Caption ───────────────────────────────────────────── */}
-        <div ref={captionRef} className="flex flex-col items-center gap-1">
+        <div ref={captionRef} className="flex flex-col items-center gap-0 sm:gap-1">
           <h4 className="text-center font-test-tiempos-fine text-sm sm:text-[1.25rem] leading-[1.75rem] text-white lg:text-[1.5rem] tracking-wider">
             {item.caption}
           </h4>
           {item.subCaption && (
-            <p className="text-center font-neue-montreal text-xs sm:text-[1rem] leading-[1.5rem] text-white/80 font-medium tracking-wider">
+            <p className="text-center font-neue-montreal text-[13px] sm:text-[1rem] leading-[1.5rem] text-white/80 font-medium tracking-wider">
               {item.subCaption}
             </p>
           )}

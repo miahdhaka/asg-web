@@ -18,7 +18,7 @@ type ConcernCoreValuesProps = {
 
 function ValueCard({ card }: { card: CoreValueCard }) {
   return (
-    <div className="card-gradient-hover group relative flex flex-col border border-[#F5F5F5] bg-white p-5 lg:w-[29.33em] lg:p-[2em]">
+    <div className="card-gradient-hover group relative flex flex-col overflow-hidden rounded-2xl border border-[#F5F5F5] bg-background p-5 lg:overflow-visible lg:rounded-none lg:bg-white lg:w-[29.33em] lg:p-[2em]">
       <div className="relative flex h-12 w-12 items-center justify-center lg:h-[4.17em] lg:w-[4.17em]">
         {/* Neutral icon — shown by default, fades out on hover */}
         <Image
@@ -49,7 +49,7 @@ function ValueCard({ card }: { card: CoreValueCard }) {
       <h3 className="relative mt-4 font-archivo-black text-base font-medium text-neutral-800 lg:mt-[1.33em] lg:max-w-[13.67em] lg:text-[1.5em] lg:leading-[1.56]">
         {card.title}
       </h3>
-      <p className="relative mt-2 text-xs text-neutral-800 sm:text-sm lg:mt-[0.67em] lg:max-w-[23.92em] lg:text-[1.17em] lg:leading-[1.43]">
+      <p className="relative mt-2 text-[13px] text-neutral-800 sm:text-sm lg:mt-[0.67em] lg:max-w-[23.92em] lg:text-[1.17em] lg:leading-[1.43] tracking-wider">
         {card.body}
       </p>
     </div>

@@ -20,7 +20,7 @@ export const esgRenewable = {
     { prefix: "", value: "2MW", suffix: "high-efficiency" },
   ],
   caption: "Cogeneration system for consistent energy availability.",
-  image: "/images/sustainability/esg/card-renewable.webp",
+  image: "/images/sustainability/esg/esg-highlight-desktop.jpg",
   alt: "Rooftop solar panels powering Amanat Shah Group facilities",
 };
 

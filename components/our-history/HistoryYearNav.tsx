@@ -1,123 +1,141 @@
 "use client";
 
-import { useRef, useCallback, useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import "animate.css";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { milestones } from "./HistoryTimeline";
 
-/* Year chips mirror the milestone order — duplicates are cycled on click */
-const years = milestones.map((milestone) => milestone.year);
+gsap.registerPlugin(ScrollTrigger);
 
+type Phase = "hidden" | "in" | "out";
+
+/* Fixed vertical rail — compact, desktop-only. Slides in from the left
+   when the timeline section enters the viewport, slides out when leaving.
+   Active milestone's year is always visible; others appear on hover. */
 export default function HistoryYearNav() {
-  // Map each year to its occurrence indices in the milestones array
-  const yearIndexMap = useRef<Record<string, number[]>>({});
-  // Track next occurrence index for each year (for duplicate year cycling)
-  const yearClickMap = useRef<Record<string, number>>({});
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [phase, setPhase] = useState<Phase>("hidden");
+  const railRef = useRef<HTMLElement>(null);
 
-  const updateArrows = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 2);
-    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 2);
-  }, []);
-
+  /* Track which milestone occupies the viewport centre */
   useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    el.addEventListener("scroll", updateArrows, { passive: true });
-    updateArrows();
-    return () => el.removeEventListener("scroll", updateArrows);
-  }, [updateArrows]);
+    const entries =
+      document.querySelectorAll<HTMLElement>("[data-milestone]");
+    if (!entries.length) return;
 
-  const scrollBy = useCallback((dir: number) => {
-    scrollRef.current?.scrollBy({ left: dir * 200, behavior: "smooth" });
-  }, []);
-
-  // Build the year→indices map once
-  if (Object.keys(yearIndexMap.current).length === 0) {
-    years.forEach((year, i) => {
-      if (!yearIndexMap.current[year]) yearIndexMap.current[year] = [];
-      yearIndexMap.current[year].push(i);
-    });
-  }
-
-  const handleYearClick = useCallback((year: string) => {
-    const indices = yearIndexMap.current[year];
-    if (!indices) return;
-
-    // Get current click count for this year
-    const current = yearClickMap.current[year] ?? 0;
-
-    // Find the milestone element for this occurrence
-    const targetIndex = indices[current];
-    const target = document.querySelector(
-      `[data-milestone="${targetIndex}"]`,
+    const triggers = Array.from(entries).map((entry, i) =>
+      ScrollTrigger.create({
+        trigger: entry,
+        start: "top center",
+        end: "bottom center",
+        onEnter: () => setActiveIndex(i),
+        onEnterBack: () => setActiveIndex(i),
+      })
     );
 
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-
-    // Advance to next occurrence (cycle back to 0 after last)
-    yearClickMap.current[year] = indices.length > 1 ? (current + 1) % indices.length : 0;
+    return () => triggers.forEach((t) => t.kill());
   }, []);
 
+  /* Show / hide the rail based on the timeline section's visibility.
+     Uses "top 40%" so the rail only slides in after the hero has
+     mostly scrolled out — not on page load. */
+  useEffect(() => {
+    const section = document.getElementById("history-timeline");
+    if (!section) return;
+
+    const st = ScrollTrigger.create({
+      trigger: section,
+      start: "top 40%",
+      end: "bottom 75%",
+      onEnter: () => setPhase("in"),
+      onLeave: () => setPhase("out"),
+      onEnterBack: () => setPhase("in"),
+      onLeaveBack: () => setPhase("out"),
+    });
+
+    return () => st.kill();
+  }, []);
+
+  /* After the slide-out animation finishes, fully hide the element */
+  const handleAnimationEnd = () => {
+    if (phase === "out") setPhase("hidden");
+  };
+
+  const scrollTo = (index: number) => {
+    const el = document.querySelector(`[data-milestone="${index}"]`);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
+  const animClass =
+    phase === "in"
+      ? "animate__animated animate__slideInLeft"
+      : phase === "out"
+        ? "animate__animated animate__slideOutLeft"
+        : "";
+
   return (
-    /* ── Year navigation bar — sits under the hero, pins to top on scroll ── */
-    <div className="sticky top-0 z-30 w-full border-b border-gray-100 bg-white">
-      <div className="relative flex items-center">
-        {/* Left arrow */}
-        {canScrollLeft && (
-          <button
-            type="button"
-            onClick={() => scrollBy(-1)}
-            className="absolute left-0 z-10 flex items-center justify-center w-8 h-full bg-gradient-to-r from-white via-white/80 to-transparent lg:hidden cursor-pointer"
-            aria-label="Scroll left"
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-neutral-500">
-              <path d="M10 12L6 8l4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-        )}
-
-        {/* Scrollable year list */}
+    <aside
+      ref={railRef}
+      onAnimationEnd={handleAnimationEnd}
+      aria-hidden={phase === "hidden"}
+      className={`hidden lg:flex fixed left-[3em] top-1/2 z-30 h-[55vh] w-[7em] -translate-y-1/2 items-center ${animClass}`}
+      style={{
+        animationDuration: "0.6s",
+        visibility: phase === "hidden" ? "hidden" : "visible",
+      }}
+    >
+      <div className="relative flex h-full w-full flex-col items-start justify-between">
+        {/* Continuous vertical line — light, uniform */}
         <div
-          ref={scrollRef}
-          className="flex-1 overflow-x-auto lg:overflow-visible scrollbar-hide py-4 px-5 sm:px-2.5"
-        >
-          <div className="flex items-center gap-1.5 lg:gap-3 flex-nowrap lg:flex-wrap lg:justify-center">
-            {years.map((year, i) => (
-              <div key={`${year}-${i}`} className="flex items-center gap-2 lg:gap-4.5 last:pr-5">
-                {i > 0 && (
-                  <span className="block size-1.5 sm:size-2 bg-neutral-100" />
-                )}
-                <button
-                  type="button"
-                  onClick={() => handleYearClick(year)}
-                  className="font-medium text-sm sm:text-[1.25rem] text-neutral-800 font-neue-montreal underline cursor-pointer bg-transparent border-none p-0 whitespace-nowrap"
-                >
-                  {year}
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
+          aria-hidden
+          className="absolute left-[5px] top-1 bottom-1 w-[2px] bg-gray-200"
+        />
 
-        {/* Right arrow */}
-        {canScrollRight && (
-          <button
-            type="button"
-            onClick={() => scrollBy(1)}
-            className="absolute right-0 z-10 flex items-center justify-center w-8 h-full bg-gradient-to-l from-white via-white/80 to-transparent lg:hidden cursor-pointer"
-            aria-label="Scroll right"
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-neutral-500">
-              <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-        )}
+        {milestones.map((m, i) => {
+          const isActive = i === activeIndex;
+          return (
+            <button
+              key={`${m.year}-${i}`}
+              type="button"
+              onClick={() => scrollTo(i)}
+              aria-label={`Jump to ${m.year} — ${m.title}`}
+              aria-current={isActive ? "true" : undefined}
+              className="group relative z-10 flex cursor-pointer items-center gap-2"
+            >
+              {/* Dot */}
+              <span
+                className={`block shrink-0 rounded-full transition-all duration-300 ${
+                  isActive
+                    ? "size-3 ring-[3px] ring-gray-300/30"
+                    : "size-3 border border-gray-300 bg-white group-hover:border-gray-400"
+                }`}
+                style={isActive ? { background: "var(--primary-gradient)" } : undefined}
+              />
+              {/* Year label */}
+              <span
+                className={`whitespace-nowrap font-neue-montreal text-sm font-medium transition-all duration-300 ${
+                  isActive
+                    ? "translate-x-0 opacity-100"
+                    : "-translate-x-1 text-gray-500 opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
+                }`}
+                style={
+                  isActive
+                    ? {
+                        background: "var(--primary-gradient)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                      }
+                    : undefined
+                }
+              >
+                {m.year}
+              </span>
+            </button>
+          );
+        })}
       </div>
-    </div>
+    </aside>
   );
 }

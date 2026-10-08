@@ -48,7 +48,7 @@ export function DirectorCard({
         <p className="font-archivo-black text-base sm:text-[1.125rem] sm:leading-[1.5rem] text-neutral-800 lg:text-[1.5rem] lg:leading-[1.75rem]">
           {card.name}
         </p>
-        <p className="font-neue-montreal text-xs sm:text-[1.11rem] sm:leading-[1.5rem] text-neutral-800">
+        <p className="font-neue-montreal text-[13px] sm:text-[1.11rem] sm:leading-[1.5rem] text-neutral-800 tracking-wider">
           {card.title}
         </p>
       </div>

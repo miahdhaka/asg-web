@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type MutableRefObject } from "react";
-import { SquareArrowOutUpRight } from "lucide-react";
+import { SquareArrowOutUpRight, Plus, Minus, ChevronLeft, ChevronRight } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -105,6 +105,11 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
   const activeConcernRef = useRef(0);
   const leftSlideRef = useRef<HTMLDivElement>(null);
   const rightSlideRef = useRef<HTMLDivElement>(null);
+  // Mobile-only content sheet that sits under the collapsed video card.
+  const mobileContentRef = useRef<HTMLDivElement>(null);
+  const mobileSlideRef = useRef<HTMLDivElement>(null);
+  const mobileStepRef = useRef<((dir: number) => void) | null>(null);
+  const [descOpen, setDescOpen] = useState(false);
 
   useEffect(() => {
     const tickers: Array<() => void> = [];
@@ -126,6 +131,12 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
       if (i > -1) timers.splice(i, 1);
     };
     const ctx = gsap.context(() => {
+      // Desktop keeps the scroll-driven video shrink + rising side panels
+      // (unchanged). Mobile instead collapses the video ONCE after the centre
+      // text has risen, with the side panels parked in fixed positions.
+      const isDesktop = window.matchMedia("(min-width: 1024px)").matches;
+      let mobileCollapsed = false;
+
       // Video wrapper: centered, full-size
       gsap.set(videoWrapRef.current, {
         left: "50%",
@@ -136,9 +147,18 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         height: "100%",
       });
 
-      // Side content: hidden below viewport
-      gsap.set(leftContentRef.current, { y: "100vh", opacity: 0 });
-      gsap.set(rightContentRef.current, { y: "100vh", opacity: 0 });
+      // Side content: hidden until revealed
+      if (isDesktop) {
+        gsap.set(leftContentRef.current, { y: "100vh", opacity: 0 });
+        gsap.set(rightContentRef.current, { y: "100vh", opacity: 0 });
+      } else {
+        gsap.set([leftContentRef.current, rightContentRef.current], { y: 0, opacity: 0 });
+        // The mobile sheet may spill below the section's bottom edge on purpose —
+        // let it render there and sit above the next section so native scroll
+        // (which takes over once the short mobile pin releases) reveals it.
+        gsap.set(sectionRef.current, { overflow: "visible", zIndex: 30 });
+        gsap.set(mobileContentRef.current, { opacity: 0 });
+      }
 
       // Center text: visible at natural position
       gsap.set(textRef.current, { y: 0, opacity: 1 });
@@ -209,7 +229,7 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
       // direction: 1 = forward (scroll down) → out-top, in-from-bottom
       //           -1 = backward (scroll up)  → out-bottom, in-from-top
       const runSlide = (idx: number, done: () => void, direction: 1 | -1 = 1) => {
-        const els = [leftSlideRef.current, rightSlideRef.current].filter(Boolean);
+        const els = [leftSlideRef.current, rightSlideRef.current, mobileSlideRef.current].filter(Boolean);
         if (els.length === 0) {
           activeConcernRef.current = idx;
           setActiveConcern(idx);
@@ -337,7 +357,7 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         gestureSum = 0;
         peakDelta = 0;
         busy = false;
-        const els = [leftSlideRef.current, rightSlideRef.current].filter(Boolean);
+        const els = [leftSlideRef.current, rightSlideRef.current, mobileSlideRef.current].filter(Boolean);
         gsap.killTweensOf(els);
         gsap.set(els, { y: 0, opacity: 1 });
         activeConcernRef.current = idx;
@@ -354,6 +374,13 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         runSlide(idx, () => {
           busy = false;
         }, direction);
+      };
+
+      // The mobile sheet's arrow buttons step concerns by hand — the short
+      // mobile pin no longer walks them with the scroll phase.
+      mobileStepRef.current = (dir: number) => {
+        const next = Math.min(LAST_IDX, Math.max(0, activeConcernRef.current + dir));
+        moveConcernTo(next);
       };
 
       // Scrolls 1-3: text fades equally; scroll 4: fully gone
@@ -392,40 +419,125 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
           });
         }
 
-        // Video: directly interpolated 0%→35% (full-size → small)
-        const vw = p <= videoEnd
-          ? 100 - (100 - 23) * (p / videoEnd)
-          : 23;
-        const vh = p <= videoEnd
-          ? 100 - (100 - 56) * (p / videoEnd)
-          : 56;
-        const br = p <= videoEnd ? 16 * (p / videoEnd) : 16;
-        gsap.set(videoWrapRef.current, {
-          width: `${vw}%`,
-          height: `${vh}%`,
-          borderRadius: `${br}px`,
-        });
+        // ── Video + side panels ───────────────────────────────────────────────
+        // Desktop: video shrinks and side panels rise purely scroll-driven
+        // (unchanged). Mobile: the video stays full-screen while the centre text
+        // rises, then collapses ONCE (smooth, not scroll-by-scroll) into a centered
+        // rounded card, and the side panels fade in and sit in fixed positions.
+        if (isDesktop) {
+          const vw = p <= videoEnd
+            ? 100 - (100 - 23) * (p / videoEnd)
+            : 23;
+          const vh = p <= videoEnd
+            ? 100 - (100 - 56) * (p / videoEnd)
+            : 56;
+          // Square (0 radius) at full-screen; corners round in only as it shrinks.
+          const br = p <= videoEnd ? 28 * (p / videoEnd) : 28;
+          gsap.set(videoWrapRef.current, {
+            width: `${vw}%`,
+            height: `${vh}%`,
+            borderRadius: `${br}px`,
+          });
 
-        // per scroll (slow) and reverse straight back down on scroll up.
-        if (p <= sideStart) {
-          gsap.set([leftContentRef.current, rightContentRef.current], {
-            y: "100vh",
-            opacity: 0,
-          });
-        } else if (p >= sideEnd) {
-          gsap.set([leftContentRef.current, rightContentRef.current], {
-            y: 0,
-            opacity: 1,
-          });
+          // Side content rises per scroll (slow) and reverse on scroll up.
+          if (p <= sideStart) {
+            gsap.set([leftContentRef.current, rightContentRef.current], {
+              y: "100vh",
+              opacity: 0,
+            });
+          } else if (p >= sideEnd) {
+            gsap.set([leftContentRef.current, rightContentRef.current], {
+              y: 0,
+              opacity: 1,
+            });
+          } else {
+            const rawT = (p - sideStart) / (sideEnd - sideStart);
+            const t = sideEase(rawT);
+            gsap.set([leftContentRef.current, rightContentRef.current], {
+              y: `${100 * (1 - t)}vh`,
+              opacity: t,
+            });
+          }
         } else {
-          const rawT = (p - sideStart) / (sideEnd - sideStart);
-          const t = sideEase(rawT);
-          gsap.set([leftContentRef.current, rightContentRef.current], {
-            y: `${100 * (1 - t)}vh`,
-            opacity: t,
-          });
+          // Mobile: fire a single smooth collapse the moment the centre text is
+          // fully gone, and the reverse when it comes back. No per-frame resize.
+          const wantCollapsed = p >= textEnd;
+          if (wantCollapsed !== mobileCollapsed) {
+            mobileCollapsed = wantCollapsed;
+            const block = mobileContentRef.current;
+            if (wantCollapsed) {
+              // Square card centred on the visible screen.
+              const rect = sectionRef.current?.getBoundingClientRect();
+              const sectionH = rect?.height || window.innerHeight;
+              const sectionW = rect?.width || window.innerWidth;
+              const sideMargin = 16; // matches px-4 (1rem) on each side
+              // Fit BOTH the horizontal gap and the section height so the card
+              // is never cropped by the section's overflow-hidden.
+              const sidePx = Math.min(
+                sectionW - sideMargin * 2,
+                sectionH - sideMargin * 2
+              );
+              const wPct = (sidePx / sectionW) * 100;
+              const hPct = (sidePx / sectionH) * 100;
+              // The section is 100lvh (the FULL screen). innerHeight can sit
+              // well below that while the browser's bottom UI docks and shrinks
+              // the layout viewport — centring on it drops the card high on the
+              // screen. Use the larger of the two so the card sits at the
+              // screen's true vertical centre.
+              const viewH = Math.max(window.innerHeight, window.screen?.height || 0);
+              const topPct = ((viewH / 2) / sectionH) * 100;
+              gsap.to(videoWrapRef.current, {
+                width: `${wPct}%`,
+                height: `${hPct}%`,
+                top: `${topPct}%`,
+                borderRadius: 24,
+                duration: 1.1,
+                ease: "power2.inOut",
+                overwrite: "auto",
+              });
+              gsap.to(block, {
+                opacity: 1,
+                duration: 0.6,
+                ease: "power2.out",
+                delay: 0.3,
+              });
+            } else {
+              gsap.to(videoWrapRef.current, {
+                width: "100%",
+                height: "100%",
+                top: "50%",
+                borderRadius: 0,
+                duration: 0.6,
+                ease: "power3.inOut",
+              });
+              gsap.to(block, {
+                opacity: 0,
+                duration: 0.3,
+                ease: "power2.in",
+              });
+            }
+          }
         }
       };
+
+      // The URL bar / bottom UI can show or hide WHILE the card is collapsed,
+      // changing the screen height the card must stay centred on — re-centre.
+      const syncCard = () => {
+        if (isDesktop || !mobileCollapsed) return;
+        const rect = sectionRef.current?.getBoundingClientRect();
+        if (!rect || !videoWrapRef.current) return;
+        const viewH = Math.max(window.innerHeight, window.screen?.height || 0);
+        gsap.set(videoWrapRef.current, {
+          top: `${((viewH / 2) / rect.height) * 100}%`,
+        });
+      };
+      window.visualViewport?.addEventListener("resize", syncCard);
+      window.addEventListener("resize", syncCard);
+      cleanups.push(() => {
+        window.visualViewport?.removeEventListener("resize", syncCard);
+        window.removeEventListener("resize", syncCard);
+      });
+
       tickers.push(tick);
       gsap.ticker.add(tick);
 
@@ -599,14 +711,14 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         </div>
       </div>
 
-      {/* Left side content — rises from below */}
-      <div ref={leftContentRef} className="max-w-[28rem] absolute left-6 lg:left-[4%] top-0 bottom-0 z-20 flex items-center text-[var(--neutral-800)]">
+      {/* Left side content — desktop column only (mobile uses the sheet below) */}
+      <div ref={leftContentRef} className="absolute left-4 right-4 top-0 bottom-0 z-20 hidden items-start pt-24 lg:flex lg:left-[4%] lg:right-auto lg:max-w-[28rem] lg:items-center lg:pt-0 text-[var(--neutral-800)]">
         <div>
-          <div className="font-space-mono font-medium uppercase tracking-wider text-xs sm:text-sm lg:text-base flex items-center gap-2 mb-3">
+          <div className="font-space-mono font-medium uppercase tracking-wider text-[12.5px] sm:text-sm lg:text-base flex items-center gap-2 mb-3">
             <span>OUR BUSINESS</span>
             <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: "var(--primary-gradient)" }} />
           </div>
-          <h2 className="font-archivo-black uppercase text-lg sm:text-2xl lg:text-[3rem] leading-[1.05]">
+          <h2 className="font-archivo-black uppercase text-3xl lg:text-[3rem] leading-[1.05]">
             {["AN ECOSYSTEM", "NOT A FACTORY"].map((line, i) => (
               <span className="block" key={i}>{line}</span>
             ))}
@@ -621,15 +733,15 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
                 {sisterConcerns[activeConcern]?.sector ?? "TEXTILE"}
               </span>
             </div>
-            <p className="w-[90%] font-neue-montreal text-xs sm:text-sm lg:text-[1.15rem] text-[var(--neutral-600)] mt-2">
+            <p className="w-full font-neue-montreal text-xs sm:text-sm lg:text-[1.15rem] text-[var(--neutral-600)] mt-2 lg:w-[90%]">
               {sisterConcerns[activeConcern]?.sectorDesc ?? ""}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Right side content — rises from below */}
-      <div ref={rightContentRef} className="w-[15rem] sm:w-[20rem] lg:w-[28rem] absolute right-6 lg:right-[4%] top-0 bottom-0 z-20 flex items-start lg:items-center text-[var(--neutral-800)]">
+      {/* Right side content — desktop column only (mobile uses the sheet below) */}
+      <div ref={rightContentRef} className="absolute left-4 right-4 top-0 bottom-0 z-20 hidden items-end pb-6 lg:flex lg:left-auto lg:right-[4%] lg:w-[28rem] lg:items-center lg:pb-0 text-[var(--neutral-800)]">
         <div className="w-full text-left">
           <div ref={rightSlideRef}>
             <img
@@ -637,7 +749,7 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
               alt="Sister concern"
               className="h-10 w-36 object-contain sm:h-14 sm:w-44 lg:h-[5rem] lg:w-56"
             />
-            <p className="w-[90%] font-neue-montreal text-xs sm:text-sm lg:text-[1.15rem] text-[var(--neutral-600)] mt-1">
+            <p className="w-full font-neue-montreal text-xs sm:text-sm lg:text-[1.15rem] text-[var(--neutral-600)] mt-1 lg:w-[90%]">
               {sisterConcerns[activeConcern]?.concernDesc ?? ""}
             </p>
           </div>
@@ -679,6 +791,89 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
               <SquareArrowOutUpRight className="w-4 h-4" />
             </span>
           </a>
+        </div>
+      </div>
+
+      {/* Mobile content sheet — sits right under the collapsed video card
+          (card bottom ≈ 50% + 50vw − 16px, so this leaves a 16px gap). It may
+          extend below the fold on purpose: the short mobile pin releases into
+          native scroll, which reveals the rest. */}
+      <div
+        ref={mobileContentRef}
+        className="absolute left-0 right-0 z-30 lg:hidden"
+        style={{ top: "calc(50% + 50vw)" }}
+      >
+        <div className="mx-4 rounded-t-[1.75rem] bg-[#F3F3F1] px-4 pt-5 pb-8">
+          <div ref={mobileSlideRef}>
+            {/* Sector + description toggle · concern arrows */}
+            <div className="flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => setDescOpen((v) => !v)}
+                aria-expanded={descOpen}
+                className="flex items-center gap-2"
+              >
+                <span
+                  className="font-neue-montreal uppercase font-medium text-xl"
+                  style={{ background: "var(--primary-gradient)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
+                >
+                  {sisterConcerns[activeConcern]?.sector ?? "TEXTILE"}
+                </span>
+                {descOpen ? (
+                  <Minus className="h-5 w-5 shrink-0" color="#1AA179" strokeWidth={2.5} />
+                ) : (
+                  <Plus className="h-5 w-5 shrink-0" color="#1AA179" strokeWidth={2.5} />
+                )}
+              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  aria-label="Previous concern"
+                  onClick={() => mobileStepRef.current?.(-1)}
+                  className="grid h-9 w-9 place-items-center rounded-full border border-neutral-300 bg-white text-[var(--neutral-800)]"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Next concern"
+                  onClick={() => mobileStepRef.current?.(1)}
+                  className="grid h-9 w-9 place-items-center rounded-full border border-neutral-300 bg-white text-[var(--neutral-800)]"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+
+            <div className="my-4 border-b border-[#EBEBEB]" />
+
+            <img
+              src={sisterConcerns[activeConcern]?.logo ?? ""}
+              alt="Sister concern"
+              className="h-10 w-36 object-contain"
+            />
+
+            {/* Collapsible description — slides down/up smoothly */}
+            <div
+              className={`grid transition-[grid-template-rows,opacity] duration-500 ease-in-out ${
+                descOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+              }`}
+            >
+              <div className="overflow-hidden">
+                <p className="pt-3 font-neue-montreal text-sm leading-relaxed text-[var(--neutral-600)]">
+                  {sisterConcerns[activeConcern]?.concernDesc ?? ""}
+                </p>
+              </div>
+            </div>
+
+            <a
+              href={sisterConcerns[activeConcern]?.link ?? "#"}
+              className="mt-6 inline-flex items-center gap-1.5 rounded-full border border-[#1AA179] px-5 py-2.5 text-sm font-medium text-[#1AA179]"
+            >
+              Visit website
+              <SquareArrowOutUpRight className="h-4 w-4" color="#1AA179" />
+            </a>
+          </div>
         </div>
       </div>
     </section>

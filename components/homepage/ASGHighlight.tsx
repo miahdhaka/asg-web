@@ -73,15 +73,21 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
   // fades into the brand gradient as it moves toward the top/bottom overlay
   // zones (where the black gradient overlays sit above it).
   const numGradRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  const gradientOverlayRef = useRef<HTMLDivElement>(null);
-  const gradientOverlay3Ref = useRef<HTMLDivElement>(null);
   const gradientOverlay4Ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let tick: (() => void) | null = null;
     const ctx = gsap.context(() => {
       const capsuleH = capsuleRef.current!.offsetHeight;
-      const itemH = capsuleH * 0.5;
+      /* Measure the REAL slot height from the DOM instead of assuming
+         capsuleH/2 — the two CSS clamps (tube 170/24vw/360, slot 85/12vw/180)
+         don't resolve proportionally everywhere (e.g. viewports between
+         708–833px hit the tube's min but not the slot's), and any mismatch
+         accumulated across 3 steps, leaving the last number resting off
+         center ("17" sitting high). With the true pitch the reel always
+         lands each number dead-center in the tube. */
+      const slotEl = stripRef.current!.firstElementChild as HTMLElement | null;
+      const itemH = slotEl?.offsetHeight || capsuleH * 0.5;
       const centerY = (capsuleH - itemH) / 2;
       const endY = centerY - itemH * (SLIDES.length - 1);
 
@@ -101,17 +107,18 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
       }
 
       // Background cross-fade.
-      // The four gradients share the SAME top stops and differ only in the
-      // bottom color. The base (1st) gradient lives on the section itself and
-      // never repaints; the 2nd/3rd/4th are overlay divs whose OPACITY we
-      // animate. Opacity on a GPU-promoted layer is compositor-only — zero
-      // repaint, zero main-thread work — so it never delays the page's
-      // synchronous (passive:false) wheel handler and the number reel stays
-      // smooth. (Animating backgroundColor instead repainted the full screen
-      // every frame and caused the "atkay atkay" stutter.)
-      tl.fromTo(gradientOverlayRef.current, { opacity: 0 }, { opacity: 1, ease: "none", duration: 1 }, 0);
-      tl.fromTo(gradientOverlay3Ref.current, { opacity: 0 }, { opacity: 1, ease: "none", duration: 1 }, 1);
-      tl.fromTo(gradientOverlay4Ref.current, { opacity: 0 }, { opacity: 1, ease: "none", duration: 1 }, 2);
+      // The gradients share the SAME top stops and differ only in the bottom
+      // color. The base (1st, lightest) gradient lives on the section itself
+      // and never repaints; the last (darkest) one is a single overlay whose
+      // OPACITY ramps 0 → 1 LINEARLY across the whole reel — so the
+      // background keeps deepening scroll-for-scroll from #D0E3CE all the way
+      // to #B3D9AF instead of settling in three per-slide steps. Opacity on a
+      // GPU-promoted layer is compositor-only — zero repaint, zero
+      // main-thread work — so it never delays the page's synchronous
+      // (passive:false) wheel handler and the number reel stays smooth.
+      // (Animating backgroundColor instead repainted the full screen every
+      // frame and caused the "atkay atkay" stutter.)
+      tl.fromTo(gradientOverlay4Ref.current, { opacity: 0 }, { opacity: 1, ease: "none", duration: n }, 0);
 
       // Content panels are pre-rendered & grid-stacked, but NOT tied to the
       // scrubbed timeline. They use the slide transition (outgoing slides up &
@@ -131,7 +138,13 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
       // number reel, background color and content all glide smoothly.
       tl.pause();
 
-      const SMOOTH = 0.12;
+      /* Touch devices fling through the pin range far faster than a wheel
+         scrolls it — with the loose 0.12 chase the strip trails the scroll by
+         ~250ms and then drifts in to catch up, which reads as the incoming
+         number "lafalafi"-wobbling. Tighter follow makes the reel track the
+         scroll as 1:1-smooth as it does with a desktop wheel. Desktop keeps
+         its exact original 0.12. */
+      const SMOOTH = ScrollTrigger.isTouch ? 0.3 : 0.12;
       let targetProgress = 0;
       let scrollProgress = 0;
       let currentSlide = 0;
@@ -206,6 +219,17 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
         end: `+=${(n + 1 + COVER_SLOW) * 100}%`,
         pin: true,
         pinSpacing: false,
+        /* Mobile-only: touch scrolling arrives in uneven bursts (finger drag +
+           fling momentum) so the pinned reel's incoming number "lafalafi"
+           wobbles, while desktop's wheel feeds it a steady stream. GSAP's
+           scroll normalizer intercepts touch input and synthesizes the same
+           smooth, wheel-like scroll desktop gets. It's toggled ONLY while this
+           section is pinned (and only on touch devices) so the Hero's mobile
+           stepper and every other section keep native behavior; desktop never
+           activates it at all. */
+        onToggle: (self) => {
+          if (ScrollTrigger.isTouch) ScrollTrigger.normalizeScroll(self.isActive);
+        },
         onUpdate: (self) => {
           // Raw 0→1 across the whole pin range. The content timeline chases it
           // through the smoothed follower below; the cover applies it directly.
@@ -239,19 +263,22 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
 
         // Number gradient: read the strip's current Y and fade each number's
         // gradient layer in by its distance from the capsule center. White is
-        // reserved for EXACTLY the center only — as soon as a number moves off
-        // center (on its way in from the top/bottom) it is already the brand
-        // green gradient, ramping linearly with distance so nothing but the
-        // perfectly-centered number reads white.
+        // kept over a small band around the center (a bit below → a bit above
+        // the middle line); once a number drifts past that band it ramps into
+        // the brand green gradient with distance, reaching full gradient at
+        // the capsule edge — same as before, just a slightly wider white zone.
         const stripY = gsap.getProperty(stripRef.current!, "y") as number;
         const halfH = capsuleH / 2;
+        // Half-height of the white dead zone around the center (~15% of one
+        // item slot above AND below the middle line).
+        const WHITE_BAND = itemH * 0.15;
         numGradRefs.current.forEach((el, i) => {
           if (!el) return;
           const numCenterY = stripY + i * itemH + itemH / 2;
           const dist = Math.abs(numCenterY - halfH);
-          // Linear ramp from the center: white (0) only when perfectly centered,
-          // reaching the full green gradient (1) by the time it reaches the edge.
-          const t = Math.min(1, dist / halfH);
+          // Flat 0 (white) inside the band, then the same linear ramp so the
+          // full green gradient (1) is still reached exactly at the edge.
+          const t = Math.min(1, Math.max(0, dist - WHITE_BAND) / (halfH - WHITE_BAND));
           gsap.set(el, { opacity: t });
         });
 
@@ -302,6 +329,10 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
 
     return () => {
       if (tick) gsap.ticker.remove(tick);
+      // The trigger is gone, so its onToggle will never fire to release the
+      // touch normalizer — kill it here so route changes don't leave the
+      // whole page on normalized (synthetic) touch scrolling.
+      ScrollTrigger.normalizeScroll(false);
       ctx.revert();
     };
   }, []);
@@ -317,35 +348,12 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
           "linear-gradient(180deg, #F3F3F1 -7.28%, #F3F4F1 16.35%, #D0E3CE 87.23%)",
       }}
     >
-      {/* 2nd/3rd/4th gradient overlays. Each is GPU-promoted (translateZ(0) +
+      {/* Final (darkest) gradient overlay. GPU-promoted (translateZ(0) +
           will-change:opacity) so its gradient is rasterized ONCE into a cached
-          texture; animating opacity then happens purely on the compositor with
-          zero repaint and zero main-thread cost. They fade in one-by-one over
-          the scrubbed timeline as each number comes into view. */}
-      <div
-        ref={gradientOverlayRef}
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(180deg, #F3F3F1 -7.28%, #F3F4F1 16.35%, #C6E2C3 87.23%)",
-          opacity: 0,
-          transform: "translateZ(0)",
-          willChange: "opacity",
-        }}
-        aria-hidden="true"
-      />
-      <div
-        ref={gradientOverlay3Ref}
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(180deg, #F3F3F1 -7.28%, #F3F4F1 16.35%, #BCDDB9 87.23%)",
-          opacity: 0,
-          transform: "translateZ(0)",
-          willChange: "opacity",
-        }}
-        aria-hidden="true"
-      />
+          texture; animating its opacity happens purely on the compositor with
+          zero repaint and zero main-thread cost. It ramps 0 → 1 across the
+          whole reel, deepening the background from the 1st gradient into this
+          one continuously. */}
       <div
         ref={gradientOverlay4Ref}
         className="absolute inset-0 pointer-events-none"
@@ -369,10 +377,17 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
 
       {/* Content */}
       <div className="relative z-10 flex items-center justify-center h-full px-6 lg:px-[4%]">
-        <div className="flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-32 w-full ">
-          {/* Left side — Title */}
-          <div className="flex-1 text-left">
-            <h2 className="font-archivo-black uppercase text-2xl sm:text-4xl lg:text-[3rem] leading-[1.2] text-[var(--neutral-800)] word-space-4">
+        {/* Mobile: the three blocks (title · tube · stats) fill the section
+            height and distribute evenly on the y-axis (h-full +
+            justify-evenly), left-aligned. lg: restores the original centered
+            row exactly — there h-full changes nothing because the row's
+            children are vertically centered, and lg:justify-center keeps the
+            horizontal centering. */}
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-evenly lg:justify-center gap-6 lg:gap-32 h-full w-full ">
+          {/* Left side — Title (flex-1 only at lg: on mobile it must stay
+              content-sized so justify-evenly can distribute the y-space) */}
+          <div className="lg:flex-1 text-left mt-10 lg:mt-0">
+            <h2 className="font-archivo-black uppercase text-[1.75rem] sm:text-4xl lg:text-[3rem] leading-[1.2] text-[var(--neutral-800)] word-space-4">
               <span className="text-nowrap block">ASG AT A</span>
               <span className="block">GLANCE</span>
             </h2>
@@ -381,10 +396,14 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
           {/* Center — Capsule with lens-shaped number scroll */}
           <div
             ref={capsuleRef}
-            className="relative shrink-0 overflow-hidden rounded-full"
+            className="relative w-[calc(100vw-3rem)] shrink-0 self-center overflow-hidden rounded-full lg:w-[clamp(280px,52vw,760px)]"
             style={{
-              width: "clamp(400px, 52vw, 760px)",
-              height: "clamp(200px, 24vw, 360px)",
+              // Mobile: the tube spans the full x-axis (viewport minus the
+              // px-6 content padding). lg: keeps the original fluid clamp —
+              // desktop is completely unchanged. Min back to 170px (150 read
+              // as too short); 24vw only reaches 200px at ≥833px viewports,
+              // so lg+ (245px+) never touches the min.
+              height: "clamp(170px, 24vw, 360px)",
               backgroundImage: "url(/images/we-are-asg.webp)",
               backgroundSize: "cover",
               backgroundPosition: "center",
@@ -404,10 +423,10 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
                 <div
                   key={s.number}
                   className="relative shrink-0 flex items-center justify-center"
-                  style={{ height: "clamp(100px, 12vw, 180px)" }}
+                  style={{ height: "clamp(85px, 12vw, 180px)" }}
                 >
                   {/* Base layer — always solid white, reads clean at the center */}
-                  <span className="font-archivo-black text-white text-5xl sm:text-7xl lg:text-[8.5rem] leading-none select-none">
+                  <span className="font-archivo-black text-white text-[clamp(3.5rem,0.96rem+8.4vw,8.5rem)] leading-none select-none">
                     {s.number}
                   </span>
                   {/* Gradient layer — opacity driven by distance from center. At
@@ -415,7 +434,7 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
                       black overlays above tint it to the "gradient + black" look. */}
                   <span
                     ref={(el) => { numGradRefs.current[i] = el; }}
-                    className="font-archivo-black text-5xl sm:text-7xl lg:text-[8.5rem] leading-none select-none absolute inset-0 flex items-center justify-center"
+                    className="font-archivo-black text-[clamp(3.5rem,0.96rem+8.4vw,8.5rem)] leading-none select-none absolute inset-0 flex items-center justify-center"
                     style={{
                       backgroundImage: "var(--primary-gradient)",
                       WebkitBackgroundClip: "text",
@@ -449,7 +468,7 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
           {/* Right side — Stats (all slides pre-rendered & grid-stacked;
               opacity cross-faded by the scrubbed timeline — no DOM writes
               during scroll, so the number reel never jitters). */}
-          <div className="flex-1 max-w-[28rem] grid text-center lg:text-left">
+          <div className="lg:flex-1 max-w-[28rem] grid text-left">
             {SLIDES.map((slide, i) => (
               <div
                 key={i}
@@ -459,7 +478,7 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
               >
                 {/* Gradient icon */}
                 <div
-                  className="w-8 h-8 sm:w-12 sm:h-12 lg:w-16 lg:h-16 mx-auto lg:mx-0 mb-2"
+                  className="w-16 h-16 mx-0 mb-2"
                   style={{
                     backgroundImage: "var(--primary-gradient)",
                     maskImage: `url(${slide.icon})`,
@@ -473,12 +492,12 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
                   }}
                 />
                 {/* Title */}
-                <h3 className="font-archivo-black uppercase text-xl sm:text-2xl lg:text-[2rem] leading-[1.05] text-[var(--neutral-800)]">
+                <h3 className="font-archivo-black uppercase text-[1.4rem] sm:text-2xl lg:text-[2rem] leading-[1.05] text-[var(--neutral-800)]">
                   <span className="block">{slide.titleLine1}</span>
                   {slide.titleLine2 && <span className="block">{slide.titleLine2}</span>}
                 </h3>
                 {/* Description */}
-                <p className="max-w-[90%] font-neue-montreal text-xs sm:text-sm lg:text-[1.1rem] text-[var(--neutral-600)] mt-2">
+                <p className="max-w-[90%] font-neue-montreal text-[1rem] sm:text-[1rem] lg:text-[1.1rem] text-[var(--neutral-600)] mt-2">
                   {slide.description}
                 </p>
               </div>

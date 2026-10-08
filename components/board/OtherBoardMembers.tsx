@@ -264,9 +264,9 @@ export default function OtherBoardMembers({
   if (layout === "grid") {
     const renderCard = (member: CarouselMember, key: string, slider: boolean) => {
       const cardContent = (
-        <div className="relative w-full aspect-[429/582]">
+        <div className={`relative w-full ${slider ? 'aspect-[429/640]' : 'aspect-[429/582]'}`}>
           <div className="absolute inset-x-0 top-0 z-10 flex flex-col items-center text-center px-3 pt-6 sm:pt-10 lg:pt-[6em]">
-            <h3 className="whitespace-pre-line font-archivo-black font-medium text-xl lg:text-[2em] text-neutral-800">
+            <h3 className="whitespace-pre-line font-archivo-black font-medium text-lg sm:text-xl lg:text-[2em] text-neutral-800">
               {member.name}
             </h3>
             <p className="sm:mt-1 text-base lg:text-[1.2em] text-neutral-600 font-medium tracking-wider">
