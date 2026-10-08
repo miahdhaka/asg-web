@@ -24,7 +24,7 @@ function NavLabel({
       {label}
       {underline && (
         <span
-          className={`absolute -bottom-[28px] left-0 right-0 z-10 h-[3px] origin-left bg-[image:var(--primary-gradient)] transition-transform duration-300 ease-out ${
+          className={`absolute -bottom-[calc(var(--header-row-h)/2_-_0.62em)] left-0 right-0 z-10 h-[3px] origin-left bg-[image:var(--primary-gradient)] transition-transform duration-300 ease-out ${
             active ? "scale-x-100" : "scale-x-0"
           }`}
         />
@@ -77,7 +77,7 @@ function NavItem({
       <Link
         href={category.href}
         onMouseEnter={() => onMenuChange?.(null, null)}
-        className="group/navitem relative cursor-pointer text-[19.5px] font-medium text-nowrap text-neutral-800 transition-colors duration-200 ease-in-out font-neue-montreal hover:text-neutral-950"
+        className="group/navitem relative cursor-pointer text-[length:var(--nav-font-size)] font-medium text-nowrap text-neutral-800 transition-colors duration-200 ease-in-out font-neue-montreal hover:text-neutral-950"
       >
         <NavLabel label={category.label} active={false} underline={false} />
       </Link>
@@ -93,7 +93,7 @@ function NavItem({
     >
       <button
         type="button"
-        className={`relative cursor-pointer text-[19.5px] font-medium text-nowrap transition-colors duration-200 ease-in-out font-neue-montreal ${
+        className={`relative cursor-pointer text-[length:var(--nav-font-size)] font-medium text-nowrap transition-colors duration-200 ease-in-out font-neue-montreal ${
           active ? "text-neutral-950" : "text-neutral-800 hover:text-neutral-950"
         }`}
       >

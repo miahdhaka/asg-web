@@ -216,11 +216,11 @@ function MilestoneEntry({ milestone, index }: { milestone: Milestone; index: num
             ref={textRef}
             className={`flex flex-col gap-2 lg:gap-4 opacity-0 ${index % 2 !== 0 ? "lg:order-last" : "lg:justify-self-end"}`}
           >
-            <span className="font-test-tiempos-fine font-medium text-[2.75rem] sm:text-[5rem] leading-[1.167] text-neutral-800">
+            <span className="font-archivo-black font-medium text-[2.75rem] sm:text-[5rem] leading-[1.167] text-neutral-800">
               {milestone.year}
             </span>
             <div className="flex flex-col gap-3">
-              <h3 className="font-test-tiempos-fine font-medium text-xl sm:text-[2rem] leading-8 lg:leading-[1.5] text-neutral-800">
+              <h3 className="font-archivo-black font-medium text-xl sm:text-[2rem] leading-8 lg:leading-[1.5] text-neutral-800">
                 {milestone.title}
               </h3>
               <p className="text-sm text-neutral-800 font-neue-montreal leading-5 tracking-wide max-w-[25.4375rem] lg:max-w-[35rem]">
@@ -256,9 +256,7 @@ export default function HistoryTimeline() {
   const lineRef = useRef<HTMLDivElement>(null);
 
   /* GSAP line growth — line waits at each dot until the NEXT entry
-     scrolls into the viewport, then smoothly animates to that dot.
-     No matter how much you scroll, the line stays put until the next
-     dot is visible. */
+     scrolls into the viewport, then smoothly animates to that dot. */
   useGSAP(
     () => {
       const section = sectionRef.current;
@@ -278,9 +276,6 @@ export default function HistoryTimeline() {
 
       // Defer measurement so layout has fully settled
       setTimeout(() => {
-        // Line grows from section top down to each dot center.
-        // Only height is animated — no top changes — so the
-        // Tailwind translate-x transform is never conflicted.
         gsap.set(line, { height: dotCenter(dots[0]), visibility: "visible" });
 
         for (let i = 1; i < entries.length; i++) {

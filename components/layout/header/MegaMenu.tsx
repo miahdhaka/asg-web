@@ -28,7 +28,7 @@ export default function MegaMenu({ items, onNavigate }: MegaMenuProps) {
           key={item.label}
           href={item.href}
           onClick={onNavigate}
-          className="py-3 text-[1.15rem] font-normal tracking-wide font-neue-montreal bg-[image:var(--primary-gradient)] bg-clip-text [-webkit-text-fill-color:#262626] [transition-property:-webkit-text-fill-color,translate] [transition-duration:300ms] [transition-timing-function:ease-in-out] hover:translate-x-1.5 hover:[-webkit-text-fill-color:transparent]"
+          className="py-3 text-[length:var(--mega-font-size)] font-normal tracking-wide font-neue-montreal bg-[image:var(--primary-gradient)] bg-clip-text [-webkit-text-fill-color:#262626] [transition-property:-webkit-text-fill-color,translate] [transition-duration:300ms] [transition-timing-function:ease-in-out] hover:translate-x-1.5 hover:[-webkit-text-fill-color:transparent]"
         >
           {item.label}
         </Link>

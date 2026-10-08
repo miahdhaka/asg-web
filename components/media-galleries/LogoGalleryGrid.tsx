@@ -65,7 +65,7 @@ export default function LogoGalleryGrid({ cards }: { cards: LogoCardData[] }) {
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-8 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-5 lg:gap-y-8">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-5 lg:gap-y-8">
         {cards.map((card, i) => (
           <LogoCard key={card.label + i} card={card} onSelect={() => setActiveIndex(i)} />
         ))}

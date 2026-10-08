@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import PageHero from "@/components/common/PageHero";
+import PageHeroFull from "@/components/common/PageHeroFull";
 import CsrCommunityImpact from "@/components/sustainability/CsrCommunityImpact";
 import CsrPeopleFirst from "@/components/sustainability/CsrPeopleFirst";
 import CsrEducationBanner from "@/components/sustainability/CsrEducationBanner";
@@ -16,13 +16,12 @@ export const metadata: Metadata = {
 export default function CorporateSocialResponsibilityPage() {
   return (
     <main>
-      <PageHero
+      <PageHeroFull
         title={csrHero.title}
         subtitle={csrHero.subtitle}
         mobileSrc={csrHero.image}
         desktopSrc={csrHero.image}
         alt={csrHero.alt}
-        emblemSrc={csrHero.emblem}
       />
       <CsrCommunityImpact />
       <CsrPeopleFirst />

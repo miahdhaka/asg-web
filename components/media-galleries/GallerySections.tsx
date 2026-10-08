@@ -78,7 +78,7 @@ function SectionHeading({ title, href }: { title: string; href?: string }) {
 function Divider() {
   /* Visible hairline with equal breathing room above and below — the
      sections themselves carry no outer margins anymore */
-  return <hr className="mt-12 mb-10 border-0 border-t border-neutral-200 sm:mt-[3.5rem] sm:mb-12 lg:mt-[4.25rem] lg:mb-[3.5rem]" />;
+  return <hr className="mt-6 mb-10 border-0 border-t border-neutral-200 sm:mt-[3.5rem] sm:mb-12 lg:mt-[4.25rem] lg:mb-[3.5rem]" />;
 }
 
 /* ------------------------------------------------------------------ */

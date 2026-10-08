@@ -20,7 +20,7 @@ export default function OurHistoryPage() {
         alt="Our History"
       />
       <HistoryYearNav />
-      <div className="pb-10 sm:pb-0">
+      <div id="history-timeline" className="pb-10 sm:pb-0 lg:pl-[10em]">
         <HistoryTimeline />
       </div>
     </main>

@@ -105,6 +105,13 @@
      value on mount/resize; the rem default keeps the first paint close. */
   --header-height: 4.0625rem;
 
+  /* Fluid desktop navbar sizing (pill is lg+ only, so the clamp lives
+     between 1024px and 1440px+ viewports; design values = 1440px):
+     nav font 16px→19.5px, mega links 16px→18.4px, row height 72px→88px. */
+  --nav-font-size: clamp(1rem, 0.46rem + 0.84vw, 1.22rem);
+  --mega-font-size: clamp(1rem, 0.63rem + 0.58vw, 1.15rem);
+  --header-row-h: clamp(4.5rem, 2.04rem + 3.85vw, 5.5rem);
+
   /* Mobile section height — a CONSTANT, never a live value.
      The homepage stepper anchors on `section.offsetTop`, so a height that
      changes mid-scroll moves those anchors and forces a visible snap on the

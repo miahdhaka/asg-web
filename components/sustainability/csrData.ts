@@ -5,7 +5,7 @@
 /* ------------------------------------------------------------------ */
 
 export const csrHero = {
-  title: "Creating a Lasting Positive Impact on Society",
+  title: "Creating a Lasting Positive \nImpact on Society",
   subtitle:
     "Beyond manufacturing, we are deeply committed to uplifting local communities, ensuring ethical practices, and fostering sustainable social growth.",
   image: "/images/sustainability/csr/impact-hero.webp",

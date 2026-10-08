@@ -73,7 +73,7 @@ export default function GreenerFuture() {
       const inside =
         el.offsetLeft >= viewLeft &&
         el.offsetLeft + el.offsetWidth <= viewRight;
-      el.style.borderRadius = inside ? "1.2rem" : "7rem";
+      el.style.borderRadius = inside ? "1.2rem" : "5rem";
     });
   };
 

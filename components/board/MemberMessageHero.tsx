@@ -28,7 +28,7 @@ export default function MemberMessageHero({
   return (
     <section
       id={id}
-      className="relative w-full overflow-hidden bg-background"
+      className="relative w-full overflow-hidden bg-background pt-[calc(var(--header-height)+2.5rem)] lg:pt-0"
     >
       {/* 5% brand-gradient wash over the canvas bg — matches the Figma tint */}
       <div

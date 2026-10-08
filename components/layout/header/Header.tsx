@@ -21,14 +21,41 @@ interface ActiveMenu {
   items: MegaMenuItem[];
 }
 
+/* Short-form labels for individual concern pages (shown in the compact pill) */
+const CONCERN_LABELS: Record<string, string> = {
+  "helal-brothers": "H&B",
+  "hazrat-amanat-shah-spinning-mills": "HASSML",
+  "amanat-shah-weaving-processing": "ASWPL",
+  "amanat-shah-fabrics": "ASFL",
+  "miah": "MIAH",
+  "trust-knitwear-industries": "TRUST",
+  "hazrat-amanat-shah-securities": "HASSL",
+  "farm2firm": "F2F",
+  "amanat-shah-tex-solution": "TEX SOLUTION",
+  "asg-dynamic": "ASG DYNAMIC",
+};
+
+/* Short-form labels for individual sustainability pages (shown in the compact pill) */
+const SUSTAINABILITY_LABELS: Record<string, string> = {
+  "environmental-social-governance": "ESG",
+  "corporate-social-responsibility": "CSR",
+  "women-empowerment": "Empowerment",
+};
+
 /* Derive the current page label from pathname (shown in the compact pill) */
 function getCurrentPageLabel(pathname: string): string {
   if (pathname === "/") return "Home";
   if (pathname.startsWith("/about-us")) return "About";
   if (pathname.startsWith("/board-of-directors")) return "Management";
   if (pathname.startsWith("/our-history")) return "History";
-  if (pathname.startsWith("/concerns")) return "Concerns";
-  if (pathname.startsWith("/sustainability")) return "Sustainability";
+  if (pathname.startsWith("/concerns")) {
+    const slug = pathname.split("/").filter(Boolean)[1];
+    return (slug && CONCERN_LABELS[slug]) || "Concerns";
+  }
+  if (pathname.startsWith("/sustainability")) {
+    const slug = pathname.split("/").filter(Boolean)[1];
+    return (slug && SUSTAINABILITY_LABELS[slug]) || "Sustainability";
+  }
   if (pathname.startsWith("/newsroom")) return "Media & Press";
   if (pathname.startsWith("/media-galleries")) return "Media & Press";
   if (pathname.startsWith("/contact-us")) return "Contact";
@@ -57,6 +84,9 @@ export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  /* Bumped on viewport resize — nav font sizes are fluid (vw-based), so the
+     cached px widths in the swap timeline go stale and must be re-measured. */
+  const [resizeTick, setResizeTick] = useState(0);
   /* Pill radius: stays 30px while the mega zone is visible and only snaps back
      to full-round once the collapse (rise-up) tween has fully finished. */
   const [megaRadius, setMegaRadius] = useState(false);
@@ -64,6 +94,19 @@ export default function Header() {
 
   const closeSidebar = useCallback(() => setSidebarOpen(false), []);
   const currentPageLabel = getCurrentPageLabel(pathname);
+
+  useEffect(() => {
+    let id: ReturnType<typeof setTimeout>;
+    const onResize = () => {
+      clearTimeout(id);
+      id = setTimeout(() => setResizeTick((t) => t + 1), 150);
+    };
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      clearTimeout(id);
+    };
+  }, []);
 
   /* The pill is "expanded" (full nav shown) while hovered, while search is
      open, or while a mega menu is open — mega keeps it wide so the submenu
@@ -223,7 +266,7 @@ export default function Header() {
         swapTlRef.current.reverse();
       }
     },
-    { dependencies: [expanded, currentPageLabel] }
+    { dependencies: [expanded, currentPageLabel, resizeTick] }
   );
 
   /* Mega menu = the SAME pill expanding downward. Height is measured from the
@@ -335,15 +378,15 @@ export default function Header() {
           reference design; hidden at lg+ where the pill takes over. */}
       <div
         ref={mobileBarRef}
-        className="fixed inset-x-0 top-0 z-50 flex items-center justify-between rounded-b-[1.75rem] border-b border-neutral-200 bg-white/85 px-5 py-4 backdrop-blur-[15px] lg:hidden"
+        className="fixed inset-x-0 top-0 z-50 flex items-center justify-between rounded-b-[1.4rem] border-b border-neutral-200 bg-white/85 px-4 py-4 shadow-[0px_8px_24px_0px_#0000001a] backdrop-blur-[15px] lg:hidden"
       >
         <button
           type="button"
           onClick={() => setSidebarOpen(true)}
-          className="cursor-pointer rounded-full p-1.5 transition-colors hover:bg-neutral-100"
+          className="cursor-pointer rounded-full p-1 transition-colors hover:bg-neutral-100"
           aria-label="Open menu"
         >
-          <Menu className="size-7 text-neutral-800" strokeWidth={1.8} />
+          <Menu className="size-6 text-neutral-800" strokeWidth={1.8} />
         </button>
 
         <Link
@@ -356,17 +399,17 @@ export default function Header() {
             alt="Amanat Shah Group"
             width={48}
             height={48}
-            className="h-11 w-11 object-contain"
+            className="h-9 w-9 object-contain"
             priority
           />
         </Link>
 
         <button
           type="button"
-          className="cursor-pointer rounded-full p-1.5 transition-colors hover:bg-neutral-100"
+          className="cursor-pointer rounded-full p-1 transition-colors hover:bg-neutral-100"
           aria-label="Search"
         >
-          <SearchIcon className="size-7 text-neutral-800" />
+          <SearchIcon className="size-6 text-neutral-800" />
         </button>
       </div>
 
@@ -381,12 +424,13 @@ export default function Header() {
           ref={pillRef}
           onMouseEnter={handleEnter}
           onMouseLeave={handleLeave}
-          className={`pointer-events-auto flex flex-col overflow-hidden bg-white/80 backdrop-blur-[15px] shadow-[0px_8px_24px_0px_#00000014] border border-white/60 ${
+          className={`pointer-events-auto flex flex-col overflow-hidden bg-white/80 backdrop-blur-[15px] shadow-[0px_12px_32px_0px_#00000026] border border-white/60 ${
             megaRadius ? "rounded-[30px]" : "rounded-full"
           }`}
         >
-          {/* Header row: logo · nav (swap zone) · right icons */}
-          <div ref={rowRef} className="flex items-center gap-4 px-8 h-[80px]">
+          {/* Header row: logo · nav (swap zone) · right icons. Height is fluid
+              (--header-row-h) so the pill scales with viewport width. */}
+          <div ref={rowRef} className="flex items-center gap-4 px-8 h-[var(--header-row-h)]">
             <Link
               href="/"
               id="header-logo"
@@ -411,7 +455,7 @@ export default function Header() {
             >
               <span
                 ref={labelRef}
-                className="inline-block whitespace-nowrap px-1 text-[19.5px] font-medium text-neutral-800 font-neue-montreal"
+                className="inline-block whitespace-nowrap px-1 text-[length:var(--nav-font-size)] font-medium text-neutral-800 font-neue-montreal"
               >
                 {currentPageLabel}
               </span>

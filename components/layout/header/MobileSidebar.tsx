@@ -203,10 +203,10 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
         <button
           type="button"
           onClick={onClose}
-          className="cursor-pointer rounded-full p-1.5 transition-colors hover:bg-neutral-100"
+          className="cursor-pointer rounded-full p-1 transition-colors hover:bg-neutral-100"
           aria-label="Close menu"
         >
-          <X className="size-7 text-neutral-800" />
+          <X className="size-6 text-neutral-800" />
         </button>
 
         <Link
@@ -220,17 +220,17 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
             alt="Amanat Shah Group"
             width={48}
             height={48}
-            className="h-11 w-11 object-contain"
+            className="h-9 w-9 object-contain"
             priority
           />
         </Link>
 
         <button
           type="button"
-          className="cursor-pointer rounded-full p-1.5 transition-colors hover:bg-neutral-100"
+          className="cursor-pointer rounded-full p-1 transition-colors hover:bg-neutral-100"
           aria-label="Search"
         >
-          <SearchIcon className="size-7 text-neutral-800" />
+          <SearchIcon className="size-6 text-neutral-800" />
         </button>
       </div>
 

@@ -196,12 +196,7 @@ export default function CertificationsCompliance() {
             <div
               key={`${logo.src}-${index}`}
               data-card
-              className="relative h-40 w-56 sm:h-44 sm:w-64 lg:h-56 lg:w-88 shrink-0 overflow-hidden border-b-[1.55px] border-transparent"
-              style={{
-                borderImageSource:
-                  "linear-gradient(120.96deg, rgba(255, 255, 255, 0.75) 0.39%, rgba(26, 161, 121, 0.75) 44.92%, rgba(255, 255, 255, 0.75) 102.76%)",
-                borderImageSlice: 1,
-              }}
+              className="relative h-40 w-56 sm:h-44 sm:w-64 lg:h-56 lg:w-88 shrink-0 overflow-hidden"
             >
               <span
                 aria-hidden
@@ -217,6 +212,16 @@ export default function CertificationsCompliance() {
                 style={{
                   background:
                     "linear-gradient(180deg, rgba(26, 161, 121, 0.08) 0%, rgba(26, 161, 121, 0.75) 50%, rgba(26, 161, 121, 0.75) 100%)",
+                }}
+              />
+
+              {/* Bottom edge — static gradient hairline (replaces flicker-prone border-image) */}
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-[1.55px]"
+                style={{
+                  background:
+                    "linear-gradient(120.96deg, rgba(255, 255, 255, 0.75) 0.39%, rgba(26, 161, 121, 0.75) 44.92%, rgba(255, 255, 255, 0.75) 102.76%)",
                 }}
               />
 
