@@ -376,7 +376,7 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
       />
 
       {/* Content */}
-      <div className="relative z-10 flex items-center justify-center h-full px-6 lg:px-[4%]">
+      <div className="relative z-10 flex items-center justify-center h-full px-4 lg:px-[4%]">
         {/* Mobile: the three blocks (title · tube · stats) fill the section
             height and distribute evenly on the y-axis (h-full +
             justify-evenly), left-aligned. lg: restores the original centered
@@ -386,7 +386,7 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-evenly lg:justify-center gap-6 lg:gap-32 h-full w-full ">
           {/* Left side — Title (flex-1 only at lg: on mobile it must stay
               content-sized so justify-evenly can distribute the y-space) */}
-          <div className="lg:flex-1 text-left mt-10 lg:mt-0">
+          <div className="lg:flex-1 text-left mt-24 lg:mt-0">
             <h2 className="font-archivo-black uppercase text-[1.75rem] sm:text-4xl lg:text-[3rem] leading-[1.2] text-[var(--neutral-800)] word-space-4">
               <span className="text-nowrap block">ASG AT A</span>
               <span className="block">GLANCE</span>
@@ -396,7 +396,7 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
           {/* Center — Capsule with lens-shaped number scroll */}
           <div
             ref={capsuleRef}
-            className="relative w-[calc(100vw-3rem)] shrink-0 self-center overflow-hidden rounded-full lg:w-[clamp(280px,52vw,760px)]"
+            className="relative w-[calc(100vw-2rem)] shrink-0 self-center overflow-hidden rounded-full lg:w-[clamp(280px,52vw,760px)]"
             style={{
               // Mobile: the tube spans the full x-axis (viewport minus the
               // px-6 content padding). lg: keeps the original fluid clamp —
@@ -478,7 +478,7 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
               >
                 {/* Gradient icon */}
                 <div
-                  className="w-16 h-16 mx-0 mb-2"
+                  className="w-14 h-14 lg:w-16 lg:h-16 mx-0 mb-2"
                   style={{
                     backgroundImage: "var(--primary-gradient)",
                     maskImage: `url(${slide.icon})`,

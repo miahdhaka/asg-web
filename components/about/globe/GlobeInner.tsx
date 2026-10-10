@@ -93,7 +93,14 @@ export default function GlobeInner({ onReady }: { onReady?: () => void }) {
           ref={globeRef}
           width={dimensions.width}
           height={dimensions.height}
-          globeOffset={[dimensions.width * 0.22, 0]}
+          /* Desktop (lg+, ≥1024px): keep the original right-shifted globe so it
+             sits behind the text column. Mobile: center it horizontally and
+             push it down so it clears the top-aligned text block. */
+          globeOffset={
+            dimensions.width >= 1024
+              ? [dimensions.width * 0.22, 0]
+              : [0, dimensions.height * 0.14]
+          }
           globeImageUrl={EARTH_TEX}
           bumpImageUrl={BUMP_TEX}
           /* Black scene base + starfield background image. Section.tsx paints

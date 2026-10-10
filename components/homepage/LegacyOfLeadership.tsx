@@ -57,18 +57,18 @@ export default function LegacyOfLeadership() {
     <section
       ref={sectionRef}
       id="legacy-of-leadership"
-      className="relative flex w-full flex-col overflow-hidden bg-[#F3F3F1] py-20 lg:min-h-screen"
+      className="relative flex w-full flex-col overflow-hidden bg-[#F3F3F1] py-16 sm:py-20 lg:min-h-screen"
     >
-      <div className="flex flex-1 flex-col px-6 pb-4 md:px-12 lg:px-20">
+      <div className="flex flex-1 flex-col px-4 pb-0 sm:pb-4 md:px-12 lg:px-20">
         <div className="flex flex-col gap-7">
           <span className="inline-flex items-center gap-1.5 font-space-mono font-medium text-[var(--neutral-800)] uppercase">
             Leadership
-            <span className="bg-gradient-to-b from-[#4a9e4a] to-[#2d6b2d] bg-clip-text text-2xl leading-none text-transparent">
+            <span className="text-2xl leading-none bg-gradient-to-b from-[#4a9e4a] to-[#2d6b2d] bg-clip-text text-transparent">
               •
             </span>
           </span>
 
-          <h2 className="max-w-[29.5rem] font-archivo-black text-2xl leading-[1.1] text-[var(--neutral-800)] uppercase sm:text-4xl lg:text-[3rem]">
+          <h2 className="font-archivo-black uppercase text-[1.75rem] sm:text-4xl lg:text-[3rem] leading-[1.2] text-[var(--neutral-800)] word-space-4">
             Legacy of
             <br />
             Leadership
@@ -77,16 +77,24 @@ export default function LegacyOfLeadership() {
 
         <div
           ref={panelRef}
-          className="relative mt-28 min-h-[47rem] flex-1 md:min-h-[51rem] lg:mt-[7.125rem] lg:min-h-0"
+          className="relative mt-20 pt-[20.5rem] md:mt-28 md:block md:min-h-[51rem] md:pt-0 lg:mt-[7.125rem] lg:min-h-0 lg:flex-1"
         >
-          <div className="absolute inset-0 overflow-hidden rounded-t-[1.5rem]">
+          <div className="absolute inset-y-0 -left-6 -right-6 overflow-hidden rounded-t-[3rem] sm:rounded-t-[2rem] md:inset-0 md:rounded-t-[1.5rem]">
             <div aria-hidden className="absolute inset-0">
+              <Image
+                src="/images/board-of-directors/chairman-mobile-bg.png"
+                alt=""
+                fill
+                sizes="100vw"
+                className="object-cover md:hidden"
+                quality={90}
+              />
               <Image
                 src="/images/home-legacy/lagacy-bg.webp"
                 alt=""
                 fill
                 sizes="(min-width: 1024px) calc(100vw - 7.5rem), calc(100vw - 3rem)"
-                className="object-cover"
+                className="hidden object-cover md:block"
                 quality={90}
               />
             </div>
@@ -94,7 +102,7 @@ export default function LegacyOfLeadership() {
 
           <div
             ref={portraitRef}
-            className="group absolute -top-16 left-1/2 z-20 h-[32rem] w-[86%] max-w-[30rem] -translate-x-1/2 md:-top-20 md:h-[38rem] lg:top-auto lg:bottom-0 lg:left-[25.87%] lg:h-[45rem] lg:w-[38%] lg:max-w-[32rem] lg:translate-x-0"
+            className="group absolute -top-24 left-1/2 z-20 h-[26.5rem] w-[86%] max-w-[30rem] -translate-x-1/2 md:-top-20 md:h-[38rem] lg:top-auto lg:bottom-0 lg:left-[25.87%] lg:h-[45rem] lg:w-[38%] lg:max-w-[32rem] lg:translate-x-0"
           >
             <Image
               src="/images/home-legacy/helal-sir-leadership.webp"
@@ -111,42 +119,44 @@ export default function LegacyOfLeadership() {
               strip paints the section background over the area just below the
               card to hide that dip; the intended top overflow (head above the
               card) is left untouched. Sits above the portrait (z-20) but below
-              the text blocks (z-30), and only covers below the card bottom. */}
+              the text blocks (z-30), and only covers below the card bottom.
+              Desktop/tablet only — the mobile flow layout keeps the portrait
+              contained so there is no dip to hide. */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-full z-[25] h-24 bg-[#F3F3F1]"
+            className="pointer-events-none absolute inset-x-0 top-full z-[25] hidden h-24 bg-[#F3F3F1] lg:block"
           />
 
-          <div className="absolute inset-x-6 top-[18.75rem] z-30 text-white md:inset-x-10 md:top-[23.5rem] lg:inset-x-auto lg:top-1/2 lg:left-[5rem] lg:-translate-y-1/2 lg:w-[18.375rem]">
-            <h3 className="font-archivo-black text-3xl leading-[1.08] uppercase lg:text-[2rem]">
+          <div className="relative z-30 border-t border-current/20 px-0 sm:px-6 pt-5 sm:pt-8 text-white md:absolute md:inset-x-10 md:top-[23.5rem] md:border-t-0 md:px-0 lg:inset-x-auto lg:top-1/2 lg:left-[5rem] lg:-translate-y-1/2 lg:w-[18.375rem]">
+            <h3 className="font-archivo-black text-[22px] sm:text-3xl leading-[1.08] uppercase lg:text-[2rem]">
               Mohammad
               <br />
               Helal Miah
             </h3>
-            <p className="mt-8 text-base leading-6 lg:text-[1.25rem]">Chairman</p>
-            <div className="my-6 h-px w-full bg-[#2B5349]" />
-            <p className="font-archivo-black text-base lg:text-[1.1rem] leading-5 uppercase">
+            <p className="mt-3 sm:mt-4 sm:mt-6 leading-6 text-[1.1rem] sm:text-[1.25rem]">Chairman</p>
+            <div className="my-3 sm:my-4 sm:my-6 h-px w-full bg-[#2B5349]" />
+            <p className="font-archivo-black text-[15px] sm:text-base leading-5 uppercase lg:text-[1.1rem]">
               Amanat Shah Group
             </p>
           </div>
 
-          <div className="absolute inset-x-6 bottom-10 z-30 flex flex-col items-center gap-8 text-white md:inset-x-10 lg:inset-x-auto lg:right-[5rem] lg:top-1/2 lg:bottom-auto lg:w-[36rem] lg:-translate-y-1/2 lg:gap-[3.5rem]">
+          <div className="relative z-30 mt-8 flex flex-col items-start gap-5 sm:gap-8 px-0 sm:px-6 pb-[3.5rem] text-white sm:pb-0 md:absolute md:inset-x-10 md:bottom-10 md:items-center md:px-0 lg:inset-x-auto lg:right-[5rem] lg:top-1/2 lg:bottom-auto lg:w-[36rem] lg:-translate-y-1/2 lg:gap-[3.5rem]">
             <svg
-              aria-hidden
+              aria-hidden 
               width="79"
               height="79"
               viewBox="0 0 79 79"
               fill="none"
-              className="h-[6.5rem] w-[6.5rem] shrink-0"
+              className="h-[3.25rem] w-[3.25rem] shrink-0 md:h-[6.5rem] md:w-[6.5rem]"
             >
               <path
                 d="M0 45.1438H16.9285L5.64274 67.715H22.5712L33.857 45.1438V11.2868H0V45.1438ZM45.1427 11.2868V45.1438H62.0712L50.7854 67.715H67.7139L78.9996 45.1438V11.2868H45.1427Z"
-                fill="#17362E"
+                fill="#204138"
               />
             </svg>
 
-            <p className="text-xl leading-7 lg:text-[1.7rem] lg:leading-9">
-              When someone, somewhere in the world, wears our clothes with a smile... We feel they've become a part of the ASG family. Our mission is to keep extending this family for generations as long as the trust isn't disrupted.
+            <p className="text-[19px] sm:text-xl leading-8 lg:text-[1.7rem] lg:leading-9">
+              ASG's leadership is rooted in a founding family's 130-year entrepreneurial legacy — carried forward today by a management team focused on manufacturing discipline, product innovation and long-term partnership with global brands.
             </p>
           </div>
         </div>

@@ -142,11 +142,11 @@ export default function Newsroom() {
   return (
     <section
       id="newsroom"
-      className="relative flex w-full flex-col overflow-hidden py-6 lg:py-8 mb-6 lg:mb-8 h-[calc(var(--vh)-var(--header-height))] lg:h-[calc(100vh-var(--header-height))]"
+      className="relative flex w-full flex-col overflow-hidden py-0 sm:py-6 lg:py-8 mb-14 sm:mb-6 lg:mb-8 lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Header — eyebrow + title left, button right */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between px-4 lg:px-20 mb-12 gap-4">
-        <div className="mt-2 flex flex-col gap-7">
+      <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between px-4 lg:px-20 mb-8 sm:mb-12 gap-10 sm:gap-4">
+        <div className="mt-2 flex flex-col gap-7 lg:max-w-[55%]">
           {/* Eyebrow — drops in together with the title below */}
           <div id="newsroom-eyebrow" className="inline-flex items-center gap-1.5 font-space-mono font-medium text-[var(--neutral-800)] uppercase">
             Newsroom
@@ -157,7 +157,7 @@ export default function Newsroom() {
               homepage section headings (AboutUs, GreenerFuture, etc.). */}
           <h2
             id="newsroom-title"
-            className="font-archivo-black uppercase text-2xl sm:text-4xl lg:text-[3rem] leading-[1.1] text-[var(--neutral-800)]"
+            className="font-archivo-black uppercase text-[1.75rem] sm:text-4xl lg:text-[3rem] leading-[1.2] text-[var(--neutral-800)] word-space-4"
           >
             Latest from ASG <br />newsroom
           </h2>
@@ -166,7 +166,7 @@ export default function Newsroom() {
         <Link
           href="/newsroom"
           data-label="More news"
-          className="primary-btn-flip-gradient rounded-full px-3 sm:px-4 lg:px-6 py-2.5 sm:py-3 lg:py-4 text-sm sm:text-base lg:text-lg"
+          className="primary-btn-flip-gradient rounded-full px-4 sm:px-4 lg:px-6 py-3 sm:py-3 lg:py-4 text-sm sm:text-base lg:text-lg tracking-wider"
           style={{
             borderImage: "none",
             background:
@@ -183,7 +183,7 @@ export default function Newsroom() {
           duplicated and scrollLeft is wrapped so it loops seamlessly in both
           directions, while the section keeps its single-screen height.
           Desktop keeps the three-column grid (clones hidden). */}
-      <div className="relative flex min-h-0 flex-1 items-start px-4 lg:px-20">
+      <div className="relative flex min-h-0 flex-1 items-start pl-4 pr-0 lg:px-20">
         <div className="relative w-full lg:h-full">
           <div
             ref={stripRef}
@@ -199,20 +199,19 @@ export default function Newsroom() {
               <Link
                 key={`${item.image}-${index}`}
                 href={`/newsroom/press-release/${item.slug}`}
-                className={`group flex w-[78%] shrink-0 flex-col sm:w-[52%] lg:w-auto lg:shrink lg:h-full lg:min-h-0 gap-3 sm:gap-4 ${
+                className={`group flex w-[84%] shrink-0 flex-col sm:w-[52%] lg:w-auto lg:shrink lg:h-full lg:min-h-0 gap-3 sm:gap-4 ${
                   index >= news.length ? "lg:hidden" : ""
                 }`}
               >
                 {/* Image */}
-                <div className="relative aspect-[431/400] w-full overflow-hidden rounded-[1.2rem] bg-[#D9D9D9] lg:h-[70%] lg:aspect-auto lg:flex-none lg:min-h-0">
+                <div className="relative aspect-[431/330] w-full overflow-hidden rounded-[0.8rem] bg-[#D9D9D9] lg:h-[70%] lg:aspect-auto lg:flex-none lg:min-h-0 lg:rounded-[1.2rem]">
                   <Image
                     src={item.image}
                     alt={item.title}
                     fill
                     sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                     draggable={false}
-                    className="pointer-events-none object-cover"
-                    style={{ borderRadius: "1.2rem" }}
+                    className="pointer-events-none rounded-[0.8rem] object-cover lg:rounded-[1.2rem]"
                     quality={80}
                   />
                   {/* Hover overlay */}
@@ -222,23 +221,23 @@ export default function Newsroom() {
                   />
                 </div>
 
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-2 sm:gap-1">
                   {/* Meta — date / category */}
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="font-neue-montreal text-xs sm:text-sm lg:text-base text-neutral-600">
+                    <span className="font-neue-montreal text-sm lg:text-base text-neutral-600">
                       {item.date}
                     </span>
                     <span
                       aria-hidden
                       className="h-4 sm:h-5 w-px rotate-[30deg] bg-neutral-600"
                     />
-                    <span className="font-neue-montreal text-xs sm:text-sm lg:text-base text-neutral-600">
+                    <span className="font-neue-montreal text-sm lg:text-base text-neutral-600">
                       {item.category}
                     </span>
                   </div>
 
                   {/* Title */}
-                  <h3 className="max-w-full lg:max-w-[90%] font-archivo-black text-xl sm:text-2xl lg:text-3xl leading-7 sm:leading-8 text-neutral-800">
+                  <h3 className="max-w-full lg:max-w-[90%] font-archivo-black text-xl sm:text-2xl lg:text-3xl leading-6 sm:leading-8 text-neutral-800">
                     {item.title}
                   </h3>
                 </div>

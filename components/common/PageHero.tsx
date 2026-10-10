@@ -44,7 +44,7 @@ export default function PageHero({
       id={id}
       className={
         sameSrc
-          ? "relative w-full min-h-[42rem] lg:h-[47rem]"
+          ? "relative w-full min-h-[36rem] lg:h-[47rem]"
           : "relative w-full"
       }
     >
@@ -71,7 +71,7 @@ export default function PageHero({
             height={290}
             priority
             quality={90}
-            className="block lg:hidden min-h-[42rem] w-full h-auto object-cover"
+            className="block lg:hidden min-h-[36rem] w-full h-auto object-cover"
             style={{ objectPosition }}
           />
           {/* Desktop-only image */}

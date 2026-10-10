@@ -25,7 +25,7 @@ interface PageHeroFullProps {
  * Full-screen sibling of PageHero — identical caption treatment
  * (bottom-centred uppercase Archivo Black title over Neue Montreal subtitle,
  * behind the `overlay-linear-subtle` gradient). On mobile the band matches
- * PageHero's `42rem` height; on desktop it always fills the viewport.
+ * PageHero's `36rem` height; on desktop it always fills the viewport.
  *
  * The section starts flush at the very top of the page — the floating pill
  * navbar overlays it rather than pushing it down. Desktop height uses plain
@@ -103,7 +103,7 @@ export default function PageHeroFull({
   return (
     <section
       id={id}
-      className="relative w-full overflow-hidden min-h-[42rem] lg:h-screen"
+      className="relative w-full overflow-hidden min-h-[36rem] lg:h-screen"
     >
       {background}
 

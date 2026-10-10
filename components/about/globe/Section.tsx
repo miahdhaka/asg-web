@@ -120,9 +120,11 @@ export default function RockSteadySection() {
       {/* Bottom black blur fade */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-40 bg-gradient-to-t from-black to-transparent" />
 
-      {/* Text — left side */}
-      <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center lg:justify-start">
-        <div className="w-full px-6 sm:px-10 lg:w-[43%] lg:px-0 lg:pl-[12em]">
+      {/* Text — left side on desktop, top-aligned on mobile so the centered
+          globe sits below it (matches the mobile mockup). Desktop keeps the
+          original vertically-centered, left-column layout via the lg: overrides. */}
+      <div className="pointer-events-none absolute inset-0 z-10 flex items-start justify-center lg:items-center lg:justify-start">
+        <div className="w-full px-6 pt-28 sm:px-10 lg:w-[43%] lg:pt-0 lg:px-0 lg:pl-[12em]">
           <div className="flex items-center gap-2 mb-3">
             <span className="inline-flex items-center gap-1.5 font-space-mono font-medium text-white uppercase">GLOBAL REACH <span className="text-2xl leading-none bg-gradient-to-b from-[#4a9e4a] to-[#2d6b2d] bg-clip-text text-transparent">•</span></span>
           </div>
