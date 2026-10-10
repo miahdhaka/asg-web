@@ -45,28 +45,36 @@ export default function AboutUs() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative z-20 bg-background w-full py-16 md:px-12 lg:px-20 lg:py-22">
+    <section ref={sectionRef} className="relative z-20 bg-background w-full px-4 py-16 md:px-12 lg:px-20 lg:py-22">
       <div>
         {/* Top row: label + heading on left, description + CTA on right */}
-        <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between lg:max-w-[90%]">
+        <div className="flex flex-col gap-6 sm:gap-10 lg:flex-row lg:items-end lg:justify-between lg:max-w-[90%]">
           {/* Left column */}
           <div className="flex flex-col gap-7 lg:max-w-[55%]">
             <span className="inline-flex items-center gap-1.5 font-space-mono font-medium text-[var(--neutral-800)] uppercase">
               About Us <span className="text-2xl leading-none bg-gradient-to-b from-[#4a9e4a] to-[#2d6b2d] bg-clip-text text-transparent">•</span>
             </span>
-            <h2 className="font-archivo-black uppercase text-2xl sm:text-4xl lg:text-[3rem] leading-[1.1] text-[var(--neutral-800)] word-space-2">
-              One Thread.
-              <br />
-              Every Stage.
-              <br />
-              One Group.
+            <h2 className="font-archivo-black uppercase text-[1.75rem] sm:text-4xl lg:text-[3rem] leading-[1.2] text-[var(--neutral-800)] word-space-4">
+              <span className="hidden md:block">
+                One Thread.
+                <br />
+                Every Stage.
+                <br />
+                One Group.
+              </span>
+
+              <span className="block md:hidden">
+                One Thread.
+                <br />
+                Every Stage. One Group.
+              </span>
             </h2>
           </div>
 
           {/* Right column */}
-          <div className="flex flex-col items-start gap-6 lg:max-w-[35%] lg:pt-2">
-            <p className="text-base  text-[#555] md:text-[1.25rem]">
-              A trusted name within a diversified business conglomerate, with modern textiles and a global fashion value chain, supported by technology and human intelligence at its core.
+          <div className="flex flex-col items-start gap-8 sm:gap-6 lg:max-w-[35%] lg:pt-2">
+            <p className="text-base text-[var(--neutral-800)] md:text-[1.25rem]">
+              Amanat Shah Group is a diversified business group with strong concentration in the Textile-to-Fashion value chain supported by Finance, Chemicals, Technology, Agriculture. 
             </p>
             <Link
               href="/about-us"
@@ -76,7 +84,7 @@ export default function AboutUs() {
               }}
             >
               {/* Invisible spacer — preserves the button's intrinsic width/height */}
-              <span className="invisible inline-flex items-center gap-1 whitespace-nowrap lg:gap-[0.33em]">
+              <span className="invisible inline-flex items-center gap-1 whitespace-nowrap lg:gap-[0.33em] tracking-wide">
                 More about us
                 <ArrowRight className="h-4 w-4" />
               </span>
@@ -87,7 +95,7 @@ export default function AboutUs() {
                 className="absolute inset-0 flex items-center justify-center gap-2 whitespace-nowrap transition-transform duration-500 ease-in-out group-hover:translate-y-full lg:gap-[0.33em]"
               >
                 <span
-                  className="bg-clip-text text-transparent"
+                  className="bg-clip-text text-transparent tracking-wide"
                   style={{ backgroundImage: "var(--primary-gradient)" }}
                 >
                   More about us
@@ -98,7 +106,7 @@ export default function AboutUs() {
               {/* Hover: gradient fill + white text — slides in from the top */}
               <span
                 aria-hidden
-                className="absolute inset-0 flex -translate-y-full items-center justify-center gap-1 whitespace-nowrap text-white transition-transform duration-500 ease-in-out group-hover:translate-y-0 lg:gap-[0.33em]"
+                className="absolute inset-0 flex -translate-y-full items-center justify-center gap-1 whitespace-nowrap text-white transition-transform duration-500 ease-in-out group-hover:translate-y-0 lg:gap-[0.33em] tracking-wide"
                 style={{ background: "var(--primary-gradient)" }}
               >
                 More about us
@@ -111,15 +119,14 @@ export default function AboutUs() {
         {/* Building image */}
         <div
           ref={imageRef}
-          className="mt-12 lg:mt-[5em]"
-          style={{ borderRadius: '1.2rem', overflow: 'hidden' }}
+          className="mt-6 sm:mt-12 lg:mt-[5em] overflow-hidden rounded-[0.75rem] lg:rounded-[1.2rem]"
         >
           <Image
             src="/images/about-us/home-about-us.png"
             alt="Amanat Shah Group building"
             width={1400}
             height={500}
-            className="block h-auto max-h-[75vh] w-full object-cover"
+            className="block w-full object-cover aspect-[5/4] lg:aspect-auto lg:h-auto lg:max-h-[75vh]"
             priority={false}
           />
         </div>

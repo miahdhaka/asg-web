@@ -89,7 +89,7 @@ export default function Footer() {
   return (
     <>
       <footer className="relative z-10 w-full shrink-0 bg-[#1A1A1A] font-neue-montreal text-white">
-        <div className="grid min-h-[10.25rem] gap-10 border-b border-white/10 px-6 py-9 md:px-12 lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:px-20">
+        <div className="grid min-h-[10.25rem] gap-8 sm:gap-10 border-b border-white/10 px-4 sm:px-6 pt-10 pb-8 sm:pb-10 md:px-12 lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:px-20">
           <h2 className="max-w-[30rem] font-archivo-black text-2xl leading-[1.08] uppercase sm:text-[2rem]">
             Manufacturing trust,
             <br />
@@ -101,13 +101,13 @@ export default function Footer() {
             alt="Amanat Shah Group"
             width={320}
             height={160}
-            className="h-auto w-[10.5rem] object-contain"
+            className="order-first h-auto w-[9rem] object-contain lg:order-none lg:w-[10.5rem]"
             quality={100}
           />
 
-          <div className="flex flex-col gap-3 lg:justify-self-end lg:pr-1">
-            <p className="text-base text-white/90">Follow us</p>
-            <div className="flex items-center gap-6">
+          <div className="flex flex-col gap-2 sm:gap-3 lg:justify-self-end lg:pr-1">
+            <p className="text-[15px] sm:text-base text-white/90 tracking-wider">Follow us</p>
+            <div className="flex items-center gap-4 sm:gap-6">
               {socials.map((social) => (
                 <Link
                   key={social.label}
@@ -130,21 +130,21 @@ export default function Footer() {
         </div>
 
         <div className="grid min-h-[27rem] lg:grid-cols-[27.25%_1fr]">
-          <div className="border-b border-white/10 px-6 py-12 md:px-12 lg:border-r lg:border-b-0 lg:px-20 lg:py-[4.25rem]">
-            <div className="flex items-center gap-5">
+          <div className="border-b border-white/10 px-4 sm:px-6 md:px-12 lg:border-r lg:border-b-0 lg:px-20 py-6 sm:py-12 lg:py-[4.25rem]">
+            <div className="flex items-center gap-4 sm:gap-5">
               <span className="flex size-11 shrink-0 items-center justify-center rounded bg-[#252525]">
                 <MapPin className="size-5" strokeWidth={1.8} />
               </span>
-              <h3 className="text-lg font-medium uppercase">Head Office</h3>
+              <h3 className="text-base sm:text-lg font-medium uppercase">Head Office</h3>
             </div>
 
-            <address className="mt-3 max-w-[22rem] text-base leading-[1.6] text-white/80 not-italic sm:text-lg">
+            <address className="mt-3 max-w-[22rem] text-sm sm:text-base md:text-lg leading-[1.6] text-white/80 not-italic tracking-wider">
               House-232, Lane-03, DOHS, Baridhara,
               <br />
               Dhaka-1206, Bangladesh.
             </address>
 
-            <div className="mt-4 space-y-1 text-base leading-[1.55] text-white/80 sm:text-lg">
+            <div className="mt-4 space-y-1 text-sm sm:text-base md:text-lg leading-[1.55] text-white/80 not-italic tracking-wider">
               <p>+(88)09643226699 , +(88)029578403</p>
               <a className="transition-colors hover:text-white" href="mailto:info@asg-bd.com">
                 info@asg-bd.com
@@ -152,10 +152,10 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-x-8 gap-y-10 px-6 py-12 md:px-12 lg:grid-cols-[0.8fr_1.2fr_1.05fr_0.75fr] lg:px-20 lg:py-[4.25rem]">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-10 px-4 sm:px-6 md:px-12 lg:grid-cols-[0.8fr_1.2fr_1.05fr_0.75fr] lg:px-20 py-6 sm:py-12 lg:py-[4.25rem]">
             {footerColumns.map((column) => (
               <div key={column.title}>
-                <h3 className="text-base font-medium uppercase sm:text-lg">
+                <h3 className="text-base sm:text-lg font-medium uppercase">
                   {column.title}
                 </h3>
                 <ul className="mt-3 space-y-2.5">
@@ -163,7 +163,7 @@ export default function Footer() {
                     <li key={link.label}>
                       <Link
                         href={link.href}
-                        className="text-sm leading-6 text-white/55 transition-colors duration-300 hover:text-white sm:text-base"
+                        className="text-sm tracking-wide leading-6 text-white/55 transition-colors duration-300 hover:text-white sm:text-base"
                       >
                         {link.label}
                       </Link>
@@ -175,9 +175,9 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="flex min-h-[3.25rem] flex-col gap-4 rounded-t-[1.5rem] bg-gradient-to-r from-[#343434] via-[#292929] to-[#1c1c1c] px-6 py-4 text-sm tracking-wider md:px-12 lg:flex-row lg:items-center lg:justify-between lg:px-20">
+        <div className="mt-8 sm:mt-0 flex min-h-[3.25rem] flex-col gap-4 rounded-t-[1.5rem] bg-gradient-to-r from-[#343434] via-[#292929] to-[#1c1c1c] px-6 py-4 text-sm tracking-wider md:px-12 lg:flex-row lg:items-center lg:justify-between lg:px-20">
           <p className="text-center sm:text-left">© 2026 ASG</p>
-          <nav aria-label="Footer legal navigation" className="flex flex-wrap items-center gap-x-10 gap-y-2 text-xs uppercase">
+          <nav aria-label="Footer legal navigation" className="flex flex-wrap items-center gap-x-6 sm:gap-x-10 gap-y-2 text-xs uppercase">
             <Link className="relative pb-1 after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-in-out hover:after:scale-x-100" href="/terms-of-use">
               Terms of Use
             </Link>

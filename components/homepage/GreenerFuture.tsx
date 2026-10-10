@@ -69,11 +69,15 @@ export default function GreenerFuture() {
     const tol = 1.5;
     const viewLeft = track.scrollLeft + tol;
     const viewRight = track.scrollLeft + track.clientWidth - tol;
+    // Mobile gets a tighter curve for both resting and edge cards.
+    const isMobile = window.innerWidth < 768;
+    const insideRadius = isMobile ? "0.75rem" : "1.2rem";
+    const outsideRadius = isMobile ? "2.5rem" : "5rem";
     els.forEach((el) => {
       const inside =
         el.offsetLeft >= viewLeft &&
         el.offsetLeft + el.offsetWidth <= viewRight;
-      el.style.borderRadius = inside ? "1.2rem" : "5rem";
+      el.style.borderRadius = inside ? insideRadius : outsideRadius;
     });
   };
 
@@ -226,34 +230,36 @@ export default function GreenerFuture() {
       className="relative w-full overflow-hidden py-16 lg:py-22"
     >
       {/* Header row — heavy uppercase title left, supporting copy right */}
-      <div className="flex flex-col gap-10 px-6 md:px-12 lg:flex-row lg:items-end lg:justify-between lg:max-w-[90%] lg:px-20">
-        <h2 className="font-archivo-black uppercase text-2xl sm:text-4xl lg:text-[3rem] leading-[1.1] text-[var(--neutral-800)] lg:max-w-[55%]">
-          Guiding Greener Future
+      <div className="flex flex-col gap-6 sm:gap-10 px-4 md:px-12 lg:flex-row lg:items-end lg:justify-between lg:max-w-[90%] lg:px-20">
+        <h2 className="font-archivo-black uppercase text-[1.75rem] sm:text-4xl lg:text-[3rem] leading-[1.2] text-[var(--neutral-800)] word-space-4">
+          Shaping a
           <br />
-          Beyond Textiles
+          Greener Future
+          <br />
+          in Textiles
         </h2>
 
         <p className="text-base text-[#555] md:text-[1.25rem] lg:max-w-[40%] lg:pt-2">
-          ASG stands behind eco-conscious manufacturing. Maintained through global fashion compliance at every step of craftsmanship, caring for end-customer satisfaction.
+          ASG stands behind eco-conscious manufacturing. Maintained through global fashion compliance at every step of craftsmanship, caring for end-customer satisfaction at every level.
         </p>
       </div>
 
       {/* Card carousel — drag/arrow-driven track with edge arrow controls */}
-      <div className="relative mt-12 lg:mt-[3em]">
+      <div className="relative mt-6 sm:mt-12 lg:mt-[3em]">
         <div
           ref={trackRef}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={endDrag}
           onPointerLeave={endDrag}
-          className="flex cursor-grab active:cursor-grabbing select-none gap-6 overflow-x-auto px-6 md:px-12 lg:px-20 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex cursor-grab active:cursor-grabbing select-none gap-3 overflow-x-auto px-4 md:gap-6 md:px-12 lg:px-20 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {/* Rendered twice so the one-card stepping can wrap seamlessly */}
           {[...cards, ...cards].map((card, index) => (
             <div
               key={`${card.label}-${index}`}
               data-card
-              className="relative aspect-[14/15] w-[75vw] shrink-0 overflow-hidden transition-[border-radius] duration-700 ease-in-out md:w-[calc((100vw-88px)/2.9)] lg:w-[calc((100vw-120px)/2.9)]"
+              className="relative aspect-[14/19] w-[81vw] shrink-0 overflow-hidden transition-[border-radius] duration-700 ease-in-out md:aspect-[14/15] md:w-[calc((100vw-88px)/2.9)] lg:w-[calc((100vw-120px)/2.9)]"
               style={{ borderRadius: "1.2rem" }}
             >
               <Image
@@ -272,11 +278,11 @@ export default function GreenerFuture() {
                 className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent"
               />
 
-              <div className="absolute inset-x-0 bottom-0 p-8 lg:p-12">
-                <h3 className="font-neue-montreal text-[1.375rem] font-medium text-white lg:text-[1.75rem]">
+              <div className="absolute inset-x-0 bottom-0 p-5 sm:p-8 lg:p-12">
+                <h3 className="font-neue-montreal text-[1.2rem] sm:text-[1.375rem] font-medium text-white lg:text-[1.75rem]">
                   {card.label}
                 </h3>
-                <p className="mt-3 max-w-[92%] text-base leading-[1.5] text-white/85 lg:text-lg">
+                <p className="mt-2 sm:mt-3 max-w-[92%] text-sm sm:text-base leading-[1.5] text-white/85 lg:text-lg">
                   {card.description}
                 </p>
               </div>
@@ -289,7 +295,7 @@ export default function GreenerFuture() {
           type="button"
           aria-label="Previous card"
           onClick={() => scrollByCard(-1)}
-          className="absolute left-6 md:left-16 lg:left-24 top-1/2 flex h-12 w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white shadow-md transition-transform duration-300 hover:scale-105 lg:h-14 lg:w-14"
+          className="absolute left-6 md:left-16 lg:left-24 top-1/2 hidden h-12 w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white shadow-md transition-transform duration-300 hover:scale-105 md:flex lg:h-14 lg:w-14"
         >
           <ChevronLeft className="h-6 w-6 text-neutral-900 lg:h-7 lg:w-7" strokeWidth={2} />
         </button>
@@ -297,7 +303,7 @@ export default function GreenerFuture() {
           type="button"
           aria-label="Next card"
           onClick={() => scrollByCard(1)}
-          className="absolute right-3 top-1/2 flex h-12 w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white shadow-md transition-transform duration-300 hover:scale-105 lg:right-6 lg:h-14 lg:w-14"
+          className="absolute right-3 top-1/2 hidden h-12 w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white shadow-md transition-transform duration-300 hover:scale-105 md:flex lg:right-6 lg:h-14 lg:w-14"
         >
           <ChevronRight className="h-6 w-6 text-neutral-900 lg:h-7 lg:w-7" strokeWidth={2} />
         </button>

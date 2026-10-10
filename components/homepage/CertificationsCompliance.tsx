@@ -157,17 +157,17 @@ export default function CertificationsCompliance() {
   return (
     <section
       id="certifications-compliance"
-      className="base-gradient relative w-full overflow-hidden py-16 lg:py-22"
+      className="base-gradient relative w-full overflow-hidden pt-0 pb-16 lg:pt-22 lg:pb-22"
     >
       {/* Header — eyebrow + heading, sized to match the About Us header */}
-      <div className="px-6 md:px-12 lg:px-20">
+      <div className="flex flex-col gap-7 lg:max-w-[55%] px-4 sm:px-6 md:px-12 lg:px-20">
         <span className="inline-flex items-center gap-1.5 font-space-mono font-medium text-[var(--neutral-800)] uppercase">
           Our Certifications{" "}
           <span className="text-2xl leading-none bg-gradient-to-b from-[#4a9e4a] to-[#2d6b2d] bg-clip-text text-transparent">
             •
           </span>
         </span>
-        <h2 className="mt-7 font-archivo-black uppercase text-2xl sm:text-4xl lg:text-[3rem] leading-[1.1] text-[var(--neutral-800)]">
+        <h2 className="font-archivo-black uppercase text-[1.75rem] sm:text-4xl lg:text-[3rem] leading-[1.2] text-[var(--neutral-800)] word-space-4">
           Certifications
           <br />
           and Compliance
@@ -176,7 +176,7 @@ export default function CertificationsCompliance() {
 
       {/* Full-bleed, very slow auto-scrolling logo strip */}
       <div
-        className="relative mt-12 py-5 lg:mt-16 lg:py-7"
+        className="relative mt-4 sm:mt-12 py-5 lg:mt-16 lg:py-7"
         onMouseEnter={() => {
           isHoveredRef.current = true;
         }}
@@ -196,7 +196,7 @@ export default function CertificationsCompliance() {
             <div
               key={`${logo.src}-${index}`}
               data-card
-              className="relative h-40 w-56 sm:h-44 sm:w-64 lg:h-56 lg:w-88 shrink-0 overflow-hidden"
+              className="relative h-36 w-48 shrink-0 overflow-hidden sm:h-44 sm:w-64 lg:h-56 lg:w-88"
             >
               <span
                 aria-hidden
@@ -242,7 +242,7 @@ export default function CertificationsCompliance() {
       </div>
 
       {/* Bottom slider control — prev arrow, progress line, next arrow */}
-      <div className="mt-10 lg:mt-14 flex items-center justify-center gap-6 lg:gap-8">
+      <div className="mt-6 sm:mt-10 lg:mt-14 flex items-center justify-center gap-6 lg:gap-8">
         <button
           type="button"
           aria-label="Previous certification"
