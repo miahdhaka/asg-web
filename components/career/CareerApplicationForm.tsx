@@ -450,7 +450,7 @@ export default function CareerApplicationForm({
     return new Date(d).toLocaleDateString("en-US", { month: "short", year: "numeric" });
   };
 
-  const inputClass = "h-9 sm:h-12 w-full bg-white px-2 sm:px-4 text-xs sm:text-sm text-[#555] outline-none placeholder:text-[#b5b7b9]";
+  const inputClass = "h-9 sm:h-12 w-full rounded-xl bg-white px-2 sm:px-4 text-xs sm:text-sm text-[#555] outline-none placeholder:text-[#b5b7b9]";
 
   const labelClass = "mb-1.5 block text-xs lg:text-[1.2rem] text-neutral-800";
 
@@ -473,7 +473,7 @@ export default function CareerApplicationForm({
           {label} {isRequired && <span className="text-red-500">*</span>}
         </label>
         <div
-          className={`${!isDisabled ? "input-gradient-border-hover" : ""} bg-white ${
+          className={`${!isDisabled ? "input-gradient-border-hover" : ""} rounded-xl bg-white ${
             hasError ? "input-gradient-border-error" : ""
           }`}
         >
@@ -524,7 +524,7 @@ export default function CareerApplicationForm({
         onSubmit={handleSubmit}
         className="w-full sm:pb-[70px] "
       >
-        <h1 className="font-test-tiempos-fine text-xl lg:text-[2rem] font-medium text-neutral-800">{jobTitle}</h1>
+        <h1 className="font-archivo-black text-xl lg:text-[2rem] font-medium text-neutral-800">{jobTitle}</h1>
 
         <div className="flex flex-col gap-2 sm:gap-4 rounded bg-[#EAF4FF] px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:mt-6 lg:mt-[2rem] lg:px-[1.5rem] lg:py-[1.4rem] mt-4">
           <div>
@@ -537,7 +537,7 @@ export default function CareerApplicationForm({
 
           <button
             type="button"
-            className="group relative flex h-9 sm:h-11 w-full sm:w-fit items-center justify-center gap-1.5 bg-[#0A66C2] px-5 text-sm lg:h-12 lg:px-6 lg:text-[1.1667rem] text-white transition-all duration-300 ease-out cursor-pointer"
+            className="group relative flex h-9 sm:h-11 w-full sm:w-fit items-center justify-center gap-1.5 rounded-full bg-[#0A66C2] px-5 text-sm lg:h-12 lg:px-6 lg:text-[1.1667rem] text-white transition-all duration-300 ease-out cursor-pointer"
           >
             {/* Shine sweep */}
             <span
@@ -555,7 +555,7 @@ export default function CareerApplicationForm({
 
         {/* Personal Information */}
         <section className="bg-gray-50 px-3 sm:px-4 py-5 sm:py-6 mt-8 sm:mt-10 sm:px-6 sm:py-8 lg:px-8 lg:mt-12">
-          <h2 className="font-test-tiempos-fine text-lg lg:text-[1.5rem] font-medium text-neutral-800">Personal information</h2>
+          <h2 className="font-archivo-black text-lg lg:text-[1.5rem] font-medium text-neutral-800">Personal information</h2>
 
           <div className="grid grid-cols-1 gap-x-4 gap-y-5 md:grid-cols-2 mt-6 sm:mt-12">
             {renderField("firstName", "First name", personal.firstName, (v) => updatePersonal("firstName", v), { placeholder: "Enter your first name" })}
@@ -576,7 +576,7 @@ export default function CareerApplicationForm({
                 className="text-[#303438]"
               />
 
-              <h2 className="font-test-tiempos-fine text-lg lg:text-[1.5rem] font-medium text-neutral-800">Experience</h2>
+              <h2 className="font-archivo-black text-lg lg:text-[1.5rem] font-medium text-neutral-800">Experience</h2>
             </div>
 
             <button
@@ -584,7 +584,7 @@ export default function CareerApplicationForm({
               onClick={addExperience}
               disabled={hasUnsavedExp}
               data-label="Add"
-              className={`flex h-8 cursor-pointer items-center gap-1.5 px-3 text-sm transition-all duration-300 ${
+              className={`flex h-8 cursor-pointer items-center gap-1.5 rounded-full px-3 text-sm transition-all duration-300 ${
                 hasUnsavedExp
                   ? "cursor-not-allowed bg-[#eef0f1] text-[#c8ccd0]"
                   : "save-btn text-white"
@@ -608,7 +608,7 @@ export default function CareerApplicationForm({
                 <div data-exp-overview className="relative">
                   <div className="flex items-start justify-between">
                     <div className="flex flex-col gap-1.5">
-                      <h3 className="font-test-tiempos-fine text-base lg:text-[1.3rem] font-medium text-neutral-800">
+                      <h3 className="font-archivo-black text-base lg:text-[1.3rem] font-medium text-neutral-800">
                         {experience.title || "Untitled"}
                       </h3>
                       <p className="text-xs lg:text-[1rem] text-neutral-500">
@@ -641,12 +641,12 @@ export default function CareerApplicationForm({
 
                     <div className="md:col-span-2">
                       <label className={labelClass}>Description</label>
-                      <div className="input-gradient-border-hover bg-white">
+                      <div className="input-gradient-border-hover rounded-xl bg-white">
                         <textarea
                           value={experience.description}
                           onChange={(e) => updateExperience(experience.id, "description", e.target.value)}
                           placeholder="Subject"
-                          className="h-20 w-full resize-none bg-white px-4 py-2 text-sm text-[#555] outline-none placeholder:text-[#b5b7b9]"
+                          className="h-20 w-full resize-none rounded-xl bg-white px-4 py-2 text-sm text-[#555] outline-none placeholder:text-[#b5b7b9]"
                         />
                       </div>
                     </div>
@@ -688,10 +688,10 @@ export default function CareerApplicationForm({
                     </label>
 
                     <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
-                      <button type="button" onClick={() => removeExperience(experience.id)} className="h-9 flex-1 sm:flex-none text-sm text-neutral-500 cursor-pointer bg-gray-200 hover:bg-gray-300 transition-all duration-300 ease-out px-6">
+                      <button type="button" onClick={() => removeExperience(experience.id)} className="h-9 flex-1 sm:flex-none rounded-full text-sm text-neutral-500 cursor-pointer bg-gray-200 hover:bg-gray-300 transition-all duration-300 ease-out px-6">
                         Cancel
                       </button>
-                      <button type="button" data-label="Save" onClick={() => saveExperience(experience.id)} className="save-btn h-9 flex-1 sm:flex-none text-sm cursor-pointer px-6">
+                      <button type="button" data-label="Save" onClick={() => saveExperience(experience.id)} className="save-btn h-9 flex-1 sm:flex-none rounded-full text-sm cursor-pointer px-6">
                         Save
                       </button>
                     </div>
@@ -717,7 +717,7 @@ export default function CareerApplicationForm({
                 className="text-[#303438]"
               />
 
-              <h2 className="font-test-tiempos-fine text-lg lg:text-[1.5rem] font-medium text-neutral-800">Education</h2>
+              <h2 className="font-archivo-black text-lg lg:text-[1.5rem] font-medium text-neutral-800">Education</h2>
             </div>
 
             <button
@@ -725,7 +725,7 @@ export default function CareerApplicationForm({
               onClick={addEducation}
               disabled={hasUnsavedEdu}
               data-label="Add"
-              className={`flex h-8 cursor-pointer items-center gap-1.5 px-3 text-sm transition-all duration-300 ${
+              className={`flex h-8 cursor-pointer items-center gap-1.5 rounded-full px-3 text-sm transition-all duration-300 ${
                 hasUnsavedEdu
                   ? "cursor-not-allowed bg-[#eef0f1] text-[#c8ccd0]"
                   : "save-btn text-white"
@@ -749,7 +749,7 @@ export default function CareerApplicationForm({
                 <div data-edu-overview className="relative">
                   <div className="flex items-start justify-between">
                     <div className="flex flex-col gap-1.5">
-                      <h3 className="font-test-tiempos-fine text-base lg:text-[1.3rem] font-medium text-neutral-800">
+                      <h3 className="font-archivo-black text-base lg:text-[1.3rem] font-medium text-neutral-800">
                         {edu.institution || "Untitled"}
                       </h3>
                       <p className="text-xs lg:text-[1rem] text-neutral-500">
@@ -788,12 +788,12 @@ export default function CareerApplicationForm({
                     {/* Description — full width */}
                     <div className="md:col-span-2">
                       <label className={labelClass}>Description</label>
-                      <div className="input-gradient-border-hover bg-white">
+                      <div className="input-gradient-border-hover rounded-xl bg-white">
                         <textarea
                           value={edu.description}
                           onChange={(e) => updateEducation(edu.id, "description", e.target.value)}
                           placeholder="Brief description"
-                          className="h-20 w-full resize-none bg-white px-4 py-2 text-sm text-[#555] outline-none placeholder:text-[#b5b7b9]"
+                          className="h-20 w-full resize-none rounded-xl bg-white px-4 py-2 text-sm text-[#555] outline-none placeholder:text-[#b5b7b9]"
                         />
                       </div>
                     </div>
@@ -835,10 +835,10 @@ export default function CareerApplicationForm({
                     </label>
 
                     <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
-                      <button type="button" onClick={() => removeEducation(edu.id)} className="h-9 flex-1 sm:flex-none text-sm text-neutral-500 cursor-pointer bg-gray-200 hover:bg-gray-300 transition-all duration-300 ease-out px-6">
+                      <button type="button" onClick={() => removeEducation(edu.id)} className="h-9 flex-1 sm:flex-none rounded-full text-sm text-neutral-500 cursor-pointer bg-gray-200 hover:bg-gray-300 transition-all duration-300 ease-out px-6">
                         Cancel
                       </button>
-                      <button type="button" data-label="Save" onClick={() => saveEducation(edu.id)} className="save-btn h-9 flex-1 sm:flex-none text-sm cursor-pointer px-6">
+                      <button type="button" data-label="Save" onClick={() => saveEducation(edu.id)} className="save-btn h-9 flex-1 sm:flex-none rounded-full text-sm cursor-pointer px-6">
                         Save
                       </button>
                     </div>
@@ -852,7 +852,7 @@ export default function CareerApplicationForm({
 
         {/* PROFILES */}
         <section className="mt-6 sm:mt-8 bg-[#f8f9fa] px-4 py-4 sm:px-5 sm:py-5">
-          <h2 className="mb-3 font-test-tiempos-fine text-lg lg:text-[1.5rem] font-medium text-neutral-800">Your profiles</h2>
+          <h2 className="mb-3 font-archivo-black text-lg lg:text-[1.5rem] font-medium text-neutral-800">Your profiles</h2>
 
           <label className={labelClass}>LinkedIn</label>
 
@@ -877,7 +877,7 @@ export default function CareerApplicationForm({
         </section>
 
         <section className="bg-gray-50 px-4 py-6 mt-8 sm:mt-10 sm:px-6 sm:py-8 lg:px-8 lg:mt-12">
-          <h2 className="font-test-tiempos-fine text-lg lg:text-[1.5rem] font-medium text-neutral-800">Upload your CV or resume</h2>
+          <h2 className="font-archivo-black text-lg lg:text-[1.5rem] font-medium text-neutral-800">Upload your CV or resume</h2>
 
           <div
             onClick={() => fileRef.current?.click()}
@@ -931,10 +931,10 @@ export default function CareerApplicationForm({
         <div className="mt-8 flex justify-end sm:mt-10 lg:mt-12">
           <button
             type="submit"
-            className="group relative inline-flex shrink-0 items-center justify-center overflow-hidden px-6 py-3 text-sm sm:px-8 sm:py-4 sm:text-base lg:px-16 lg:py-5 lg:text-[1.25rem] leading-none cursor-pointer"
+            className="group relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-transparent px-6 py-3 text-sm sm:px-8 sm:py-4 sm:text-base lg:px-16 lg:py-5 lg:text-[1.25rem] leading-none cursor-pointer"
             style={{
-              borderImage: "var(--primary-gradient) 1",
-              borderWidth: 1,
+              background:
+                "linear-gradient(white) padding-box, var(--primary-gradient) border-box",
             }}
           >
             {/* Invisible spacer — preserves the button's intrinsic width/height */}

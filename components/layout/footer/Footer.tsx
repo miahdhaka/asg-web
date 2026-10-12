@@ -158,7 +158,7 @@ export default function Footer() {
                 <h3 className="text-base sm:text-lg font-medium uppercase">
                   {column.title}
                 </h3>
-                <ul className="mt-3 space-y-2.5">
+                <ul className="mt-3 space-y-1.5 sm:space-y-2.5">
                   {column.links.map((link) => (
                     <li key={link.label}>
                       <Link

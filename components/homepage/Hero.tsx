@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type MutableRefObject } from "react";
 import { SquareArrowOutUpRight, Plus, Minus, ChevronLeft, ChevronRight } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import "animate.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -105,13 +106,16 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
   const activeConcernRef = useRef(0);
   const leftSlideRef = useRef<HTMLDivElement>(null);
   const rightSlideRef = useRef<HTMLDivElement>(null);
-  // Mobile-only content sheet that sits under the collapsed video card.
-  const mobileContentRef = useRef<HTMLDivElement>(null);
   // Mobile-only heading (OUR BUSINESS / AN ECOSYSTEM…) shown above the card.
   const mobileHeaderRef = useRef<HTMLDivElement>(null);
+  // Mobile concern sheet block — a static normal-flow block under the
+  // collapsed video card. Arrow-driven concerns, never scroll-driven.
+  const mobileSheetRef = useRef<HTMLDivElement>(null);
   // Mobile concern content (sector / logo / description) that slides on step.
   const mobileSlideRef = useRef<HTMLDivElement>(null);
   const mobileStepRef = useRef<((dir: number) => void) | null>(null);
+  // Mobile sheet: starts collapsed (shows the + button, description hidden);
+  // clicking the +/− toggle expands the sector description.
   const [descOpen, setDescOpen] = useState(false);
 
   useEffect(() => {
@@ -135,37 +139,55 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
     };
     const ctx = gsap.context(() => {
       // Desktop keeps the scroll-driven video shrink + rising side panels
-      // (unchanged). Mobile collapses the video ONCE after the centre text has
-      // risen into a smaller centred card, then reveals the content sheet below.
+      // (unchanged). Mobile rises the centre text with the scroll, then plays the
+      // video collapse as one smooth time-based animation (like it did before) —
+      // the scroll is held at the pin's end until the shrink finishes, then the
+      // page hands over to native scroll. The sheet below is arrow-driven.
       const isDesktop = window.matchMedia("(min-width: 1024px)").matches;
       let mobileCollapsed = false;
+      // True while the mobile collapse animation is mid-flight — the scroll is
+      // held at the pin's end until the video has fully shrunk.
+      let collapseRunning = false;
 
-      // Mobile collapsed-card geometry: a slightly-smaller portrait card
-      // centred on the visible screen, with the content sheet pinned right
-      // under it. Recomputed on collapse and on viewport resize.
+      // Mobile collapsed-card geometry: the video keeps its ORIGINAL portrait
+      // size (width-driven), sitting right under the heading with no gap above.
+      // cardBottom feeds syncSheet() so the concern block hugs the video's
+      // bottom edge too. Mobile only — desktop never calls this.
       const mobileCardGeom = () => {
         const rect = sectionRef.current?.getBoundingClientRect();
         const sectionH = rect?.height || window.innerHeight;
         const sectionW = rect?.width || window.innerWidth;
         const sideMargin = 16; // matches px-4 (1rem) on each side
-        const maxSquare = Math.min(
-          sectionW - sideMargin * 2,
-          sectionH - sideMargin * 2
-        );
-        // A touch smaller than the old full square, kept slightly portrait.
-        const cardW = maxSquare * 0.86;
-        const cardH = maxSquare * 0.94;
-        // The section is 100lvh (the FULL screen); innerHeight can sit below
-        // that while the browser UI docks — centre on the larger value.
-        const viewH = Math.max(window.innerHeight, window.screen?.height || 0);
-        const centerPx = viewH / 2;
+        const cardW = sectionW - sideMargin * 2;
+        const cardH = cardW * 1.11; // fully-shrunk height
+        // Top edge hugs the heading's measured bottom (+ a small breathing gap).
+        const header = mobileHeaderRef.current;
+        const headerBottom = header
+          ? header.offsetTop + header.offsetHeight
+          : sectionH * 0.28;
+        const topPx = headerBottom + sideMargin;
+        const cardBottom = topPx + cardH;
+        const centerPx = topPx + cardH / 2;
         return {
           wPct: (cardW / sectionW) * 100,
           hPct: (cardH / sectionH) * 100,
           topPct: (centerPx / sectionH) * 100,
-          // px from the section top to just under the card, +16px gap
-          sheetTop: centerPx + cardH / 2 + 16,
+          cardBottom,
+          sectionH,
         };
+      };
+
+      // The section keeps full viewport height for the video intro, so after the
+      // card shrinks there is a band of empty section below it. Pull the flow
+      // sheet up with a negative margin so it rests ~8px under the card. The
+      // value comes from the stable 100lvh section box, so it never shifts while
+      // the URL bar shows/hides (no bounce). Mobile only.
+      const syncSheet = () => {
+        if (isDesktop) return;
+        const sheet = mobileSheetRef.current;
+        if (!sheet) return;
+        const g = mobileCardGeom();
+        gsap.set(sheet, { marginTop: g.cardBottom + 8 - g.sectionH });
       };
 
       // Video wrapper: centered, full-size
@@ -184,12 +206,14 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         gsap.set(rightContentRef.current, { y: "100vh", opacity: 0 });
       } else {
         gsap.set([leftContentRef.current, rightContentRef.current], { y: 0, opacity: 0 });
-        // The mobile sheet may spill below the section's bottom edge on purpose —
-        // let it render there and sit above the next section so native scroll
-        // (which takes over once the short mobile pin releases) reveals it.
-        gsap.set(sectionRef.current, { overflow: "visible", zIndex: 30 });
-        gsap.set(mobileContentRef.current, { opacity: 0 });
-        gsap.set(mobileHeaderRef.current, { opacity: 0 });
+        // The concern sheet starts hidden and rises up into place with the
+        // collapse; it is pulled up under the card by syncSheet() (a fixed
+        // margin from the stable section box, so it never bobs while scrolling).
+        // Header + sheet are kept hidden here; animate.css drives their
+        // slide+fade enter/exit once the video collapses.
+        gsap.set(mobileHeaderRef.current, { autoAlpha: 0 });
+        gsap.set(mobileSheetRef.current, { autoAlpha: 0 });
+        syncSheet();
       }
 
       // Center text: visible at natural position
@@ -261,35 +285,40 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
       // direction: 1 = forward (scroll down) → out-top, in-from-bottom
       //           -1 = backward (scroll up)  → out-bottom, in-from-top
       const runSlide = (idx: number, done: () => void, direction: 1 | -1 = 1) => {
-        const els = [leftSlideRef.current, rightSlideRef.current, mobileSlideRef.current].filter(Boolean);
-        if (els.length === 0) {
+        const panelEls = [leftSlideRef.current, rightSlideRef.current].filter(Boolean);
+        const mobileEls = [mobileSlideRef.current].filter(Boolean);
+        if (panelEls.length === 0 && mobileEls.length === 0) {
           activeConcernRef.current = idx;
           setActiveConcern(idx);
           done();
           return;
         }
+        // Desktop side panels glide vertically; the mobile sheet's content slides
+        // in from the side. The arrow buttons live outside mobileSlideRef, so they
+        // stay put while the content below them changes.
         const outY = direction === 1 ? "-40px" : "40px";
         const inY = direction === 1 ? "40px" : "-40px";
-        gsap.to(els, {
-          y: outY,
-          opacity: 0,
-          duration: 0.18,
-          ease: "power3.in",
+        const outX = direction === 1 ? "-40px" : "40px";
+        const inX = direction === 1 ? "40px" : "-40px";
+        const leave = gsap.timeline({
           onComplete: () => {
             activeConcernRef.current = idx;
             setActiveConcern(idx);
             requestAnimationFrame(() => {
-              gsap.set(els, { y: inY });
-              gsap.to(els, {
-                y: 0,
-                opacity: 1,
-                duration: 0.18,
-                ease: "power3.out",
-                onComplete: done,
-              });
+              gsap.set(panelEls, { y: inY });
+              gsap.set(mobileEls, { x: inX });
+              const enter = gsap.timeline({ onComplete: done });
+              if (panelEls.length)
+                enter.to(panelEls, { y: 0, opacity: 1, duration: 0.18, ease: "power3.out" }, 0);
+              if (mobileEls.length)
+                enter.to(mobileEls, { x: 0, opacity: 1, duration: 0.18, ease: "power3.out" }, 0);
             });
           },
         });
+        if (panelEls.length)
+          leave.to(panelEls, { y: outY, opacity: 0, duration: 0.18, ease: "power3.in" }, 0);
+        if (mobileEls.length)
+          leave.to(mobileEls, { x: outX, opacity: 0, duration: 0.18, ease: "power3.in" }, 0);
       };
 
       let st: ScrollTrigger | null = null;
@@ -391,16 +420,16 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         busy = false;
         const els = [leftSlideRef.current, rightSlideRef.current, mobileSlideRef.current].filter(Boolean);
         gsap.killTweensOf(els);
-        gsap.set(els, { y: 0, opacity: 1 });
+        gsap.set(els, { x: 0, y: 0, opacity: 1 });
         activeConcernRef.current = idx;
         setActiveConcern(idx);
       };
 
       // Wheel-less fallback: the concern follows the scroll phase, one slide at a
       // time, exactly the way the section behaved before gesture stepping.
-      const moveConcernTo = (idx: number) => {
+      const moveConcernTo = (idx: number, forceDir?: 1 | -1) => {
         if (busy || idx === activeConcernRef.current) return;
-        const direction = idx > activeConcernRef.current ? 1 : -1;
+        const direction = forceDir ?? (idx > activeConcernRef.current ? 1 : -1);
         busy = true;
         lastStepAt = performance.now();
         runSlide(idx, () => {
@@ -409,15 +438,23 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
       };
 
       // The mobile sheet's arrow buttons step concerns by hand — the short
-      // mobile pin no longer walks them with the scroll phase.
+      // mobile pin no longer walks them with the scroll phase. Infinite style:
+      // next past the last wraps to the first, prev before the first wraps to
+      // the last, and the slide direction follows the button pressed.
       mobileStepRef.current = (dir: number) => {
-        const next = Math.min(LAST_IDX, Math.max(0, activeConcernRef.current + dir));
-        moveConcernTo(next);
+        const d: 1 | -1 = dir > 0 ? 1 : -1;
+        const total = LAST_IDX + 1;
+        const next = (((activeConcernRef.current + d) % total) + total) % total;
+        moveConcernTo(next, d);
       };
 
-      // Scrolls 1-3: text fades equally; scroll 4: fully gone
+      // Scrolls 1-3: text fades equally; scroll 4: fully gone.
       const textStart = 0.0;
-      const textEnd = 0.2; // fully invisible early
+      // Desktop keeps 0.2. Mobile's pin is short (66%), so the end is widened to
+      // 0.75 to preserve the SAME ~50vh of scroll travel for the rising centre
+      // text. The collapse fires at that point; the hold below keeps the release
+      // waiting until the shrink animation has finished, then native scroll runs.
+      const textEnd = isDesktop ? 0.2 : 0.75;
 
       // Expose function for ASGHighlight to change side content. While the Hero
       // is off-screen (pinLeft) the concern stays untouched so re-entry shows
@@ -428,6 +465,37 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
           setConcern(idx);
         };
       }
+
+      // animate.css-driven enter/exit for the mobile header + concern sheet.
+      // GSAP only hides them before the first collapse; the slide + fade motion
+      // is delegated to animate.css keyframes (fadeInUp / fadeOutDown / fadeOutUp).
+      // animate.css uses `animation-fill-mode: both`, so a delay keeps the element
+      // on the 0% frame (hidden) until the video has started shrinking.
+      const MOBILE_ANIM_CLASSES = [
+        "animate__animated",
+        "animate__fadeInUp",
+        "animate__fadeOutDown",
+        "animate__fadeOutUp",
+      ];
+      const runMobileAnim = (
+        el: HTMLElement | null,
+        cls: string,
+        delay = 0,
+        duration = "1s"
+      ) => {
+        if (!el) return;
+        // Drop GSAP's inline hidden state so the CSS keyframes own the motion.
+        gsap.set(el, { clearProps: "opacity,visibility,transform" });
+        MOBILE_ANIM_CLASSES.forEach((c) => el.classList.remove(c));
+        // Force reflow so re-adding the class restarts the animation.
+        void el.offsetWidth;
+        el.style.setProperty("--animate-duration", duration);
+        el.style.animationDelay = delay ? `${delay}s` : "0s";
+        // Gentle ease-out so the content is seen travelling all the way from
+        // behind the video instead of snapping into place.
+        el.style.animationTimingFunction = "cubic-bezier(0.16, 1, 0.3, 1)";
+        el.classList.add("animate__animated", cls);
+      };
 
       const tick = () => {
         scrollProgress += (targetProgress - scrollProgress) * SMOOTH;
@@ -454,8 +522,8 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         // ── Video + side panels ───────────────────────────────────────────────
         // Desktop: video shrinks and side panels rise purely scroll-driven
         // (unchanged). Mobile: the video stays full-screen while the centre text
-        // rises, then collapses ONCE (smooth, not scroll-by-scroll) into a centered
-        // rounded card, and the side panels fade in and sit in fixed positions.
+        // rises, then collapses ONCE into a centered rounded card as a smooth
+        // time-based animation, with the heading + sheet fading in under it.
         if (isDesktop) {
           const vw = p <= videoEnd
             ? 100 - (100 - 23) * (p / videoEnd)
@@ -491,14 +559,22 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
             });
           }
         } else {
-          // Mobile: fire a single smooth collapse the moment the centre text is
-          // fully gone, and the reverse when it comes back. No per-frame resize.
+          // Mobile: the centre text rises with the scroll (above); the moment it
+          // is gone the video collapses ONCE as a smooth time-based animation —
+          // the same transition feel as before, not tied 1:1 to scroll amount.
+          // The hold at the pin's end keeps the page from leaving until the
+          // shrink finishes; then native scroll takes over. The sheet below
+          // changes ONLY via the arrow buttons — never by scrolling.
           const wantCollapsed = p >= textEnd;
           if (wantCollapsed !== mobileCollapsed) {
             mobileCollapsed = wantCollapsed;
-            const block = mobileContentRef.current;
             if (wantCollapsed) {
               const g = mobileCardGeom();
+              collapseRunning = true;
+              // Freeze the sheet's resting offset ONCE here, before it fades in.
+              // It is never recomputed while scrolling, so the concern block just
+              // sits under the card instead of drifting up/down with the scroll.
+              syncSheet();
               gsap.to(videoWrapRef.current, {
                 width: `${g.wPct}%`,
                 height: `${g.hPct}%`,
@@ -507,16 +583,18 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
                 duration: 1.1,
                 ease: "power2.inOut",
                 overwrite: "auto",
+                onComplete: () => {
+                  collapseRunning = false;
+                },
               });
-              // Park the content sheet right under the smaller card.
-              gsap.set(mobileContentRef.current, { top: g.sheetTop });
-              gsap.to([block, mobileHeaderRef.current], {
-                opacity: 1,
-                duration: 0.6,
-                ease: "power2.out",
-                delay: 0.3,
-              });
+              // Header + sheet glide up from just below the card into place
+              // (animate.css fadeInUp). Slower + delayed so it reads as content
+              // emerging from behind the still-shrinking video, not a snap.
+              runMobileAnim(mobileHeaderRef.current, "animate__fadeInUp", 0.35, "1.1s");
+              runMobileAnim(mobileSheetRef.current, "animate__fadeInUp", 0.35, "1.1s");
             } else {
+              collapseRunning = false;
+              gsap.set(mobileSheetRef.current, { marginTop: 0 });
               gsap.to(videoWrapRef.current, {
                 width: "100%",
                 height: "100%",
@@ -525,11 +603,11 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
                 duration: 0.6,
                 ease: "power3.inOut",
               });
-              gsap.to([block, mobileHeaderRef.current], {
-                opacity: 0,
-                duration: 0.3,
-                ease: "power2.in",
-              });
+              // Reverse: header glides back down behind the growing video
+              // (fadeOutDown), the sheet up behind it (fadeOutUp) — slow enough to
+              // perceive the content sliding away (fill-mode keeps them hidden).
+              runMobileAnim(mobileHeaderRef.current, "animate__fadeOutDown", 0, "0.9s");
+              runMobileAnim(mobileSheetRef.current, "animate__fadeOutUp", 0, "0.9s");
             }
           }
         }
@@ -537,14 +615,20 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
 
       // ── Scroll experience: desktop panels + mobile collapse ──────────────────────────────────
       // Pin the section and drive the video/panels with scroll; step concerns on
-      // wheel/scroll gestures (desktop) or the scroll phase / arrows (mobile).
-      // Re-centre the collapsed mobile card when the browser UI shows/hides.
+      // wheel/scroll gestures (desktop). Mobile collapses the video once and its
+      // concern sheet is arrow-driven only. Re-centre the collapsed mobile card
+      // when the browser UI shows/hides.
       const syncCard = () => {
         if (isDesktop || !mobileCollapsed) return;
         if (!videoWrapRef.current) return;
         const g = mobileCardGeom();
-        gsap.set(videoWrapRef.current, { top: `${g.topPct}%` });
-        gsap.set(mobileContentRef.current, { top: g.sheetTop });
+        gsap.set(videoWrapRef.current, {
+          width: `${g.wPct}%`,
+          height: `${g.hPct}%`,
+          top: `${g.topPct}%`,
+        });
+        // NOTE: the sheet's offset is intentionally NOT recomputed here — it is
+        // frozen at collapse so a URL-bar resize can't nudge it up/down.
       };
       window.visualViewport?.addEventListener("resize", syncCard);
       window.addEventListener("resize", syncCard);
@@ -553,20 +637,40 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         window.removeEventListener("resize", syncCard);
       });
 
+      // Hold the release: while the mobile collapse is mid-flight the page waits
+      // at the pin's end, so the section never scrolls away until the video has
+      // fully shrunk. When the animation completes the hold lifts and native
+      // scroll carries on into the next section on its own.
+      const holdRelease = () => {
+        if (isDesktop || !collapseRunning || !st) return;
+        if (window.scrollY > st.end - 2) window.scrollTo(0, st.end - 2);
+      };
+      window.addEventListener("scroll", holdRelease, { passive: true });
+      cleanups.push(() => window.removeEventListener("scroll", holdRelease));
+
       tickers.push(tick);
       gsap.ticker.add(tick);
+
+      // Desktop pins long enough to walk every concern by scroll. Mobile pins
+      // only through its intro (~50vh of rising text + a short buffer); the
+      // collapse hold keeps the release waiting until the shrink has finished,
+      // then native scroll takes over. The concern sheet below changes ONLY via
+      // the left/right arrow buttons.
+      const pinEnd = isDesktop
+        ? "+=" + (80 + sisterConcerns.length * 17) + "%"
+        : "+=66%";
 
       st = ScrollTrigger.create({
         trigger: sectionRef.current,
         start: "top top",
-        end: "+=" + (80 + sisterConcerns.length * 17) + "%",
+        end: pinEnd,
         pin: true,
         pinSpacing: true,
         onUpdate: (self) => {
           targetProgress = self.progress;
-          // No wheel events on this device → no gesture source, so there the
-          // concern keeps following the scroll phase and the pin is left alone.
-          if (!wheelSeen) moveConcernTo(idxFromProgress(self.progress));
+          // Desktop without a wheel (rare) keeps the concern on the scroll phase.
+          // Mobile never steps by scroll — its sheet is arrow-driven only.
+          if (!wheelSeen && isDesktop) moveConcernTo(idxFromProgress(self.progress));
         },
         // Block side-content changes while the Hero is off-screen below.
         onLeave: () => {
@@ -662,8 +766,12 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         }
       };
 
+      // The wheel-gesture hold (park + step one concern per notch) is DESKTOP
+      // only. Attaching it on mobile lets a mouse wheel — DevTools device
+      // emulation or a narrow window — freeze the scroll mid-intro and walk the
+      // concerns by scroll, which must never happen there.
       const section = sectionRef.current;
-      if (section) {
+      if (section && isDesktop) {
         section.addEventListener("wheel", onWheel, { passive: false });
         window.addEventListener("scroll", onScroll, { passive: true });
         cleanups.push(() => {
@@ -682,9 +790,10 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative w-full h-[var(--vh)] lg:h-screen overflow-hidden">
+    <>
+      <section ref={sectionRef} className="relative w-full h-[var(--vh)] lg:h-screen overflow-hidden">
       {/* Video wrapper */}
-      <div ref={videoWrapRef} className="absolute inset-0 overflow-hidden">
+      <div ref={videoWrapRef} className="absolute inset-0 overflow-hidden mt-5 sm:mt-0">
         {/* Hero Background video */}
         <video
           autoPlay
@@ -813,7 +922,7 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
           the sheet. Desktop keeps its own left panel, so this is mobile-only. */}
       <div
         ref={mobileHeaderRef}
-        className="absolute left-4 right-4 top-[calc(var(--header-height)+1rem)] z-30 text-[var(--neutral-800)] lg:hidden"
+        className="absolute left-4 right-4 top-[calc(var(--header-height)+1rem)] z-30 text-[var(--neutral-800)] lg:hidden mt-5 sm:mt-0 z-50"
       >
         <div className="mb-3 flex items-center gap-2 font-space-mono text-[12.5px] font-medium uppercase tracking-wider">
           <span>OUR BUSINESS</span>
@@ -826,92 +935,127 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         </h2>
       </div>
 
-      {/* Mobile content sheet — sits right under the collapsed video card. It
-          may extend below the fold on purpose: the short mobile pin releases
-          into native scroll, which reveals the rest. */}
-      <div
-        ref={mobileContentRef}
-        className="absolute left-0 right-0 z-30 lg:hidden"
-        style={{ top: "calc(50% + 50vw)" }}
-      >
-        <div className="mx-4 rounded-t-[1.75rem] bg-[#F3F3F1] px-4 pt-5 pb-8">
-          <div ref={mobileSlideRef}>
-            {/* Concern navigation — right-aligned row under the card */}
-            <div className="flex items-center justify-end gap-2">
-              <button
-                type="button"
-                aria-label="Previous concern"
-                onClick={() => mobileStepRef.current?.(-1)}
-                className="grid h-9 w-9 place-items-center rounded-full border border-neutral-300 bg-white text-[var(--neutral-800)]"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-              <button
-                type="button"
-                aria-label="Next concern"
-                onClick={() => mobileStepRef.current?.(1)}
-                className="grid h-9 w-9 place-items-center rounded-full border border-neutral-300 bg-white text-[var(--neutral-800)]"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </div>
+    </section>
 
+    {/* Mobile concern sheet — a block in normal flow AFTER the Hero section.
+        syncSheet() pulls it up with a fixed negative margin so it rests right
+        under the shrunk video (no gap). The margin comes from the stable
+        100lvh section box, so it never bobs while scrolling, and the sheet
+        still flows in the document so it can't ride over the next section. */}
+    <div ref={mobileSheetRef} className="relative lg:hidden">
+      <div className="mx-4 pt-2 pb-8 mt-8 sm:mt-0">
+          {/* Concern navigation — right-aligned row under the card.
+              Lives OUTSIDE mobileSlideRef so the arrows never animate. */}
+          <div className="flex items-center justify-end gap-2">
+            <button
+              type="button"
+              aria-label="Previous concern"
+              onClick={() => mobileStepRef.current?.(-1)}
+              className="group relative grid h-10 w-10 cursor-pointer place-items-center rounded-full border border-neutral-300 bg-white text-[var(--neutral-800)]"
+            >
+              {/* Gradient wash fades in — background can't transition solid→gradient */}
+              <span className="absolute inset-0 rounded-full opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100" style={{ background: "var(--primary-gradient)" }} />
+              <ChevronLeft className="relative h-5 w-5 transition-colors duration-300 group-hover:text-white" />
+            </button>
+            <button
+              type="button"
+              aria-label="Next concern"
+              onClick={() => mobileStepRef.current?.(1)}
+              className="group relative grid h-10 w-10 cursor-pointer place-items-center rounded-full border border-neutral-300 bg-white text-[var(--neutral-800)]"
+            >
+              <span className="absolute inset-0 rounded-full opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100" style={{ background: "var(--primary-gradient)" }} />
+              <ChevronRight className="relative h-5 w-5 transition-colors duration-300 group-hover:text-white" />
+            </button>
+          </div>
+
+          <div ref={mobileSlideRef} className="mt-2">
             {/* Sector + toggle for the longer sector description */}
             <button
               type="button"
               onClick={() => setDescOpen((v) => !v)}
               aria-expanded={descOpen}
-              className="mt-4 flex items-center gap-2"
+              className="flex items-center gap-2 cursor-pointer"
             >
               <span
-                className="font-neue-montreal uppercase font-medium text-xl"
+                className="font-neue-montreal uppercase font-semibold text-[22px]"
                 style={{ background: "var(--primary-gradient)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
               >
                 {sisterConcerns[activeConcern]?.sector ?? "TEXTILE"}
               </span>
               {descOpen ? (
-                <Minus className="h-5 w-5 shrink-0" color="#1AA179" strokeWidth={2.5} />
+                <Minus className="h-5 w-5 shrink-0 rounded-full border border-[#1AA179] p-0.5" color="#1AA179" strokeWidth={2.5} />
               ) : (
-                <Plus className="h-5 w-5 shrink-0" color="#1AA179" strokeWidth={2.5} />
+                <Plus className="h-5 w-5 shrink-0 rounded-full border border-[#1AA179] p-0.5" color="#1AA179" strokeWidth={2.5} />
               )}
             </button>
 
-            <div className="my-4 border-b border-[#EBEBEB]" />
-
-            <img
-              src={sisterConcerns[activeConcern]?.logo ?? ""}
-              alt="Sister concern"
-              className="h-10 w-36 object-contain"
-            />
-
-            {/* Concern description — always shown under the logo */}
-            <p className="pt-3 font-neue-montreal text-sm leading-relaxed text-[var(--neutral-600)]">
-              {sisterConcerns[activeConcern]?.concernDesc ?? ""}
-            </p>
-
-            {/* Expandable sector description — slides down/up on the +/− toggle */}
+            {/* Expandable sector description — slides down smoothly right under the button */}
             <div
               className={`grid transition-[grid-template-rows,opacity] duration-500 ease-in-out ${
                 descOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
               }`}
             >
               <div className="overflow-hidden">
-                <p className="pt-3 font-neue-montreal text-sm leading-relaxed text-[var(--neutral-600)]">
+                <p className="pt-3 font-neue-montreal text-base leading-relaxed text-[var(--neutral-600)]">
                   {sisterConcerns[activeConcern]?.sectorDesc ?? ""}
                 </p>
               </div>
             </div>
 
+            <div className="my-4 border-b border-[#EBEBEB]" />
+
+            <img
+              src={sisterConcerns[activeConcern]?.logo ?? ""}
+              alt="Sister concern"
+              className="h-18 w-64 object-contain"
+            />
+
+            {/* Concern description — always shown under the logo */}
+            <p className="pt-3 font-neue-montreal text-base leading-relaxed text-[var(--neutral-600)]">
+              {sisterConcerns[activeConcern]?.concernDesc ?? ""}
+            </p>
+
             <a
               href={sisterConcerns[activeConcern]?.link ?? "#"}
-              className="mt-6 inline-flex items-center gap-1.5 rounded-full border border-[#1AA179] px-5 py-2.5 text-sm font-medium text-[#1AA179]"
+              className="group relative mt-6 inline-flex w-fit items-center justify-center self-start overflow-hidden rounded-full border border-transparent px-6 py-3 text-base font-medium leading-none"
+              style={{
+                background:
+                  "linear-gradient(#F3F3F1, #F3F3F1) padding-box, linear-gradient(97.37deg, #8BC34A 1.29%, #1AA179 92.01%) border-box",
+              }}
             >
-              Visit website
-              <SquareArrowOutUpRight className="h-4 w-4" color="#1AA179" />
+              {/* Invisible spacer — preserves the button's intrinsic width/height */}
+              <span className="invisible inline-flex items-center gap-1.5 whitespace-nowrap">
+                Visit website
+                <SquareArrowOutUpRight className="h-5 w-5" />
+              </span>
+
+              {/* Default: gradient text — slides down and out on hover */}
+              <span
+                aria-hidden
+                className="absolute inset-0 flex items-center justify-center gap-1.5 whitespace-nowrap transition-transform duration-500 ease-in-out group-hover:translate-y-full"
+              >
+                <span
+                  className="bg-clip-text text-transparent"
+                  style={{ backgroundImage: "var(--primary-gradient)" }}
+                >
+                  Visit website
+                </span>
+                <SquareArrowOutUpRight className="h-5 w-5" color="#1AA179" />
+              </span>
+
+              {/* Hover: gradient fill + white text — slides in from the top */}
+              <span
+                aria-hidden
+                className="absolute inset-0 flex -translate-y-full items-center justify-center gap-1.5 whitespace-nowrap text-white transition-transform duration-500 ease-in-out group-hover:translate-y-0"
+                style={{ background: "var(--primary-gradient)" }}
+              >
+                Visit website
+                <SquareArrowOutUpRight className="h-5 w-5" />
+              </span>
             </a>
           </div>
         </div>
-      </div>
-    </section>
+    </div>
+    </>
   );
 }

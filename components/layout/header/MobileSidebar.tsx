@@ -14,6 +14,8 @@ gsap.registerPlugin(useGSAP);
 interface MobileSidebarProps {
   isOpen: boolean;
   onClose: () => void;
+  /** Opens the full-screen search overlay (closes the sidebar first). */
+  onSearchOpen?: () => void;
 }
 
 /* ─── Accordion menu item with smooth subcategory expand/collapse ─── */
@@ -133,28 +135,40 @@ function SidebarMenuItem({
 }
 
 /* ─── Main Sidebar ─── */
-export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
+export default function MobileSidebar({ isOpen, onClose, onSearchOpen }: MobileSidebarProps) {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const tweenRef = useRef<gsap.core.Tween | null>(null);
 
   // Track which menu is currently expanded — only one at a time
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
 
+  /* Kept mounted through the exit tween so the close animation is visible. */
+  const [mounted, setMounted] = useState(isOpen);
+
+  // Mount immediately on open; unmount happens in the close tween's onComplete.
+  useEffect(() => {
+    if (isOpen) setMounted(true);
+  }, [isOpen]);
+
   // Reset expanded menu when sidebar closes
   useEffect(() => {
     if (!isOpen) setActiveMenu(null);
   }, [isOpen]);
 
-  // Lock body scroll while sidebar is open
+  // Lock body scroll while the sidebar is present. Uses a shared counter so a
+  // sibling overlay (e.g. the search panel opened from here) keeps the lock
+  // alive until every overlay has finished its exit animation.
   useEffect(() => {
-    if (isOpen) {
-      const prev = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-      return () => {
-        document.body.style.overflow = prev;
-      };
-    }
-  }, [isOpen]);
+    if (!mounted) return;
+    const body = document.body;
+    body.dataset.overlayLock = String(Number(body.dataset.overlayLock || 0) + 1);
+    body.style.overflow = "hidden";
+    return () => {
+      const next = Math.max(0, Number(body.dataset.overlayLock || 0) - 1);
+      body.dataset.overlayLock = String(next);
+      if (next === 0) body.style.overflow = "";
+    };
+  }, [mounted]);
 
   // Close on Escape
   useEffect(() => {
@@ -165,7 +179,8 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
-  // Animate the full-screen panel in/out
+  // Animate the full-screen panel in/out. Keyed on isOpen and mounted so the
+  // exit tween runs while the panel is still on screen, then unmounts.
   useGSAP(
     () => {
       const sidebar = sidebarRef.current;
@@ -177,20 +192,21 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
         tweenRef.current = gsap.fromTo(
           sidebar,
           { x: "-100%" },
-          { x: "0%", duration: 0.35, ease: "power3.out" },
+          { x: "0%", duration: 0.55, ease: "power3.out" },
         );
       } else {
         tweenRef.current = gsap.to(sidebar, {
           x: "-100%",
-          duration: 0.3,
+          duration: 0.5,
           ease: "power2.in",
+          onComplete: () => setMounted(false),
         });
       }
     },
-    { dependencies: [isOpen] },
+    { dependencies: [isOpen, mounted] },
   );
 
-  if (!isOpen) return null;
+  if (!mounted) return null;
 
   return (
     <div
@@ -227,6 +243,10 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
 
         <button
           type="button"
+          onClick={() => {
+            onClose();
+            onSearchOpen?.();
+          }}
           className="cursor-pointer rounded-full p-1 transition-colors hover:bg-neutral-100"
           aria-label="Search"
         >

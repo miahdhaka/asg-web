@@ -79,9 +79,9 @@ const socials = [
 
 export default function PrivacyContent() {
   return (
-    <section className="mx-auto mt-[6rem] w-full max-w-[59rem] px-5 pt-[3.5rem] pb-16">
-      <div className="flex flex-col gap-6">
-        <h1 className="font-test-tiempos-fine text-2xl lg:text-[3rem] text-neutral-800">
+    <section className="mx-auto mt-[3rem] sm:mt-[7rem] w-full max-w-[59rem] px-5 pt-[3.5rem] pb-16">
+      <div className="flex flex-col gap-5 sm:gap-7">
+        <h1 className="font-archivo-black text-[26px] lg:text-[3rem] text-neutral-800">
           {policyTitle}
         </h1>
 
@@ -95,17 +95,17 @@ export default function PrivacyContent() {
         <hr className="border-0 border-t border-gray-100" />
 
         <div className="flex flex-col gap-4">
-          <h2 className="font-test-tiempos-fine text-2xl lg:text-[3rem] text-neutral-800">
+          <h2 className="font-archivo-black text-2xl lg:text-[2rem] text-neutral-800">
             Contact Us
           </h2>
-          <p className="text-justify text-sm lg:text-[1.1rem] leading-6.5 text-neutral-600">
+          <p className="text-justify text-sm lg:text-[1.1rem] leading-5 sm:leading-6.5 text-neutral-600">
             If you have any questions about this Privacy Policy, you can contact us:
           </p>
-          <p className="text-justify text-sm lg:text-[1.1rem] leading-6.5 text-neutral-600">
+          <p className="text-justify text-sm lg:text-[1.1rem] leading-5 sm:leading-6.5 text-neutral-600">
             By email:{" "}
             <a
               href="mailto:info@asg-bd.com"
-              className="text-neutral-800 underline transition-colors hover:text-neutral-600"
+              className="text-neutral-800 underline transition-colors hover:text-neutral-600 tracking-wider"
             >
               info@asg-bd.com
             </a>

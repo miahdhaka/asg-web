@@ -12,6 +12,7 @@ export default function CareersPage() {
   return (
     <main>
       <PageHero
+        id="career-hero"
         title={"Find Your\nOpportunity"}
         subtitle="Family business legacy for more than 130 years."
         mobileSrc="/images/career/hero.webp"

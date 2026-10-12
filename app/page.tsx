@@ -11,7 +11,7 @@ import LegacyOfLeadership from "@/components/homepage/LegacyOfLeadership";
 import Newsroom from "@/components/homepage/Newsroom";
 import ASGHighlight from "@/components/homepage/ASGHighlight";
 import AboutUs from "@/components/homepage/AboutUs";
-import RockSteadySection from "@/components/about/globe/Section";
+import GlobeHero from "@/components/about/globe/GlobeHero";
 
 export default function HomePage() {
   // Clean up residual ScrollTrigger state from a previous visit
@@ -97,7 +97,7 @@ export default function HomePage() {
           >
             <AboutUs />
           </div>
-          <RockSteadySection />
+          <GlobeHero />
           <GreenerFuture />
           <CertificationsCompliance />
           <LegacyOfLeadership />

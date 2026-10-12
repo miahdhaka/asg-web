@@ -69,9 +69,9 @@ function TermsSectionBlock({ section }: { section: TermsSection }) {
 
 export default function TermsContent() {
   return (
-    <section className="mx-auto mt-[6rem] w-full max-w-[59rem] px-5 pt-[3.5rem] pb-16">
-      <div className="flex flex-col gap-6">
-        <h1 className="font-test-tiempos-fine text-2xl lg:text-[3rem] text-neutral-800">
+    <section className="mx-auto mt-[3rem] sm:mt-[7rem] w-full max-w-[59rem] px-5 pt-[3.5rem] pb-16">
+      <div className="flex flex-col gap-5 sm:gap-7">
+        <h1 className="font-archivo-black text-[26px] lg:text-[3rem] text-neutral-800">
           {termsTitle}
         </h1>
 

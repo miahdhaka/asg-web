@@ -46,7 +46,7 @@ export default async function JobDetailPage({
   const blocks = getJobDetailBlocks(job);
 
   return (
-    <main className="mx-auto mt-[4rem] sm:mt-[6rem] w-full max-w-[59rem] px-4 pt-8 pb-16 sm:px-5 sm:pt-[3.5rem]">
+    <main className="mx-auto mt-[4rem] sm:mt-[8rem] w-full max-w-[59rem] px-4 pt-8 pb-16 sm:px-5 sm:pt-[3.5rem]">
       {/* ── Title row ── */}
       <div className="flex flex-col gap-4 sm:gap-6 lg:hidden">
         {/* 1. Department badge */}
@@ -62,10 +62,10 @@ export default async function JobDetailPage({
         {/* 3. Apply now — full-width on mobile */}
         <a
           href={`/careers/${job.id}/apply`}
-          className="order-3 group relative inline-flex w-full items-center justify-center overflow-hidden px-6 py-3 text-sm lg:hidden leading-none"
+          className="order-3 group relative inline-flex w-full items-center justify-center overflow-hidden rounded-full border border-transparent px-6 py-3 text-sm lg:hidden leading-none"
           style={{
-            borderImage: "var(--primary-gradient) 1",
-            borderWidth: 1,
+            background:
+              "linear-gradient(white) padding-box, var(--primary-gradient) border-box",
           }}
         >
           <span className="invisible inline-flex items-center gap-1.5 whitespace-nowrap">
@@ -110,12 +110,12 @@ export default async function JobDetailPage({
 
       {/* Desktop: original left-column + right-button layout */}
       <div className="hidden lg:flex lg:flex-row lg:items-start lg:justify-between lg:gap-6">
-        <div className="flex min-w-0 flex-col">
+        <div className="flex min-w-0 flex-col gap-4">
           <div className="flex flex-col gap-3">
-            <span className="w-fit bg-gray-100 text-[1rem] text-neutral-800 tracking-wide px-2.5 py-1">
+            <span className="w-fit bg-white rounded-md text-[1rem] text-neutral-800 tracking-wide px-2.5 py-1">
               {job.department}
             </span>
-            <h1 className="font-test-tiempos-fine text-[2rem] text-neutral-800 font-medium">
+            <h1 className="font-archivo-black text-[2rem] text-neutral-800 font-medium">
               {job.title}
             </h1>
           </div>
@@ -144,10 +144,10 @@ export default async function JobDetailPage({
         {/* Apply now — desktop */}
         <a
           href={`/careers/${job.id}/apply`}
-          className="group relative mt-6 inline-flex w-fit shrink-0 items-center justify-center overflow-hidden px-8 py-4 text-[1.125rem] leading-none"
+          className="group relative mt-6 inline-flex w-fit shrink-0 items-center justify-center overflow-hidden rounded-full border border-transparent px-8 py-4 text-[1.125rem] leading-none"
           style={{
-            borderImage: "var(--primary-gradient) 1",
-            borderWidth: 1,
+            background:
+              "linear-gradient(white) padding-box, var(--primary-gradient) border-box",
           }}
         >
           <span className="invisible inline-flex items-center gap-1.5 whitespace-nowrap">
@@ -176,7 +176,7 @@ export default async function JobDetailPage({
 
       {/* Job description */}
       <div className="flex flex-col gap-4.5 mt-8 sm:mt-12">
-        <h2 className="font-test-tiempos-fine text-xl lg:text-[2rem] text-neutral-800 font-medium">
+        <h2 className="font-archivo-black text-xl lg:text-[2rem] text-neutral-800 font-medium">
           Job description
         </h2>
 
@@ -235,7 +235,7 @@ export default async function JobDetailPage({
 
       {/* ── Share ────────────────────────────────────────────────── */}
       <div className="mt-6 sm:mt-8 flex flex-col gap-4 sm:gap-6">
-        <h2 className="font-test-tiempos-fine text-xl lg:text-[2rem] text-neutral-800 font-medium">
+        <h2 className="font-archivo-black text-xl lg:text-[2rem] text-neutral-800 font-medium">
           Share with your friends
         </h2>
 
@@ -243,7 +243,7 @@ export default async function JobDetailPage({
           <button
             type="button"
             aria-label="Share on LinkedIn"
-            className="group relative flex size-9 sm:size-14 cursor-pointer items-center justify-center rounded-full bg-gray-100 transition-colors duration-500 ease-in-out hover:border-transparent before:absolute before:inset-0 before:rounded-full before:bg-[image:var(--primary-gradient)] before:opacity-0 before:transition-opacity before:duration-500 before:ease-in-out hover:before:opacity-100"
+            className="group relative flex size-9 sm:size-10 cursor-pointer items-center justify-center rounded-full bg-gray-100 transition-colors duration-500 ease-in-out hover:border-transparent before:absolute before:inset-0 before:rounded-full before:bg-[image:var(--primary-gradient)] before:opacity-0 before:transition-opacity before:duration-500 before:ease-in-out hover:before:opacity-100"
           >
             <Image
               src="/icons/social-icon/linkedin.png"
@@ -251,14 +251,14 @@ export default async function JobDetailPage({
               width={20}
               height={20}
               quality={100}
-              className="relative z-10 size-4 sm:size-7 object-contain brightness-0 transition-all duration-500 group-hover:invert"
+              className="relative z-10 size-4 sm:size-6 object-contain brightness-0 transition-all duration-500 group-hover:invert"
             />
           </button>
 
           <button
             type="button"
             aria-label="Share on Facebook"
-            className="group relative flex size-9 sm:size-14 cursor-pointer items-center justify-center rounded-full bg-gray-100 transition-colors duration-500 ease-in-out hover:border-transparent before:absolute before:inset-0 before:rounded-full before:bg-[image:var(--primary-gradient)] before:opacity-0 before:transition-opacity before:duration-500 before:ease-in-out hover:before:opacity-100"
+            className="group relative flex size-9 sm:size-10 cursor-pointer items-center justify-center rounded-full bg-gray-100 transition-colors duration-500 ease-in-out hover:border-transparent before:absolute before:inset-0 before:rounded-full before:bg-[image:var(--primary-gradient)] before:opacity-0 before:transition-opacity before:duration-500 before:ease-in-out hover:before:opacity-100"
           >
             <Image
               src="/icons/social-icon/facebook.png"
@@ -266,14 +266,14 @@ export default async function JobDetailPage({
               width={20}
               height={20}
               quality={100}
-              className="relative z-10 size-4 sm:size-7 object-contain brightness-0 transition-all duration-500 group-hover:invert"
+              className="relative z-10 size-4 sm:size-6 object-contain brightness-0 transition-all duration-500 group-hover:invert"
             />
           </button>
 
           <button
             type="button"
             aria-label="Share on Instagram"
-            className="group relative flex size-9 sm:size-14 cursor-pointer items-center justify-center rounded-full bg-gray-100 transition-colors duration-500 ease-in-out hover:border-transparent before:absolute before:inset-0 before:rounded-full before:bg-[image:var(--primary-gradient)] before:opacity-0 before:transition-opacity before:duration-500 before:ease-in-out hover:before:opacity-100"
+            className="group relative flex size-9 sm:size-10 cursor-pointer items-center justify-center rounded-full bg-gray-100 transition-colors duration-500 ease-in-out hover:border-transparent before:absolute before:inset-0 before:rounded-full before:bg-[image:var(--primary-gradient)] before:opacity-0 before:transition-opacity before:duration-500 before:ease-in-out hover:before:opacity-100"
           >
             <Image
               src="/icons/social-icon/instagram.png"
@@ -281,7 +281,7 @@ export default async function JobDetailPage({
               width={20}
               height={20}
               quality={100}
-              className="relative z-10 size-3.5 sm:size-6 object-contain brightness-0 transition-all duration-500 group-hover:invert"
+              className="relative z-10 size-3.5 sm:size-5 object-contain brightness-0 transition-all duration-500 group-hover:invert"
             />
           </button>
         </div>

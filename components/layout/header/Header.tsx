@@ -12,6 +12,7 @@ import MegaMenu from "./MegaMenu";
 import type { MegaMenuItem } from "./types";
 import Search from "./Search";
 import MobileSidebar from "./MobileSidebar";
+import MobileSearch from "./MobileSearch";
 
 gsap.registerPlugin(useGSAP);
 
@@ -84,6 +85,7 @@ export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   /* Bumped on viewport resize — nav font sizes are fluid (vw-based), so the
      cached px widths in the swap timeline go stale and must be re-measured. */
   const [resizeTick, setResizeTick] = useState(0);
@@ -153,6 +155,7 @@ export default function Header() {
     setSearchOpen(false);
     setSearchText("");
     setActiveMenu(null);
+    setMobileSearchOpen(false);
   }, [pathname]);
 
   // Focus the in-pill search input as soon as search opens
@@ -406,6 +409,7 @@ export default function Header() {
 
         <button
           type="button"
+          onClick={() => setMobileSearchOpen(true)}
           className="cursor-pointer rounded-full p-1 transition-colors hover:bg-neutral-100"
           aria-label="Search"
         >
@@ -550,7 +554,17 @@ export default function Header() {
       </header>
 
       {/* Mobile sidebar navigation */}
-      <MobileSidebar isOpen={sidebarOpen} onClose={closeSidebar} />
+      <MobileSidebar
+        isOpen={sidebarOpen}
+        onClose={closeSidebar}
+        onSearchOpen={() => setMobileSearchOpen(true)}
+      />
+
+      {/* Full-screen mobile search overlay */}
+      <MobileSearch
+        isOpen={mobileSearchOpen}
+        onClose={() => setMobileSearchOpen(false)}
+      />
     </>
   );
 }

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
-import { X } from "lucide-react";
+import { BriefcaseBusiness, X } from "lucide-react";
 import { departments, jobs, locations } from "./careerData";
 import JobCard from "./JobCard";
 import SearchableSelect from "./SearchableSelect";
@@ -50,8 +50,8 @@ export default function CareerBoard() {
   return (
     <section id="career-board" className="bg-background">
       {/* Heading + search controls */}
-      <div className="relative z-10 w-full max-w-[70rem] mx-auto pt-6 sm:pt-10 lg:pt-[5rem] px-4 sm:px-8">
-        <h2 className="text-center font-archivo-black text-neutral-800 text-xl sm:text-3xl lg:text-[2.5rem] lg:leading-[3rem]">
+      <div className="relative z-10 w-full max-w-[70rem] mx-auto pt-10 lg:pt-[5rem] px-4 sm:px-8">
+        <h2 className="text-center font-archivo-black text-neutral-800 text-2xl sm:text-3xl lg:text-[2.5rem] lg:leading-[3rem]">
           AVAILABLE JOBS - {filtered.length}
         </h2>
 
@@ -61,9 +61,10 @@ export default function CareerBoard() {
             <div className="flex items-stretch h-[3.25rem] sm:h-[3.25rem] lg:h-[3.65rem]">
               {/* Input area */}
               <div className="flex flex-1 items-center gap-2 px-3.5 lg:gap-[0.6667rem] lg:px-[1.1667rem]">
-                <Image src="/icons/career/search.svg" alt="" width={20} height={20} quality={100} className="shrink-0 size-4 lg:size-[1.6667rem]" />
+                <Image src="/icons/career/search.svg" alt="" width={20} height={20} quality={100} className="shrink-0 size-5 lg:size-[1.6667rem]" />
                 <input
                   type="text"
+                  placeholder="Product designer"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   className="min-w-0 flex-1 bg-transparent text-sm text-neutral-800 placeholder:text-neutral-400 focus:outline-none lg:text-[1.3333rem]"
@@ -127,7 +128,7 @@ export default function CareerBoard() {
       <div className="w-full px-4 sm:px-8 lg:px-[5rem] pb-10 lg:pb-[5rem]">
         {/* Gradient spinner */}
         <div
-          className={`flex justify-center py-7 transition-opacity duration-300 ${
+          className={`flex justify-center py-4 sm:py-7 transition-opacity duration-300 ${
             loading ? "opacity-100" : "opacity-0 pointer-events-none h-0 overflow-hidden"
           }`}
         >
@@ -158,32 +159,28 @@ export default function CareerBoard() {
             ))}
           </div>
         ) : (
-          <div className="mx-auto mt-6 flex w-full max-w-3xl flex-col items-center justify-center rounded-lg bg-gray-50 px-6 py-12 text-center lg:mt-[3.5rem] lg:py-14">
-            <svg
-              className="size-9 lg:size-10"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="url(#no-jobs-gradient)"
-              strokeWidth={1.5}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden
-            >
+          <div className="mx-auto mt-6 flex w-full max-w-4xl flex-col items-center justify-center rounded-lg bg-gray-50 px-6 py-12 text-center lg:mt-[3.5rem] lg:py-[4.5rem]">
+            <svg aria-hidden width="0" height="0" className="absolute">
               <defs>
                 <linearGradient id="no-jobs-gradient" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
                   <stop stopColor="#8BC34A" />
                   <stop offset="1" stopColor="#1AA179" />
                 </linearGradient>
               </defs>
-              <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-              <rect width="20" height="14" x="2" y="6" rx="2" />
             </svg>
-            <h3 className="mt-2 text-base text-neutral-700 lg:text-[1.25rem]">
-              No roles available right now
-            </h3>
-            <p className="mx-auto max-w-sm text-xs text-neutral-400 lg:max-w-md lg:text-sm">
-              We couldn&apos;t find any roles matching your search. Try adjusting your filters, or check back soon for new openings.
-            </p>
+            <BriefcaseBusiness
+              className="size-12 lg:size-14"
+              strokeWidth={1.5}
+              stroke="url(#no-jobs-gradient)"
+            />
+            <div className="max-w-[400px]">
+              <h3 className="mt-2 text-lg text-neutral-700 lg:text-[1.6rem] tracking-wide">
+                There aren’t any roles available in that category!
+              </h3>
+              <p className="mx-auto max-w-sm text-sm text-neutral-800/50 lg:max-w-md lg:text-base">
+                See what we have here for you below or search again.
+              </p>
+            </div>
           </div>
         )}
         </>
