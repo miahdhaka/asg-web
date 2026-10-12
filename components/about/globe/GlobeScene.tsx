@@ -52,7 +52,9 @@ const BASE_LAT = 22;
    4.5 % is enough to notice without the cards losing their anchor positions. */
 const HOVER_DIST = 0.955;
 
+
 /* ───────────────────────────────── scene ───────────────────────────────── */
+
 
 export default function GlobeScene(props: GlobeSceneProps) {
   const bus = useRef<Bus>({ lat: props.tour[0].lat, lon: props.tour[0].lon });
