@@ -38,6 +38,7 @@
   --font-sans: var(--font-neue-montreal);
   --font-serif: var(--font-test-tiempos-fine);
   --font-heading: var(--font-test-tiempos-fine);
+  --font-mono: var(--font-space-mono);
 
   /* Gray scale */
   --color-gray-50: var(--gray-50);
@@ -445,7 +446,8 @@ html.asg-touch-lock * {
   line-height: 1;
   color: transparent;
   border: 1px solid transparent;
-  border-image: var(--primary-gradient) 1;
+  border-radius: 9999px;
+  background: linear-gradient(white) padding-box, var(--primary-gradient) border-box;
 }
 .save-btn::before,
 .save-btn::after {
@@ -570,7 +572,86 @@ html.asg-touch-lock * {
   animation: fade-in 0.3s ease-out;
 }
 
-/* Fix Leaflet map z-index to stay below navbar */
-.leaflet-container {
-  z-index: 1 !important;
+/* --- mapcn / MapLibre base styles ----------------------------------------
+   Restyles MapLibre's built-in popup + attribution chrome to inherit our
+   theme tokens so popups render transparent (we draw our own card) and the
+   attribution pill matches the shadcn border/muted colours. */
+@layer base {
+  .maplibregl-map {
+    /* keep maplibre canvas/controls beneath the fixed navbar stacking order */
+    z-index: 0;
+  }
+  .maplibregl-popup-content {
+    @apply bg-transparent! shadow-none! p-0! rounded-none!;
+  }
+  .maplibregl-popup-tip {
+    @apply hidden!;
+  }
+  .maplibregl-ctrl-attrib {
+    @apply bg-background! text-muted-foreground! border-border! rounded-md! border! shadow-sm!;
+  }
+  .maplibregl-ctrl-attrib a {
+    @apply text-muted-foreground!;
+  }
+  .maplibregl-ctrl-attrib a:hover {
+    @apply text-foreground!;
+  }
+  .maplibregl-ctrl-attrib-button {
+    @apply bg-transparent! dark:invert;
+  }
+}
+
+/* ───────── globe hero: pinned stat cards ───────── */
+.gcard {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.gcard[data-active="true"][data-facing="1"] {
+  opacity: 1;
+}
+.gcard-inner {
+  transform: translateY(10px);
+  transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.gcard[data-active="true"] .gcard-inner {
+  transform: none;
+}
+.gcard-box {
+  display: flex;
+  gap: 0.75rem;
+  width: max-content;
+  max-width: 235px;
+  padding: 0.8rem 0.95rem;
+  border: 1px solid rgb(47 191 134 / 0.38);
+  border-radius: 6px;
+  background: rgb(2 18 13 / 0.8);
+  backdrop-filter: blur(3px);
+  font-family: var(--font-space-mono), ui-monospace, monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ───────── globe hero: twinkling stars ───────── */
+.gstar {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgb(190 255 225 / 0.95) 0%, rgb(120 230 180 / 0.35) 45%, transparent 72%);
+  box-shadow: 0 0 10px 2px rgb(120 230 180 / 0.25);
+  animation: gtwinkle 5s ease-in-out infinite;
+}
+@keyframes gtwinkle {
+  0%, 100% { opacity: 0.35; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gstar { animation: none; opacity: 0.7; }
+  .gcard, .gcard-inner { transition: none; }
 }

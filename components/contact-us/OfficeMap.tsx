@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import type { OfficeMapLocation } from "./OfficeMapInner";
 
 const OfficeMapInner = dynamic(() => import("./OfficeMapInner"), {
   ssr: false,
@@ -12,11 +13,21 @@ const OfficeMapInner = dynamic(() => import("./OfficeMapInner"), {
 });
 
 interface OfficeMapProps {
-  lat: number;
-  lng: number;
-  title: string;
+  locations: OfficeMapLocation[];
+  activeIndex?: number;
+  onSelect?: (index: number) => void;
 }
 
-export default function OfficeMap({ lat, lng, title }: OfficeMapProps) {
-  return <OfficeMapInner lat={lat} lng={lng} title={title} />;
+export default function OfficeMap({
+  locations,
+  activeIndex = 0,
+  onSelect,
+}: OfficeMapProps) {
+  return (
+    <OfficeMapInner
+      locations={locations}
+      activeIndex={activeIndex}
+      onSelect={onSelect}
+    />
+  );
 }

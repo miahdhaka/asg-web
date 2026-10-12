@@ -144,7 +144,11 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
          number "lafalafi"-wobbling. Tighter follow makes the reel track the
          scroll as 1:1-smooth as it does with a desktop wheel. Desktop keeps
          its exact original 0.12. */
-      const SMOOTH = ScrollTrigger.isTouch ? 0.3 : 0.12;
+      /* Mobile-only tuning: touch feeds the pin in uneven bursts (finger drag +
+         fling), so the follower tracks a bit tighter (0.5) to absorb the
+         catch-up "bari" while normalizeScroll smooths the raw scroll. Desktop
+         keeps its exact original 0.12. */
+      const SMOOTH = ScrollTrigger.isTouch ? 0.5 : 0.12;
       let targetProgress = 0;
       let scrollProgress = 0;
       let currentSlide = 0;
@@ -175,10 +179,13 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
          with power3.out gives enough inertia that a burst of wheel ticks settles
          softly while still tracking the scroll so the pin and the rise stay
          visually in phase. */
+      // Mobile gets a longer cover tail so a fast fling settles the fade-out
+      // gradually instead of popping ("bari") on arrival; desktop keeps 0.32.
+      const COVER_TAIL = ScrollTrigger.isTouch ? 0.5 : 0.32;
       const riseTo = riseEl
-        ? gsap.quickTo(riseEl, "y", { duration: 0.32, ease: "power3.out" })
+        ? gsap.quickTo(riseEl, "y", { duration: COVER_TAIL, ease: "power3.out" })
         : null;
-      const fadeTo = gsap.quickTo(sectionRef.current, "opacity", { duration: 0.32, ease: "power3.out" });
+      const fadeTo = gsap.quickTo(sectionRef.current, "opacity", { duration: COVER_TAIL, ease: "power3.out" });
 
       const applyCover = (p: number) => {
         const fade =

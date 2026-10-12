@@ -75,7 +75,7 @@ export default function ApplicationSubmitted({
             className="mx-auto size-24 sm:size-38 object-contain"
             unoptimized
           />
-          <h1 className="font-test-tiempos-fine text-2xl lg:text-[2rem] font-medium text-neutral-800 sm:text-2xl">
+          <h1 className="font-archivo-black text-2xl lg:text-[2rem] font-medium text-neutral-800 sm:text-2xl">
             Application submitted!
           </h1>
           <p className="mt-2 text-sm text-neutral-500 sm:text-[1.15rem]">
@@ -96,7 +96,7 @@ export default function ApplicationSubmitted({
             </span>
 
             {/* Job title */}
-            <h2 className="font-test-tiempos-fine text-lg font-medium text-neutral-800 sm:text-[1.5rem]">
+            <h2 className="font-archivo-black text-lg font-medium text-neutral-800 sm:text-[1.5rem]">
               {jobTitle}
             </h2>
           </div>
@@ -179,10 +179,10 @@ export default function ApplicationSubmitted({
           {/* Visit website — gradient button with hover flip */}
           <a
             href={websiteUrl}
-            className="group relative inline-flex w-fit items-center justify-center overflow-hidden h-[40px] px-6 py-3 text-sm leading-none lg:px-8 lg:py-4 lg:text-base lg:h-auto"
+            className="group relative inline-flex w-fit items-center justify-center overflow-hidden rounded-full border border-transparent h-[40px] px-6 py-3 text-sm leading-none lg:px-8 lg:py-4 lg:text-base lg:h-auto"
             style={{
-              borderImage: "var(--primary-gradient) 1",
-              borderWidth: 1,
+              background:
+                "linear-gradient(white) padding-box, var(--primary-gradient) border-box",
             }}
           >
             {/* Invisible spacer */}
@@ -219,7 +219,7 @@ export default function ApplicationSubmitted({
           {/* Similar job — outline button */}
           <a
             href={similarJobsUrl}
-            className="group inline-flex items-center gap-1.5 border border-neutral-200 bg-white h-[40px] px-6 py-3 text-sm text-neutral-800 leading-none transition-all duration-300 hover:bg-gray-100 hover:border-neutral-300 lg:px-8 lg:py-4 lg:text-base lg:h-auto text-nowrap"
+            className="group inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white h-[40px] px-6 py-3 text-sm text-neutral-800 leading-none transition-all duration-300 hover:bg-gray-100 hover:border-neutral-300 lg:px-8 lg:py-4 lg:text-base lg:h-auto text-nowrap"
           >
             Similar job
             <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

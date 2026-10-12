@@ -11,9 +11,16 @@ export default function AllLocationsSection() {
   const tab = locationTabs[activeTab];
   const cards = locationCards[tab];
 
-  // Default coordinates for the map (Dhaka)
-  const defaultCoords = { lat: 23.7806, lng: 90.4074 };
-  const mapCoords = cards[activeCard]?.coordinates ?? defaultCoords;
+  // Real locations for the active tab — every card becomes a map marker.
+  const mapLocations = cards.map((card) => ({
+    title: card.title,
+    lat: card.coordinates.lat,
+    lng: card.coordinates.lng,
+    address: card.address,
+  }));
+  // Default to Dhaka if a tab ever has no cards (keeps the "Open in Maps" link valid).
+  const activeCoords =
+    cards[activeCard]?.coordinates ?? { lat: 23.7806, lng: 90.4074 };
 
   return (
     <section className="flex flex-col px-4 sm:px-8 lg:px-[5rem] pt-10 sm:pt-16 lg:pt-[5rem] pb-10 sm:pb-16 lg:pb-[5rem] bg-white">
@@ -34,7 +41,7 @@ export default function AllLocationsSection() {
         <div className="relative order-3 w-full h-[280px] sm:h-[350px] rounded-xl overflow-hidden border border-gray-200 bg-[#D9D9D9] lg:order-none lg:col-start-1 lg:row-start-2 lg:h-[420px]">
           {/* Open in Maps link */}
           <a
-            href={`https://www.google.com/maps?q=${mapCoords.lat},${mapCoords.lng}`}
+            href={`https://www.google.com/maps?q=${activeCoords.lat},${activeCoords.lng}`}
             target="_blank"
             rel="noopener noreferrer"
             className="absolute top-3 left-3 z-10 inline-flex items-center gap-1.5 rounded-lg bg-white/90 backdrop-blur-sm px-3 py-1.5 text-xs sm:text-sm font-medium text-neutral-700 shadow-sm hover:bg-white transition-colors"
@@ -43,9 +50,9 @@ export default function AllLocationsSection() {
             <ExternalLink size={12} />
           </a>
           <OfficeMap
-            lat={mapCoords.lat}
-            lng={mapCoords.lng}
-            title={cards[activeCard]?.title ?? "ASG"}
+            locations={mapLocations}
+            activeIndex={activeCard}
+            onSelect={setActiveCard}
           />
         </div>
 
@@ -81,22 +88,24 @@ export default function AllLocationsSection() {
                   : "border-gray-100 bg-white hover:border-gray-300"
               }`}
             >
-              <h3 className="text-[1.05rem] sm:text-[1.3rem] font-bold text-neutral-900">
-                {card.title}
-              </h3>
-              <p className="mt-1.5 text-[0.95rem] sm:text-[1.15rem] text-neutral-600 leading-relaxed">
-                {card.address}
-              </p>
-              {card.phones.length > 0 && (
-                <p className="mt-0.5 text-[0.95rem] sm:text-[1.15rem] text-neutral-600">
-                  {card.phones.join(", ")}
+              <div className="max-w-[85%] lg:max-w-[62%]">
+                <h3 className="text-[1.15rem] sm:text-[1.4rem] font-bold text-neutral-900">
+                  {card.title}
+                </h3>
+                <p className="mt-1.5 text-[1.05rem] sm:text-[1.25rem] text-neutral-600 leading-relaxed">
+                  {card.address}
                 </p>
-              )}
-              {card.email && (
-                <p className="text-[0.95rem] sm:text-[1.15rem] text-neutral-500">
-                  {card.email}
-                </p>
-              )}
+                {card.phones.length > 0 && (
+                  <p className="mt-0.5 text-[1.05rem] sm:text-[1.25rem] text-neutral-600">
+                    {card.phones.join(", ")}
+                  </p>
+                )}
+                {card.email && (
+                  <p className="text-[1.05rem] sm:text-[1.25rem] text-neutral-500">
+                    {card.email}
+                  </p>
+                )}
+              </div>
             </button>
           ))}
         </div>

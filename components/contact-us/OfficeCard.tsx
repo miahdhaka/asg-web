@@ -1,4 +1,4 @@
-import { MapPinned, Phone, Mail } from "lucide-react";
+import { MapPinned, Phone, Mail, type LucideIcon } from "lucide-react";
 import type { OfficeCardData } from "./contactData";
 import OfficeMap from "./OfficeMap";
 
@@ -6,7 +6,7 @@ import OfficeMap from "./OfficeMap";
 /*  Icon chip (38×38 rounded gray square, matching Figma)              */
 /* ------------------------------------------------------------------ */
 
-function DetailChip({ icon: Icon }: { icon: React.ElementType }) {
+function DetailChip({ icon: Icon }: { icon: LucideIcon }) {
   return (
     <div className="flex h-[2.75rem] w-[2.75rem] sm:h-[3.5rem] sm:w-[3.5rem] shrink-0 items-center justify-center rounded bg-gray-100">
       <Icon size={20} className="sm:hidden text-neutral-800" strokeWidth={1.5} />
@@ -26,9 +26,15 @@ export default function OfficeCard({ card }: { card: OfficeCardData }) {
       {/* Map */}
       <div className="relative w-full lg:w-[42rem] h-[12rem] sm:h-[18rem] bg-[#D9D9D9] overflow-hidden lg:shrink-0">
         <OfficeMap
-          lat={card.coordinates.lat}
-          lng={card.coordinates.lng}
-          title={card.title}
+          locations={[
+            {
+              title: card.title,
+              lat: card.coordinates.lat,
+              lng: card.coordinates.lng,
+              address: card.address,
+            },
+          ]}
+          activeIndex={0}
         />
       </div>
 

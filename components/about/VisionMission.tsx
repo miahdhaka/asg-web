@@ -12,7 +12,7 @@ export default function VisionMission() {
           style={{ background: "linear-gradient(150deg, rgba(139, 195, 74, 0.1) 0%, rgba(26, 161, 121, 0.1) 87%)" }}
         />
 
-        <div className="relative flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-0 px-4 sm:px-6 lg:px-[5em] py-16 lg:py-[5rem]">
+        <div className="relative flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-[4rem] px-4 sm:px-6 lg:px-[5em] py-16 lg:py-[5rem]">
           {/* Text block */}
           <div className="flex flex-col gap-5 sm:gap-8 lg:w-[560px] shrink-0 z-10">
             <div className="flex items-center gap-2">
@@ -56,7 +56,7 @@ export default function VisionMission() {
           quality={90}
           className="object-cover"
         />
-        <div className="relative flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-0 px-4 sm:px-6 lg:px-[5em] py-16 lg:py-[5rem]">
+        <div className="relative flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-[4rem] px-4 sm:px-6 lg:px-[5em] py-16 lg:py-[5rem]">
           {/* Text block */}
           <div className="flex flex-col gap-5 sm:gap-8 lg:w-[560px] shrink-0 z-10">
             <div className="flex items-center gap-2">

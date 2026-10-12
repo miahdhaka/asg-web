@@ -7,13 +7,13 @@ export default function JobCard({ job }: { job: Job }) {
   return (
     <article data-job-card className="flex flex-col gap-6 rounded-2xl border border-gray-200 bg-white p-4 lg:gap-[2.1667rem] lg:p-[1.3333rem]">
       <div className="flex flex-col gap-3.5 sm:gap-6 lg:gap-[2.3333rem] h-full justify-between">
-        <div className="flex flex-col gap-3.5 sm:gap-6 lg:gap-[2.3333rem]">
+        <div className="flex flex-col gap-4 sm:gap-6 lg:gap-[2.3333rem]">
           {/* Badge + role */}
           <div className="flex flex-col gap-2">
-            <span className="w-fit rounded-full bg-gray-100 px-[0.6667rem] py-[0.3333rem] text-xs text-neutral-800 lg:text-[1rem]">
+            <span className="w-fit rounded-full bg-gray-100 px-[0.6667rem] py-[0.3333rem] text-[13px] text-neutral-800 lg:text-[1rem] tracking-wider">
               {job.department}
             </span>
-            <h3 className="font-archivo-black text-lg font-medium leading-7 text-neutral-800 lg:text-[2rem] lg:leading-[2.6667rem]">
+            <h3 className="font-archivo-black text-2xl font-medium leading-7 text-neutral-800 lg:text-[2rem] lg:leading-[2.6667rem]">
               {job.title}
             </h3>
           </div>
@@ -22,16 +22,16 @@ export default function JobCard({ job }: { job: Job }) {
 
           {/* Location / workplace / deadline */}
           <div className="flex flex-col gap-3">
-            <p className="flex items-center gap-1 text-xs text-neutral-500 lg:text-[1rem] lg:leading-[1.3333rem]">
+            <p className="flex items-center gap-1 text-[13px] text-neutral-500 lg:text-[1rem] lg:leading-[1.3333rem] tracking-wider">
               <MapPinned className="size-4.5 shrink-0" />
               {job.location}
             </p>
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-              <p className="flex items-center gap-1 text-xs text-neutral-500 lg:text-[1rem] lg:leading-[1.3333rem]">
+              <p className="flex items-center gap-1 text-[13px] text-neutral-500 lg:text-[1rem] lg:leading-[1.3333rem] tracking-wider">
                 <BriefcaseBusiness className="size-4.5 shrink-0" />
                 {job.workplace} &middot; {job.employment}
               </p>
-              <p className="flex items-center gap-1 text-xs text-neutral-500 lg:text-[1rem] lg:leading-[1.3333rem]">
+              <p className="flex items-center gap-1 text-[13px] text-neutral-500 lg:text-[1rem] lg:leading-[1.3333rem] tracking-wider">
                 <Calendar className="size-4.5 shrink-0" />
                 Deadline: {job.deadline}
               </p>
@@ -43,14 +43,14 @@ export default function JobCard({ job }: { job: Job }) {
         <div className="grid grid-cols-2 gap-3 lg:gap-[1.0833rem]">
           <Link
             href={`/careers/${job.id}`}
-            className="w-full flex-1 cursor-pointer rounded-full bg-gray-100 px-4 py-2 text-center text-xs font-medium text-neutral-800 transition-all duration-300 hover:bg-gray-200 lg:px-[2rem] lg:py-[0.7rem] lg:text-[1rem]"
+            className="w-full flex-1 cursor-pointer rounded-full bg-gray-100 px-4 py-2.5 text-center text-sm font-medium text-neutral-800 transition-all duration-300 hover:bg-gray-200 lg:px-[2rem] lg:py-[0.7rem] lg:text-[1rem] tracking-wider"
           >
             Job Details
           </Link>
           <Link
             href={`/careers/${job.id}/apply`}
             data-label="Apply Now"
-            className="w-full primary-btn-flip-gradient shrink-0 cursor-pointer rounded-full px-4 py-2 text-xs font-medium lg:px-[2rem] lg:py-[0.8rem] lg:text-[1rem]"
+            className="w-full primary-btn-flip-gradient shrink-0 cursor-pointer rounded-full px-4 py-2.5 text-sm font-medium lg:px-[2rem] lg:py-[0.8rem] lg:text-[1rem] tracking-wider"
             style={{
               borderImage: "none",
               background:
