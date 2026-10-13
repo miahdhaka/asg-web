@@ -20,114 +20,114 @@ interface Milestone {
 export const milestones: Milestone[] = [
   {
     year: "1896",
-    title: "The Legacy Begins",
+    title: "The first chapter",
     description:
-      "Our journey began 130 years ago as a modest family-run workshop. From our founder's vision to today's 3rd generation of leadership, our character remains steadfast.",
+      "The journey began as a family-run workshop, founded by the first generation with a vision of producing quality textiles on traditional looms.",
     image: "/images/our-history/history-milestone-1.png",
     imageAlt: "The founding workshop, 1896",
   },
   {
     year: "1983",
-    title: "Helal & Brothers Ltd. are born",
+    title: "Where the Legacy Began M/S Helal & Brother Ltd.",
     description:
-      "A pivotal moment in our expansion. With the establishment of Helal & Brothers Ltd., our endeavor evolved from foundational manufacturing to broader industrial operations, significantly strengthening our market presence and diversifying our operational capabilities.",
-    image: "/images/our-history/history-milestone-1.png",
+      "A family-run enterprise takes its first step, architecting the foundation for a legacy spanning generations and industries.",
+    image: "/images/our-history/history-milestone-1.avif",
     imageAlt: "Establishment of Helal & Brothers Ltd., 1983",
   },
   {
     year: "1983",
-    title: "Amanat Shah Group (ASG) is born",
+    title: "The birth of Amanat Shah Group- From Family Enterprise to Industrial Ambition",
     description:
-      "With the formal inauguration of the Group, our endeavor transitions from a heritage family workshop into a structured, diversified industrial powerhouse, setting the foundation for a new era of growth.",
-    image: "/images/about-us/about-hero.png",
+      "The journey began as a family-run enterprise, evolving into a structured industrial powerhouse and entering a new era of growth and sustainability.",
+    image: "/images/our-history/history-milestone-2.avif",
     imageAlt: "Amanat Shah Group (ASG) inauguration, 1983",
   },
   {
     year: "2004",
-    title: "Hazrat Amanat Shah Spinning Mills Ltd. is born",
+    title: "Beginning of Hazrat Amanat Shah Spinning Mills Ltd.",
     description:
-      "With the commissioning of our spinning mills, our endeavor expands into full backward integration, setting a new benchmark for scale and quality.",
+      "Established as a backward linkage of ASG to strengthen integrated production for both domestic and export markets.",
     image: "/images/our-history/Hazrat Amanat Shah Spinning Mills Ltd.png",
     imageAlt: "Hazrat Amanat Shah Spinning Mills Ltd. commissioning, 2004",
   },
   {
     year: "2005",
-    title: "Farm2Firm (Baikunthapur Tea Estate)",
+    title: "The Start of Firm2Firm",
     description:
-      "Standard Lungi produced by M/S Helal& Brothers made it the only Lungi exporter in the country, representing Bangladesh in the KSA, UAE, Malaysia and Indonesia.",
-    image: "/images/our-history/Farm2Firm.png",
+      "Began producing premium-quality tea and exporting it to global markets.",
+    image: "/images/our-history/history-milestone-5.avif",
     imageAlt: "Farm2Firm (Baikunthapur Tea Estate) launch, 2005",
   },
-  {
-    year: "2007",
-    title: "Nodi Bangla Real Estate is born",
-    description:
-      "With the founding of Nodi Bangla, our endeavor expands into the infrastructure and real estate development sector.",
-    image: "/images/our-history/history-milestone-1.png",
-    imageAlt: "Nodi Bangla Real Estate inauguration, 2007",
-  },
+  // {
+  //   year: "2007",
+  //   title: "The Genesis of Nodi Bangla Real Estate",
+  //   description:
+  //     "Established as a real estate venture for residential and commercial development, driven by a vision for greener living.",
+  //   image: "/images/our-history/history-milestone-1.png",
+  //   imageAlt: "Nodi Bangla Real Estate inauguration, 2007",
+  // },
   {
     year: "2009",
-    title: "Hazrat Amanat Shah Securities Ltd. is born",
+    title: "The Rise of Hazrat Amanat Shah Securities LTD.",
     description:
-      "With the launch of this financial entity, our endeavor expands into the capital market, providing strategic investment solutions and expertise.",
+      "To ensure secure financial operations, expand the capital market, and guide investors toward safer investment opportunities.",
     image: "/images/our-history/Hazrat Amanat Shah Securities Ltd.png",
     imageAlt: "Hazrat Amanat Shah Securities Ltd. launch, 2009",
   },
   {
     year: "2009",
-    title: "Celestial Securities Limited is born",
+    title: "The Emergence of Celestial Securities Ltd.",
     description:
-      "With the establishment of this firm, our endeavor further strengthens its footprint in the financial services sector, reinforcing our commitment to professional excellence and market growth.",
-    image: "/images/our-history/history-milestone-1.png",
+      "Formed to strengthen the financial sector and foster sustainable market growth for investors and partners.",
+    image: "/images/our-history/history-milestone-7.avif",
     imageAlt: "Celestial Securities Limited inauguration, 2009",
   },
   {
     year: "2014",
-    title: "Amanat Shah Weaving Processing Ltd. is born",
+    title: "The Arrival of Amanaot Shah Weaving Processing Ltd.",
     description:
-      "With this dedicated facility, our endeavor enhances textile finishing capabilities, driving superior fabric performance and innovation.",
+      "Emerged as a strategic extension of ASG, strengthening integration, quality control, and sustainable value creation through high-end textile finishing",
     image: "/images/our-history/Amanat Shah Weaving Processing Ltd.png",
     imageAlt: "Amanat Shah Weaving Processing Ltd. inauguration, 2014",
   },
   {
     year: "2015",
-    title: "Trust Knitwear Industries Ltd. is born",
+    title: "The Establishment of Trust Knitwear industries LTD.",
     description:
-      "With the launch of this specialized unit, our endeavor expands into the high-performance knitwear and garments sector, focusing on precision craftsmanship and global standards.",
-    image: "/images/our-history/Trust Knitwear Industries Ltd.png",
+      "Built to deliver high-performing knitwear through precision craftsmanship at global standards. Creating consistent value and certainty that help brands build customer loyalty and premium positioning. Shaping trends that endure in consumers’ lifestyles.",
+    image: "/images/our-history/history-milestone-9.avif",
     imageAlt: "Trust Knitwear Industries Ltd. inauguration, 2015",
   },
   {
     year: "2017",
-    title: "Amanat Shah Fabrics Ltd. is born",
+    title: "Arrival of Amanat Shah Fabrics",
     description:
-      "With the launch of this unit, our endeavor significantly increases production capacity and technical precision in premium fabric manufacturing.",
+      "Created to expand production capacity, delivering premium-quality fabrics with technical precision to help clients create greater value at every stage of their brand journey.",
     image: "/images/our-history/history-milestone-1.png",
     imageAlt: "Amanat Shah Fabrics Ltd. inauguration, 2017",
   },
   {
     year: "2019",
-    title: "Miah is born",
+    title: "The Establishment of Miah",
     description:
-      "With the launch of this fashion e-commerce platform, our endeavor expands into lifestyle branding and retail, bringing our heritage quality directly to the modern consumer.",
-    image: "/images/our-history/Miah.png",
+      "Launched a premium lifestyle retail brand to bring a trusted heritage to the modern consumers.",
+    image: "/images/our-history/history-milestone-11.avif",
     imageAlt: "Miah inauguration, 2019",
   },
   {
     year: "2019",
-    title: "ASG Dynamic is born",
+    title: "The Creation of ASG Dynamic",
     description:
-      "With the establishment of this technology entity, our endeavor expands into the digital space, providing specialized software solutions and driving the group's technological transformation.",
+      "Designed to drive technological efficiency through specialized software solutions, supporting the Group’s digital transformation from root to roof.",
     image: "/images/our-history/ASG Dynamic.png",
     imageAlt: "ASG Dynamic inauguration, 2019",
   },
   {
     year: "2025",
-    title: "Amanat Shah Tex Solution is born",
+    title: "A Legacy Takes Root of Amanat Shah Tex Solution",
     description:
-      "With this strategic addition, our endeavor evolves into advanced specialty chemical manufacturing, providing innovative and sustainable chemical formulations for the textile industry.",
-    image: "/images/our-history/history-milestone-1.png",
+      "Developed to empower textile manufacturing with advanced, specialized, and sustainable chemical formulations for innovative production.",
+    image: "/images/our-history/history-milestone-13.avif",
     imageAlt: "Amanat Shah Tex Solution inauguration, 2025",
   },
 ];

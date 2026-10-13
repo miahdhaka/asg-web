@@ -11,11 +11,15 @@ export const metadata: Metadata = {
 };
 
 const messageParagraphs = [
-  "Amanat Shah Group is more than just an industrial conglomerate; it is a legacy of resilience and vision that has spanned over a century. Since taking the helm, my focus has been to bridge the gap between our rich heritage\u2014built on the principles of quality and craftsmanship\u2014and the dynamic, fast-paced demands of the modern global market.",
-  "Our journey from a humble family workshop to a multi-dimensional powerhouse is a testament to the hard work and dedication of the generations that came before us. Today, as we operate across textiles, finance, real estate, technology, and advanced chemical solutions, our objective remains singular: to deliver excellence in every thread we weave and every project we build.",
-  "At the core of our strategy is integration and innovation. We are not merely following trends; we are setting benchmarks. By investing in backward integration, state-of-the-art technology, and, most importantly, our people, we ensure that the Amanat Shah name remains synonymous with reliability and forward-thinking leadership.",
-  "I am deeply proud of our professional team\u2014a perfect synergy of experienced veterans and young, ambitious talent. Together, we are creating an ecosystem where ideas flourish, and operational excellence is a daily commitment. As we move forward, our goal is to continue contributing to the socio-economic development of Bangladesh while maintaining the trust of our stakeholders and the quality that defines us.",
-  "We are a business house built on trust, and we are committed to building a stronger, more innovative tomorrow.",
+  "As you may know, our mission is to build a sustainable culture of global expertise. A place where experts take the lead in creating a prosperous future for everyone. A place where collaborative investment with innovation leads generation after generation through passion.",
+  "Throughout the 130-year journey, we’ve learned that successful business relationships are built on trust. Built on shared values and a commitment to growing together.",
+  "Our family and people have made this journey possible across generations.",
+  "Over 130 years, our family-business heritage has extended from traditional clothing into a diversified business group. Upscaling manufacturing expertise with modern integrated industrial infrastructure.",
+  "We understand it’s all built on trust, quality, consistency, timely delivery and reliable communication with our clients.",
+  "It’s a real pleasure to watch partners grow their businesses, strengthen legacy and deliver lasting value to their customers through our expertise.",
+  "That’s why we focus on understanding your needs first. Build partnerships that support your long-term success. Our strength lies in our people's passion, expertise, dedication and commitment to continuous improvement to raise ASG to its pinnacle standard.",
+  "ASG remains committed to responsible growth, sustainable development and contributing to Bangladesh’s progress socially and economically and serving global markets with care. By combining research, experience and forward-thinking leadership, we continue to expand our capabilities and adapt to a changing world.",
+  "Thank you to everyone for believing in us, and to those considering a partnership with ASG. We welcome the opportunity to build a lasting transformation together. Let's walk side-by-side, claim new possibilities, create meaningful change and shape a better future for generations to come."
 ];
 
 export default function ManagingDirectorMessagePage() {
@@ -38,7 +42,7 @@ export default function ManagingDirectorMessagePage() {
       <MessageBody
         id="managing-director-full-message"
         heading="Message from the Managing Director"
-        lead="Innovation rooted in tradition, excellence driven by passion."
+        lead="Dear Valued Partners, Well-Wishers and Our People,"
         paragraphs={messageParagraphs}
         signOff={{
           name: "Rezaul Karim",

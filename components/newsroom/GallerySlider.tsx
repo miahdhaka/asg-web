@@ -133,7 +133,7 @@ export default function GallerySlider({ images, heading }: GallerySliderProps) {
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
         onPointerLeave={endDrag}
-        className="flex cursor-grab active:cursor-grabbing gap-2 overflow-x-auto select-none sm:gap-4 lg:gap-[1.5rem] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex cursor-grab active:cursor-grabbing gap-2 overflow-x-auto sm:gap-4 lg:gap-[1.5rem] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {/* Rendered twice so the one-card stepping can wrap seamlessly */}
         {[...images, ...images].map((src, i) => (

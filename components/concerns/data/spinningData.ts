@@ -38,28 +38,28 @@ export const spinningIntroStats: StatItem[] = [
 
 /* ── Core values (capabilities) ── */
 export const spinningCoreValues = {
-  heading: "Technical Infrastructure & Quality Assurance Excellence",
+  heading: "Advanced Production Technology & Quality Assurance",
   description:
-    "At Hazrat Amanat Shah Spinning Mills Ltd. (HASSML), we combine advanced machinery and rigorous quality control to deliver superior yarn solutions",
+    "At Hazrat Amanat Shah Spinning Mills Ltd. (HASSML), we combine modern machinery with careful quality control to produce reliable, high-quality yarn for global textile markets.",
   cards: [
     {
       title: "Advanced Infrastructure",
-      body: "We utilize state-of-the-art machinery sourced from Germany and Switzerland to ensure efficient, high-precision operations",
+      body: "We use advanced machinery from Germany and Switzerland to maintain high precision, efficient production and consistent quality across our operations.",
       icon: "/icons/concern/spining-core_value-1.png",
     },
     {
-      title: "Specialized Production",
-      body: "Our facility excels in producing an exquisite range of Spandex and Slab yarns (6–150 Ne) through sophisticated processes like doubling, twisting, and singeing",
+      title: "Operational Efficiency",
+      body: "We improve resource use and reduce waste with practical processes and smart technology, including larger packaging solutions that support more efficient operations.",
       icon: "/icons/concern/spining-core_value-2.png",
     },
     {
-      title: "Operational Efficiency",
-      body: "We optimize resource management and minimize waste by leveraging a harmonious blend of technology, including the use of larger packaging solutions",
+      title: "Specialized Production",
+      body: "Our facility specializes in Spandex and Slub yarns ranging from 6 to 150 Ne, using advanced processes such as doubling, twisting and singeing to deliver consistent quality.",
       icon: "/icons/concern/spining-core_value-3.png",
     },
     {
       title: "Rigorous Quality Control",
-      body: "Our USTER-equipped Innovations Lab ensures top-tier quality through precision instruments such as USTER AFIS Pro, HVI-1000, and comprehensive testers for count, CSP, and yarn uniformity",
+      body: "Our USTER-equipped Innovations Lab maintains consistent quality with advanced testing systems, including USTER AFIS Pro, HVI-1000 and specialized equipment for count, CSP and yarn uniformity.",
       icon: "/icons/concern/spining-core_value-4.png",
     },
   ] as CoreValueCard[],

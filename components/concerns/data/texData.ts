@@ -8,8 +8,8 @@ import type { CoreValueCard } from "@/components/concerns/common/ConcernCoreValu
 export const texHero = {
   title: "Specialized Chemicals For\nHigh-Performance Textile",
   subtitle: "Your end-to-end textile chemical solution for every processing need",
-  videoSrc: "/videos/concerns/asg update.webm",
-  alt: "Amanat Shah Tex Solution overview footage",
+  imgSrc: "/images/concerns/amanat-shah-tex-solution/hero-tex-banner.avif",
+  alt: "Amanat Shah Tex Solution overview",
 };
 
 /* ── Intro ── */
@@ -47,22 +47,22 @@ export const texCoreValues = {
     {
       title: "R&D & Innovation",
       body: "Efficiently develop high-performing products with predictability",
-      icon: "/icons/concern/miah-core_value-1.png",
+      icon: "/icons/concern/tex-core_value-1.svg",
     },
     {
       title: "Textile Customized Solutions",
       body: "All formulations developed around specific textile applications",
-      icon: "/icons/concern/miah-core_value-2.png",
+      icon: "/icons/concern/tex-core_value-2.svg",
     },
     {
       title: "Advanced Chemical Manufacturing",
       body: "Produce high-quality surfactants and emulsifiers for large volume production",
-      icon: "/icons/concern/miah-core_value-3.png",
+      icon: "/icons/concern/tex-core_value-3.svg",
     },
     {
       title: "Consistent Quality",
       body: "Reliable chemical quality  and assurance across every order and application",
-      icon: "/icons/concern/miah-core_value-4.png",
+      icon: "/icons/concern/securities-core_value-4.svg",
     },
   ] as CoreValueCard[],
 };

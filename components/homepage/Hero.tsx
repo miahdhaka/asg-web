@@ -812,7 +812,7 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
       {/* Centered content — overflow-hidden clips text during rise/fall */}
       <div className="absolute inset-0 z-10 overflow-hidden pointer-events-none">
         <div className="flex flex-col items-center justify-center h-full text-center text-white px-4 pb-14 sm:pb-0">
-          <div ref={textRef} className="mt-28 select-none">
+          <div ref={textRef} className="mt-28 pointer-events-auto select-text">
           {/* Subtitle — Space Mono */}
           <div className="font-space-mono font-medium uppercase tracking-wider text-xs sm:text-sm lg:text-base text-white flex items-center justify-center gap-2 mb-4">
             <span className="w-4 h-[1.5px] bg-white shrink-0" />

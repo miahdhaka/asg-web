@@ -15,8 +15,8 @@ export default function OurHistoryPage() {
       <PageHero
         title="Our History"
         subtitle="At A Glance into The History of Amanat Shah Group"
-        mobileSrc="/images/our-history/history-hero.jpg"
-        desktopSrc="/images/our-history/history-hero.jpg"
+        mobileSrc="/images/our-history/history-mobile-hero.avif"
+        desktopSrc="/images/our-history/history-desktop-hero.avif"
         alt="Our History"
       />
       <HistoryYearNav />

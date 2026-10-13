@@ -433,7 +433,7 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
                   style={{ height: "clamp(85px, 12vw, 180px)" }}
                 >
                   {/* Base layer — always solid white, reads clean at the center */}
-                  <span className="font-archivo-black text-white text-[clamp(3.5rem,0.96rem+8.4vw,8.5rem)] leading-none select-none">
+                  <span className="font-archivo-black text-white text-[clamp(3.5rem,0.96rem+8.4vw,8.5rem)] leading-none">
                     {s.number}
                   </span>
                   {/* Gradient layer — opacity driven by distance from center. At
@@ -441,7 +441,7 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
                       black overlays above tint it to the "gradient + black" look. */}
                   <span
                     ref={(el) => { numGradRefs.current[i] = el; }}
-                    className="font-archivo-black text-[clamp(3.5rem,0.96rem+8.4vw,8.5rem)] leading-none select-none absolute inset-0 flex items-center justify-center"
+                    className="font-archivo-black text-[clamp(3.5rem,0.96rem+8.4vw,8.5rem)] leading-none absolute inset-0 flex items-center justify-center"
                     style={{
                       backgroundImage: "var(--primary-gradient)",
                       WebkitBackgroundClip: "text",

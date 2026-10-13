@@ -318,7 +318,7 @@ export default function OtherBoardMembers({
           onPointerUp={endGridDrag}
           onPointerLeave={endGridDrag}
           onClickCapture={onGridClickCapture}
-          className="flex cursor-grab select-none gap-3 overflow-x-auto pb-2 no-scrollbar active:cursor-grabbing sm:hidden"
+          className="flex cursor-grab gap-3 overflow-x-auto pb-2 no-scrollbar active:cursor-grabbing sm:hidden"
         >
           {[...members, ...members].map((member, index) =>
             renderCard(member, `${member.name}-${index}`, true)
@@ -366,7 +366,7 @@ export default function OtherBoardMembers({
           ref={trackRef}
           onPointerDown={onPointerDown}
           onClickCapture={onClickCapture}
-          className={`flex gap-4 lg:gap-[1.35em] overflow-x-auto no-scrollbar select-none ${
+          className={`flex gap-4 lg:gap-[1.35em] overflow-x-auto no-scrollbar ${
             isDragging ? "snap-none" : "snap-x snap-mandatory"
           }`}
         >

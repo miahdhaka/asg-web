@@ -22,7 +22,8 @@ export default function AmanatShahTexSolutionPage() {
       <PageHeroFull
         title={texHero.title}
         subtitle={texHero.subtitle}
-        videoSrc={texHero.videoSrc}
+        mobileSrc={texHero.imgSrc}
+        desktopSrc={texHero.imgSrc}
         alt={texHero.alt}
       />
       <ConcernIntro

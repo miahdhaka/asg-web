@@ -190,7 +190,7 @@ export default function CertificationsCompliance() {
           onPointerMove={onPointerMove}
           onPointerUp={endDrag}
           onPointerLeave={endDrag}
-          className="no-scrollbar flex cursor-grab touch-pan-y items-stretch overflow-x-auto select-none overscroll-x-none active:cursor-grabbing"
+          className="no-scrollbar flex cursor-grab touch-pan-y items-stretch overflow-x-auto overscroll-x-none active:cursor-grabbing"
         >
           {loopedLogos.map((logo, index) => (
             <div

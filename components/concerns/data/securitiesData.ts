@@ -37,29 +37,29 @@ export const securitiesIntroStats: StatItem[] = [
 
 /* ── Core values (capabilities) ── */
 export const securitiesCoreValues = {
-  heading: "How We Help Investors Move With Confidence",
+   heading: "Technical Infrastructure & Trading Excellence",
   description:
-    "Trust Knitwear Industries Ltd. operates as a vertically integrated knit garment factory equipped with modern, high-precision machinery sourced from Germany, Switzerland, Singapore, Greece, Austria, and Japan",
+    "HASSL uses modern technology and efficient systems to provide clients and partners with a smooth and reliable trading experience.",
   cards: [
     {
+      title: "Comprehensive Systems",
+      body: "Our systems support secure BO account management with CDBL integration, along with automated notifications that keep clients updated on trades through real-time alerts and SMS.",
+      icon: "/icons/concern/securities-core_value-1.svg",
+    },
+    {
       title: "Advanced Trading Platforms",
-      body: "We utilize modern web-based online trading platforms that integrate real-time market data and automated order execution",
-      icon: "/icons/concern/miah-core_value-4.png",
+      body: "We provide modern web-based trading platforms with real-time market data and fast, automated order execution for a smooth trading experience.",
+      icon: "/icons/concern/securities-core_value-2.svg",
     },
     {
-      title: "Precision Finishing",
-      body: "Our dyeing and finishing lines feature Sclavos (Greece) and Brückner (Germany) technology, complemented by MHM (Austria) printing solutions",
-      icon: "/icons/concern/miah-core_value-4.png",
+      title: "Analytical Intelligence",
+      body: "Clients have open access to charting and professional market analysis to grow, expand and multiply with informed investment decisions.",
+      icon: "/icons/concern/securities-core_value-3.svg",
     },
     {
-      title: "Expert Sewing Operations",
-      body: "We employ high-performance JUKI, Pegasus, and Brother sewing machines from Japan to ensure consistent garment quality",
-      icon: "/icons/concern/miah-core_value-4.png",
-    },
-    {
-      title: "Rigorous Quality Control",
-      body: "Every process, from fiber to finished garment, is governed by stringent quality controls and international compliance standards",
-      icon: "/icons/concern/miah-core_value-4.png",
+      title: "Extensive Quality Control",
+      body: "Every transaction and operational process is governed by rigorous controls, accuracy standards and regulatory compliance.",
+      icon: "/icons/concern/securities-core_value-4.svg",
     },
   ] as CoreValueCard[],
 };

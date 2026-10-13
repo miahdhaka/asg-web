@@ -2,7 +2,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { HERO, TOUR, type CardIcon, type GlobeCard } from "./content";
 import { mulberry32 } from "./geo";
@@ -242,7 +243,7 @@ export default function GlobeHero() {
       </div>
 
       {/* Copy sits on the left on desktop; the globe is framed to the right. */}
-      <div className="pointer-events-none absolute inset-x-6 bottom-[12%] z-10 text-center md:inset-x-auto md:bottom-auto md:left-[6%] md:top-1/2 md:w-[min(30rem,40vw)] md:-translate-y-1/2 md:text-left">
+      <div className="pointer-events-none absolute inset-x-6 bottom-[16%] z-10 text-center md:inset-x-auto md:bottom-auto md:left-[6%] md:top-1/2 md:w-[min(30rem,40vw)] md:-translate-y-1/2 md:text-left">
         <div className="mb-3 flex items-center justify-center gap-2 md:justify-start">
           <span className="inline-flex items-center gap-1.5 font-space-mono text-[11px] font-medium uppercase tracking-[0.18em] text-white md:text-xs">
             {HERO.eyebrow}
@@ -262,6 +263,97 @@ export default function GlobeHero() {
           {HERO.sub}
         </p>
       </div>
+
+      {/* Brand logo marquee along the bottom. z-30 puts it above the bottom fade,
+          so the logos stay crisp while the globe's lower limb sinks into it. */}
+      <BrandMarquee />
     </section>
+  );
+}
+
+/* ─────────────────────────── brand logo marquee ─────────────────────────── */
+
+// Exactly the logos in /public/images/global-footprint/. Each entry carries its
+// true intrinsic width (all share a 264px height) so the aspect-ratio box matches
+// the decoded image, meaning no mid-animation reflow or jump.
+const brands: { src: string; width: number }[] = [
+  { src: "/images/global-footprint/c&a.png", width: 660 },
+  { src: "/images/global-footprint/celio.png", width: 648 },
+  { src: "/images/global-footprint/kiabi.png", width: 724 },
+  { src: "/images/global-footprint/levis.png", width: 552 },
+  { src: "/images/global-footprint/next.png", width: 676 },
+  { src: "/images/global-footprint/premark.png", width: 660 },
+  { src: "/images/global-footprint/walmart.png", width: 956 },
+];
+const LOGO_HEIGHT = 264;
+
+function BrandMarquee() {
+  /* `marquee-globe` glides the track from translateX(calc(-100% / 3)) to
+     translateX(0), one third of the track to the right, which lands on a frame
+     pixel-identical to the one it started from. Two conditions make that
+     seamless rather than an endless row that visibly restarts:
+       - `copies` is a multiple of 3, so the 1/3 shift is exactly a whole number
+         of brand lists;
+       - the track stays wide enough that both extremes still cover the screen,
+         so the left edge never slides past 0 and a copy is always waiting
+         off-screen to feed in as the strip moves right. */
+  const [copies, setCopies] = useState(3);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const container = containerRef.current;
+    const track = trackRef.current;
+    if (!container || !track) return;
+
+    const apply = () => {
+      const tile = track.firstElementChild as HTMLElement | null;
+      const viewport = container.clientWidth;
+      if (!tile || viewport === 0) return;
+      // One tile's stride (itself + its right margin) times the list length is
+      // the width of a single copy. Measuring a tile rather than the whole track
+      // keeps the value independent of `copies`, so the count settles in one
+      // pass instead of compounding off an already-multiplied track.
+      const stride = tile.offsetWidth + parseFloat(getComputedStyle(tile).marginRight || "0");
+      if (stride <= 0) return;
+      const perCopy = stride * brands.length;
+      const needed = Math.max(3, Math.ceil(viewport / perCopy) * 3);
+      setCopies((c) => (c === needed ? c : needed));
+    };
+
+    apply();
+    // Re-check whenever the track's own layout changes, e.g. when the
+    // aspect-ratio boxes of not-yet-decoded logos resolve to their real widths.
+    const ro = new ResizeObserver(apply);
+    ro.observe(container);
+    ro.observe(track);
+    return () => ro.disconnect();
+  }, []);
+
+  const loopedBrands = Array.from({ length: copies }, () => brands).flat();
+
+  return (
+    <div className="pointer-events-auto absolute inset-x-0 bottom-0 z-30 pb-6 lg:pb-10">
+      <div ref={containerRef} className="no-scrollbar overflow-hidden">
+        <div ref={trackRef} className="animate-marquee-globe flex w-max">
+          {loopedBrands.map((brand, index) => (
+            <div
+              key={`globe-${brand.src}-${index}`}
+              className="mr-2 flex h-14 shrink-0 items-center justify-center sm:mr-3 sm:h-16 lg:mr-4 lg:h-24"
+            >
+              <Image
+                src={brand.src}
+                alt=""
+                width={brand.width}
+                height={LOGO_HEIGHT}
+                draggable={false}
+                className="pointer-events-none h-12 w-auto sm:h-16 lg:h-20"
+                quality={90}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }

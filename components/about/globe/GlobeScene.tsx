@@ -443,7 +443,9 @@ function CameraRig({
     const mobile = W < 820;
     const cx = mobile ? 0.5 : 0.69;
     const cy = mobile ? 0.33 : 0.5;
-    const D = mobile ? Math.min(W * 0.9, H * 0.5) : Math.min(H * 0.8, W * 0.5);
+    // Trimmed down from H*0.80 / W*0.50 so the globe clears both the restored
+    // brand marquee at the bottom and the heading column on the left.
+    const D = mobile ? Math.min(W * 0.82, H * 0.46) : Math.min(H * 0.68, W * 0.44);
 
     cam.fov = 30;
     const k = (D / H) * Math.tan((cam.fov * DEG) / 2);

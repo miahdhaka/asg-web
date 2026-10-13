@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+  <defs>
+    <style>
+      .cls-1 {
+        stroke-linecap: round;
+      }
+
+      .cls-1, .cls-2 {
+        fill: none;
+        stroke: #231f20;
+        stroke-miterlimit: 10;
+        stroke-width: 1.5px;
+      }
+    </style>
+  </defs>
+  <path class="cls-2" d="M12.83,5.22h15.42c1.7,0,2.47,2.13,1.16,3.22l-4.22,3.49h-9.54s-4.22-3.49-4.22-3.49c-1.31-1.09-.55-3.22,1.16-3.22h15.42"/>
+  <rect class="cls-2" x="12.41" y="11.98" width="15.72" height="3.6" rx="1.8" ry="1.8"/>
+  <path class="cls-2" d="M22.23,44.51h-8c-11.53.12-10.94-20.94.82-28.82"/>
+  <path class="cls-1" d="M31.55,22.02c-1.47-2.48-3.44-4.69-5.89-6.34"/>
+  <ellipse class="cls-1" cx="33.61" cy="29.78" rx="10.99" ry="4.14"/>
+  <path class="cls-1" d="M44.6,35.07c0,2.29-4.92,4.14-10.99,4.14s-10.99-1.85-10.99-4.14"/>
+  <path class="cls-1" d="M44.6,40.37c0,2.29-4.92,4.14-10.99,4.14s-10.99-1.85-10.99-4.14v-10.8"/>
+  <line class="cls-1" x1="44.6" y1="29.78" x2="44.6" y2="39.92"/>
+</svg>

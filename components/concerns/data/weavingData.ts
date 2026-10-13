@@ -41,28 +41,28 @@ export const weavingIntroStats: StatItem[] = [
 
 /* ── Core values (capabilities) ── */
 export const weavingCoreValues = {
-  heading: "Technical Infrastructure & Quality Assurance Excellence ",
+  heading: "Advanced Technology & Quality Manufacturing",
   description:
-    "At Amanat Shah Weaving Processing Ltd., we combine advanced weaving technology and rigorous quality control to deliver superior fabric solutions",
+    "At Amanat Shah Weaving Processing Ltd., we use modern technology and reliable production systems to deliver high-quality woven fabrics.",
   cards: [
     {
       title: "Advanced Engineering Infrastructure",
-      body: "We utilize high-speed weaving technology and advanced fabric construction systems to ensure peak operational efficiency.",
+      body: "We use high-speed weaving technology and modern fabric production systems to improve efficiency and maintain consistent quality across our operations.",
       icon: "/icons/concern/weaving-core_value-1.png",
     },
     {
-      title: "Specialized Manufacturing",
-      body: "Our facility focuses on the production of Greige Fabrics, Cotton Fabrics, and comprehensive Woven Fabric manufacturing and processing.",
+      title: "Operational Optimization",
+      body: "We maintain efficient production management and consistent quality monitoring at every stage of the manufacturing process.",
       icon: "/icons/concern/weaving-core_value-2.png",
     },
     {
-      title: "Operational Optimization",
-      body: "We employ efficient production management and rigorous quality monitoring processes at every stage of the manufacturing cycle.",
+      title: "Specialized Manufacturing",
+      body: "Our facility specializes in Greige, Cotton and Woven Fabrics, offering complete manufacturing and processing to meet diverse textile requirements.",
       icon: "/icons/concern/weaving-core_value-3.png",
     },
     {
       title: "Global Compliance & Standards",
-      body: "We uphold world-class manufacturing ethics, holding certifications such as OCS, LEED Gold (USGBC), U.S. Cotton Trust Protocol, RCS, GOTS, BCI, OEKO-TEX Standard 100, Higg Index, and European Flax.",
+      body: "Our certifications goes beyond OCS, LEED Gold (USGBC), U.S. Cotton Trust Protocol, RCS, GOTS, BCI, OEKO-TEX Standard 100, Higg Index, and European Flax.",
       icon: "/icons/concern/weaving-core_value-4.png",
     },
   ] as CoreValueCard[],

@@ -70,7 +70,7 @@ export default function EsgStatCards() {
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
         onPointerLeave={endDrag}
-        className="no-scrollbar mx-auto flex w-full max-w-[80rem] cursor-grab select-none gap-3 overflow-x-auto pb-2 active:cursor-grabbing sm:grid sm:cursor-default sm:grid-cols-3 sm:select-auto sm:overflow-visible sm:pb-0"
+        className="no-scrollbar mx-auto flex w-full max-w-[80rem] cursor-grab gap-3 overflow-x-auto pb-2 active:cursor-grabbing sm:grid sm:cursor-default sm:grid-cols-3 sm:select-auto sm:overflow-visible sm:pb-0"
       >
         {esgStatCards.map((card) => (
           <StatCard key={card.value} card={card} />
