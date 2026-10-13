@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect -- one-time client capability checks + typing animation */
 "use client";
 
+import { Shirt } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
@@ -142,10 +143,10 @@ function OrderToast({ order, register }: { order: OrderEvent | null; register: R
       <div className="gcard-inner">
         <div className="gcard-box min-w-[170px] items-center">
           <span className="text-[#3ddc97]">
-            <Icon name="cash" />
+            <Shirt />
           </span>
           <p className="text-[#3ddc97]">
-            {order && <Typed key={order.id} text={`ORDER · ${order.city.toUpperCase()}`} />}
+            {order && <Typed key={order.id} text={`${order.region.toUpperCase()} · ${order.city.toUpperCase()}`} />}
           </p>
         </div>
       </div>
@@ -210,7 +211,6 @@ export default function GlobeHero() {
           <GlobeScene
             tour={TOUR}
             hub={HERO.hub}
-            hubRate={HERO.hubRate}
             anchors={anchors}
             hover={hover}
             running={inView && tabVisible}

@@ -15,22 +15,22 @@ function PillarColumn({
     <div
       className={`flex flex-col gap-3 ${divider ? "lg:border-l lg:border-gray-200 lg:pl-8" : ""} ${offsetClass}`}
     >
-      <h3 className="font-archivo-black text-neutral-800 text-xl sm:text-[1.75rem] leading-[1.15] md:text-[3rem] lg:text-[4rem] lg:leading-[1.1]">
+      <h3 className="font-archivo-black text-neutral-800 text-xl sm:text-[1.75rem] leading-[1.15] md:text-[2rem] lg:leading-[1.1]">
         {pillar.value ? (
           <>
             {/* Keep the big value + first word of the title on the same line */}
             <span className="whitespace-nowrap">
-              <span className="text-[42px] lg:text-[4.75rem] lg:leading-[5.375rem]">
+              <span className="text-[32px] lg:text-[2.75rem] lg:leading-[5.375rem]">
                 {pillar.value}{" "}
               </span>
-              <span className="text-[1.3rem] sm:text-[1.75rem] lg:text-[2.5rem] lg:leading-[2.875rem]">
+              <span className="text-[1.3rem] sm:text-[1.75rem] lg:leading-[2.875rem]">
                 {(pillar.title ?? "").split(" ")[0]}
               </span>
             </span>
             {(pillar.title ?? "").split(" ").slice(1).length > 0 && (
               <>
                 {" "}
-                <span className="text-[1.3rem] sm:text-[1.75rem] lg:text-[2.5rem] lg:leading-[2.875rem]">
+                <span className="text-[1.3rem] sm:text-[1.75rem] lg:leading-[2.875rem]">
                   {(pillar.title ?? "").split(" ").slice(1).join(" ")}
                 </span>
               </>
@@ -40,7 +40,7 @@ function PillarColumn({
           pillar.title
         )}
       </h3>
-      <p className="font-neue-montreal text-base leading-6 text-neutral-800 sm:text-lg sm:leading-7 lg:text-xl lg:leading-8">
+      <p className="font-neue-montreal text-base leading-6 text-neutral-800 sm:text-lg sm:leading-7">
         {pillar.description}
       </p>
     </div>

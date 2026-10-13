@@ -5,17 +5,17 @@
 /* ------------------------------------------------------------------ */
 
 export const weHero = {
-  title: "Championing Gender Equality &\nWomen's Advancement",
+  title: "Supporting Women’s \nAccess to Equal Opportunity",
   subtitle:
-    "Creating an inclusive, safe, and empowering environment where women thrive through equal opportunities, professional development, and dedicated support systems.",
+    "Empowering women through equal opportunities, professional growth, dedicated support, and a safe, impactful workplace.",
   image: "/images/sustainability/we/we-hero.png",
   alt: "Women Empowerment — Amanat Shah Group",
 };
 
 export const weVision = {
-  label: "Our Vision for Gender Inclusion",
-  title: "Empowering Women at Every Level",
-  body: "At ASG, we believe that true industry leadership and sustainable growth are built on equality and diversity. We are deeply committed to fostering a workplace culture where women are empowered to lead, innovate, and achieve their full potential—both within our manufacturing units and the broader community.",
+  label: "ASG's Actions for Gender Advancement",
+  title: "Empowering Women to Thrive",
+  body: "At ASG, we believe that true leadership and sustainable growth are built on equality, diversity, and opportunity. We are deeply committed to building a culture where women are empowered, supported, guided and encouraged to lead, innovate, and achieve their full potential, from personal growth to the organizational level.",
   image: "/images/sustainability/we/we-vision.png",
   alt: "Women across Amanat Shah Group manufacturing units",
 };
@@ -39,35 +39,35 @@ export interface WeFeature {
 
 /* Rounded image with a white caption card overlapping one corner */
 export const weWellbeing: WeFeature = {
-  label: "Safe & Supportive Workplace",
-  title: "Well-being & Safety",
-  body: "Maintaining secure facilities, supportive welfare programs, and dedicated spaces (such as internal support networks) to ensure a healthy work-life balance.",
+  label: "Family-protected Workplace",
+  title: "Individuals, Well-being & Safety",
+  body: "Maintaining secure facilities in every area where women are involved. Offering supportive welfare programs, training, and dedicated spaces to ensure a healthy work-life balance. Professional Training & Skill Development",
   image: "/images/sustainability/we/we-wellbeing.png",
   alt: "Safe and supportive workplace for women at ASG",
 };
 
 export const weCapacity: WeFeature = {
   label: "Professional Skills & Training",
-  title: "Capacity Building",
-  body: "Providing specialized training programs, technical workshops, and skill-development initiatives to boost professional confidence and competence.",
+  title: "Building Experts",
+  body: "Providing specialized training, workshops, guidance, manuals and skill-development programs to help women become professionally competent, both mentally and behaviorally.",
   image: "/images/sustainability/we/we-capacity.png",
   alt: "Skills training and capacity building for women at ASG",
 };
 
 /* Large rounded banner with bottom gradient and anchored caption */
 export const weCommunity: WeFeature = {
-  label: "Community & Supply Chain Engagement",
-  title: "Expanding Impact Beyond Our Gates",
-  body: "Our commitment to women empowerment extends beyond our factories. Through targeted community projects, educational initiatives, and collaborative programs (inspired by empowering women in our supply chains and local regions), we strive to bridge gender gaps and drive long-term social progress.",
+  label: "Community & Supply Chain Empowerment",
+  title: "Impact Beyond Imagination",
+  body: "As a century-old, family-backed enterprise, we believe women are equal contributors to our organization. For 130 years, they have helped build what we create and deliver to people’s doorsteps. As long as ASG remains part of society, we will continue to care, support and empower women.",
   image: "/images/sustainability/we/we-community.png",
   alt: "Community and supply chain engagement for women empowerment",
 };
 
 /* Bottom call-to-action */
 export const weCta = {
-  title: "Building an Inclusive",
+  title: "Building a Happy Future Together",
   highlight: "Future Together",
   description:
-    "Learn more about how our policies and people-first approach are transforming lives and creating equal opportunities for all.",
+    "Read more about how our policies and people-first principles are enriching lives and opening equal opportunities for everyone.",
   buttonText: "Download CSR Report",
 };
