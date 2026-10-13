@@ -257,7 +257,7 @@ export default function PhotoLightbox({
               onPointerDown={handlePointerDown}
               onPointerUp={handlePointerUp}
               onPointerLeave={cancelDrag}
-              className="h-full w-full cursor-grab select-none object-contain active:cursor-grabbing"
+              className="h-full w-full cursor-grab object-contain active:cursor-grabbing"
             />
           </div>
 

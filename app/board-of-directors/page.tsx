@@ -13,7 +13,7 @@ const chairmanBio =
   "ASG's leadership is rooted in a founding family's 130-year entrepreneurial legacy — carried forward today by a management team focused on manufacturing discipline, product innovation and long-term partnership with global brands.";
 
 const managingDirectorBio =
-  "ASG's leadership is rooted in a founding family's 130-year entrepreneurial legacy — carried forward today by a management team focused on manufacturing discipline, product innovation and long-term partnership with global brands."
+  "130-year trusted entrepreneurial heritage, leading with quality, transparency and unstoppable innovation as a long-term trusted partner of global brands"
 
 export default function BoardOfDirectorsPage() {
   return (
@@ -22,8 +22,8 @@ export default function BoardOfDirectorsPage() {
         id="board-hero"
         title="Board of Directors"
         subtitle="The task of the board of directors is to manage the companys"
-        mobileSrc="/images/board-of-directors/board-hero-mobile.webp"
-        desktopSrc="/images/board-of-directors/board-hero-desktop.webp"
+        mobileSrc="/images/board-of-directors/board-hero-mobile.avif"
+        desktopSrc="/images/board-of-directors/board-hero-desktop.avif"
         alt="Board of Directors of Amanat Shah Group"
       />
       <MessageSection

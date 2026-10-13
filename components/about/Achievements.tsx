@@ -85,7 +85,7 @@ export default function Achievements() {
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
         onPointerLeave={endDrag}
-        className="mt-8 sm:mt-10 lg:mt-[3.5rem] flex gap-2.5 sm:gap-5 overflow-x-auto touch-auto pb-2 cursor-grab active:cursor-grabbing select-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible sm:pb-0 sm:cursor-default sm:active:cursor-default sm:select-auto"
+        className="mt-8 sm:mt-10 lg:mt-[3.5rem] flex gap-2.5 sm:gap-5 overflow-x-auto touch-auto pb-2 cursor-grab active:cursor-grabbing [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible sm:pb-0 sm:cursor-default sm:active:cursor-default sm:select-auto"
       >
         {achievements.map((item, index) => (
           <div

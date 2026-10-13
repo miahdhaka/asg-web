@@ -252,7 +252,7 @@ export default function GreenerFuture() {
           onPointerMove={onPointerMove}
           onPointerUp={endDrag}
           onPointerLeave={endDrag}
-          className="flex cursor-grab active:cursor-grabbing select-none gap-3 overflow-x-auto px-4 md:gap-6 md:px-12 lg:px-20 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex cursor-grab active:cursor-grabbing gap-3 overflow-x-auto px-4 md:gap-6 md:px-12 lg:px-20 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {/* Rendered twice so the one-card stepping can wrap seamlessly */}
           {[...cards, ...cards].map((card, index) => (

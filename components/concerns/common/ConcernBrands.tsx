@@ -240,7 +240,7 @@ function BrandRow({ title, description, images, textSide }: BrandRowData) {
         <div
           ref={trackRef}
           onPointerDown={onPointerDown}
-          className={`flex gap-2 overflow-x-auto no-scrollbar select-none cursor-grab active:cursor-grabbing lg:gap-[1.33em] lg:rounded-[1.25rem] ${
+          className={`flex gap-2 overflow-x-auto no-scrollbar cursor-grab active:cursor-grabbing lg:gap-[1.33em] lg:rounded-[1.25rem] ${
             isDragging ? "snap-none" : "snap-x snap-proximity"
           }`}
         >

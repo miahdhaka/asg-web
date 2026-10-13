@@ -44,22 +44,22 @@ export const miahCoreValues = {
     {
       title: "Connect Tradition To Modern Fashion",
       body: "With respect for rich tradition, MIAH meets the true taste of culturally diversified trends as its end",
-      icon: "/icons/concern/miah-core_value-1.png",
+      icon: "/icons/concern/miah-core_value-1.svg",
     },
     {
       title: "Customer-Centric Clothing",
       body: "Every piece of yarn-to-brick design is crafted with care to deliver the best experience while carrying forward its own value with satisfaction",
-      icon: "/icons/concern/miah-core_value-2.png",
+      icon: "/icons/concern/miah-core_value-2.svg",
     },
     {
       title: "Quality By Design",
       body: "Committed to providing the same value that consumers experience from dozens of leading global brands",
-      icon: "/icons/concern/miah-core_value-3.png",
+      icon: "/icons/concern/miah-core_value-3.svg",
     },
     {
       title: "Creative Craftsmanship",
       body: "From advanced research to hybrid innovation, every piece of product is designed creatively for an authentic, healthy experience",
-      icon: "/icons/concern/miah-core_value-4.png",
+      icon: "/icons/concern/miah-core_value-4.svg",
     },
   ] as CoreValueCard[],
 };
@@ -67,8 +67,8 @@ export const miahCoreValues = {
 /* ── Processing strip ── */
 export const miahProcessing = {
   title: "MIAH\nProcessing Excellence",
-  slides: [1, 2, 3, 4].map((n) => ({
-    src: `/images/concerns/miah/processing-${n}.png`,
+  slides: [1, 2, 3].map((n) => ({
+    src: `/images/concerns/miah/processing-${n}.avif`,
     alt: "Fashion processing at MIAH",
   })),
 };

@@ -100,7 +100,7 @@ export const helalBrandRows = [
   {
     title: "Standard Lungi, Sharee, Three Piece, Voile & Poplin",
     description:
-      "Delivering exquisite traditional craftsmanship through backing both art and quality. Making everyday wear more comfortable with timeless designs for modern lifestyles.",
+      "Delivering exquisite traditional craftsmanship with a strong focus on artistry and quality. Each collection combines classic style with everyday comfort, bringing familiar designs into modern life while preserving the quality and character of our heritage.",
     textSide: "right" as const,
     images: [1, 2, 3, 4, 5, 6].map((n) => ({
       src: `/images/concerns/helal-brothers/brand-2-${n}.webp`,

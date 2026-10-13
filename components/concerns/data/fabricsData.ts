@@ -36,28 +36,28 @@ export const fabricsIntroStats: StatItem[] = [
 
 /* ── Core values (capabilities) ── */
 export const fabricsCoreValues = {
-  heading: "A Journey Built On Global Brand Trust",
+  heading: "Core Capabilities & Technology",
   description:
-    "At Amanat Shah Fabrics Ltd. (ASFL), we employ state-of-the-art European and advanced machinery across our entire production chain to ensure superior quality, efficiency, and consistency",
+    "Operating world-class machinery across the entire production process to ensure superior quality and consistency in every delivery. A decade of global-grade fabric manufacturing, backed by 130 years of clothing heritage.",
   cards: [
     {
       title: "Advanced Warping & Sizing",
-      body: "We utilize state-of-the-art machinery sourced from Germany and Switzerland to ensure efficient, high-precision operations",
-      icon: "/icons/concern/fabrics-core_value-1.png",
-    },
-    {
-      title: "High-Performance Weaving",
-      body: "Operating state-of-the-art Rapier and Airjet looms from Belgium",
+      body: "Utilizing German and Swiss machinery to ensure quality and consistency at every step of high-end manufacturing.",
       icon: "/icons/concern/fabrics-core_value-2.png",
     },
     {
       title: "Computerized Processing",
-      body: "Featuring advanced dyeing and finishing lines equipped with computerized Color Kitchen and auto-dosing systems from Europe",
+      body: "Auto-dosing systems from Europe, supported by advanced dyeing and finishing lines equipped with a computerized Color Kitchen.",
       icon: "/icons/concern/fabrics-core_value-3.png",
     },
     {
+      title: "High-Performance Weaving",
+      body: "Belgium-based advanced Rapier and Airjet looms to deliver high-quality, global woven fabrics for demanding applications.",
+      icon: "/icons/concern/fabrics-core_value-1.png",
+    },
+    {
       title: "Printing & Dyeing Excellence",
-      body: "Implementing cutting-edge rotary screen and digital printing technology from Italy",
+      body: "Italy-based rotary screen and digital printing technologies to create exceptional consistency in every step at expert level.",
       icon: "/icons/concern/fabrics-core_value-4.png",
     },
   ] as CoreValueCard[],

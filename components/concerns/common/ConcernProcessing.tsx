@@ -208,7 +208,7 @@ export default function ConcernProcessing({
         <div
           ref={trackRef}
           onPointerDown={onPointerDown}
-          className="flex overflow-x-auto no-scrollbar select-none cursor-grab active:cursor-grabbing"
+          className="flex overflow-x-auto no-scrollbar cursor-grab active:cursor-grabbing"
         >
           {COPIES.map((copy) =>
             slides.map((slide, i) => (

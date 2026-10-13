@@ -40,7 +40,7 @@ export const farmIntroStats: StatItem[] = [
 /* ── Core values (capabilities) ── */
 export const farmCoreValues = {
   heading: "Core Strengths & Competencies",
-  description: "Celestial Securities leverages modern technology to provide a seamless, secure, and user-friendly trading experience",
+  description: "Skillfully managing and developing the tea estate while improving tea harvest and quality. Contributing to Bangladesh’s agricultural development through professional plantation management and responsible operations.",
   cards: [
     {
       title: "Sustainable Farming",

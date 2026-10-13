@@ -165,15 +165,41 @@ export default function Newsroom() {
 
         <Link
           href="/newsroom"
-          data-label="More news"
-          className="primary-btn-flip-gradient rounded-full px-4 sm:px-4 lg:px-6 py-3 sm:py-3 lg:py-4 text-sm sm:text-base lg:text-lg tracking-wider"
+          className="group relative inline-flex items-center justify-center overflow-hidden rounded-full border border-transparent px-4 sm:px-4 lg:px-6 py-3 sm:py-3 lg:py-4 text-sm sm:text-base lg:text-lg font-medium leading-none"
           style={{
-            borderImage: "none",
-            background:
-              "linear-gradient(#F3F3F1, #F3F3F1) padding-box, linear-gradient(97.37deg, #8BC34A 1.29%, #1AA179 92.01%) border-box",
+            background: 'linear-gradient(#F3F3F1, #F3F3F1) padding-box, linear-gradient(97.37deg, #8BC34A 1.29%, #1AA179 92.01%) border-box',
           }}
         >
-          More news
+          {/* Invisible spacer — preserves the button's intrinsic width/height */}
+          <span className="invisible inline-flex items-center gap-2 whitespace-nowrap pr-2 lg:gap-4 lg:pr-4 tracking-wider">
+            More news
+          </span>
+
+          {/* Default: gradient text — slides down and out on hover.
+              Animated via `top` (not translate/transform): transform-animated
+              children get composited into their own layer, which makes
+              Chrome's rounded overflow clip degrade to a rectangle and the
+              panels visibly poke outside the pill mid-slide. */}
+          <span
+            aria-hidden
+            className="absolute inset-x-0 top-0 flex h-full items-center justify-center whitespace-nowrap transition-[top] duration-500 ease-in-out group-hover:top-full"
+          >
+            <span
+              className="bg-clip-text pr-2 text-transparent tracking-wider lg:pr-4"
+              style={{ backgroundImage: "var(--primary-gradient)" }}
+            >
+              More news
+            </span>
+          </span>
+
+          {/* Hover: gradient fill + white text — slides in from the top */}
+          <span
+            aria-hidden
+            className="absolute inset-x-0 -top-full flex h-full items-center justify-center whitespace-nowrap text-white transition-[top] duration-500 ease-in-out group-hover:top-0"
+            style={{ background: "var(--primary-gradient)" }}
+          >
+            <span className="pr-2 tracking-wider lg:pr-4">More news</span>
+          </span>
         </Link>
       </div>
 
@@ -193,7 +219,7 @@ export default function Newsroom() {
             onPointerCancel={endDrag}
             onScroll={onScroll}
             onClickCapture={onClickCapture}
-            className="no-scrollbar flex w-full select-none gap-3 overflow-x-auto cursor-grab active:cursor-grabbing overscroll-x-none touch-pan-y lg:grid lg:h-full lg:grid-cols-3 lg:overflow-visible lg:gap-5 lg:cursor-auto"
+            className="no-scrollbar flex w-full gap-3 overflow-x-auto cursor-grab active:cursor-grabbing overscroll-x-none touch-pan-y lg:grid lg:h-full lg:grid-cols-3 lg:overflow-visible lg:gap-5 lg:cursor-auto"
           >
             {loopedNews.map((item, index) => (
               <Link
