@@ -16,8 +16,8 @@ export const esgHero = {
 export const esgRenewable = {
   heading: "Renewable Powersource",
   stats: [
-    { prefix: "Powered by", value: "7MW", suffix: "renewable energy" },
-    { prefix: "", value: "2MW", suffix: "high-efficiency" },
+    { prefix: "Powered by", value: "7MW", suffix: "Renewable Energy" },
+    { prefix: "", value: "2MW", suffix: "Energy Expansion" },
   ],
   caption: "Cogeneration system for consistent energy availability.",
   image: "/images/sustainability/esg/esg-highlight-desktop.jpg",
@@ -45,19 +45,19 @@ export interface EsgStatCard {
 export const esgStatCards: EsgStatCard[] = [
   {
     value: "475+ Million",
-    label: "Gallons Water Recycled Yearly",
+    label: "Gallons of Water Recycled Annually",
     image: "/images/sustainability/esg/esg-stat-card1.jpg",
     alt: "Water recycling facility",
   },
   {
     value: "1 Million+",
-    label: "Trees Planted on Campus",
+    label: "Trees Planted Across Our Campuses",
     image: "/images/sustainability/esg/esg-stat-card2.png",
     alt: "Trees planted on Amanat Shah Group campus",
   },
   {
     value: "100%",
-    label: "Commitment to ZLD standards",
+    label: "Commitment to Zero Liquid Discharge (ZLD) Standards",
     image: "/images/sustainability/esg/esg-stat-card3.jpg",
     alt: "Zero Liquid Discharge engineering",
   },

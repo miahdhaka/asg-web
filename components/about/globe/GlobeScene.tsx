@@ -13,19 +13,18 @@ import {
   arcFrag, arcVert, atmoFrag, atmoVert, bgFrag, bgVert,
   dotsFrag, dotsVert, earthFrag, earthVert,
 } from "./shaders";
-import type { TourStop } from "./content";
+import { ARC_DESTINATIONS, type TourStop } from "./content";
 
 /* ───────────────────────────── public types ───────────────────────────── */
 
 export type Anchor = { el: HTMLElement; lat: number; lon: number; dx: number; dy: number };
-export type OrderEvent = { id: number; city: string; lat: number; lon: number };
+export type OrderEvent = { id: number; region: string; city: string; lat: number; lon: number };
 
 type Bus = { lat: number; lon: number };
 
 export type GlobeSceneProps = {
   tour: TourStop[];
   hub: { lat: number; lon: number };
-  hubRate: number;
   anchors: React.MutableRefObject<Map<string, Anchor>>;
   hover: React.MutableRefObject<boolean>;
   running: boolean;
@@ -124,7 +123,7 @@ function World(props: GlobeSceneProps & { bus: React.MutableRefObject<Bus> }) {
     <>
       <Earth mask={mask} hover={props.hover} />
       <CityDots mask={mask} />
-      <ArcField bus={props.bus} hub={props.hub} hubRate={props.hubRate} />
+      <ArcField hub={props.hub} />
       <Orders bus={props.bus} onOrder={props.onOrder} />
     </>
   );
@@ -252,15 +251,7 @@ function CityDots({ mask }: { mask: LandMask }) {
 const CAP = 240; // max simultaneous arcs
 const SEG = 72; // segments per arc ribbon
 
-function ArcField({
-  bus,
-  hub,
-  hubRate,
-}: {
-  bus: React.MutableRefObject<Bus>;
-  hub: { lat: number; lon: number };
-  hubRate: number;
-}) {
+function ArcField({ hub }: { hub: { lat: number; lon: number } }) {
   const { geometry, material, attrs } = useMemo(() => {
     const g = new THREE.InstancedBufferGeometry();
 
@@ -310,8 +301,13 @@ function ArcField({
   }, []);
 
   const state = useRef({ cursor: 0, acc: 0 });
-  const cityVecs = useMemo(() => CITIES.map((c) => latLonToVec3(c.lat, c.lon)), []);
   const hubVec = useMemo(() => latLonToVec3(hub.lat, hub.lon), [hub]);
+  // Destination unit vectors plus the weight total the biased pick below needs.
+  const dest = useMemo(() => {
+    const vecs = ARC_DESTINATIONS.map((d) => latLonToVec3(d.lat, d.lon));
+    const total = ARC_DESTINATIONS.reduce((sum, d) => sum + d.w, 0);
+    return { vecs, total };
+  }, []);
 
   useFrame(({ clock }, rawDt) => {
     const dt = Math.min(rawDt, 0.5);
@@ -322,31 +318,22 @@ function ArcField({
     s.acc += dt * 9; // arcs per second
     let dirty = false;
 
-    const focus = latLonToVec3(bus.current.lat, bus.current.lon);
-    const pick = (pred: (i: number) => boolean) => {
-      for (let k = 0; k < 80; k++) {
-        const i = (Math.random() * CITIES.length) | 0;
-        if (pred(i) && Math.random() < CITIES[i].w / 10 + 0.12) return i;
-      }
-      return (Math.random() * CITIES.length) | 0;
-    };
-
     while (s.acc >= 1) {
       s.acc -= 1;
 
-      let a: THREE.Vector3;
-      if (Math.random() < hubRate) {
-        a = hubVec;
-      } else if (Math.random() < 0.82) {
-        a = cityVecs[pick((i) => angularDistance(focus, cityVecs[i]) < 1.05)];
-      } else {
-        a = cityVecs[pick(() => true)];
+      // Every ribbon is an export lane: it leaves the hub (Dhaka) and lands on
+      // one destination, weighted so the bigger markets draw more traffic.
+      const a = hubVec;
+      let left = Math.random() * dest.total;
+      let bi = dest.vecs.length - 1;
+      for (let i = 0; i < ARC_DESTINATIONS.length; i++) {
+        left -= ARC_DESTINATIONS[i].w;
+        if (left <= 0) {
+          bi = i;
+          break;
+        }
       }
-      const bi = pick((i) => {
-        const d = angularDistance(a, cityVecs[i]);
-        return d > 0.3 && d < 2.3;
-      });
-      const b = cityVecs[bi];
+      const b = dest.vecs[bi];
       const ang = angularDistance(a, b);
 
       const h = 0.1 + 0.6 * (ang / Math.PI);
@@ -392,15 +379,20 @@ function Orders({
     if (t < next.current) return;
     next.current = t + 4.2 + Math.random() * 2.2;
 
+    // Sourced from ARC_DESTINATIONS rather than the full CITIES list, so a pop-up
+    // always names a place that actually has an arc landing on it. The catch
+    // window is wider than the old 0.55 rad because the camera holds a fixed
+    // ~22N latitude: at the old radius the southern destinations (Sydney,
+    // Melbourne, Johannesburg) could never fall inside it and went unannounced.
     const focus = latLonToVec3(bus.current.lat, bus.current.lon);
     const camDir = camera.position.clone().normalize();
-    const candidates = CITIES.filter((c) => {
-      const v = latLonToVec3(c.lat, c.lon);
-      return angularDistance(focus, v) < 0.55 && v.dot(camDir) > 0.55;
+    const candidates = ARC_DESTINATIONS.filter((d) => {
+      const v = latLonToVec3(d.lat, d.lon);
+      return angularDistance(focus, v) < 1.15 && v.dot(camDir) > 0.55;
     });
     if (!candidates.length) return;
-    const c = candidates[(Math.random() * candidates.length) | 0];
-    onOrder({ id: ++id.current, city: c.name, lat: c.lat, lon: c.lon });
+    const d = candidates[(Math.random() * candidates.length) | 0];
+    onOrder({ id: ++id.current, region: d.region, city: d.city, lat: d.lat, lon: d.lon });
   });
 
   return null;

@@ -5,9 +5,9 @@
 /* ------------------------------------------------------------------ */
 
 export const csrHero = {
-  title: "Creating a Lasting \nPositive Impact on Society",
+  title: "Planting Positive Impact \nAcross Generations",
   subtitle:
-    "Beyond manufacturing, we are deeply committed to uplifting local communities, ensuring ethical practices, and fostering sustainable social growth.",
+    "ASG champions ethical manufacturing, global quality, and a healthy, balanced workplace.",
   image: "/images/sustainability/csr/impact-hero.webp",
   emblem: "/images/sustainability/csr/hero-emblem.png",
   alt: "Corporate Social Responsibility — Amanat Shah Group community initiatives",
@@ -17,9 +17,9 @@ export const csrHero = {
 export const csrCommunityImpact = {
   image: "/images/sustainability/csr/community-impact.webp",
   alt: "ASG community outreach and welfare programme",
-  title: "Uplifting Local Communities",
+  title: "Supporting Local Communities",
   description:
-    "We actively invest in community outreach programs, infrastructure support, and welfare initiatives to improve the quality of life around our operational areas.",
+    "Supporting education, welfare, and community initiatives that help create better opportunities and improve everyday lives.",
 };
 
 /* White band — photo left, heading + text right */
@@ -28,20 +28,20 @@ export const csrPeopleFirst = {
   alt: "Safe and inclusive workplace across ASG industrial units",
   title: "People-First Workplace Culture",
   description:
-    "Ensuring safe, fair, and inclusive environments across all our industrial units, prioritizing the health, safety, and rights of every worker.",
+    "Building safe industrial workplaces across all units. Supporting a healthy work-life environment with people-first care.",
 };
 
 /* Large rounded banner with bottom gradient and anchored caption */
 export const csrEducationBanner = {
   image: "/images/sustainability/csr/education-banner.webp",
   alt: "Empowering communities through education and skills training",
-  title: "Empowering Through Education",
+  title: "Transforming Through Education",
   description:
-    "Supporting educational programs and skills training to create better opportunities for the younger generation and future workforce.",
+    "Consistently running educational programs to develop innovative, skilled and young professionals, building a safer and stronger workforce for the future.",
 };
 
 /* Staggered three-pillar commitment row */
-export const csrPillarsHeading = "Impact & Community Initiatives";
+export const csrPillarsHeading = "Community At Its Core";
 
 export interface CsrPillar {
   title?: string;
@@ -54,26 +54,26 @@ export const csrPillars: CsrPillar[] = [
   {
     title: "Community First",
     description:
-      "Continuous engagement in local welfare and social betterment projects",
+      "Consistently serving local communities for societal development through various activities.",
   },
   {
-    title: "Sustainable Growth",
+    title: "Unstoppably Sustainable",
     description:
-      "Aligning our corporate goals with long-term societal well-being.",
+      "Aligning organizational growth with long-term development, helping artisans and entrepreneurs grow together.",
   },
   {
     value: "100%",
-    title: "Ethical standards",
+    title: "Ethical",
     description:
-      "Strict adherence to fair labor practices and worker safety regulations.",
+      "Entire operation from start to end ethically maintained by global labor practices at every step.",
   },
 ];
 
 /* Bottom call-to-action */
 export const csrCta = {
-  title: "Partner with Us",
-  highlight: "For A Better Tomorrow",
+  title: "Become A Partner Of",
+  highlight: "Better Tomorrow",
   description:
-    "Discover how our social initiatives are driving meaningful change across communities.",
+    "See our social initiatives and how they’re driving meaningful change across communities.",
   buttonText: "Download CSR Report",
 };
