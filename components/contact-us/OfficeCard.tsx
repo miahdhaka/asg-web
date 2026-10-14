@@ -43,7 +43,7 @@ export default function OfficeCard({ card }: { card: OfficeCardData }) {
         {/* Address */}
         <div className="flex items-center gap-[1rem]">
           <DetailChip icon={MapPinned} />
-          <p className="text-sm lg:text-[1.125rem] text-neutral-800">{card.address}</p>
+          <p className="text-sm lg:text-[1.125rem] text-neutral-800 whitespace-pre-line">{card.address}</p>
         </div>
 
         {/* Phone */}

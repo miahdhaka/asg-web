@@ -9,7 +9,7 @@ import type { CoreValueCard } from "@/components/concerns/common/ConcernCoreValu
 export const securitiesHero = {
   title: "Confidence in\nEvery Trade",
   subtitle: "Trusted brokerage, informed decisions, built around your investment goals.",
-  videoSrc: "/videos/concerns/asg update.webm",
+  videoSrc: "/videos/concerns/trust-hero.mp4",
   alt: "Hazrat Amanat Shah Securities Ltd. overview footage",
 };
 

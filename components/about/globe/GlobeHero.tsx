@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/set-state-in-effect -- one-time client capability checks + typing animation */
 "use client";
 
-import { Shirt } from "lucide-react";
+import { MapPin } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 
 import { HERO, TOUR, type CardIcon, type GlobeCard } from "./content";
 import { mulberry32 } from "./geo";
@@ -38,6 +38,17 @@ function Icon({ name }: { name: CardIcon }) {
       <svg {...common}>
         <circle cx="12" cy="12" r="9" />
         <path d="M14.8 9.2c-.5-.9-1.5-1.4-2.8-1.4-1.6 0-2.7.8-2.7 2 0 3 5.6 1.4 5.6 4.3 0 1.2-1.2 2.1-2.9 2.1-1.4 0-2.5-.6-3-1.6M12 6v1.8m0 8.6V18" />
+      </svg>
+    );
+  if (name === "partypopper")
+    return (
+      <svg {...common}>
+        {/* cone body pointing to the upper-right */}
+        <path d="M3 21l4-9 5 5-9 4z" />
+        {/* confetti streamers + dots bursting out of the opening */}
+        <path d="M13.5 4l2 1.5M18.5 3l.8 2.4M21 8.5l-2.6.6M16 9l1.2 2" />
+        <circle cx="12.5" cy="7.5" r="0.6" />
+        <circle cx="20" cy="13" r="0.6" />
       </svg>
     );
   return (
@@ -89,7 +100,7 @@ function Stars() {
 
 type Register = (id: string, a: Anchor | null) => void;
 
-function StatCard({ card, active, register }: { card: GlobeCard; active: boolean; register: Register }) {
+function StatCard({ card, active, interactive, hover, register, onSpin }: { card: GlobeCard; active: boolean; interactive: boolean; hover: React.MutableRefObject<boolean>; register: Register; onSpin: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = ref.current;
@@ -98,14 +109,44 @@ function StatCard({ card, active, register }: { card: GlobeCard; active: boolean
     return () => register(card.id, null);
   }, [card, register]);
 
+  // Only the designated card is interactive: it alone reacts to the pointer and
+  // shows the glossy hover border. The rest stay static.
+  const interactiveCard = interactive && active;
+
+  // Hover only lights up the border; the globe spins on click. The time lock
+  // ignores extra clicks fired while a 2.4s turn is still running.
+  const lastSpin = useRef(0);
+  const handleClick = () => {
+    if (!interactiveCard) return;
+    const now = performance.now();
+    if (now - lastSpin.current < 2600) return;
+    lastSpin.current = now;
+    onSpin();
+  };
+
+  // Hovering the interactive box drives the same `hover` flag the globe's own
+  // surface sets: it parks the auto-rotation and nudges the zoom in. Only this
+  // box does it — the other cards stay inert.
+  const handleEnter = () => {
+    if (interactiveCard) hover.current = true;
+  };
+  const handleLeave = () => {
+    if (interactiveCard) hover.current = false;
+  };
+
   return (
     <div ref={ref} className="gcard" data-active={active} data-facing="0">
       <div className="gcard-inner">
-        <div className="gcard-box">
+        <div
+          className={`gcard-box items-start text-left ${interactiveCard ? "gcard-hover gcard-live" : ""}`}
+          onPointerEnter={handleEnter}
+          onPointerLeave={handleLeave}
+          onClick={handleClick}
+        >
           <span className="mt-[1px] text-[#3ddc97]">
             <Icon name={card.icon} />
           </span>
-          <p>
+          <p className="text-left">
             <span className="block text-[#cfdad5]">{card.lead}</span>
             <span className="block text-[#3ddc97]">{card.text}</span>
           </p>
@@ -128,25 +169,89 @@ function Typed({ text }: { text: string }) {
 function OrderToast({ order, register }: { order: OrderEvent | null; register: Register }) {
   const ref = useRef<HTMLDivElement>(null);
   const [show, setShow] = useState(false);
+  const lastId = useRef<number | null>(null);
 
   useEffect(() => {
     const el = ref.current;
     if (!el || !order) return;
-    register("toast", { el, lat: order.lat, lon: order.lon, dx: 14, dy: -34 });
-    setShow(true);
-    const id = window.setTimeout(() => setShow(false), 3200);
-    return () => window.clearTimeout(id);
+
+    const place = () => {
+      // Re-anchor to the destination while the card is invisible, so moving from
+      // the previous point never teleports an opaque card across the globe.
+      register("toast", { el, lat: order.lat, lon: order.lon, dx: 14, dy: -60 });
+      setShow(true);
+    };
+
+    const FADE = 360; // matches the inline transitionDuration below
+    let swap = 0;
+    let hide = 0;
+    if (lastId.current !== null && lastId.current !== order.id) {
+      // A different card is on screen: dissolve it at the old point first, then
+      // fade the new one in beside its own point.
+      setShow(false);
+      swap = window.setTimeout(() => {
+        place();
+        hide = window.setTimeout(() => setShow(false), 3200);
+      }, FADE);
+    } else {
+      place();
+      hide = window.setTimeout(() => setShow(false), 3200);
+    }
+    lastId.current = order.id;
+
+    return () => {
+      window.clearTimeout(swap);
+      window.clearTimeout(hide);
+    };
   }, [order, register]);
 
   return (
-    <div ref={ref} className="gcard" data-active={show} data-facing="0">
+    <div ref={ref} className="gcard" style={{ transitionDuration: "360ms" }} data-active={show} data-facing="0">
       <div className="gcard-inner">
         <div className="gcard-box min-w-[170px] items-center">
           <span className="text-[#3ddc97]">
-            <Shirt />
+            <MapPin size={14} strokeWidth={2} />
           </span>
           <p className="text-[#3ddc97]">
             {order && <Typed key={order.id} text={`${order.region.toUpperCase()} · ${order.city.toUpperCase()}`} />}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ───────────────────── hub label: the Bangladesh origin pin ───────────────────── */
+
+function HubLabel({ hub, register }: { hub: { name: string; lat: number; lon: number }; register: Register }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    // Push the pill to the right and above the hub point so the origin (where
+    // the arc ribbons depart) stays visible to the left of the box.
+    register("hub", { el, lat: hub.lat, lon: hub.lon, dx: 40, dy: -54 });
+    return () => register("hub", null);
+  }, [hub, register]);
+
+  // Always active: the rig flips data-facing as Dhaka rotates in/out of view, so
+  // the badge fades in over the hub and hides on the far side — same as the cards.
+  return (
+    <div ref={ref} className="gcard" data-active="true" data-facing="0">
+      <div className="gcard-inner">
+        <div className="gcard-box items-start text-left">
+          <span className="mt-[1px] text-[#3ddc97]">
+            {/* Bangladesh flag drawn inline (green field + red disc offset to the
+                hoist). Flag emoji render as bare "BD" letters on Windows, so a real
+                shape is the reliable choice. */}
+            <svg width="15" height="10" viewBox="0 0 15 10" aria-hidden className="block overflow-hidden rounded-[1px]">
+              <rect width="15" height="10" fill="#006a4e" />
+              <circle cx="6" cy="5" r="3.6" fill="#f42a41" />
+            </svg>
+          </span>
+          <p className="text-left">
+            <span className="block text-[#cfdad5]">Bangladesh</span>
+            <span className="block text-[#3ddc97]">Where every order begins</span>
           </p>
         </div>
       </div>
@@ -161,6 +266,9 @@ export default function GlobeHero() {
   const anchors = useRef<Map<string, Anchor>>(new Map());
   // Set by the earth mesh's own raycast; read every frame by the camera rig.
   const hover = useRef(false);
+  // When a stat card is clicked we drop the target longitude here; the camera
+  // rig consumes it once, swinging the globe horizontally to that point.
+  const spinTo = useRef<number | null>(null);
 
   const [webgl, setWebgl] = useState<boolean | null>(null);
   const [ready, setReady] = useState(false);
@@ -213,6 +321,7 @@ export default function GlobeHero() {
             hub={HERO.hub}
             anchors={anchors}
             hover={hover}
+            spinTo={spinTo}
             running={inView && tabVisible}
             reducedMotion={reduced}
             onStop={setStop}
@@ -224,26 +333,49 @@ export default function GlobeHero() {
 
       <Stars />
 
-      {/* Bottom fade: drops the globe's lower limb into the scene so it dissolves
-          instead of ending on a hard circular edge. Sits above the canvas and the
-          stars (so arcs and city lights dim with the surface, which a shader-side
-          fade on the sphere alone could not do), but below the cards and copy so
-          the type stays crisp. Colour matches the backdrop shader's bottom stop. */}
+      {/* Bottom fade: buries the globe's lower limb in black and stops there.
+          Deliberately short and steep rather than tall and gentle — the upper
+          hemisphere and the terminator stay at full brightness, only the bottom
+          edge dissolves. The band tops out at the globe's vertical centre
+          (cy 0.5, diameter 0.68H → limb at 84%) so the upper half is never dimmed.
+          Sits above the canvas and the stars, below the cards, marquee and copy. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-[42%] bg-[linear-gradient(0deg,#030f0cf5_0%,#030f0c9e_28%,#030f0c2e_62%,#030f0c00_100%)]"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-[50%] bg-[linear-gradient(0deg,#030f0cff_0%,#030f0cfe_28%,#030f0cf2_46%,#030f0cb0_62%,#030f0c7a_76%,#030f0c2e_89%,#030f0c00_100%)]"
+      />
+
+      {/* Extra weight over the lower-right, where the globe's limb sits (framed at
+          cx 0.69, cy 0.5 → the 45° point of the lower-right edge lands near 80% /
+          78% of the section). The horizontal band above fades evenly across the
+          full width, so it cannot bias one side; this elliptical layer does. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[5] bg-[radial-gradient(48%_44%_at_80%_80%,#030f0ce6_0%,#030f0cab_48%,#030f0c52_75%,#030f0c00_100%)]"
       />
 
       {/* floating stat cards pinned to the globe */}
       <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
         {TOUR.map((s, i) =>
-          s.cards.map((c) => <StatCard key={c.id} card={c} active={stop === i} register={register} />),
+          s.cards.map((c) => (
+            <StatCard
+              key={c.id}
+              card={c}
+              active={stop === i}
+              interactive={c.id === "eu-1"}
+              hover={hover}
+              register={register}
+              onSpin={() => {
+                spinTo.current = HERO.hub.lon;
+              }}
+            />
+          )),
         )}
+        <HubLabel hub={HERO.hub} register={register} />
         <OrderToast order={order} register={register} />
       </div>
 
       {/* Copy sits on the left on desktop; the globe is framed to the right. */}
-      <div className="pointer-events-none absolute inset-x-6 bottom-[16%] z-10 text-center md:inset-x-auto md:bottom-auto md:left-[6%] md:top-1/2 md:w-[min(30rem,40vw)] md:-translate-y-1/2 md:text-left">
+      <div className="pointer-events-none absolute inset-x-6 bottom-[16%] z-10 text-center md:inset-x-auto md:bottom-auto md:left-[6%] md:top-1/2 md:w-[min(34rem,42vw)] md:-translate-y-1/2 md:text-left">
         <div className="mb-3 flex items-center justify-center gap-2 md:justify-start">
           <span className="inline-flex items-center gap-1.5 font-space-mono text-[11px] font-medium uppercase tracking-[0.18em] text-white md:text-xs">
             {HERO.eyebrow}
@@ -259,7 +391,7 @@ export default function GlobeHero() {
             </span>
           ))}
         </h1>
-        <p className="mx-auto max-w-[26rem] text-sm leading-[1.6] text-[#99B3AD] md:mx-0 md:text-base lg:text-[1.05rem]">
+        <p className="mx-auto max-w-[33rem] text-sm leading-[1.6] text-[#99B3AD] md:mx-0 md:text-base lg:text-[1.05rem]">
           {HERO.sub}
         </p>
       </div>
@@ -286,20 +418,23 @@ const brands: { src: string; width: number }[] = [
   { src: "/images/global-footprint/walmart.png", width: 956 },
 ];
 const LOGO_HEIGHT = 264;
+const AUTO_PX_PER_SEC = 30; // gentle drift; a full brand list scrolls past in ~a minute
 
 function BrandMarquee() {
-  /* `marquee-globe` glides the track from translateX(calc(-100% / 3)) to
-     translateX(0), one third of the track to the right, which lands on a frame
-     pixel-identical to the one it started from. Two conditions make that
-     seamless rather than an endless row that visibly restarts:
-       - `copies` is a multiple of 3, so the 1/3 shift is exactly a whole number
-         of brand lists;
-       - the track stays wide enough that both extremes still cover the screen,
-         so the left edge never slides past 0 and a copy is always waiting
-         off-screen to feed in as the strip moves right. */
+  /* Auto-scrolling logo strip that can also be dragged, matching the other
+     homepage carousels (GreenerFuture): a scrollLeft track nudged forward every
+     frame and wrapped by one full brand list, so the loop seam is invisible. A
+     pointer drag (mouse or touch) scrubs it 1:1. The drift parks the instant a
+     pointer hovers the strip and restarts the instant it leaves, so a slide
+     never keeps coasting on its own. `overflow-hidden` still scrolls via script,
+     so no scrollbar ever appears. */
   const [copies, setCopies] = useState(3);
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const metrics = useRef({ perCopy: 0 });
+  const drag = useRef({ down: false, startX: 0, startScroll: 0 });
+  // Pointer sitting on the strip parks the drift; leaving lets it start again.
+  const hover = useRef(false);
 
   useLayoutEffect(() => {
     const container = containerRef.current;
@@ -307,16 +442,20 @@ function BrandMarquee() {
     if (!container || !track) return;
 
     const apply = () => {
-      const tile = track.firstElementChild as HTMLElement | null;
       const viewport = container.clientWidth;
-      if (!tile || viewport === 0) return;
-      // One tile's stride (itself + its right margin) times the list length is
-      // the width of a single copy. Measuring a tile rather than the whole track
-      // keeps the value independent of `copies`, so the count settles in one
-      // pass instead of compounding off an already-multiplied track.
-      const stride = tile.offsetWidth + parseFloat(getComputedStyle(tile).marginRight || "0");
-      if (stride <= 0) return;
-      const perCopy = stride * brands.length;
+      // The logos are different widths, so a copy's real span is NOT one tile's
+      // stride × the list length (that mis-measure made the loop jump once per
+      // round). Measure it directly: the distance from the start of the first
+      // list to the start of the second is the exact wrap distance, so completing
+      // a round is seamless.
+      const first = track.children[0] as HTMLElement | undefined;
+      const next = track.children[brands.length] as HTMLElement | undefined;
+      if (!first || !next || viewport === 0) return;
+      const perCopy = next.offsetLeft - first.offsetLeft;
+      if (perCopy <= 0) return;
+      metrics.current.perCopy = perCopy;
+      // Enough copies that the visible window stays covered even right before the
+      // scroll wraps at the end of the first list.
       const needed = Math.max(3, Math.ceil(viewport / perCopy) * 3);
       setCopies((c) => (c === needed ? c : needed));
     };
@@ -330,12 +469,80 @@ function BrandMarquee() {
     return () => ro.disconnect();
   }, []);
 
+  // Gentle constant drift, wrapped into the first list so it runs forever.
+  useEffect(() => {
+    const track = containerRef.current;
+    if (!track) return;
+    let raf = 0;
+    let last = performance.now();
+    const tick = (now: number) => {
+      const dt = Math.min(now - last, 50);
+      last = now;
+      const { perCopy } = metrics.current;
+      if (perCopy > 0 && !drag.current.down && !hover.current) {
+        track.scrollLeft += (dt / 1000) * AUTO_PX_PER_SEC;
+        if (track.scrollLeft >= perCopy) track.scrollLeft -= perCopy;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    const track = containerRef.current;
+    if (!track || drag.current.down) return;
+    drag.current.down = true;
+    drag.current.startX = e.clientX;
+    drag.current.startScroll = track.scrollLeft;
+    track.setPointerCapture(e.pointerId);
+  };
+
+  const onPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
+    const track = containerRef.current;
+    if (!track || !drag.current.down) return;
+    const { perCopy } = metrics.current;
+    if (perCopy <= 0) return;
+    const dx = e.clientX - drag.current.startX;
+    const next = drag.current.startScroll - dx;
+    // Wrap into [0, perCopy); shift the drag base by the same amount so a scrub
+    // that crosses the seam keeps moving 1:1 with the pointer.
+    let wrapped = next;
+    while (wrapped < 0) wrapped += perCopy;
+    while (wrapped >= perCopy) wrapped -= perCopy;
+    track.scrollLeft = wrapped;
+    drag.current.startScroll += wrapped - next;
+  };
+
+  const endDrag = (e: ReactPointerEvent<HTMLDivElement>) => {
+    const track = containerRef.current;
+    if (!track || !drag.current.down) return;
+    drag.current.down = false;
+    try {
+      track.releasePointerCapture(e.pointerId);
+    } catch {}
+  };
+
   const loopedBrands = Array.from({ length: copies }, () => brands).flat();
 
   return (
     <div className="pointer-events-auto absolute inset-x-0 bottom-0 z-30 pb-6 lg:pb-10">
-      <div ref={containerRef} className="no-scrollbar overflow-hidden">
-        <div ref={trackRef} className="animate-marquee-globe flex w-max">
+      <div
+        ref={containerRef}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onPointerEnter={() => {
+          hover.current = true;
+        }}
+        onPointerLeave={() => {
+          hover.current = false;
+        }}
+        className="no-scrollbar cursor-grab overflow-hidden select-none active:cursor-grabbing"
+        style={{ touchAction: "pan-y" }}
+      >
+        <div ref={trackRef} className="flex w-max">
           {loopedBrands.map((brand, index) => (
             <div
               key={`globe-${brand.src}-${index}`}

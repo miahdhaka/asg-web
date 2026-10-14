@@ -27,6 +27,9 @@ export type GlobeSceneProps = {
   hub: { lat: number; lon: number };
   anchors: React.MutableRefObject<Map<string, Anchor>>;
   hover: React.MutableRefObject<boolean>;
+  /** Set to a target longitude to request a one-time horizontal swing; the rig
+      reads and clears it, reusing the same smooth approach as the entry swing. */
+  spinTo: React.MutableRefObject<number | null>;
   running: boolean;
   reducedMotion: boolean;
   onStop: (index: number) => void;
@@ -40,16 +43,16 @@ const LIGHT = new THREE.Vector3(-0.8, 0.42, 0.42).normalize();
 /* Turntable rate in degrees per second — the globe keeps revolving in one
    direction at this constant speed, and starts at full rate on the very first
    frame (the rig seeds `rate` with this value, so there is no spin-up ramp).
-   ~2 minutes per revolution: a clear, steady drift rather than a crawl. */
-const SPIN_DPS = 5.5;
+   ~1.9 minutes per revolution. */
+const SPIN_DPS = 3.2;
 
 /* Fixed viewing latitude. The camera deliberately never changes latitude on
    its own — chasing tour latitudes is what made the globe tip back and forth. */
 const BASE_LAT = 22;
 
 /* Hover pull-in as a camera-distance multiplier (< 1 = globe looks bigger).
-   4.5 % is enough to notice without the cards losing their anchor positions. */
-const HOVER_DIST = 0.955;
+   7 % is clearly visible without the cards losing their anchor positions. */
+const HOVER_DIST = 0.93;
 
 
 /* ───────────────────────────────── scene ───────────────────────────────── */
@@ -102,6 +105,9 @@ function World(props: GlobeSceneProps & { bus: React.MutableRefObject<Bus> }) {
   const { gl } = useThree();
   const [mask, setMask] = useState<LandMask | null>(null);
   const { onReady } = props;
+  // Wall-clock (elapsed) time until which the auto-tour stays quiet after a
+  // manual click, so the card the user chose isn't instantly replaced.
+  const autoHold = useRef(0);
 
   useEffect(() => {
     let alive = true;
@@ -124,7 +130,8 @@ function World(props: GlobeSceneProps & { bus: React.MutableRefObject<Bus> }) {
       <Earth mask={mask} hover={props.hover} />
       <CityDots mask={mask} />
       <ArcField hub={props.hub} />
-      <Orders bus={props.bus} onOrder={props.onOrder} />
+      <DestinationMarkers onOrder={props.onOrder} autoHold={autoHold} />
+      <Orders bus={props.bus} onOrder={props.onOrder} autoHold={autoHold} />
     </>
   );
 }
@@ -166,6 +173,12 @@ function Earth({ mask, hover }: { mask: LandMask; hover: React.MutableRefObject<
         }}
         onPointerOut={() => {
           hover.current = false;
+        }}
+        onClick={(e) => {
+          // Occlude the far-side destination markers: the globe's near surface is
+          // always hit before anything behind it, so stopping here means a click
+          // on the front can never reach a city on the back.
+          e.stopPropagation();
         }}
       >
         <sphereGeometry args={[1, 128, 96]} />
@@ -315,7 +328,10 @@ function ArcField({ hub }: { hub: { lat: number; lon: number } }) {
     material.uniforms.uTime.value = t;
 
     const s = state.current;
-    s.acc += dt * 9; // arcs per second
+    // Ribbons per second. At 9 the field read as a firework — new arcs kept
+    // appearing faster than the eye could follow one. With the longer durations
+    // below this still leaves roughly 20 arcs alive at any moment.
+    s.acc += dt * 3;
     let dirty = false;
 
     while (s.acc >= 1) {
@@ -341,7 +357,10 @@ function ArcField({ hub }: { hub: { lat: number; lon: number } }) {
       const p2 = a.clone().lerp(b, 0.75).normalize().multiplyScalar(1 + h);
       const p0 = a.clone().multiplyScalar(1.004);
       const p3 = b.clone().multiplyScalar(1.004);
-      const dur = 0.7 + ang * 0.55;
+      // Seconds for the head to sweep the curve (the shader runs vAge 0→1 over
+      // this, then 1→2 while the trail dissolves). Doubled from 0.7 + ang*0.55
+      // so a ribbon glides to its destination instead of snapping there.
+      const dur = 1.6 + ang * 1.1;
 
       const i = s.cursor++ % CAP;
       attrs.p0.setXYZ(i, p0.x, p0.y, p0.z);
@@ -366,18 +385,32 @@ function ArcField({ hub }: { hub: { lat: number; lon: number } }) {
 function Orders({
   bus,
   onOrder,
+  autoHold,
 }: {
   bus: React.MutableRefObject<Bus>;
   onOrder: (o: OrderEvent) => void;
+  autoHold: React.MutableRefObject<number>;
 }) {
   const next = useRef(2.5);
   const id = useRef(0);
+  // Round-robin pointer into ARC_DESTINATIONS so the card walks the list in
+  // order (Europe → America → Africa → Australia → Asia → repeat) instead of
+  // jumping to a random place each time.
+  const cursor = useRef(0);
   const camera = useThree((s) => s.camera);
 
   useFrame(({ clock }) => {
     const t = clock.elapsedTime;
+    // A manual click holds the tour back so the chosen card stays put.
+    if (t < autoHold.current) {
+      next.current = autoHold.current;
+      return;
+    }
     if (t < next.current) return;
-    next.current = t + 4.2 + Math.random() * 2.2;
+    // Fixed cadence, comfortably longer than the toast's 3.2s visible window +
+    // 0.7s fade, so each card fully dissolves before the next one appears —
+    // the swap never teleports mid-fade.
+    next.current = t + 4.5;
 
     // Sourced from ARC_DESTINATIONS rather than the full CITIES list, so a pop-up
     // always names a place that actually has an arc landing on it. The catch
@@ -386,25 +419,100 @@ function Orders({
     // Melbourne, Johannesburg) could never fall inside it and went unannounced.
     const focus = latLonToVec3(bus.current.lat, bus.current.lon);
     const camDir = camera.position.clone().normalize();
-    const candidates = ARC_DESTINATIONS.filter((d) => {
+    const isFacing = (d: { lat: number; lon: number }) => {
       const v = latLonToVec3(d.lat, d.lon);
       return angularDistance(focus, v) < 1.15 && v.dot(camDir) > 0.55;
-    });
-    if (!candidates.length) return;
-    const d = candidates[(Math.random() * candidates.length) | 0];
+    };
+
+    // Advance to the next destination that is currently on the visible side, so
+    // the tour still steps one-by-one even though far-side places can't be shown.
+    const n = ARC_DESTINATIONS.length;
+    let found = -1;
+    for (let k = 0; k < n; k++) {
+      const i = (cursor.current + k) % n;
+      if (isFacing(ARC_DESTINATIONS[i])) {
+        found = i;
+        break;
+      }
+    }
+    // Nothing on this lap is facing yet (whole list on the far side): retry
+    // promptly instead of idling for a full cadence.
+    if (found < 0) {
+      next.current = t + 0.8;
+      return;
+    }
+    cursor.current = (found + 1) % n;
+    const d = ARC_DESTINATIONS[found];
     onOrder({ id: ++id.current, region: d.region, city: d.city, lat: d.lat, lon: d.lon });
   });
 
   return null;
 }
 
+/* ───────────── clickable arc destination points ───────────── */
+
+function DestinationMarkers({
+  onOrder,
+  autoHold,
+}: {
+  onOrder: (o: OrderEvent) => void;
+  autoHold: React.MutableRefObject<number>;
+}) {
+  const id = useRef(0);
+  const clock = useThree((s) => s.clock);
+  // A transparent hit-sphere sits on every arc endpoint. It renders nothing but
+  // is still raycast (three.js culls by `visible`, not material opacity), so
+  // clicking where a ribbon lands fires that city's card. The Earth mesh stops
+  // click propagation, so far-side points can't be triggered through the globe.
+  const markers = useMemo(
+    () =>
+      ARC_DESTINATIONS.map((d) => ({
+        d,
+        pos: latLonToVec3(d.lat, d.lon, 1.012, new THREE.Vector3()),
+      })),
+    [],
+  );
+
+  return (
+    <group>
+      {markers.map(({ d, pos }, i) => (
+        <mesh
+          key={`${d.region}-${d.city}-${i}`}
+          position={pos}
+          onPointerOver={() => {
+            document.body.style.cursor = "pointer";
+          }}
+          onPointerOut={() => {
+            document.body.style.cursor = "";
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (e.delta > 6) return; // ignore the pointer-up that ends a drag-rotate
+            // Give the clicked card the screen: hold the auto-tour back so it
+            // can't overwrite this destination a moment later.
+            autoHold.current = clock.elapsedTime + 6;
+            id.current += 1;
+            onOrder({ id: id.current, region: d.region, city: d.city, lat: d.lat, lon: d.lon });
+          }}
+        >
+          <sphereGeometry args={[0.04, 12, 12]} />
+          <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 /* ───────────── camera: layout, drag-to-rotate, turntable spin, DOM anchors ───────────── */
 
 function CameraRig({
   tour,
+  hub,
   anchors,
   bus,
   hover,
+  spinTo,
+  running,
   reducedMotion,
   onStop,
 }: GlobeSceneProps & { bus: React.MutableRefObject<Bus> }) {
@@ -413,7 +521,7 @@ function CameraRig({
   const layout = useRef({ dist: 5, D: 700 });
   const rig = useRef({
     lat: BASE_LAT,
-    lon: tour[0].lon,
+    lon: hub.lon,
     vLat: 0,
     vLon: 0,
     dragging: false,
@@ -425,7 +533,23 @@ function CameraRig({
     stopT0: 0,
     rate: SPIN_DPS,
     zoom: 1,
+    /** longitude the entry swing is aiming at, or null when not swinging */
+    home: null as number | null,
+    /** one-time full-turn tween (a card click): spins exactly one revolution
+        in the natural direction, then settles centered on the target point */
+    turn: { active: false, t0: 0, dur: 2.4, fromLon: 0, toLon: 0, fromLat: 0, toLat: 0 },
+    /** grace frames: keeps zoom target while transitioning between globe/card */
+    hoverHold: 0,
   });
+
+  /* Re-arm the entry swing whenever the section comes back into view.
+     This has to be an effect, not a check inside useFrame: while the section is
+     off-screen the canvas runs with frameloop="never", so useFrame stops firing
+     entirely and never gets a frame in which to observe that `running` went
+     false → true. The last frame before pausing always leaves running=true. */
+  useEffect(() => {
+    if (running) rig.current.home = hub.lon;
+  }, [running, hub.lon]);
 
   // place the globe on the right (desktop) / top (mobile) and size it to the viewport
   useLayoutEffect(() => {
@@ -433,11 +557,12 @@ function CameraRig({
     const W = size.width;
     const H = size.height;
     const mobile = W < 820;
-    const cx = mobile ? 0.5 : 0.69;
+    const cx = mobile ? 0.5 : 0.7;
     const cy = mobile ? 0.33 : 0.5;
-    // Trimmed down from H*0.80 / W*0.50 so the globe clears both the restored
-    // brand marquee at the bottom and the heading column on the left.
-    const D = mobile ? Math.min(W * 0.82, H * 0.46) : Math.min(H * 0.68, W * 0.44);
+    // Globe size as a fraction of the viewport. Nudged up a touch for a bigger
+    // globe while still clearing the brand marquee at the bottom and the copy
+    // column on the left.
+    const D = mobile ? Math.min(W * 1.0, H * 0.55) : Math.min(H * 0.82, W * 0.53);
 
     cam.fov = 30;
     const k = (D / H) * Math.tan((cam.fov * DEG) / 2);
@@ -453,6 +578,8 @@ function CameraRig({
 
     const down = (e: PointerEvent) => {
       s.dragging = true;
+      s.home = null; // grabbing the globe cancels an in-flight entry swing
+      s.turn.active = false; // ...and an in-flight full-turn tween
       s.lastX = e.clientX;
       s.lastY = e.clientY;
       s.lastT = performance.now();
@@ -506,10 +633,27 @@ function CameraRig({
     const now = clock.elapsedTime;
     const s = rig.current;
 
+    // A card click armed a target longitude: spin exactly one full turn in the
+    // natural direction and settle centered on that point (Bangladesh).
+    if (spinTo.current !== null && !s.dragging) {
+      const target = spinTo.current;
+      spinTo.current = null;
+      s.home = null; // a manual turn overrides any pending entry swing
+      const delta = ((target - s.lon + 540) % 360) - 180; // shortest signed gap
+      s.turn.active = true;
+      s.turn.t0 = now;
+      s.turn.fromLon = s.lon;
+      s.turn.toLon = s.lon + delta + 360; // one extra revolution, always forward
+      s.turn.fromLat = s.lat;
+      s.turn.toLat = hub.lat;
+      s.stopT0 = now; // hold the card timetable through the turn
+    }
+
     // The tour now only drives which stat cards are active; the camera ignores
     // the stop coordinates entirely so it never reverses or rocks.
     if (s.resumeAt === Infinity) s.resumeAt = now + 5;
 
+    // `s.home` is armed from the effect above, never from in here.
     if (!s.dragging && now > s.resumeAt && now - s.stopT0 > tour[s.stop].hold) {
       s.stop = (s.stop + 1) % tour.length;
       s.stopT0 = now;
@@ -519,10 +663,38 @@ function CameraRig({
     // Hover parks the globe: the rate is eased, so it glides to a halt and
     // glides back up when the pointer leaves instead of snapping. The spin
     // itself is never gated by the tour timetable.
-    const rateTarget = hover.current || reducedMotion ? 0 : SPIN_DPS;
+    // Grace counter: keeps the zoom steady for ~4 frames (~70 ms) after hover
+    // drops to false, so the globe→card pointer handoff doesn't flicker.
+    if (hover.current) s.hoverHold = 4;
+    else if (s.hoverHold > 0) s.hoverHold--;
+
+    const rateTarget = s.hoverHold > 0 || reducedMotion ? 0 : SPIN_DPS;
     s.rate += (rateTarget - s.rate) * (1 - Math.exp(-dt * 2.2));
 
-    if (!s.dragging) {
+    if (s.turn.active && !s.dragging) {
+      // Eased single revolution to the target; the turntable is paused until it
+      // lands, then handed back to the continuous spin.
+      const p = Math.min(1, (now - s.turn.t0) / s.turn.dur);
+      const e = p < 0.5 ? 2 * p * p : 1 - ((-2 * p + 2) ** 2) / 2;
+      s.lon = s.turn.fromLon + (s.turn.toLon - s.turn.fromLon) * e;
+      s.lat = s.turn.fromLat + (s.turn.toLat - s.turn.fromLat) * e;
+      s.stopT0 = now;
+      if (p >= 1) s.turn.active = false;
+    } else if (s.home !== null && !s.dragging) {
+      // Shortest-path signed gap, wrapped into (-180, 180].
+      const gap = ((s.home - s.lon + 540) % 360) - 180;
+      if (reducedMotion || Math.abs(gap) < 0.25) {
+        s.lon = s.home;
+        s.home = null;
+      } else {
+        // Exponential approach: covers a large gap promptly, then decelerates
+        // into the target so the arrival reads as settling rather than stopping.
+        s.lon += gap * (1 - Math.exp(-dt * 1.8));
+        // Hold the card timetable until the swing is done, so a flip that was
+        // already due doesn't fire mid-move.
+        s.stopT0 = now;
+      }
+    } else if (!s.dragging) {
       if (Math.abs(s.vLon) + Math.abs(s.vLat) > 0.5) {
         // carry the flick from a drag, then hand back to the turntable
         s.lon += s.vLon * dt;
@@ -541,8 +713,9 @@ function CameraRig({
     bus.current.lat = s.lat;
     bus.current.lon = s.lon;
 
-    // Hover eases the camera in a touch; the lerp gives the smooth transition.
-    const zoomTarget = hover.current ? HOVER_DIST : 1;
+    // Hover eases the camera in a touch; the grace period prevents a flicker
+    // when the pointer transitions from the globe surface to the floating card.
+    const zoomTarget = s.hoverHold > 0 ? HOVER_DIST : 1;
     s.zoom += (zoomTarget - s.zoom) * (1 - Math.exp(-dt * 3.2));
 
     // camera sits on the focus direction; lat is clamped so "up" never flips
@@ -558,7 +731,9 @@ function CameraRig({
       camDir.copy(camera.position).normalize();
       anchors.current.forEach((a) => {
         latLonToVec3(a.lat, a.lon, 1.0, tmp);
-        const facing = tmp.dot(camDir) > 0.12;
+        // Mid-turn every box — the Bangladesh hub included — stays hidden;
+        // once the rotation settles they all fade back in by facing.
+        const facing = s.turn.active ? false : tmp.dot(camDir) > 0.12;
         tmp.project(camera);
         const cw = a.el.offsetWidth || 0;
         const x = THREE.MathUtils.clamp((tmp.x * 0.5 + 0.5) * w + a.dx, 8, Math.max(8, w - cw - 8));

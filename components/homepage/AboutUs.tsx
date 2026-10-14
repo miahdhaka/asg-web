@@ -50,7 +50,7 @@ export default function AboutUs() {
         {/* Top row: label + heading on left, description + CTA on right */}
         <div className="flex flex-col gap-6 sm:gap-10 lg:flex-row lg:items-end lg:justify-between lg:max-w-[90%]">
           {/* Left column */}
-          <div className="flex flex-col gap-7 lg:max-w-[55%]">
+          <div className="flex flex-col gap-5 sm:gap-7 lg:max-w-[55%]">
             <span className="inline-flex items-center gap-1.5 font-space-mono font-medium text-[var(--neutral-800)] uppercase">
               About Us <span className="text-2xl leading-none bg-gradient-to-b from-[#4a9e4a] to-[#2d6b2d] bg-clip-text text-transparent">•</span>
             </span>

@@ -9,18 +9,18 @@ void main(){
 export const bgFrag = /* glsl */ `
 varying vec2 vUv;
 void main(){
-  vec3 top = vec3(0.050, 0.225, 0.172);
-  vec3 mid = vec3(0.028, 0.125, 0.098);
-  vec3 bot = vec3(0.010, 0.052, 0.042);
+  vec3 top = vec3(0.036, 0.165, 0.128);
+  vec3 mid = vec3(0.020, 0.092, 0.072);
+  vec3 bot = vec3(0.007, 0.036, 0.029);
   float y = 1.0 - vUv.y;                       // 0 top → 1 bottom
   vec3 c = mix(top, mid, smoothstep(0.0, 0.55, y));
   c = mix(c, bot, smoothstep(0.45, 1.0, y));
   // soft lighter wash on the left (where the copy sits)
   float wash = exp(-pow(length((vUv - vec2(0.22, 0.62)) * vec2(1.0, 1.4)) * 2.2, 2.0));
-  c += vec3(0.010, 0.040, 0.030) * wash;
+  c += vec3(0.006, 0.024, 0.018) * wash;
   // vignette
   float v = smoothstep(1.25, 0.35, length(vUv - 0.5));
-  c *= mix(0.78, 1.0, v);
+  c *= mix(0.66, 0.94, v);
   gl_FragColor = vec4(c, 1.0);
 }`;
 
@@ -87,9 +87,10 @@ void main(){
 
   vec3 col = mix(ocean, ground, smoothstep(0.42, 0.58, land));
 
-  // thin bright limb on the lit side
+  // thin limb on the lit side — kept teal (not white) and dimmer so the left
+  // of the globe doesn't wash out
   float rim = pow(1.0 - clamp(N.z, 0.0, 1.0), 3.2);
-  col += vec3(0.35, 0.78, 0.95) * rim * smoothstep(-0.1, 0.55, ndl) * 0.75;
+  col += vec3(0.26, 0.72, 0.82) * rim * smoothstep(-0.1, 0.55, ndl) * 0.4;
 
   gl_FragColor = vec4(col, 1.0);
 }`;
@@ -120,18 +121,23 @@ varying float vI;
 void main(){
   vec3 n = normalize(normalMatrix * normalize(position));
   float lit = smoothstep(0.0, 0.85, dot(n, normalize(uLight)));
-  vI = mix(1.0, 0.55, lit) * (0.85 + 0.15 * sin(uTime * 1.6 + aPhase));
+  vI = mix(1.0, 0.45, lit) * (0.85 + 0.15 * sin(uTime * 1.6 + aPhase));
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-  gl_PointSize = aSize * uPx * (0.92 + 0.08 * sin(uTime * 2.3 + aPhase * 1.7));
+  gl_PointSize = aSize * uPx * 0.95 * (0.92 + 0.08 * sin(uTime * 2.3 + aPhase * 1.7));
 }`;
 
 export const dotsFrag = /* glsl */ `
 varying float vI;
 void main(){
   float d = length(gl_PointCoord - 0.5) * 2.0;
-  float a = pow(clamp(1.0 - d, 0.0, 1.0), 1.7);
-  vec3 c = vec3(1.0, 0.56, 0.20) * (0.95 + 1.0 * a);
-  gl_FragColor = vec4(c, a * vI);
+  if (d > 1.0) discard;
+  // deeper gold + a much weaker core so dense clusters (and the lit left side)
+  // stay warm gold instead of washing out to white
+  float disc = smoothstep(1.0, 0.45, d);        // defined round body
+  float hot  = smoothstep(0.6, 0.0, d);         // glowing centre
+  vec3 gold = vec3(1.0, 0.66, 0.18);
+  vec3 c = gold * disc + vec3(1.0, 0.72, 0.28) * hot * 0.3;
+  gl_FragColor = vec4(c, disc * vI);
 }`;
 
 /* ─────────────────────────────── arcs ─────────────────────────────── */

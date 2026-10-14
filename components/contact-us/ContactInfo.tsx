@@ -26,7 +26,7 @@ export default function ContactInfo() {
 
         <div className="text-sm lg:text-[1.1rem] text-neutral-700 flex flex-col gap-1.5 sm:gap-3 pl-1">
           {/* Address */}
-          <p className="leading-relaxed">
+          <p className="leading-relaxed whitespace-pre-line">
             {headquarters.location}
           </p>
 

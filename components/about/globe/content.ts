@@ -2,7 +2,7 @@
 // Copy and figures come from the existing ASG site content (see
 // components/about/AboutStats.tsx and the former globe section).
 
-export type CardIcon = "rocket" | "cash" | "flag";
+export type CardIcon = "rocket" | "cash" | "flag" | "partypopper";
 
 export type GlobeCard = {
   id: string;
@@ -100,76 +100,76 @@ export const TOUR: TourStop[] = [
     cards: [
       {
         id: "eu-1",
-        icon: "rocket",
-        lead: "130 YEARS",
-        text: "OF TEXTILE LEGACY AND TRUST",
+        icon: "partypopper",
+        lead: "50+ COUNTRIES",
+        text: "TRUSTED ACROSS GLOBAL MARKETS",
         anchor: { lat: 30, lon: -38 },
         offset: { x: -150, y: 60 },
       },
       {
         id: "eu-2",
         icon: "cash",
-        lead: "30+ BRANDS",
-        text: "SERVED ACROSS 4 REGIONS",
+        lead: "20+ BRANDS",
+        text: "SERVED ACROSS 5 REGIONS",
         anchor: { lat: 8, lon: 8 },
         offset: { x: 40, y: 20 },
       },
     ],
   },
-  {
-    name: "Asia",
-    lat: 26,
-    lon: 88,
-    hold: 12,
-    cards: [
-      {
-        id: "as-1",
-        icon: "flag",
-        lead: "DHAKA",
-        text: "WHERE EVERY ORDER BEGINS",
-        anchor: { lat: 24, lon: 90 },
-        offset: { x: -60, y: 40 },
-      },
-    ],
-  },
-  {
-    name: "North America",
-    lat: 36,
-    lon: -96,
-    hold: 14,
-    cards: [
-      {
-        id: "na-1",
-        icon: "flag",
-        lead: "17 COUNTRIES",
-        text: "WITH ASG CLIENTS & PARTNERS",
-        anchor: { lat: 12, lon: -88 },
-        offset: { x: -40, y: 40 },
-      },
-    ],
-  },
-  {
-    name: "Atlantic",
-    lat: 28,
-    lon: -22,
-    hold: 12,
-    cards: [
-      {
-        id: "at-1",
-        icon: "rocket",
-        lead: "15,000+",
-        text: "PEOPLE ACROSS OUR CONCERNS",
-        anchor: { lat: -8, lon: -62 },
-        offset: { x: -150, y: 10 },
-      },
-      {
-        id: "at-2",
-        icon: "cash",
-        lead: "15 AWARDS",
-        text: "FOR EXCELLENCE IN EXPORTS",
-        anchor: { lat: -14, lon: -4 },
-        offset: { x: 10, y: 10 },
-      },
-    ],
-  },
+  // {
+  //   name: "Asia",
+  //   lat: 26,
+  //   lon: 88,
+  //   hold: 12,
+  //   cards: [
+  //     {
+  //       id: "as-1",
+  //       icon: "flag",
+  //       lead: "DHAKA",
+  //       text: "WHERE EVERY ORDER BEGINS",
+  //       anchor: { lat: 24, lon: 90 },
+  //       offset: { x: -60, y: 40 },
+  //     },
+  //   ],
+  // },
+  // {
+  //   name: "North America",
+  //   lat: 36,
+  //   lon: -96,
+  //   hold: 14,
+  //   cards: [
+  //     {
+  //       id: "na-1",
+  //       icon: "flag",
+  //       lead: "17 COUNTRIES",
+  //       text: "WITH ASG CLIENTS & PARTNERS",
+  //       anchor: { lat: 12, lon: -88 },
+  //       offset: { x: -40, y: 40 },
+  //     },
+  //   ],
+  // },
+  // {
+  //   name: "Atlantic",
+  //   lat: 28,
+  //   lon: -22,
+  //   hold: 12,
+  //   cards: [
+  //     {
+  //       id: "at-1",
+  //       icon: "rocket",
+  //       lead: "15,000+",
+  //       text: "PEOPLE ACROSS OUR CONCERNS",
+  //       anchor: { lat: -8, lon: -62 },
+  //       offset: { x: -150, y: 10 },
+  //     },
+  //     {
+  //       id: "at-2",
+  //       icon: "cash",
+  //       lead: "15 AWARDS",
+  //       text: "FOR EXCELLENCE IN EXPORTS",
+  //       anchor: { lat: -14, lon: -4 },
+  //       offset: { x: 10, y: 10 },
+  //     },
+  //   ],
+  // },
 ];

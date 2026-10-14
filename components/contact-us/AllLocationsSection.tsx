@@ -92,7 +92,7 @@ export default function AllLocationsSection() {
                 <h3 className="text-[1.15rem] sm:text-[1.4rem] font-bold text-neutral-900">
                   {card.title}
                 </h3>
-                <p className="mt-1.5 text-[1.05rem] sm:text-[1.25rem] text-neutral-600 leading-relaxed">
+                <p className="mt-1.5 text-[1.05rem] sm:text-[1.25rem] text-neutral-600 leading-relaxed whitespace-pre-line">
                   {card.address}
                 </p>
                 {card.phones.length > 0 && (

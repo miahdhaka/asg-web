@@ -146,7 +146,7 @@ export default function Newsroom() {
     >
       {/* Header — eyebrow + title left, button right */}
       <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between px-4 lg:px-20 mb-8 sm:mb-12 gap-10 sm:gap-4">
-        <div className="mt-2 flex flex-col gap-7 lg:max-w-[55%]">
+        <div className="mt-2 flex flex-col gap-5 sm:gap-7 lg:max-w-[55%]">
           {/* Eyebrow — drops in together with the title below */}
           <div id="newsroom-eyebrow" className="inline-flex items-center gap-1.5 font-space-mono font-medium text-[var(--neutral-800)] uppercase">
             Newsroom

@@ -57,7 +57,7 @@ export default function LegacyOfLeadership() {
     <section
       ref={sectionRef}
       id="legacy-of-leadership"
-      className="relative flex w-full flex-col overflow-hidden bg-[#F3F3F1] py-16 sm:py-20 lg:min-h-screen"
+      className="relative flex w-full flex-col overflow-hidden bg-[#F3F3F1] py-16 sm:py-20 lg:min-h-[120vh]"
     >
       <div className="flex flex-1 flex-col px-4 pb-0 sm:pb-4 md:px-12 lg:px-20">
         <div className="flex flex-col gap-7">
@@ -77,7 +77,7 @@ export default function LegacyOfLeadership() {
 
         <div
           ref={panelRef}
-          className="relative mt-20 pt-[20.5rem] md:mt-28 md:block md:min-h-[51rem] md:pt-0 lg:mt-[7.125rem] lg:min-h-0 lg:flex-1"
+          className="relative mt-20 pt-[24rem] md:mt-28 md:block md:min-h-[58rem] md:pt-0 lg:mt-[7.125rem] lg:min-h-0 lg:flex-1"
         >
           <div className="absolute inset-y-0 -left-6 -right-6 overflow-hidden rounded-t-[3rem] sm:rounded-t-[2rem] md:inset-0 md:rounded-t-[1.5rem]">
             <div aria-hidden className="absolute inset-0">

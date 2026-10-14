@@ -30,7 +30,7 @@ export default function VisionMission() {
           {/* Image */}
           <div className="relative w-full lg:flex-1 lg:ml-auto lg:max-w-[920px] aspect-[697/465] rounded-2xl overflow-hidden">
             <Image
-              src="/images/about-us/vision.png"
+              src="/images/about-us/vision.webp"
               alt="ASG vision"
               fill
               quality={90}
@@ -75,7 +75,7 @@ export default function VisionMission() {
           {/* Image */}
           <div className="relative w-full lg:flex-1 lg:ml-auto lg:max-w-[920px] aspect-[697/465] rounded-2xl overflow-hidden">
             <Image
-              src="/images/about-us/mission.png"
+              src="/images/about-us/mission.webp"
               alt="ASG mission"
               fill
               quality={90}

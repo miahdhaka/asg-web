@@ -24,7 +24,7 @@ export const csrCommunityImpact = {
 
 /* White band — photo left, heading + text right */
 export const csrPeopleFirst = {
-  image: "/images/sustainability/csr/people-first.webp",
+  image: "/images/sustainability/csr/people-first-img.webp",
   alt: "Safe and inclusive workplace across ASG industrial units",
   title: "People-First Workplace Culture",
   description:

@@ -46,22 +46,22 @@ export const trustCoreValues = {
     {
       title: "Advanced Production Systems",
       body: "We use Trützschler and Rieter systems for spinning, along with Unitex machinery for knitting, supporting efficient production and consistent quality.",
-      icon: "/icons/concern/miah-core_value-4.png",
+      icon: "/icons/concern/trust-core_value-1.svg",
     },
     {
       title: "Expert Sewing Operations",
       body: "We use reliable JUKI, Pegasus and Brother sewing machines from Japan to maintain consistent quality and precise finishing across our garments.",
-      icon: "/icons/concern/miah-core_value-4.png",
+      icon: "/icons/concern/trust-core_value-2.svg",
     },
     {
       title: "Precision Finishing",
       body: "Our dyeing and finishing lines use Sclavos and Brückner technology, supported by MHM printing systems, to deliver consistent colour, quality and finishing.",
-      icon: "/icons/concern/miah-core_value-4.png",
+      icon: "/icons/concern/trust-core_value-3.svg",
     },
     {
       title: "Global Grade Quality Control",
       body: "We maintain strict quality checks from fiber to finished garment, following international standards to ensure consistent quality and reliable production.",
-      icon: "/icons/concern/miah-core_value-4.png",
+      icon: "/icons/concern/trust-core_value-4.svg",
     },
   ] as CoreValueCard[],
 };
