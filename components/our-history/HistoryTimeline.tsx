@@ -47,7 +47,7 @@ export const milestones: Milestone[] = [
     title: "Beginning of Hazrat Amanat Shah Spinning Mills Ltd.",
     description:
       "Established as a backward linkage of ASG to strengthen integrated production for both domestic and export markets.",
-    image: "/images/our-history/Hazrat Amanat Shah Spinning Mills Ltd.png",
+    image: "/images/our-history/2004-history.webp",
     imageAlt: "Hazrat Amanat Shah Spinning Mills Ltd. commissioning, 2004",
   },
   {
@@ -71,7 +71,7 @@ export const milestones: Milestone[] = [
     title: "The Rise of Hazrat Amanat Shah Securities LTD.",
     description:
       "To ensure secure financial operations, expand the capital market, and guide investors toward safer investment opportunities.",
-    image: "/images/our-history/Hazrat Amanat Shah Securities Ltd.png",
+    image: "/images/our-history/2009_1-history.webp",
     imageAlt: "Hazrat Amanat Shah Securities Ltd. launch, 2009",
   },
   {
@@ -87,7 +87,7 @@ export const milestones: Milestone[] = [
     title: "The Arrival of Amanaot Shah Weaving Processing Ltd.",
     description:
       "Emerged as a strategic extension of ASG, strengthening integration, quality control, and sustainable value creation through high-end textile finishing",
-    image: "/images/our-history/Amanat Shah Weaving Processing Ltd.png",
+    image: "/images/our-history/2014-history.webp",
     imageAlt: "Amanat Shah Weaving Processing Ltd. inauguration, 2014",
   },
   {
@@ -103,7 +103,7 @@ export const milestones: Milestone[] = [
     title: "Arrival of Amanat Shah Fabrics",
     description:
       "Created to expand production capacity, delivering premium-quality fabrics with technical precision to help clients create greater value at every stage of their brand journey.",
-    image: "/images/our-history/history-milestone-1.png",
+    image: "/images/our-history/2017-fabrics.webp",
     imageAlt: "Amanat Shah Fabrics Ltd. inauguration, 2017",
   },
   {

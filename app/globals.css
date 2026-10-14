@@ -614,6 +614,13 @@ html.asg-touch-lock * {
 .gcard[data-active="true"][data-facing="1"] {
   opacity: 1;
 }
+/* The interactive card is clickable only while it is actually on screen: the
+   parent .gcard parks pointer-events, so this child re-enables them solely in
+   the visible (active + facing) state — never while faded out or mid-turn. */
+.gcard[data-active="true"][data-facing="1"] .gcard-live {
+  pointer-events: auto;
+  cursor: pointer;
+}
 .gcard-inner {
   transform: translateY(10px);
   transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -636,6 +643,17 @@ html.asg-touch-lock * {
   line-height: 1.5;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Glossy hover on the interactive stat cards: a bright teal border with an
+   outer halo and a faint inner glow, matching the reference treatment. */
+.gcard-hover:hover {
+  border-color: rgb(61 220 151 / 0.95);
+  box-shadow:
+    0 0 0 1px rgb(61 220 151 / 0.55),
+    0 0 16px 3px rgb(45 220 151 / 0.5),
+    inset 0 0 12px rgb(45 220 151 / 0.22);
 }
 
 /* ───────── globe hero: twinkling stars ───────── */

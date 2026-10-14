@@ -44,22 +44,22 @@ export const dynamicCoreValues = {
     {
       title: "Digital Transformation",
       body: "End-to-end modernization of legacy systems into scalable digital platforms",
-      icon: "/icons/concern/miah-core_value-1.png",
+      icon: "/icons/concern/dynamic-core_value-1.svg",
     },
     {
       title: "Custom Software Development",
       body: "Tailored applications built around your specific business workflows",
-      icon: "/icons/concern/miah-core_value-2.png",
+      icon: "/icons/concern/dynamic-core_value-2.svg",
     },
     {
       title: "ERP Solutions",
       body: "Integrated enterprise systems that unify operations, finance and reporting",
-      icon: "/icons/concern/miah-core_value-3.png",
+      icon: "/icons/concern/dynamic-core_value-4.svg",
     },
     {
       title: "Business Analytics",
       body: "Data-driven insights that turn raw information into strategic decisions",
-      icon: "/icons/concern/miah-core_value-4.png",
+      icon: "/icons/concern/dynamic-core_value-3.svg",
     },
   ] as CoreValueCard[],
 };

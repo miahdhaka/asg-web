@@ -100,6 +100,7 @@ export default function OfficeMapInner({
       zoom={active ? INITIAL_ZOOM : DEFAULT_ZOOM}
       scrollZoom={false}
       maxZoom={19}
+      attributionControl={false}
       className="h-full w-full"
     >
       <Recenter locations={locations} activeIndex={activeIndex} />
@@ -145,7 +146,7 @@ export default function OfficeMapInner({
                   {loc.title}
                 </p>
                 {loc.address && (
-                  <p className="text-muted-foreground text-xs leading-relaxed">
+                  <p className="text-muted-foreground text-xs leading-relaxed whitespace-pre-line">
                     {loc.address}
                   </p>
                 )}

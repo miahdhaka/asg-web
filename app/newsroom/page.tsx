@@ -13,8 +13,8 @@ export default function NewsroomPage() {
       <PageHero
         title="News Releases"
         subtitle="Stay in the know with the latest news from ASG Group."
-        mobileSrc="/images/newsroom/news-hero.png"
-        desktopSrc="/images/newsroom/news-hero.png"
+        mobileSrc="/images/newsroom/newsroom-mobile-banner.webp"
+        desktopSrc="/images/newsroom/newsroom-desktop-banner.webp"
         alt="ASG Group news releases"
         objectPosition="top"
       />

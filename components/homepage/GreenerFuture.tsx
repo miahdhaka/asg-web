@@ -232,11 +232,9 @@ export default function GreenerFuture() {
       {/* Header row — heavy uppercase title left, supporting copy right */}
       <div className="flex flex-col gap-6 sm:gap-10 px-4 md:px-12 lg:flex-row lg:items-end lg:justify-between lg:max-w-[90%] lg:px-20">
         <h2 className="font-archivo-black uppercase text-[1.75rem] sm:text-4xl lg:text-[3rem] leading-[1.2] text-[var(--neutral-800)] word-space-4">
-          Shaping a
+          Shaping a Greener
           <br />
-          Greener Future
-          <br />
-          in Textiles
+           Future in Textiles
         </h2>
 
         <p className="text-base text-[#555] md:text-[1.25rem] lg:max-w-[40%] lg:pt-2">

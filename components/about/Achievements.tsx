@@ -115,7 +115,7 @@ export default function Achievements() {
               <span className="relative font-archivo-black text-4xl sm:text-6xl lg:text-[4rem] leading-[1.1] text-[#262626]">
                 {item.value}
               </span>
-              <span className="relative font-neue-montreal text-sm sm:text-base leading-5 sm:leading-6 text-center text-[#262626] sm:text-[1.375rem] sm:leading-8 sm:max-w-[220px]">
+              <span className="relative font-neue-montreal text-sm sm:text-base leading-5 sm:leading-6 text-center text-[#262626] sm:text-[1.375rem] sm:leading-8 sm:max-w-[220px] capitalize">
                 {item.label}
               </span>
             </div>

@@ -814,14 +814,14 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         <div className="flex flex-col items-center justify-center h-full text-center text-white px-4 pb-14 sm:pb-0">
           <div ref={textRef} className="mt-28 pointer-events-auto select-text">
           {/* Subtitle — Space Mono */}
-          <div className="font-space-mono font-medium uppercase tracking-wider text-xs sm:text-sm lg:text-base text-white flex items-center justify-center gap-2 mb-4">
-            <span className="w-4 h-[1.5px] bg-white shrink-0" />
-            <span>AMANAT SHAH GROUP</span>
-            <span
-              className="w-2 h-2 rounded-full shrink-0"
+          <div className="font-space-mono font-medium tracking-wider text-xs sm:text-sm lg:text-base text-white flex items-center justify-center gap-2 mb-4">
+            <span className="w-4 h-[1.5px] bg-white shrink-0 uppercase" />
+            <span className="uppercase">Journey of ASG From Late <span className="lowercase"> 70's</span></span>
+            {/* <span
+              className="w-2 h-2 rounded-full shrink-0 uppercase"
               style={{ background: "var(--primary-gradient)" }}
-            />
-            <span>EST. 1890s</span>
+            /> */}
+            {/* <span>EST. 1890s</span> */}
             <span className="w-4 h-[1.5px] bg-white shrink-0" />
           </div>
 
