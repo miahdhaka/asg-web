@@ -224,8 +224,11 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
       const sideStart = PER_SCROLL * 2; // side content starts at exact 2nd scroll
       const sideEnd = 0.55; // side content fully risen (wide = slow)
 
-      // on each wheel/trackpad tick while remaining tied to scroll position.
-      const SMOOTH = 0.12;
+      // Follow strength per 60fps frame. The lerp below is made frame-rate
+      // independent (see tick) so a 120/144Hz display settles at the same speed
+      // as 60Hz instead of double-firing — that uneven settle was the flutter.
+      // Lower = silkier/slower follow, higher = snappier.
+      const SMOOTH = 0.1;
       // clearly visible from the 4th scroll) then decelerates smoothly to rest.
       const sideEase = gsap.parseEase("power2.out");
       let targetProgress = 0;
@@ -476,6 +479,7 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         "animate__fadeInUp",
         "animate__fadeOutDown",
         "animate__fadeOutUp",
+        "animate__fadeOut",
       ];
       const runMobileAnim = (
         el: HTMLElement | null,
@@ -497,8 +501,93 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         el.classList.add("animate__animated", cls);
       };
 
-      const tick = () => {
-        scrollProgress += (targetProgress - scrollProgress) * SMOOTH;
+      // Mobile collapse/expand are driven from the REAL ScrollTrigger progress in
+      // onUpdate (not the smoothed `scrollProgress` in tick). On a fast touch
+      // scroll the smoothed value lags behind, so a scroll triggered from it could
+      // never cross `textEnd` before the pin released — the video then scrolled
+      // away un-shrunk and visibly cut. Firing here sets `collapseRunning` in the
+      // same frame the real scroll reaches the point, so the hold catches it before
+      // the section can leave. Desktop never calls either function.
+      const triggerMobileCollapse = () => {
+        if (isDesktop || mobileCollapsed) return;
+        mobileCollapsed = true;
+        // Snap the smoothed value up so the centre text reads fully gone as the
+        // video starts shrinking, instead of still mid-rise on a fast scroll.
+        if (scrollProgress < textEnd) scrollProgress = textEnd;
+        const g = mobileCardGeom();
+        collapseRunning = true;
+        // Freeze the sheet's resting offset ONCE here, before it fades in. It is
+        // never recomputed while scrolling, so the concern block just sits under
+        // the card instead of drifting up/down with the scroll.
+        syncSheet();
+        // Ride ABOVE the fixed header bar (z-50) for the whole animation so its
+        // text never bleeds over the shrinking video. Restored below on complete —
+        // the settled card sits under the bar, so no overlap once it stops.
+        gsap.set(videoWrapRef.current, { zIndex: 60 });
+        gsap.to(videoWrapRef.current, {
+          width: `${g.wPct}%`,
+          height: `${g.hPct}%`,
+          top: `${g.topPct}%`,
+          borderRadius: 24,
+          duration: 1.1,
+          ease: "power2.inOut",
+          overwrite: "auto",
+          onComplete: () => {
+            collapseRunning = false;
+            gsap.set(videoWrapRef.current, { zIndex: "" });
+          },
+        });
+        // Header + sheet glide up from just below the card into place
+        // (animate.css fadeInUp). Slower + delayed so it reads as content emerging
+        // from behind the still-shrinking video, not a snap.
+        runMobileAnim(mobileHeaderRef.current, "animate__fadeInUp", 0.35, "1.1s");
+        runMobileAnim(mobileSheetRef.current, "animate__fadeInUp", 0.35, "1.1s");
+      };
+
+      // Reverse: the user scrolled back up past `textEnd`, so grow the video again
+      // and glide the header/sheet away behind it.
+      const triggerMobileExpand = () => {
+        if (isDesktop || !mobileCollapsed) return;
+        mobileCollapsed = false;
+        collapseRunning = false;
+        gsap.set(mobileSheetRef.current, { marginTop: 0 });
+        // Same as collapse: stay above the fixed header bar while the video grows
+        // back to fullscreen, then drop below it so the bar sits over the hero again.
+        gsap.set(videoWrapRef.current, { zIndex: 60 });
+        gsap.to(videoWrapRef.current, {
+          width: "100%",
+          height: "100%",
+          top: "50%",
+          borderRadius: 0,
+          duration: 0.6,
+          ease: "power3.inOut",
+          onComplete: () => {
+            gsap.set(videoWrapRef.current, { zIndex: "" });
+          },
+        });
+        // Header + sheet vanish INSTANTLY, before the video starts growing. The
+        // video's top edge sweeps up THROUGH the header (the card sits only ~16px
+        // under it), so any header still mid-fade gets wiped bottom-to-top and
+        // reads as "sinking into the video". Forcing inline autoAlpha:0 removes it
+        // at t=0 so the video grows over empty space — and unlike a CSS fade this
+        // is a hard guarantee (no reliance on animate.css fill-mode holding). The
+        // next collapse re-shows them: runMobileAnim clears these props first.
+        MOBILE_ANIM_CLASSES.forEach((c) => {
+          mobileHeaderRef.current?.classList.remove(c);
+          mobileSheetRef.current?.classList.remove(c);
+        });
+        gsap.set(mobileHeaderRef.current, { autoAlpha: 0 });
+        gsap.set(mobileSheetRef.current, { autoAlpha: 0 });
+      };
+
+      const tick = (_time?: number, delta?: number) => {
+        // Frame-rate independent smoothing: scale the follow by how long this
+        // frame actually took vs a 60fps baseline. A fixed per-frame factor makes
+        // high-refresh displays lerp in uneven micro-steps (the flutter); this
+        // exponent keeps the settle identical whether the tab runs at 60 or 144Hz.
+        const dt = Math.min((delta ?? 16.667) / 16.667, 4);
+        const k = 1 - Math.pow(1 - SMOOTH, dt);
+        scrollProgress += (targetProgress - scrollProgress) * k;
         // Snap when effectively settled to avoid endless sub-pixel drift
         if (Math.abs(targetProgress - scrollProgress) < 0.0005) {
           scrollProgress = targetProgress;
@@ -521,9 +610,11 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
 
         // ── Video + side panels ───────────────────────────────────────────────
         // Desktop: video shrinks and side panels rise purely scroll-driven
-        // (unchanged). Mobile: the video stays full-screen while the centre text
-        // rises, then collapses ONCE into a centered rounded card as a smooth
-        // time-based animation, with the heading + sheet fading in under it.
+        // (unchanged). Mobile: the video collapse/expand is driven from the REAL
+        // scroll progress in ScrollTrigger.onUpdate (triggerMobileCollapse /
+        // triggerMobileExpand), NOT from this smoothed value — so a fast scroll
+        // can't release the pin before the shrink plays. On mobile `tick` only
+        // fades the centre text (above); there is nothing else to do here.
         if (isDesktop) {
           const vw = p <= videoEnd
             ? 100 - (100 - 23) * (p / videoEnd)
@@ -557,58 +648,6 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
               y: `${100 * (1 - t)}vh`,
               opacity: t,
             });
-          }
-        } else {
-          // Mobile: the centre text rises with the scroll (above); the moment it
-          // is gone the video collapses ONCE as a smooth time-based animation —
-          // the same transition feel as before, not tied 1:1 to scroll amount.
-          // The hold at the pin's end keeps the page from leaving until the
-          // shrink finishes; then native scroll takes over. The sheet below
-          // changes ONLY via the arrow buttons — never by scrolling.
-          const wantCollapsed = p >= textEnd;
-          if (wantCollapsed !== mobileCollapsed) {
-            mobileCollapsed = wantCollapsed;
-            if (wantCollapsed) {
-              const g = mobileCardGeom();
-              collapseRunning = true;
-              // Freeze the sheet's resting offset ONCE here, before it fades in.
-              // It is never recomputed while scrolling, so the concern block just
-              // sits under the card instead of drifting up/down with the scroll.
-              syncSheet();
-              gsap.to(videoWrapRef.current, {
-                width: `${g.wPct}%`,
-                height: `${g.hPct}%`,
-                top: `${g.topPct}%`,
-                borderRadius: 24,
-                duration: 1.1,
-                ease: "power2.inOut",
-                overwrite: "auto",
-                onComplete: () => {
-                  collapseRunning = false;
-                },
-              });
-              // Header + sheet glide up from just below the card into place
-              // (animate.css fadeInUp). Slower + delayed so it reads as content
-              // emerging from behind the still-shrinking video, not a snap.
-              runMobileAnim(mobileHeaderRef.current, "animate__fadeInUp", 0.35, "1.1s");
-              runMobileAnim(mobileSheetRef.current, "animate__fadeInUp", 0.35, "1.1s");
-            } else {
-              collapseRunning = false;
-              gsap.set(mobileSheetRef.current, { marginTop: 0 });
-              gsap.to(videoWrapRef.current, {
-                width: "100%",
-                height: "100%",
-                top: "50%",
-                borderRadius: 0,
-                duration: 0.6,
-                ease: "power3.inOut",
-              });
-              // Reverse: header glides back down behind the growing video
-              // (fadeOutDown), the sheet up behind it (fadeOutUp) — slow enough to
-              // perceive the content sliding away (fill-mode keeps them hidden).
-              runMobileAnim(mobileHeaderRef.current, "animate__fadeOutDown", 0, "0.9s");
-              runMobileAnim(mobileSheetRef.current, "animate__fadeOutUp", 0, "0.9s");
-            }
           }
         }
       };
@@ -668,13 +707,27 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         pinSpacing: true,
         onUpdate: (self) => {
           targetProgress = self.progress;
-          // Desktop without a wheel (rare) keeps the concern on the scroll phase.
-          // Mobile never steps by scroll — its sheet is arrow-driven only.
-          if (!wheelSeen && isDesktop) moveConcernTo(idxFromProgress(self.progress));
+          if (isDesktop) {
+            // Desktop without a wheel (rare) keeps the concern on the scroll phase.
+            if (!wheelSeen) moveConcernTo(idxFromProgress(self.progress));
+          } else {
+            // Mobile: drive the collapse/expand from the REAL progress so a fast
+            // swipe can't blow past the pin before the smoothed tick catches up.
+            if (self.progress >= textEnd) triggerMobileCollapse();
+            else triggerMobileExpand();
+          }
         },
         // Block side-content changes while the Hero is off-screen below.
-        onLeave: () => {
+        onLeave: (self) => {
           pinLeft = true;
+          // Fast-swipe safety: if the collapse is still playing (or somehow never
+          // fired), hold the scroll just inside the pin so the section can't
+          // scroll away with a half-shrunk / un-shrunk video. Once the shrink has
+          // finished this no longer pulls back, so leaving is instant.
+          if (!isDesktop && (collapseRunning || !mobileCollapsed)) {
+            if (!mobileCollapsed) triggerMobileCollapse();
+            window.scrollTo(0, self.end - 2);
+          }
         },
         // Unmute on re-entry — the concern never changed so it's still the last one.
         onEnterBack: () => {
@@ -811,10 +864,12 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
 
       {/* Centered content — overflow-hidden clips text during rise/fall */}
       <div className="absolute inset-0 z-10 overflow-hidden pointer-events-none">
-        <div className="flex flex-col items-center justify-center h-full text-center text-white px-4 pb-14 sm:pb-0">
+        {/* Mobile: the headline sits low on the video (justify-end). Desktop
+            (lg+) keeps the original centred placement untouched. */}
+        <div className="flex flex-col items-center justify-end h-full text-center text-white px-4 pb-48 lg:justify-center lg:pb-0">
           <div ref={textRef} className="mt-28 pointer-events-auto select-text">
           {/* Subtitle — Space Mono */}
-          <div className="font-space-mono font-medium tracking-wider text-xs sm:text-sm lg:text-base text-white flex items-center justify-center gap-2 mb-4">
+          <div className="font-space-mono font-medium tracking-wider text-[13px] sm:text-sm lg:text-base text-white flex items-center justify-center gap-2 mb-4">
             <span className="w-4 h-[1.5px] bg-white shrink-0 uppercase" />
             <span className="uppercase">Journey of ASG From Late <span className="lowercase"> 70's</span></span>
             {/* <span
@@ -826,7 +881,7 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
           </div>
 
           {/* Title — Archivo Black, 3 lines */}
-          <h1 className="font-archivo-black uppercase text-[28px] sm:text-5xl lg:text-[6rem] leading-[1.05]">
+          <h1 className="font-archivo-black uppercase text-[25px] sm:text-5xl lg:text-[6rem] leading-[1.25] sm:leading-[1.05]">
             <span className="block">GENERATIONS OF <span className="animate__tada" style={{ background: "var(--primary-gradient)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>TRUST.</span></span>
             <span className="block">ENGINEERED FOR</span>
             <span className="block">THE <span style={{ background: "var(--primary-gradient)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>FUTURE.</span></span>
@@ -838,7 +893,7 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
       {/* Left side content — desktop column only (mobile uses the sheet below) */}
       <div ref={leftContentRef} className="absolute left-4 right-4 top-0 bottom-0 z-20 hidden items-start pt-24 lg:flex lg:left-[4%] lg:right-auto lg:max-w-[28rem] lg:items-center lg:pt-0 text-[var(--neutral-800)]">
         <div>
-          <div className="font-space-mono font-medium uppercase tracking-wider text-[12.5px] sm:text-sm lg:text-base flex items-center gap-2 mb-3">
+          <div className="text-sm sm:text-base inline-flex items-center gap-1 sm:gap-1.5 font-space-mono font-medium text-[var(--neutral-800)] uppercase tracking-wider mb-2 sm:mb-5">
             <span>OUR BUSINESS</span>
             <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: "var(--primary-gradient)" }} />
           </div>
@@ -924,11 +979,11 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         ref={mobileHeaderRef}
         className="absolute left-4 right-4 top-[calc(var(--header-height)+1rem)] z-30 text-[var(--neutral-800)] lg:hidden mt-5 sm:mt-0 z-50"
       >
-        <div className="mb-3 flex items-center gap-2 font-space-mono text-[12.5px] font-medium uppercase tracking-wider">
+        <div className="text-sm inline-flex items-center gap-2.5 sm:gap-1.5 font-space-mono font-medium uppercase tracking-wider mb-4.5">
           <span>OUR BUSINESS</span>
-          <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: "var(--primary-gradient)" }} />
+          <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: "var(--primary-gradient)" }} />
         </div>
-        <h2 className="font-archivo-black uppercase text-3xl leading-[1.05]">
+        <h2 className="font-archivo-black uppercase text-[32px] leading-[1.05]">
           {["AN ECOSYSTEM", "NOT A FACTORY"].map((line, i) => (
             <span className="block" key={i}>{line}</span>
           ))}

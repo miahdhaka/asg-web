@@ -39,12 +39,12 @@ const news: NewsItem[] = [
 export default function Newsroom() {
   // Infinite draggable strip, mirroring the OurBusiness carousel: the
   // card list is duplicated and scrollLeft is normalized into [0, half) so
-  // the strip loops seamlessly in both directions. The gesture is axis-
-  // locked so a vertical-intent swipe stays with the page / scroll-stepper,
-  // and pointer capture keeps the drag smooth even when the cursor leaves
-  // the strip. The Previous button runs a short rAF tween (also wrapped)
-  // instead of native smooth-scroll, because a programmatic scrollLeft
-  // would fight the wrap normalization otherwise.
+  // the strip loops seamlessly in both directions. Only the mouse scrubs it
+  // via pointer capture; on touch the browser pans natively — horizontal
+  // scrolls the strip, vertical scrolls the page (like GreenerFuture). The
+  // Previous button runs a short rAF tween (also wrapped) instead of native
+  // smooth-scroll, because a programmatic scrollLeft would fight the wrap
+  // normalization otherwise.
   const stripRef = useRef<HTMLDivElement>(null);
   const dragPendingRef = useRef(false);
   const isDraggingRef = useRef(false);
@@ -81,6 +81,11 @@ export default function Newsroom() {
   };
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    // Only the mouse scrubs manually. On touch we let the browser handle it
+    // natively: horizontal pans scroll this overflow-x strip, vertical pans
+    // fall through to the page. A custom touch drag is what was trapping the
+    // vertical gesture here.
+    if (e.pointerType !== "mouse") return;
     const el = stripRef.current;
     if (!el) return;
     if (tweenRef.current !== null) {
@@ -145,12 +150,11 @@ export default function Newsroom() {
       className="relative flex w-full flex-col overflow-hidden py-0 sm:py-6 lg:py-8 mb-14 sm:mb-6 lg:mb-8 lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Header — eyebrow + title left, button right */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between px-4 lg:px-20 mb-8 sm:mb-12 gap-10 sm:gap-4">
-        <div className="mt-2 flex flex-col gap-5 sm:gap-7 lg:max-w-[55%]">
-          {/* Eyebrow — drops in together with the title below */}
-          <div id="newsroom-eyebrow" className="inline-flex items-center gap-1.5 font-space-mono font-medium text-[var(--neutral-800)] uppercase">
-            Newsroom
-            <span aria-hidden className="text-2xl leading-none bg-gradient-to-b from-[#4a9e4a] to-[#2d6b2d] bg-clip-text text-transparent">•</span>
+      <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between px-4 lg:px-20 mb-10 sm:mb-12 gap-6">
+        <div className="mt-2 flex flex-col lg:max-w-[55%]">
+          <div className="text-sm inline-flex items-center gap-2.5 sm:gap-1.5 font-space-mono font-medium uppercase tracking-wider mb-4.5">
+            <span>Newsroom</span>
+            <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: "var(--primary-gradient)" }} />
           </div>
 
           {/* Title — same Archivo Black uppercase token set as the other
@@ -165,7 +169,7 @@ export default function Newsroom() {
 
         <Link
           href="/newsroom"
-          className="group relative inline-flex items-center justify-center overflow-hidden rounded-full border border-transparent px-4 sm:px-4 lg:px-6 py-3 sm:py-3 lg:py-4 text-sm sm:text-base lg:text-lg font-medium leading-none"
+          className="group relative inline-flex items-center justify-center overflow-hidden rounded-full border border-transparent px-4.5 sm:px-4 lg:px-6 py-3.5 sm:py-3 lg:py-4 text-sm sm:text-base lg:text-lg font-medium leading-none"
           style={{
             background: 'linear-gradient(#F3F3F1, #F3F3F1) padding-box, linear-gradient(97.37deg, #8BC34A 1.29%, #1AA179 92.01%) border-box',
           }}
@@ -219,7 +223,7 @@ export default function Newsroom() {
             onPointerCancel={endDrag}
             onScroll={onScroll}
             onClickCapture={onClickCapture}
-            className="no-scrollbar flex w-full gap-3 overflow-x-auto cursor-grab active:cursor-grabbing overscroll-x-none touch-pan-y lg:grid lg:h-full lg:grid-cols-3 lg:overflow-visible lg:gap-5 lg:cursor-auto"
+            className="no-scrollbar flex w-full gap-3 overflow-x-auto cursor-grab active:cursor-grabbing overscroll-x-none touch-auto lg:grid lg:h-full lg:grid-cols-3 lg:overflow-visible lg:gap-5 lg:cursor-auto"
           >
             {loopedNews.map((item, index) => (
               <Link

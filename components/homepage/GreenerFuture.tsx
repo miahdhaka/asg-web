@@ -227,14 +227,26 @@ export default function GreenerFuture() {
   return (
     <section
       id="greener-future"
-      className="relative w-full overflow-hidden py-16 lg:py-22"
+      className="relative w-full overflow-hidden py-18 lg:py-22"
     >
       {/* Header row — heavy uppercase title left, supporting copy right */}
-      <div className="flex flex-col gap-6 sm:gap-10 px-4 md:px-12 lg:flex-row lg:items-end lg:justify-between lg:max-w-[90%] lg:px-20">
+      <div className="flex flex-col gap-5 sm:gap-10 px-4 md:px-12 lg:flex-row lg:items-end lg:justify-between lg:max-w-[90%] lg:px-20">
         <h2 className="font-archivo-black uppercase text-[1.75rem] sm:text-4xl lg:text-[3rem] leading-[1.2] text-[var(--neutral-800)] word-space-4">
-          Shaping a Greener
-          <br />
-           Future in Textiles
+          <span className="hidden sm:block">
+            Shaping a Greener
+            <br />
+            Future in Textiles
+          </span>
+          
+          <span className="block sm:hidden">
+            Shaping a
+            <br />
+            Greener Future 
+            <br />
+            in Textiles
+          </span>
+
+
         </h2>
 
         <p className="text-base text-[#555] md:text-[1.25rem] lg:max-w-[40%] lg:pt-2">
@@ -243,7 +255,7 @@ export default function GreenerFuture() {
       </div>
 
       {/* Card carousel — drag/arrow-driven track with edge arrow controls */}
-      <div className="relative mt-6 sm:mt-12 lg:mt-[3em]">
+      <div className="relative mt-10 sm:mt-12 lg:mt-[3em]">
         <div
           ref={trackRef}
           onPointerDown={onPointerDown}
@@ -280,7 +292,7 @@ export default function GreenerFuture() {
                 <h3 className="font-neue-montreal text-[1.2rem] sm:text-[1.375rem] font-medium text-white lg:text-[1.75rem]">
                   {card.label}
                 </h3>
-                <p className="mt-2 sm:mt-3 max-w-[92%] text-sm sm:text-base leading-[1.5] text-white/85 lg:text-lg">
+                <p className="mt-2 sm:mt-3 sm:max-w-[92%] text-sm sm:text-base leading-[1.5] text-white/85 lg:text-lg tracking-wider">
                   {card.description}
                 </p>
               </div>

@@ -160,13 +160,19 @@ export default function CertificationsCompliance() {
       className="base-gradient relative w-full overflow-hidden pt-0 pb-16 lg:pt-22 lg:pb-22"
     >
       {/* Header — eyebrow + heading, sized to match the About Us header */}
-      <div className="flex flex-col gap-5 sm:gap-7 lg:max-w-[55%] px-4 sm:px-6 md:px-12 lg:px-20">
-        <span className="inline-flex items-center gap-1.5 font-space-mono font-medium text-[var(--neutral-800)] uppercase">
+      <div className="flex flex-col lg:max-w-[55%] px-4 sm:px-6 md:px-12 lg:px-20">
+        {/* <span className="text-sm sm:text-base inline-flex items-center gap-1 sm:gap-1.5 font-space-mono font-medium text-[var(--neutral-800)] uppercase tracking-wider">
           Our Certifications{" "}
           <span className="text-2xl leading-none bg-gradient-to-b from-[#4a9e4a] to-[#2d6b2d] bg-clip-text text-transparent">
             •
           </span>
-        </span>
+        </span> */}
+
+        <div className="text-sm inline-flex items-center gap-2.5 sm:gap-1.5 font-space-mono font-medium uppercase tracking-wider mb-4.5">
+          <span>Our Certificate</span>
+          <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: "var(--primary-gradient)" }} />
+        </div>
+
         <h2 className="font-archivo-black uppercase text-[1.75rem] sm:text-4xl lg:text-[3rem] leading-[1.2] text-[var(--neutral-800)] word-space-4">
           Certifications
           <br />

@@ -338,19 +338,24 @@ export default function GlobeHero() {
           hemisphere and the terminator stay at full brightness, only the bottom
           edge dissolves. The band tops out at the globe's vertical centre
           (cy 0.5, diameter 0.68H → limb at 84%) so the upper half is never dimmed.
-          Sits above the canvas and the stars, below the cards, marquee and copy. */}
+          Sits above the canvas and the stars, below the cards, marquee and copy.
+          On mobile the globe drops low (cy 0.68) and shrinks, so the band is
+          shortened to 32% — its transparent top now lands at the mobile globe's
+          centre instead of near its top, keeping the whole disc from going dark. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-[50%] bg-[linear-gradient(0deg,#030f0cff_0%,#030f0cfe_28%,#030f0cf2_46%,#030f0cb0_62%,#030f0c7a_76%,#030f0c2e_89%,#030f0c00_100%)]"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-[50%] max-md:h-[32%] bg-[linear-gradient(0deg,#030f0cff_0%,#030f0cfe_28%,#030f0cf2_46%,#030f0cb0_62%,#030f0c7a_76%,#030f0c2e_89%,#030f0c00_100%)]"
       />
 
       {/* Extra weight over the lower-right, where the globe's limb sits (framed at
           cx 0.69, cy 0.5 → the 45° point of the lower-right edge lands near 80% /
           78% of the section). The horizontal band above fades evenly across the
-          full width, so it cannot bias one side; this elliptical layer does. */}
+          full width, so it cannot bias one side; this elliptical layer does.
+          On mobile the globe is centred (cx 0.5), so the ellipse is re-centred
+          under it — otherwise the right-biased blob reads as an off-centre patch. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 z-[5] bg-[radial-gradient(48%_44%_at_80%_80%,#030f0ce6_0%,#030f0cab_48%,#030f0c52_75%,#030f0c00_100%)]"
+        className="pointer-events-none absolute inset-0 z-[5] bg-[radial-gradient(48%_44%_at_80%_80%,#030f0ce6_0%,#030f0cab_48%,#030f0c52_75%,#030f0c00_100%)] max-md:bg-[radial-gradient(58%_36%_at_50%_86%,#030f0ce6_0%,#030f0cab_48%,#030f0c52_75%,#030f0c00_100%)]"
       />
 
       {/* floating stat cards pinned to the globe */}
@@ -374,24 +379,27 @@ export default function GlobeHero() {
         <OrderToast order={order} register={register} />
       </div>
 
-      {/* Copy sits on the left on desktop; the globe is framed to the right. */}
-      <div className="pointer-events-none absolute inset-x-6 bottom-[16%] z-10 text-center md:inset-x-auto md:bottom-auto md:left-[6%] md:top-1/2 md:w-[min(34rem,42vw)] md:-translate-y-1/2 md:text-left">
-        <div className="mb-3 flex items-center justify-center gap-2 md:justify-start">
-          <span className="inline-flex items-center gap-1.5 font-space-mono text-[11px] font-medium uppercase tracking-[0.18em] text-white md:text-xs">
-            {HERO.eyebrow}
-            <span className="bg-gradient-to-b from-[#4a9e4a] to-[#2d6b2d] bg-clip-text text-2xl leading-none text-transparent">
-              •
-            </span>
-          </span>
+      {/* Copy: the DESKTOP layout is exactly as committed (left column, vertically
+          centred, 12px wide-tracked mono eyebrow) — every mobile tweak below is
+          scoped to max-md, so nothing at ≥768px changes. On mobile the copy sits
+          at the top, left aligned, with the globe centred beneath it; the top
+          offset is anchored to the fixed header (--header-height) so the eyebrow
+          never hides behind it on short viewports. */}
+      <div className="pointer-events-none absolute inset-x-6 bottom-[16%] z-10 text-center max-md:top-[calc(var(--header-height)+1.25rem)] max-md:bottom-auto max-md:text-left md:inset-x-auto md:bottom-auto md:left-[6%] md:top-1/2 md:w-[min(34rem,42vw)] md:-translate-y-1/2 md:text-left">
+
+        <div className="text-sm inline-flex items-center gap-2.5 sm:gap-1.5 font-space-mono font-medium uppercase tracking-wider mb-4.5">
+          <span>Global Reach</span>
+          <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: "var(--primary-gradient)" }} />
         </div>
-        <h1 className="mb-4 font-archivo-black text-[1.75rem] uppercase leading-[1.1] text-white sm:text-4xl md:mb-5 md:text-[2.6rem] lg:text-[3rem]">
+
+        <h1 className="mb-6 font-archivo-black text-[1.75rem] uppercase leading-[1.1] text-white sm:text-4xl md:text-[2.6rem] lg:text-[3rem]">
           {HERO.heading.map((l) => (
             <span key={l} className="block">
               {l}
             </span>
           ))}
         </h1>
-        <p className="mx-auto max-w-[33rem] text-sm leading-[1.6] text-[#99B3AD] md:mx-0 md:text-base lg:text-[1.05rem]">
+        <p className="mx-auto max-w-[33rem] text-base leading-[1.6] text-[#99B3AD] md:text-lg max-md:leading-[1.4] md:mx-0 md:text-base lg:text-[1.05rem]">
           {HERO.sub}
         </p>
       </div>

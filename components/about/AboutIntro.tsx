@@ -13,7 +13,6 @@ const paragraphs = [
 ];
 
 const quickLinks = [
-  { label: "OUR CONCERNS", href: "/concerns" },
   { label: "LEADERSHIP", href: "/board-of-directors" },
   { label: "OUR HISTORY", href: "/our-history" },
 ];
