@@ -9,52 +9,61 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/* Only the EXIT phase is animated here. The image sits at full size while the
-   section is in view, then smoothly scales back down to its small state as the
-   section scrolls out — the way it used to. The old timeline also scaled the
-   image on the way IN, which collided with ASGHighlight's cover-rise (that
-   transforms this section's parent via aboutRiseRef in app/page.tsx): the scale
-   start/end got re-measured against a still-moving bounding rect and bounced on
-   arrival. Leaving the section happens well after the cover has settled, so a
-   scrubbed scale-down here reads cleanly with no drift. */
+/* Desktop-only scroll scale. The building image stays at FULL size while the
+   About Us section is in view and up to just before it leaves, then creeps
+   down to slightly smaller (0.85) gradually from when the section top passes
+   15% of the viewport until it has fully exited, linear so it never changes
+   all at once.
+   On mobile the image is short (aspect-[4/3]) so the scale is skipped entirely
+   — it stays full size — via matchMedia scoped to the same lg (1024px)
+   breakpoint where the tall desktop image (lg:max-h-[75vh]) kicks in. */
 export default function AboutUs() {
   const sectionRef = useRef<HTMLElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
+    const mm = gsap.matchMedia();
+
+    // Desktop-only, measured against the section's ~viewport+400px height:
+    // the image holds FULL size while the section is in view and right up to
+    // just before it leaves — the shrink only starts once the section top has
+    // scrolled past 15% of the viewport (a bit before it fully exits upward).
+    // From there it creeps down across the remaining exit stretch
+    // (top 15% → bottom top, ~1250px of scroll), so the change per scroll
+    // pixel stays tiny — never all at once. Scroll-up reverses it identically.
+    // Below lg this never runs, so mobile stays full size.
+    mm.add("(min-width: 1024px)", () => {
       gsap.fromTo(
         imageRef.current,
         { scale: 1 },
         {
           scale: 0.85,
-          ease: "power1.inOut",
+          ease: "none",
           scrollTrigger: {
             trigger: sectionRef.current,
-            // Shrink as the section scrolls out: begins when the section top
-            // reaches the viewport top, completes when its bottom clears it.
-            start: "top top",
+            start: "top 15%",
             end: "bottom top",
-            scrub: 0.8,
+            scrub: 1.2,
           },
-        }
+        },
       );
-    }, sectionRef);
+    });
 
-    return () => ctx.revert();
+    return () => mm.revert();
   }, []);
 
   return (
     <section ref={sectionRef} className="relative z-20 bg-background w-full px-4 py-16 md:px-12 lg:px-20 lg:py-22">
       <div>
         {/* Top row: label + heading on left, description + CTA on right */}
-        <div className="flex flex-col gap-6 sm:gap-10 lg:flex-row lg:items-end lg:justify-between lg:max-w-[90%]">
+        <div className="flex flex-col gap-5 sm:gap-10 lg:flex-row lg:items-end lg:justify-between lg:max-w-[90%]">
           {/* Left column */}
-          <div className="flex flex-col gap-5 sm:gap-7 lg:max-w-[55%]">
-            <span className="inline-flex items-center gap-1.5 font-space-mono font-medium text-[var(--neutral-800)] uppercase">
-              About Us <span className="text-2xl leading-none bg-gradient-to-b from-[#4a9e4a] to-[#2d6b2d] bg-clip-text text-transparent">•</span>
-            </span>
-            <h2 className="font-archivo-black uppercase text-[1.75rem] sm:text-4xl lg:text-[3rem] leading-[1.2] text-[var(--neutral-800)] word-space-4">
+          <div className="flex flex-col gap-4.5 lg:max-w-[55%]">
+            <div className="text-sm inline-flex items-center gap-2.5 sm:gap-1.5 font-space-mono font-medium uppercase tracking-wider">
+              <span>About Us</span>
+              <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: "var(--primary-gradient)" }} />
+            </div>
+            <h2 className="font-archivo-black uppercase text-[1.9rem] sm:text-4xl lg:text-[3rem] leading-[1.2] text-[var(--neutral-800)] word-space-4">
               <span className="hidden md:block">
                 One Thread.
                 <br />
@@ -72,13 +81,13 @@ export default function AboutUs() {
           </div>
 
           {/* Right column */}
-          <div className="flex flex-col items-start gap-8 sm:gap-6 lg:max-w-[35%] lg:pt-2">
+          <div className="flex flex-col items-start gap-6 lg:max-w-[35%] lg:pt-2">
             <p className="text-base text-[var(--neutral-800)] md:text-[1.25rem]">
               Amanat Shah Group is a diversified business group with strong concentration in the Textile-to-Fashion value chain supported by Finance, Chemicals, Technology, Agriculture. 
             </p>
             <Link
               href="/about-us"
-              className="group relative inline-flex items-center justify-center overflow-hidden rounded-full border border-transparent px-6 py-3 text-sm font-medium leading-none lg:px-[1.2em] lg:py-[0.8em] lg:text-[1.1em]"
+              className="group relative inline-flex items-center justify-center overflow-hidden rounded-full border border-transparent px-4 sm:px-6 py-3.5 text-sm font-medium leading-none lg:px-[1.2em] lg:py-[0.8em] lg:text-[1.1em]"
               style={{
                 background: 'linear-gradient(#F3F3F1, #F3F3F1) padding-box, linear-gradient(97.37deg, #8BC34A 1.29%, #1AA179 92.01%) border-box',
               }}
@@ -119,14 +128,14 @@ export default function AboutUs() {
         {/* Building image */}
         <div
           ref={imageRef}
-          className="mt-6 sm:mt-12 lg:mt-[5em] overflow-hidden rounded-[0.75rem] lg:rounded-[1.2rem]"
+          className="mt-10 sm:mt-12 lg:mt-[5em] overflow-hidden rounded-[0.75rem] lg:rounded-[1.2rem]"
         >
           <Image
             src="/images/about-us/home-about-us.png"
             alt="Amanat Shah Group building"
             width={1400}
             height={500}
-            className="block w-full object-cover aspect-[5/4] lg:aspect-auto lg:h-auto lg:max-h-[75vh]"
+            className="block w-full object-cover aspect-[4/3] lg:aspect-auto lg:h-auto lg:max-h-[75vh]"
             priority={false}
           />
         </div>

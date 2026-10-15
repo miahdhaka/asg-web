@@ -646,6 +646,20 @@ html.asg-touch-lock * {
   transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
+/* On mobile the globe shrinks and drops low, so the floating boxes crowd its
+   limb at desktop size. Tighten type, padding, gap and max-width so each card
+   reads as a compact chip. Scoped to the globe's own mobile breakpoint
+   (W < 820, see GlobeScene layout) so desktop is byte-for-byte unchanged. */
+@media (max-width: 819px) {
+  .gcard-box {
+    gap: 0.5rem;
+    max-width: 172px;
+    padding: 0.5rem 0.65rem;
+    font-size: 9px;
+    letter-spacing: 0.04em;
+  }
+}
+
 /* Glossy hover on the interactive stat cards: a bright teal border with an
    outer halo and a faint inner glow, matching the reference treatment. */
 .gcard-hover:hover {

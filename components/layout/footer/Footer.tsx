@@ -17,8 +17,6 @@ const footerColumns: FooterColumn[] = [
     title: "About",
     links: [
       { label: "About US", href: "/about-us" },
-      { label: "Brands", href: "#" },
-      { label: "Sustainability", href: "/sustainability/environmental-social-governance" },
       { label: "FAQ’s", href: "/faqs" },
       { label: "Newsroom", href: "/newsroom" },
     ],
@@ -69,18 +67,18 @@ const footerColumns: FooterColumn[] = [
 const socials = [
   {
     label: "LinkedIn",
-    href: "#",
+    href: "https://www.linkedin.com/company/amanatshahgroup/",
     icon: "/icons/social-icon/linkedin.png",
   },
   {
     label: "Facebook",
-    href: "#",
+    href: "https://www.facebook.com/AmanatShahGroup.ASG",
     icon: "/icons/social-icon/facebook.png",
     featured: true,
   },
   {
     label: "Instagram",
-    href: "#",
+    href: "https://www.instagram.com/amanatshahgroup/",
     icon: "/icons/social-icon/instagram.png",
   },
 ];
@@ -90,7 +88,7 @@ export default function Footer() {
     <>
       <footer className="relative z-10 w-full shrink-0 bg-[#1A1A1A] font-neue-montreal text-white">
         <div className="grid min-h-[10.25rem] gap-8 sm:gap-10 border-b border-white/10 px-4 sm:px-6 pt-10 pb-8 sm:pb-10 md:px-12 lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:px-20">
-          <h2 className="max-w-[30rem] font-archivo-black text-2xl leading-[1.08] uppercase sm:text-[2rem]">
+          <h2 className="sm:max-w-[30rem] font-archivo-black text-[22px] leading-[1.08] uppercase sm:text-[2rem]">
             Manufacturing trust,
             <br />
             since generations.
@@ -152,18 +150,18 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-x-8 gap-y-10 px-4 sm:px-6 md:px-12 lg:grid-cols-[0.8fr_1.2fr_1.05fr_0.75fr] lg:px-20 py-6 sm:py-12 lg:py-[4.25rem]">
+          <div className="grid grid-cols-2 gap-x-6 sm:gap-x-8 gap-y-10 px-4 sm:px-6 md:px-12 lg:grid-cols-[0.8fr_1.2fr_1.05fr_0.75fr] lg:px-20 py-6 sm:py-12 lg:py-[4.25rem]">
             {footerColumns.map((column) => (
               <div key={column.title}>
                 <h3 className="text-base sm:text-lg font-medium uppercase">
                   {column.title}
                 </h3>
-                <ul className="mt-3 space-y-1.5 sm:space-y-2.5">
+                <ul className="mt-3 space-y-1 sm:space-y-2.5">
                   {column.links.map((link) => (
                     <li key={link.label}>
                       <Link
                         href={link.href}
-                        className="text-sm tracking-wide leading-6 text-white/55 transition-colors duration-300 hover:text-white sm:text-base"
+                        className="text-sm tracking-wide leading-2 sm:leading-6 text-white/55 transition-colors duration-300 hover:text-white sm:text-base"
                       >
                         {link.label}
                       </Link>
@@ -175,16 +173,25 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 sm:mt-0 flex min-h-[3.25rem] flex-col gap-4 rounded-t-[1.5rem] bg-gradient-to-r from-[#343434] via-[#292929] to-[#1c1c1c] px-6 py-4 text-sm tracking-wider md:px-12 lg:flex-row lg:items-center lg:justify-between lg:px-20">
+        <div className="mt-8 sm:mt-0 flex min-h-[3.25rem] flex-col gap-2 sm:gap-4 rounded-t-[1.5rem] bg-gradient-to-r from-[#343434] via-[#292929] to-[#1c1c1c] px-4 sm:px-6 py-4 text-sm tracking-wider md:px-12 lg:flex-row lg:items-center lg:justify-between lg:px-20">
           <p className="text-center sm:text-left">© 2026 ASG</p>
-          <nav aria-label="Footer legal navigation" className="flex flex-wrap items-center gap-x-6 sm:gap-x-10 gap-y-2 text-xs uppercase">
-            <Link className="relative pb-1 after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-in-out hover:after:scale-x-100" href="/terms-of-use">
+          <nav aria-label="Footer legal navigation" className="flex flex-wrap items-center gap-x-4 sm:gap-x-10 gap-y-2 text-xs uppercase">
+            <Link 
+              className="relative pb-1 after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-in-out hover:after:scale-x-100" 
+              href="/terms-of-use"
+            >
               Terms of Use
             </Link>
-            <Link className="relative pb-1 after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-in-out hover:after:scale-x-100" href="/privacy-policy">
+            <Link 
+              className="relative pb-1 after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-in-out hover:after:scale-x-100" 
+              href="/privacy-policy"
+            >
               Privacy Policy
             </Link>
-            <Link className="relative pb-1 after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-in-out hover:after:scale-x-100" href="#">
+            <Link 
+              className="relative pb-1 after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-in-out hover:after:scale-x-100" 
+              href="/cookie-policy"
+            >
               Cookie Policy
             </Link>
           </nav>

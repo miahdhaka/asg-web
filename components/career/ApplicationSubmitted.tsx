@@ -86,7 +86,7 @@ export default function ApplicationSubmitted({
         </div>
 
         {/* ── Card ── */}
-        <div className="mt-8 flex flex-col gap-3 rounded-lg bg-gray-50 px-4 py-4 sm:mt-10 sm:gap-5 sm:px-6 sm:py-6">
+        <div className="mt-8 flex flex-col gap-3 rounded-2xl bg-gray-50 px-4 py-4 sm:mt-10 sm:gap-5 sm:px-6 sm:py-6">
           {/* Ref + Title block */}
           <div className="flex flex-col gap-2 sm:gap-3">
             {/* Ref badge */}
@@ -219,7 +219,7 @@ export default function ApplicationSubmitted({
           {/* Similar job — outline button */}
           <a
             href={similarJobsUrl}
-            className="group inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white h-[40px] px-6 py-3 text-sm text-neutral-800 leading-none transition-all duration-300 hover:bg-gray-100 hover:border-neutral-300 lg:px-8 lg:py-4 lg:text-base lg:h-auto text-nowrap"
+            className="group inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-transparent h-[40px] px-6 py-3 text-sm text-neutral-800 leading-none transition-all duration-300 hover:bg-gray-100 hover:border-neutral-300 lg:px-8 lg:py-4 lg:text-base lg:h-auto text-nowrap"
           >
             Similar job
             <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

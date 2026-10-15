@@ -57,16 +57,21 @@ export default function LegacyOfLeadership() {
     <section
       ref={sectionRef}
       id="legacy-of-leadership"
-      className="relative flex w-full flex-col overflow-hidden bg-[#F3F3F1] py-16 sm:py-20 lg:min-h-[120vh]"
+      className="relative flex w-full flex-col overflow-hidden bg-[#F3F3F1] py-16 sm:py-20 lg:min-h-[103vh]"
     >
-      <div className="flex flex-1 flex-col px-4 pb-0 sm:pb-4 md:px-12 lg:px-20">
-        <div className="flex flex-col gap-7">
-          <span className="inline-flex items-center gap-1.5 font-space-mono font-medium text-[var(--neutral-800)] uppercase">
+      <div className="flex flex-1 flex-col px-4 pb-0 md:pb-4 md:px-12 lg:px-20">
+        <div className="flex flex-col">
+          {/* <span className="text-sm sm:text-base inline-flex items-center gap-1 sm:gap-1.5 font-space-mono font-medium text-[var(--neutral-800)] uppercase tracking-wider">
             Leadership
             <span className="text-2xl leading-none bg-gradient-to-b from-[#4a9e4a] to-[#2d6b2d] bg-clip-text text-transparent">
               •
             </span>
-          </span>
+          </span> */}
+
+          <div className="text-sm inline-flex items-center gap-2.5 sm:gap-1.5 font-space-mono font-medium uppercase tracking-wider mb-4.5">
+            <span>Leadership</span>
+            <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: "var(--primary-gradient)" }} />
+          </div>
 
           <h2 className="font-archivo-black uppercase text-[1.75rem] sm:text-4xl lg:text-[3rem] leading-[1.2] text-[var(--neutral-800)] word-space-4">
             Legacy of
@@ -77,7 +82,7 @@ export default function LegacyOfLeadership() {
 
         <div
           ref={panelRef}
-          className="relative mt-20 pt-[24rem] md:mt-28 md:block md:min-h-[58rem] md:pt-0 lg:mt-[7.125rem] lg:min-h-0 lg:flex-1"
+          className="relative mt-34 pt-[20.5rem] md:mt-28 md:block md:min-h-[58rem] md:pt-0 lg:mt-[7.125rem] lg:min-h-0 lg:flex-1"
         >
           <div className="absolute inset-y-0 -left-6 -right-6 overflow-hidden rounded-t-[3rem] sm:rounded-t-[2rem] md:inset-0 md:rounded-t-[1.5rem]">
             <div aria-hidden className="absolute inset-0">
@@ -140,7 +145,7 @@ export default function LegacyOfLeadership() {
             </p>
           </div>
 
-          <div className="relative z-30 mt-8 flex flex-col items-start gap-5 sm:gap-8 px-0 sm:px-6 pb-[3.5rem] text-white sm:pb-0 md:absolute md:inset-x-10 md:bottom-10 md:items-center md:px-0 lg:inset-x-auto lg:right-[5rem] lg:top-1/2 lg:bottom-auto lg:w-[36rem] lg:-translate-y-1/2 lg:gap-[3.5rem]">
+          <div className="relative z-30 flex flex-col items-start gap-2 sm:gap-8 px-0 sm:px-6 pb-[2.5rem] text-white sm:pb-0 md:absolute md:inset-x-10 md:bottom-10 md:items-center md:px-0 lg:inset-x-auto lg:right-[5rem] lg:top-1/2 lg:bottom-auto lg:w-[36rem] lg:-translate-y-1/2 lg:gap-[2rem] mt-5 sm:mt-0">
             <svg
               aria-hidden 
               width="79"
@@ -155,7 +160,7 @@ export default function LegacyOfLeadership() {
               />
             </svg>
 
-            <p className="text-[19px] sm:text-xl leading-8 lg:text-[1.7rem] lg:leading-9">
+            <p className="text-lg sm:text-xl leading-7 lg:text-[1.7rem] lg:leading-9">
               ASG's leadership is rooted in a founding family's 130-year entrepreneurial legacy — carried forward today by a management team focused on manufacturing discipline, product innovation and long-term partnership with global brands.
             </p>
           </div>

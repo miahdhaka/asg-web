@@ -558,11 +558,12 @@ function CameraRig({
     const H = size.height;
     const mobile = W < 820;
     const cx = mobile ? 0.5 : 0.7;
-    const cy = mobile ? 0.33 : 0.5;
-    // Globe size as a fraction of the viewport. Nudged up a touch for a bigger
-    // globe while still clearing the brand marquee at the bottom and the copy
-    // column on the left.
-    const D = mobile ? Math.min(W * 1.0, H * 0.55) : Math.min(H * 0.82, W * 0.53);
+    const cy = mobile ? 0.65 : 0.5;
+    // Globe size as a fraction of the viewport. On mobile the copy sits at the
+    // top, so the globe sits clear of the description above and the brand
+    // marquee below, with a margin on both side edges. It is raised (cy 0.65) and
+    // enlarged on mobile; the desktop framing below is unchanged.
+    const D = mobile ? Math.min(W * 0.84, H * 0.46) : Math.min(H * 0.82, W * 0.53);
 
     cam.fov = 30;
     const k = (D / H) * Math.tan((cam.fov * DEG) / 2);
@@ -728,6 +729,14 @@ function CameraRig({
     if (anchors.current.size) {
       const w = size.width;
       const h = size.height;
+      // Mobile: the globe is centred and small, so the desktop pull-out offsets
+      // (e.g. eu-1 dx -150) shove a card past the screen edge where the clamp
+      // below pins it to the margin — off the globe entirely. Scale the offsets
+      // toward the anchor so the boxes land on the disc instead. Desktop (≥820)
+      // keeps the raw offsets, so nothing changes there.
+      const mobile = w < 820;
+      const kx = mobile ? 0.28 : 1;
+      const ky = mobile ? 0.6 : 1;
       camDir.copy(camera.position).normalize();
       anchors.current.forEach((a) => {
         latLonToVec3(a.lat, a.lon, 1.0, tmp);
@@ -736,8 +745,8 @@ function CameraRig({
         const facing = s.turn.active ? false : tmp.dot(camDir) > 0.12;
         tmp.project(camera);
         const cw = a.el.offsetWidth || 0;
-        const x = THREE.MathUtils.clamp((tmp.x * 0.5 + 0.5) * w + a.dx, 8, Math.max(8, w - cw - 8));
-        const y = (-tmp.y * 0.5 + 0.5) * h + a.dy;
+        const x = THREE.MathUtils.clamp((tmp.x * 0.5 + 0.5) * w + a.dx * kx, 8, Math.max(8, w - cw - 8));
+        const y = (-tmp.y * 0.5 + 0.5) * h + a.dy * ky;
         a.el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
         a.el.dataset.facing = facing ? "1" : "0";
       });

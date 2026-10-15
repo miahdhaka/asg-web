@@ -226,17 +226,22 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
         end: `+=${(n + 1 + COVER_SLOW) * 100}%`,
         pin: true,
         pinSpacing: false,
-        /* Mobile-only: touch scrolling arrives in uneven bursts (finger drag +
-           fling momentum) so the pinned reel's incoming number "lafalafi"
-           wobbles, while desktop's wheel feeds it a steady stream. GSAP's
-           scroll normalizer intercepts touch input and synthesizes the same
-           smooth, wheel-like scroll desktop gets. It's toggled ONLY while this
-           section is pinned (and only on touch devices) so the Hero's mobile
-           stepper and every other section keep native behavior; desktop never
-           activates it at all. */
-        onToggle: (self) => {
-          if (ScrollTrigger.isTouch) ScrollTrigger.normalizeScroll(self.isActive);
-        },
+        /* Mobile-only: a touch fling delivers huge per-frame scroll deltas, so
+           the section can race a frame or two ABOVE its "top top" pin start
+           before ScrollTrigger applies the pin transform — the visible "uthe
+           jay, tarpor pin kore" jump. Pinning 1px early means it is already
+           fixed before it could ever escape, so the pin grabs instantly like
+           it does with a desktop wheel. Desktop keeps its default (0) — its
+           small wheel deltas never overshoot, and this leaves its behavior
+           byte-for-byte unchanged. */
+        anticipatePin: ScrollTrigger.isTouch ? 1 : 0,
+        /* Touch normalizer lives on its own guard trigger BELOW — arming it
+           here (tied to the pin's own "top top"→end range) is too late: a hard
+           fling is already mid-flight past "top top" by the time isActive flips
+           true, so the huge native delta escapes the pin before smoothing kicks
+           in. The guard arms normalizeScroll a full viewport BEFORE the pin so
+           the incoming fling is already smoothed to a wheel-like feed when it
+           reaches "top top". Desktop never activates it. */
         onUpdate: (self) => {
           // Raw 0→1 across the whole pin range. The content timeline chases it
           // through the smoothed follower below; the cover applies it directly.
@@ -250,6 +255,28 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
         onRefresh: (self) => snapCover(self.progress),
       });
       snapCover(st.progress);
+
+      /* Mobile-only smooth-scroll guard. Spans one viewport BEFORE the pin
+         start (section top hitting the viewport bottom) through the whole pin
+         range plus one viewport past its release, so `normalizeScroll` is
+         already intercepting touch by the time a fast fling would otherwise
+         race the section above "top top". With the fling converted to the same
+         smooth, gradual stream a desktop wheel produces, ScrollTrigger feeds
+         progress in small increments and the section pins instantly and holds —
+         no "uthe jay tarpor pin kore" jump, no "bari", no glitch, however hard
+         you scroll. It owns normalizeScroll alone (the pin trigger no longer
+         toggles it) so the two never fight over on/off. The guard's `end` is
+         measured from its earlier `start`, so it adds the 100% of travel that
+         "top bottom → top top" consumes on top of the pin's own range. Desktop
+         skips this trigger entirely and keeps native behavior everywhere. */
+      if (ScrollTrigger.isTouch) {
+        ScrollTrigger.create({
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: () => `+=${(n + 1 + COVER_SLOW) * 100 + 200}%`,
+          onToggle: (self) => ScrollTrigger.normalizeScroll(self.isActive),
+        });
+      }
 
       tick = () => {
         scrollProgress += (targetProgress - scrollProgress) * SMOOTH;
@@ -390,11 +417,11 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
             row exactly — there h-full changes nothing because the row's
             children are vertically centered, and lg:justify-center keeps the
             horizontal centering. */}
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-evenly lg:justify-center gap-6 lg:gap-32 h-full w-full ">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-evenly lg:justify-center gap-0 lg:gap-32 h-full w-full ">
           {/* Left side — Title (flex-1 only at lg: on mobile it must stay
               content-sized so justify-evenly can distribute the y-space) */}
-          <div className="lg:flex-1 text-left mt-24 lg:mt-0">
-            <h2 className="font-archivo-black uppercase text-[1.75rem] sm:text-4xl lg:text-[3rem] leading-[1.2] text-[var(--neutral-800)] word-space-4">
+          <div className="lg:flex-1 text-left mt-32 lg:mt-0">
+            <h2 className="font-archivo-black uppercase text-[2rem] sm:text-4xl lg:text-[3rem] leading-[1.2] text-[var(--neutral-800)] word-space-4">
               <span className="text-nowrap block">ASG AT A</span>
               <span className="block">GLANCE</span>
             </h2>
@@ -403,14 +430,14 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
           {/* Center — Capsule with lens-shaped number scroll */}
           <div
             ref={capsuleRef}
-            className="relative w-[calc(100vw-2rem)] shrink-0 self-center overflow-hidden rounded-full lg:w-[clamp(280px,52vw,760px)]"
+            className="relative w-[calc(100vw-2rem)] h-[clamp(178px,25vw,378px)] shrink-0 self-center overflow-hidden rounded-full lg:w-[clamp(280px,52vw,760px)] lg:h-[clamp(170px,24vw,360px)]"
             style={{
-              // Mobile: the tube spans the full x-axis (viewport minus the
-              // px-6 content padding). lg: keeps the original fluid clamp —
-              // desktop is completely unchanged. Min back to 170px (150 read
-              // as too short); 24vw only reaches 200px at ≥833px viewports,
-              // so lg+ (245px+) never touches the min.
-              height: "clamp(170px, 24vw, 360px)",
+              // Mobile: the tube grew a hair — width now bleeds to within 8px
+              // of each screen edge (was 16px) and the min height went
+              // 170 → 178px, so both dimensions scale ~4.5% together and the
+              // pill's aspect ratio on a phone stays what it was (2.10 → 2.10
+              // at 390px). lg: restores the ORIGINAL width clamp and the
+              // original 170/24vw/360 height exactly — desktop is unchanged.
               backgroundImage: "url(/images/we-are-asg.webp)",
               backgroundSize: "cover",
               backgroundPosition: "center",
@@ -485,7 +512,7 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
               >
                 {/* Gradient icon */}
                 <div
-                  className="w-14 h-14 lg:w-16 lg:h-16 mx-0 mb-2"
+                  className="w-18 sm:w-16 h-18 sm:h-16 mx-0 mb-4"
                   style={{
                     backgroundImage: "var(--primary-gradient)",
                     maskImage: `url(${slide.icon})`,
