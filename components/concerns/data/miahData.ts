@@ -66,7 +66,7 @@ export const miahCoreValues = {
 
 /* ── Processing strip ── */
 export const miahProcessing = {
-  title: "MIAH\nProcessing Excellence",
+  title: "MIAH Processing\n Excellence",
   slides: [1, 2, 3].map((n) => ({
     src: `/images/concerns/miah/processing-${n}.avif`,
     alt: "Fashion processing at MIAH",

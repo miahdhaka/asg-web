@@ -210,18 +210,10 @@ export default function GreenerFuture() {
     const track = trackRef.current;
     if (!track || !dragRef.current.down) return;
     dragRef.current.down = false;
-    // Settle onto the nearest card boundary — one card at a time, matching
-    // ConcernProcessing — so a released drag never rests misaligned mid-card.
-    const { step } = pitches(track);
-    if (step <= 0) return;
-    const target = Math.round(track.scrollLeft / step) * step;
-    slideTween.current?.kill();
-    slideTween.current = gsap.to(track, {
-      scrollLeft: target,
-      duration: 0.5,
-      ease: "power2.out",
-      overwrite: true,
-    });
+    // Match the Certifications strip: a released drag stays exactly where the
+    // pointer dropped it — no snap-to-card glide. onPointerMove already keeps
+    // the position wrapped for the seamless loop, and the arrows still step one
+    // card at a time.
   };
 
   return (
@@ -269,7 +261,7 @@ export default function GreenerFuture() {
             <div
               key={`${card.label}-${index}`}
               data-card
-              className="relative aspect-[14/19] w-[81vw] shrink-0 overflow-hidden transition-[border-radius] duration-700 ease-in-out md:aspect-[14/15] md:w-[calc((100vw-88px)/2.9)] lg:w-[calc((100vw-120px)/2.9)]"
+              className="group relative aspect-[14/19] w-[81vw] shrink-0 overflow-hidden transition-[border-radius] duration-700 ease-in-out md:aspect-[14/15] md:w-[calc((100vw-88px)/2.9)] lg:w-[calc((100vw-120px)/2.9)]"
               style={{ borderRadius: "1.2rem" }}
             >
               <Image
@@ -286,6 +278,12 @@ export default function GreenerFuture() {
               <div
                 aria-hidden
                 className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent"
+              />
+
+              {/* Hover overlay — dark linear gradient fades in on card hover */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 overlay-black-linear-greener opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100"
               />
 
               <div className="absolute inset-x-0 bottom-0 p-5 sm:p-8 lg:p-12">
@@ -305,17 +303,21 @@ export default function GreenerFuture() {
           type="button"
           aria-label="Previous card"
           onClick={() => scrollByCard(-1)}
-          className="absolute left-6 md:left-16 lg:left-24 top-1/2 hidden h-12 w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white shadow-md transition-transform duration-300 hover:scale-105 md:flex lg:h-14 lg:w-14"
+          className="group absolute left-6 md:left-16 lg:left-24 top-1/2 hidden h-12 w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white shadow-md transition-transform duration-300 hover:scale-105 md:flex lg:h-14 lg:w-14"
         >
-          <ChevronLeft className="h-6 w-6 text-neutral-900 lg:h-7 lg:w-7" strokeWidth={2} />
+          {/* Gradient wash fades in — background can't transition solid→gradient */}
+          <span className="absolute inset-0 rounded-full opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100" style={{ background: "var(--primary-gradient)" }} />
+          <ChevronLeft className="relative h-6 w-6 text-neutral-900 transition-colors duration-300 group-hover:text-white lg:h-7 lg:w-7" strokeWidth={2} />
         </button>
         <button
           type="button"
           aria-label="Next card"
           onClick={() => scrollByCard(1)}
-          className="absolute right-3 top-1/2 hidden h-12 w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white shadow-md transition-transform duration-300 hover:scale-105 md:flex lg:right-6 lg:h-14 lg:w-14"
+          className="group absolute right-3 top-1/2 hidden h-12 w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white shadow-md transition-transform duration-300 hover:scale-105 md:flex lg:right-6 lg:h-14 lg:w-14"
         >
-          <ChevronRight className="h-6 w-6 text-neutral-900 lg:h-7 lg:w-7" strokeWidth={2} />
+          {/* Gradient wash fades in — background can't transition solid→gradient */}
+          <span className="absolute inset-0 rounded-full opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100" style={{ background: "var(--primary-gradient)" }} />
+          <ChevronRight className="relative h-6 w-6 text-neutral-900 transition-colors duration-300 group-hover:text-white lg:h-7 lg:w-7" strokeWidth={2} />
         </button>
       </div>
     </section>

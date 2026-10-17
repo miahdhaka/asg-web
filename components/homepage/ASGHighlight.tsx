@@ -417,7 +417,7 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
             row exactly — there h-full changes nothing because the row's
             children are vertically centered, and lg:justify-center keeps the
             horizontal centering. */}
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-evenly lg:justify-center gap-0 lg:gap-32 h-full w-full ">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-evenly lg:justify-center gap-5 lg:gap-32 h-full w-full pb-10 sm:pb-0">
           {/* Left side — Title (flex-1 only at lg: on mobile it must stay
               content-sized so justify-evenly can distribute the y-space) */}
           <div className="lg:flex-1 text-left mt-32 lg:mt-0">
@@ -430,7 +430,7 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
           {/* Center — Capsule with lens-shaped number scroll */}
           <div
             ref={capsuleRef}
-            className="relative w-[calc(100vw-2rem)] h-[clamp(178px,25vw,378px)] shrink-0 self-center overflow-hidden rounded-full lg:w-[clamp(280px,52vw,760px)] lg:h-[clamp(170px,24vw,360px)]"
+            className="relative w-[calc(100vw-2rem)] h-[clamp(178px,25vw,378px)] shrink-0 self-center overflow-hidden rounded-full lg:w-[clamp(280px,52vw,760px)] lg:h-[clamp(170px,24vw,360px)] my-8 sm:my-0"
             style={{
               // Mobile: the tube grew a hair — width now bleeds to within 8px
               // of each screen edge (was 16px) and the min height went
@@ -512,7 +512,7 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
               >
                 {/* Gradient icon */}
                 <div
-                  className="w-18 sm:w-16 h-18 sm:h-16 mx-0 mb-4"
+                  className="w-12.5 sm:w-16 h-12.5 sm:h-16 mx-0 mb-2 sm:mb-4"
                   style={{
                     backgroundImage: "var(--primary-gradient)",
                     maskImage: `url(${slide.icon})`,

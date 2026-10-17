@@ -8,13 +8,13 @@ export default function WeVision() {
     <section className="px-4 sm:px-8 lg:px-0 pt-12 pb-6 lg:pt-[5.5rem] lg:pb-[5rem]">
       {/* Text block — left-aligned copy inside a centred column */}
       <div className="mx-auto flex w-full max-w-[46rem] flex-col gap-2 sm:gap-1">
-        <p className="text-sm font-medium text-neutral-800 tracking-wide lg:text-lg">
+        <p className="text-sm font-medium text-[#262626] tracking-wide lg:text-lg">
           {weVision.label}
         </p>
-        <h2 className="font-archivo-black text-[#1A1A1A] text-[1.5rem] leading-[1.15] sm:text-[2.625rem] lg:text-[4rem] lg:leading-[3.75rem]">
+        <h2 className="font-archivo-black text-[#262626] text-[1.5rem] leading-[1.15] sm:text-[2.625rem] lg:text-[4rem] lg:leading-[3.75rem]">
           {weVision.title}
         </h2>
-        <p className="font-neue-montreal text-base leading-7 text-[#1A1A1A] lg:text-[1.3rem] lg:leading-8 mt-3 sm:mt-8">
+        <p className="font-neue-montreal text-sm leading-5.5 text-[#1A1A1A] lg:text-[1.3rem] lg:leading-8 mt-1.5 sm:mt-8">
           {weVision.body}
         </p>
       </div>

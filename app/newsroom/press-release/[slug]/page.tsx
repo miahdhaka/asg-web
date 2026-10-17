@@ -67,14 +67,14 @@ export default async function PressReleaseDetailPage({
       </div>
 
       {/* Info row */}
-      <div className="flex w-full flex-wrap items-center justify-between sm:justify-start gap-3 sm:gap-6 mt-6 sm:mt-10">
+      <div className="flex w-full flex-wrap items-center justify-between sm:justify-start gap-4 sm:gap-6 mt-6 sm:mt-10">
         {/* Published date */}
         <span className="font-neue-montreal text-xs sm:text-[1rem] leading-[1.25rem] tracking-wider text-neutral-800">
           Published: {article.publishedAt}
         </span>
 
         {/* Newspaper source icon */}
-        <div className="bg-gray-100 p-2 sm:p-3">
+        <div className="bg-white rounded-lg p-2 sm:p-3">
           <Image
             src="/images/newsroom/prothom-alo.png"
             alt="Prothom Alo"
@@ -82,7 +82,7 @@ export default async function PressReleaseDetailPage({
             height={1080}
             priority
             quality={90}
-            className="w-[3.5rem] sm:w-[5rem] object-contain"
+            className="w-[5rem] sm:w-[5rem] object-contain"
           />
         </div>
 

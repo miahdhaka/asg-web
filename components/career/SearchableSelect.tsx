@@ -148,8 +148,8 @@ export default function SearchableSelect({
                   disabled
                     ? "text-neutral-400 cursor-not-allowed"
                     : !value
-                      ? "bg-gray-50 text-neutral-800 font-medium"
-                      : "text-neutral-600 hover:bg-[image:var(--primary-gradient)] hover:text-white cursor-pointer"
+                      ? "bg-[image:var(--primary-gradient)] text-white font-medium"
+                      : "text-neutral-600 hover:bg-[image:var(--primary-gradient-light)] hover:text-neutral-800 cursor-pointer"
                 }`}
                 onClick={() => {
                   if (disabled) return;
@@ -166,7 +166,7 @@ export default function SearchableSelect({
                   key={opt}
                   type="button"
                   className={`w-full px-3 py-2.5 text-left text-xs transition-colors lg:px-4 lg:py-3 lg:text-sm ${
-                    value === opt ? "bg-gray-50 text-neutral-800 font-medium" : "text-neutral-600 hover:bg-[image:var(--primary-gradient)] hover:text-white cursor-pointer"
+                    value === opt ? "bg-[image:var(--primary-gradient)] text-white font-medium" : "text-neutral-600 hover:bg-[image:var(--primary-gradient-light)] hover:text-neutral-800 cursor-pointer"
                   }`}
                   onClick={() => {
                     onChange(opt);

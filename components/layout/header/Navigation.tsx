@@ -6,22 +6,39 @@ import { usePathname } from "next/navigation";
 import { navCategories } from "./navData";
 import type { NavCategory, MegaMenuItem } from "./types";
 
+/* Gradient text for the category whose page (or child page) is currently shown
+   — mirrors the mobile sidebar active treatment. */
+const gradientTextStyle = {
+  background: "var(--primary-gradient)",
+  WebkitBackgroundClip: "text",
+  backgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+} as const;
+
+function isRouteActive(pathname: string, href?: string) {
+  if (!href) return false;
+  return pathname === href || pathname.startsWith(href + "/");
+}
+
 /* ─── Shared label + green gradient bottom border ───
    Hovering (or the mega menu being open on) an item draws a gradient border
    line under it. Plain direct links (e.g. Contact) skip the underline —
-   only mega-menu categories get it. */
+   only mega-menu categories get it. `textActive` lights the label itself with
+   the gradient when it is the current page. */
 function NavLabel({
   label,
   active,
   underline = true,
+  textActive = false,
 }: {
   label: string;
   active: boolean;
   underline?: boolean;
+  textActive?: boolean;
 }) {
   return (
     <span className="relative inline-block">
-      {label}
+      <span style={textActive ? gradientTextStyle : undefined}>{label}</span>
       {underline && (
         <span
           className={`absolute -bottom-[calc(var(--header-row-h)/2_-_0.62em)] left-0 right-0 z-10 h-[3px] origin-left bg-[image:var(--primary-gradient)] transition-transform duration-300 ease-out ${
@@ -54,6 +71,12 @@ function NavItem({
   const hasMega = !!(category.megaMenu && category.megaItems);
   const active = activeLabel === category.label;
 
+  // Whether this category (or one of its children) is the page being viewed.
+  const navItems = category.megaItems ?? category.children ?? [];
+  const currentActive =
+    isRouteActive(pathname, category.href) ||
+    navItems.some((item) => isRouteActive(pathname, item.href));
+
   /* Open the mega menu on hover, but only once the pill is FULLY open.
      We never close from here — the Header closes when the cursor leaves the
      whole pill, so moving down into the mega keeps it open. Depending on
@@ -79,7 +102,7 @@ function NavItem({
         onMouseEnter={() => onMenuChange?.(null, null)}
         className="group/navitem relative cursor-pointer text-[length:var(--nav-font-size)] font-medium text-nowrap text-neutral-800 transition-colors duration-200 ease-in-out font-neue-montreal hover:text-neutral-950"
       >
-        <NavLabel label={category.label} active={false} underline={false} />
+        <NavLabel label={category.label} active={false} underline={false} textActive={currentActive} />
       </Link>
     );
   }
@@ -97,7 +120,7 @@ function NavItem({
           active ? "text-neutral-950" : "text-neutral-800 hover:text-neutral-950"
         }`}
       >
-        <NavLabel label={category.label} active={active} />
+        <NavLabel label={category.label} active={active} textActive={currentActive} />
       </button>
     </div>
   );

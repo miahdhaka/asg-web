@@ -89,8 +89,8 @@ export default function CareerApplicationForm({
     {
       id: 1,
       title: "",
-      company: "Amanat Shah Group A&S",
-      organization: "Amanat Shah Group A&S",
+      company: "",
+      organization: "",
       description: "",
       from: "",
       to: "",
@@ -567,6 +567,7 @@ export default function CareerApplicationForm({
           </div>
         </section>
 
+        {/* Experience Information */}
         <section className="rounded-2xl bg-gray-50 px-4 py-6 mt-8 sm:mt-10 sm:px-6 sm:py-8 lg:px-8 lg:mt-12">
           <div className="flex h-12 items-center justify-between border-b border-gray-200 pb-5 sm:h-14 sm:pb-7 lg:h-14 lg:pb-7">
             <div className="flex items-center gap-2">
@@ -635,9 +636,9 @@ export default function CareerApplicationForm({
                 /* ---- Edit form (open) ---- */
                 <div data-exp-form>
                   <div className="grid grid-cols-1 gap-x-4 gap-y-5 md:grid-cols-2">
-                    {renderField(`exp-${experience.id}-title`, "Title", experience.title, (v) => updateExperience(experience.id, "title", v), { placeholder: "UI" })}
-                    {renderField(`exp-${experience.id}-company`, "Company", experience.company, (v) => updateExperience(experience.id, "company", v), { placeholder: "Amanat Shah Group A&S" })}
-                    {renderField(`exp-${experience.id}-org`, "Office location", experience.organization, (v) => updateExperience(experience.id, "organization", v), { placeholder: "Amanat Shah Group A&S", required: false })}
+                    {renderField(`exp-${experience.id}-title`, "Title", experience.title, (v) => updateExperience(experience.id, "title", v), { placeholder: "Frontend Developer" })}
+                    {renderField(`exp-${experience.id}-company`, "Company", experience.company, (v) => updateExperience(experience.id, "company", v), { placeholder: "Amanat Shah Group Limited" })}
+                    {renderField(`exp-${experience.id}-org`, "Office location", experience.organization, (v) => updateExperience(experience.id, "organization", v), { placeholder: "Baridhara DOHS, Dhaka", required: false })}
 
                     <div className="md:col-span-2">
                       <label className={labelClass}>Description</label>
@@ -704,10 +705,7 @@ export default function CareerApplicationForm({
 
         </section>
 
-        {/* ======================================================== */}
-        {/* EDUCATION                                                */}
-        {/* ======================================================== */}
-
+        {/* Education Information */}
         <section className="rounded-2xl bg-gray-50 px-4 py-6 mt-8 sm:mt-10 sm:px-6 sm:py-8 lg:px-8 lg:mt-12">
           <div className="flex h-12 items-center justify-between border-b border-gray-200 pb-5 sm:h-14 sm:pb-7 lg:h-14 lg:pb-7">
             <div className="flex items-center gap-2">
@@ -850,7 +848,7 @@ export default function CareerApplicationForm({
           </div>
         </section>
 
-        {/* PROFILES */}
+        {/* Profiles Information */}
         <section className="mt-6 sm:mt-8 rounded-2xl bg-[#f8f9fa] px-4 py-4 sm:px-5 sm:py-5">
           <h2 className="mb-3 font-archivo-black text-lg lg:text-[1.5rem] font-medium text-neutral-800">Your profiles</h2>
 
@@ -876,6 +874,7 @@ export default function CareerApplicationForm({
           </div>
         </section>
 
+        {/* Upload CV/Resume Information */}
         <section className="rounded-2xl bg-gray-50 px-4 py-6 mt-8 sm:mt-10 sm:px-6 sm:py-8 lg:px-8 lg:mt-12">
           <h2 className="font-archivo-black text-lg lg:text-[1.5rem] font-medium text-neutral-800">Upload your CV or resume</h2>
 

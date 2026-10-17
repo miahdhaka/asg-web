@@ -43,10 +43,10 @@ export default function WeFeatureCard({ data, side, divider }: WeFeatureCardProp
               <p className="text-sm font-medium text-neutral-800 tracking-wide lg:text-lg">
                 {data.label}
               </p>
-              <h2 className="font-archivo-black text-[#1A1A1A] text-[1.125rem] leading-[1.3] sm:text-[2.375rem] sm:leading-[1.15] lg:text-[3rem] lg:leading-[3.25rem] max-w-none sm:max-w-[70%]">
+              <h2 className="font-archivo-black text-[#262626] text-[1.125rem] leading-[1.3] sm:text-[2.375rem] sm:leading-[1.15] lg:text-[3rem] lg:leading-[3.25rem] max-w-none sm:max-w-[70%]">
                 {data.title}
               </h2>
-              <p className="font-neue-montreal text-base leading-7 text-[#1A1A1A] lg:text-xl lg:leading-8 mt-3 sm:mt-0">
+              <p className="font-neue-montreal text-sm leading-5.5 text-[#1A1A1A] lg:text-xl lg:leading-8 mt-3 sm:mt-0">
                 {data.body}
               </p>
             </div>

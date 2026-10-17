@@ -154,22 +154,32 @@ export default function GallerySlider({ images, heading }: GallerySliderProps) {
         ))}
       </div>
 
-      {/* Prev / next controls pinned to the viewport edges */}
+      {/* Prev / next controls pinned to the viewport edges — desktop only.
+          Hover paints the brand gradient over the white disc via an opacity
+          fade (CSS can't transition a solid colour into a gradient). */}
       <button
         type="button"
         aria-label="Previous photo"
         onClick={() => scrollByCard(-1)}
-        className="absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white shadow-md transition-transform duration-300 hover:scale-110 lg:left-10 lg:h-12 lg:w-12"
+        className="group absolute left-4 top-1/2 hidden h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white shadow-md transition-transform duration-300 hover:scale-110 lg:left-10 lg:flex lg:h-12 lg:w-12"
       >
-        <ChevronLeft className="h-6 w-6 text-neutral-900 lg:h-7 lg:w-7" strokeWidth={2} />
+        <span
+          className="absolute inset-0 rounded-full opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"
+          style={{ background: "var(--primary-gradient)" }}
+        />
+        <ChevronLeft className="relative h-6 w-6 text-neutral-900 transition-colors duration-300 group-hover:text-white lg:h-7 lg:w-7" strokeWidth={2} />
       </button>
       <button
         type="button"
         aria-label="Next photo"
         onClick={() => scrollByCard(1)}
-        className="absolute right-4 top-1/2 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white shadow-md transition-transform duration-300 hover:scale-110 lg:right-10 lg:h-12 lg:w-12"
+        className="group absolute right-4 top-1/2 hidden h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white shadow-md transition-transform duration-300 hover:scale-110 lg:right-10 lg:flex lg:h-12 lg:w-12"
       >
-        <ChevronRight className="h-6 w-6 text-neutral-900 lg:h-7 lg:w-7" strokeWidth={2} />
+        <span
+          className="absolute inset-0 rounded-full opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"
+          style={{ background: "var(--primary-gradient)" }}
+        />
+        <ChevronRight className="relative h-6 w-6 text-neutral-900 transition-colors duration-300 group-hover:text-white lg:h-7 lg:w-7" strokeWidth={2} />
       </button>
     </section>
   );

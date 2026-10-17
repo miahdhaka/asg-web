@@ -150,7 +150,7 @@ export default function Newsroom() {
       className="relative flex w-full flex-col overflow-hidden py-0 sm:py-6 lg:py-8 mb-14 sm:mb-6 lg:mb-8 lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Header — eyebrow + title left, button right */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between px-4 lg:px-20 mb-10 sm:mb-12 gap-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between px-4 lg:px-20 gap-6">
         <div className="mt-2 flex flex-col lg:max-w-[55%]">
           <div className="text-sm inline-flex items-center gap-2.5 sm:gap-1.5 font-space-mono font-medium uppercase tracking-wider mb-4.5">
             <span>Newsroom</span>
@@ -213,7 +213,7 @@ export default function Newsroom() {
           duplicated and scrollLeft is wrapped so it loops seamlessly in both
           directions, while the section keeps its single-screen height.
           Desktop keeps the three-column grid (clones hidden). */}
-      <div className="relative flex min-h-0 flex-1 items-start pl-4 pr-0 lg:px-20">
+      <div className="relative flex min-h-0 flex-1 items-start pl-4 pr-0 lg:px-20 mt-10 sm:mt-12 lg:mt-[3em]">
         <div className="relative w-full lg:h-full">
           <div
             ref={stripRef}

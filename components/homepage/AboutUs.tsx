@@ -128,7 +128,7 @@ export default function AboutUs() {
         {/* Building image */}
         <div
           ref={imageRef}
-          className="mt-10 sm:mt-12 lg:mt-[5em] overflow-hidden rounded-[0.75rem] lg:rounded-[1.2rem]"
+          className="mt-10 sm:mt-12 lg:mt-[3em] overflow-hidden rounded-[0.75rem] lg:rounded-[1.2rem]"
         >
           <Image
             src="/images/about-us/home-about-us.png"

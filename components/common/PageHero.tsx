@@ -105,7 +105,7 @@ export default function PageHero({
       )}
 
       {/* Title + subtitle — bottom-center */}
-      <div className="absolute inset-x-0 bottom-32 sm:bottom-36 lg:bottom-[13em] z-10 flex flex-col items-center gap-2.5 sm:gap-4.5 lg:gap-[1.375rem] px-4 text-center">
+      <div className="absolute inset-x-0 bottom-32 sm:bottom-36 lg:bottom-[13em] z-10 flex flex-col items-center gap-2.5 sm:gap-4.5 lg:gap-[1.375rem] px-6 text-center">
         <h1 className="whitespace-pre-line leading-[1.05] text-[1.3125rem] sm:text-[2.625rem] lg:text-[3.625rem] text-white font-archivo-black uppercase">
           {title}
         </h1>

@@ -729,9 +729,11 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
             window.scrollTo(0, self.end - 2);
           }
         },
-        // Unmute on re-entry — the concern never changed so it's still the last one.
+        // Keep the concern frozen from ASGHighlight's influence on re-entry.
+        // The Hero's own wheel handler steps concerns; ASGHighlight residual
+        // ticks would otherwise jump the index to 0/1/4/6 on upward scroll.
         onEnterBack: () => {
-          pinLeft = false;
+          // pinLeft stays true — prevent ASGHighlight from overriding concern
         },
       });
 
@@ -807,14 +809,23 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
 
         if (y > st.end) return; // past the pin: nothing to hold anymore
         if (y < bandStart() - 1) {
-          // Back in the intro: the story starts over from the first concern.
-          if (activeConcernRef.current !== 0) setConcern(0);
+          // Fast upward drift can push scrollY above the band even when the
+          // wheel was prevented — only treat it as a real intro entry when
+          // the user is already at concern 0 (legitimate backward exit).
+          if (activeConcernRef.current !== 0) {
+            park(); // re-anchor the drift
+          }
           return;
         }
         if (down && activeConcernRef.current !== LAST_IDX) {
           const beyondAnchor = y > bandStart() + notchPx * 0.6;
           const wheelIsSilent = performance.now() - lastDeltaAt > INERTIA_QUIET_MS;
           if (beyondAnchor && wheelIsSilent) requestStep(1);
+          park();
+        }
+        // Park upward drift: if scrollY crept below the anchor (not at first
+        // concern), re-anchor so the fast scroll can't skip back to concern 0.
+        if (!down && activeConcernRef.current !== 0) {
           park();
         }
       };
@@ -892,7 +903,7 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
 
       {/* Left side content — desktop column only (mobile uses the sheet below) */}
       <div ref={leftContentRef} className="absolute left-4 right-4 top-0 bottom-0 z-20 hidden items-start pt-24 lg:flex lg:left-[4%] lg:right-auto lg:max-w-[28rem] lg:items-center lg:pt-0 text-[var(--neutral-800)]">
-        <div>
+        <div className="lg:h-[20rem]">
           <div className="text-sm sm:text-base inline-flex items-center gap-1 sm:gap-1.5 font-space-mono font-medium text-[var(--neutral-800)] uppercase tracking-wider mb-2 sm:mb-5">
             <span>OUR BUSINESS</span>
             <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: "var(--primary-gradient)" }} />

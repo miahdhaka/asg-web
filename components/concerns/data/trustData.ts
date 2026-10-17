@@ -68,7 +68,7 @@ export const trustCoreValues = {
 
 /* ── Processing strip ── */
 export const trustProcessing = {
-  title: "Trust Knitwear Processing\nExcellence",
+  title: "Trust Knitwear \nProcessing Excellence",
   slides: [
     { src: "/images/concerns/trust-knitwear-industries/processing-1.webp", alt: "Knitwear production line" },
     { src: "/images/concerns/trust-knitwear-industries/processing-2.webp", alt: "Dyeing and finishing operations" },

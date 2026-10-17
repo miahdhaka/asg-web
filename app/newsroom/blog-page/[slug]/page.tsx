@@ -48,20 +48,20 @@ export default async function BlogDetailPage({
         {/* ── Title block ───────────────────────────────────────────── */}
         <div className="w-full">
           <div className="flex items-center gap-2">
-            <span className="font-neue-montreal text-xs sm:text-[0.95rem] tracking-wide leading-[1.25rem] text-neutral-800">
+            <span className="font-neue-montreal text-sm sm:text-[0.95rem] tracking-wide leading-[1.25rem] text-neutral-800">
               {post.label}
             </span>
             <span aria-hidden className="h-[0.8125rem] w-px bg-neutral-600" />
-            <span className="font-neue-montreal text-xs sm:text-[0.95rem] tracking-wide leading-[1.25rem] text-neutral-800">
+            <span className="font-neue-montreal text-sm sm:text-[0.95rem] tracking-wide leading-[1.25rem] text-neutral-800">
               {post.category}
             </span>
           </div>
 
-          <h1 className="mt-2 font-archivo-black text-[1.125rem] sm:text-[3rem] leading-[1.75rem] sm:leading-[3.3rem] font-normal text-black">
+          <h1 className="mt-2 font-archivo-black text-2xl sm:text-[3rem] leading-8 sm:leading-[3.3rem] font-normal text-black">
             {post.title}
           </h1>
 
-          <p className="mt-4 font-neue-montreal text-xs sm:text-[0.9rem] leading-[1.25rem] tracking-wider text-neutral-800">
+          <p className="mt-4 font-neue-montreal text-sm sm:text-[0.9rem] leading-[1.25rem] tracking-wider text-neutral-800">
             Published: {post.publishedAt}
           </p>
         </div>
@@ -81,7 +81,7 @@ export default async function BlogDetailPage({
         </div>
 
         {/* ── Body paragraphs ───────────────────────────────────────── */}
-        <p className="font-archivo-black text-[1.25rem] font-bold sm:text-[1.2rem] leading-[1.6] lg:text-[2rem]">
+        <p className="font-archivo-black text-lg font-medium sm:text-[1.2rem] leading-[1.6] lg:text-[2rem]">
           {post.lead}
         </p>
 
@@ -89,7 +89,7 @@ export default async function BlogDetailPage({
           {post.body.map((p, i) => (
             <p
               key={i}
-              className="font-neue-montreal text-base text-neutral-700 sm:text-[1.15rem] leading-[1.4] text-justify tracking-wider"
+              className="font-neue-montreal text-sm text-neutral-700 sm:text-[1.15rem] leading-[1.5] text-justify tracking-wider"
             >
               {p}
             </p>
@@ -98,7 +98,7 @@ export default async function BlogDetailPage({
 
         {/* ── "A look inside…" wide photo + gallery row ─────────────── */}
         <section className="flex flex-col gap-5 lg:gap-[1rem] mt-6 sm:mt-[2.2rem]">
-          <h2 className="font-archivo-black text-2xl text-neutral-900 sm:text-[1.5rem] lg:text-[2.85rem] tracking-wide">
+          <h2 className="font-archivo-black text-2xl sm:text-[3rem] leading-8 sm:leading-[3.3rem] font-normal text-black mb-0 sm:mb-4">
             {post.eventSection.heading}
           </h2>
 
@@ -129,7 +129,7 @@ export default async function BlogDetailPage({
       </div>
 
       {/* ── Gallery slider — separate full-bleed section, no side padding ── */}
-      <div className="my-10 lg:my-[5.2rem]">
+      <div className="my-10 lg:my-[5.2rem] pl-4 md:pl-0">
         <GallerySlider
           images={post.eventSection.galleryImages}
           heading={post.eventSection.heading}
@@ -139,7 +139,7 @@ export default async function BlogDetailPage({
       <div className="mx-auto flex w-full max-w-[84rem] flex-col gap-8 px-4 sm:px-6 lg:gap-[2.2rem] lg:px-[4.167rem]">
         {/* ── "EXCLUSIVE ASG EVENTS" 3-card grid ────────────────────── */}
         <section className="flex flex-col gap-6 lg:gap-[2.5rem] pb-5 sm:pb-[3rem]">
-          <h2 className="font-archivo-black text-2xl text-neutral-900 sm:text-[1.5rem] lg:text-[2.85rem] tracking-wide max-w-[20rem] sm:max-w-[30rem] leading-[1.15] uppercase">
+          <h2 className="font-archivo-black text-2xl sm:text-[3rem] leading-8 sm:leading-[3.3rem] font-normal text-black max-w-[20rem] sm:max-w-[30rem] leading-[1.15] uppercase">
             {post.exclusiveEvents.heading}
           </h2>
 
@@ -175,10 +175,10 @@ export default async function BlogDetailPage({
         <section className="relative left-1/2 w-screen -translate-x-1/2 bg-white py-12 sm:py-16 lg:py-20">
           <div className="mx-auto grid w-full max-w-[84rem] grid-cols-1 items-center gap-8 px-4 sm:px-6 lg:grid-cols-[1fr_1.5fr] lg:gap-[4rem] lg:px-[4.167rem]">
             <div className="flex flex-col gap-5 lg:gap-[1.25rem]">
-              <h2 className="font-archivo-black text-2xl text-neutral-900 sm:text-[1.5rem] lg:text-[2.85rem] tracking-wide leading-[1.15]">
+              <h2 className="font-archivo-black text-2xl sm:text-[3rem] leading-8.5 sm:leading-[3.3rem] font-normal text-black max-w-[20rem] sm:max-w-[30rem] lg:leading-[1.15]">
                 {post.collectionSection.heading}
               </h2>
-              <p className="font-neue-montreal text-base text-neutral-700 sm:text-[1.15rem] leading-[1.4] text-justify tracking-wider">
+              <p className="font-neue-montreal text-sm text-neutral-700 sm:text-[1.15rem] leading-[1.5] text-justify tracking-wider">
                 {post.collectionSection.description}
               </p>
             </div>

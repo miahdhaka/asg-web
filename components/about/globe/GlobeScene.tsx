@@ -558,12 +558,17 @@ function CameraRig({
     const H = size.height;
     const mobile = W < 820;
     const cx = mobile ? 0.5 : 0.7;
-    const cy = mobile ? 0.65 : 0.5;
-    // Globe size as a fraction of the viewport. On mobile the copy sits at the
-    // top, so the globe sits clear of the description above and the brand
-    // marquee below, with a margin on both side edges. It is raised (cy 0.65) and
-    // enlarged on mobile; the desktop framing below is unchanged.
-    const D = mobile ? Math.min(W * 0.84, H * 0.46) : Math.min(H * 0.82, W * 0.53);
+    // Vertical centre as a fraction of the viewport. On mobile the copy sits at
+    // the top and the brand marquee at the bottom, so the globe is centred in the
+    // band between them (cy 0.68) to keep the gaps above and below it equal;
+    // desktop keeps it centred.
+    const cy = mobile ? 0.68 : 0.5;
+    // Globe size as a fraction of the viewport. On mobile it is kept large enough
+    // that the DOM cards anchored to its surface stay on the disc, with a margin on
+    // both side edges. On desktop it is sized close to the full viewport height.
+    // The equal-gap centre (cy above) is independent of this radius, so trimming
+    // the mobile globe leaves the top/bottom gaps balanced.
+    const D = mobile ? Math.min(W * 0.8, H * 0.44) : Math.min(H * 0.82, W * 0.54);
 
     cam.fov = 30;
     const k = (D / H) * Math.tan((cam.fov * DEG) / 2);

@@ -214,16 +214,16 @@ function MilestoneEntry({ milestone, index }: { milestone: Milestone; index: num
           {/* Text block */}
           <div
             ref={textRef}
-            className={`flex flex-col gap-2 lg:gap-4 opacity-0 ${index % 2 !== 0 ? "lg:order-last" : "lg:justify-self-end"}`}
+            className={`flex flex-col gap-2 lg:gap-4 opacity-0 max-w-[32.5rem] ${index % 2 !== 0 ? "lg:order-last" : "lg:justify-self-end"}`}
           >
             <span className="font-archivo-black font-medium text-[2.75rem] sm:text-[5rem] leading-[1.167] text-neutral-800">
               {milestone.year}
             </span>
             <div className="flex flex-col gap-3">
-              <h3 className="font-archivo-black font-medium text-xl sm:text-[2rem] leading-8 lg:leading-[1.5] text-neutral-800">
+              <h3 className="font-archivo-black font-medium text-xl sm:text-[2rem] leading-8 lg:leading-[1.3] text-neutral-800">
                 {milestone.title}
               </h3>
-              <p className="text-sm text-neutral-800 font-neue-montreal leading-5 tracking-wide max-w-[25.4375rem] lg:max-w-[35rem]">
+              <p className="text-sm sm:text-base text-neutral-800 font-neue-montreal leading-5 sm:leading-6.5 tracking-wide max-w-[25.4375rem] lg:max-w-[35rem]">
                 {milestone.description}
               </p>
             </div>
@@ -232,7 +232,7 @@ function MilestoneEntry({ milestone, index }: { milestone: Milestone; index: num
           {/* Image block */}
           <div
             ref={imageRef}
-            className={`relative w-full overflow-hidden rounded-sm opacity-0 ${index % 2 !== 0 ? "lg:order-first" : ""}`}
+            className={`relative w-full overflow-hidden rounded-[0.8rem] lg:rounded-[1.2rem] opacity-0 ${index % 2 !== 0 ? "lg:order-first" : ""}`}
             style={{ aspectRatio: "553 / 320" }}
           >
             <Image
@@ -241,7 +241,7 @@ function MilestoneEntry({ milestone, index }: { milestone: Milestone; index: num
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
               quality={85}
-              className="object-cover"
+              className="rounded-[0.8rem] lg:rounded-[1.2rem] object-cover"
             />
           </div>
         </div>

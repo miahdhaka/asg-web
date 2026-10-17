@@ -21,10 +21,10 @@ export default function CsrPeopleFirst() {
 
         {/* Text column — above the photo on mobile, right on desktop */}
         <div className="order-1 flex w-full flex-col gap-3 lg:order-2 lg:max-w-[26rem] lg:shrink-0">
-          <h2 className="font-archivo-black text-[#1A1A1A] text-xl sm:text-[1.75rem] lg:text-[2.85rem] lg:leading-[3.125rem] max-w-[14rem] sm:max-w-full">
+          <h2 className="font-archivo-black text-[#262626] text-xl sm:text-[1.75rem] lg:text-[2.85rem] lg:leading-[3.125rem] max-w-[14rem] sm:max-w-full">
             {csrPeopleFirst.title}
           </h2>
-          <p className="text-[17px] lg:text-[21px] leading-6 lg:leading-[2rem] text-[#1A1A1A] tracking-wide">
+          <p className="text-[15px] lg:text-[21px] leading-5.5 lg:leading-[2rem] text-[#1A1A1A] tracking-wide">
             {csrPeopleFirst.description}
           </p>
         </div>

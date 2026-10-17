@@ -72,9 +72,6 @@
   --color-error-400: var(--error-400);
   --color-error-500: var(--error-500);
   --color-error-600: var(--error-600);
-
-  /* Gradient color */
-  --primary-gradient: var(--primary-gradient);
 }
 
 :root {
@@ -158,6 +155,8 @@
 
   /* Gradient color */
   --primary-gradient: linear-gradient(97.37deg, #8BC34A 1.29%, #1AA179 92.01%);
+  /* Light wash of the primary gradient — used for dropdown option hover */
+  --primary-gradient-light: linear-gradient(97.37deg, rgba(139, 195, 74, 0.15) 1.29%, rgba(26, 161, 121, 0.15) 92.01%);
 }
 
 /* Site Overlays Start */
@@ -169,6 +168,14 @@
 }
 .overlay-black-linear {
   background: linear-gradient(360deg, rgba(12, 12, 12, 0.8) -0.09%, rgba(0, 0, 0, 0) 59.41%);
+}
+/* GreenerFuture card hover: built directly on top of the shared
+   .overlay-black-linear gradient (its exact value is the bottom layer) with an
+   extra darkening layer stacked above, so only this section reads stronger. */
+.overlay-black-linear-greener {
+  background:
+    linear-gradient(360deg, rgba(12, 12, 12, 0.15) -0.09%, rgba(0, 0, 0, 0) 68%),
+    linear-gradient(360deg, rgba(12, 12, 12, 0.8) -0.09%, rgba(0, 0, 0, 0) 59.41%);
 }
 .overlay-linear-subtle{
   background: linear-gradient(360deg, #0C0C0C 5.97%, rgba(0, 0, 0, 0) 70.45%);
@@ -283,6 +290,7 @@ html.asg-touch-lock * {
   content: "";
   position: absolute;
   inset: 0;
+  border-radius: inherit;
   z-index: -1;
   background: linear-gradient(97.37deg, rgba(139, 195, 74, 0.2) 1.29%, rgba(26, 161, 121, 0.2) 88.53%);
   opacity: 0;
