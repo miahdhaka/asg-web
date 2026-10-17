@@ -78,7 +78,7 @@ export default function AboutIntro() {
                   <Link
                     key={link.label}
                     href={link.href}
-                    className="font-neue-montreal text-base text-[#262626] bg-clip-text underline decoration-[#262626] underline-offset-2 transition-all duration-500 hover:text-transparent hover:decoration-[#1AA179]"
+                    className="font-neue-montreal text-base  bg-clip-text underline text-[#262626] underline-offset-2 transition-all duration-500 hover:text-transparent hover:decoration-[#1AA179]"
                     style={{ backgroundImage: "var(--primary-gradient)" }}
                   >
                     {link.label}

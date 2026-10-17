@@ -29,25 +29,51 @@ export default function LegacyOfLeadership() {
         return;
       }
 
-      gsap
-        .timeline({
-          scrollTrigger: {
-            trigger: panel,
-            start: "top 82%",
-            toggleActions: "play none none reverse",
-          },
-        })
-        .fromTo(
-          portrait,
-          { y: 80, scale: 0.94 },
-          {
-            y: 0,
-            scale: 1,
-            duration: 1.35,
-            ease: "power3.out",
-            force3D: true,
-          },
-        );
+      const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+
+      if (isDesktop) {
+        gsap
+          .timeline({
+            scrollTrigger: {
+              trigger: panel,
+              start: "top 82%",
+              toggleActions: "play none none reverse",
+            },
+          })
+          .fromTo(
+            portrait,
+            { y: 80, scale: 0.94 },
+            {
+              y: 0,
+              scale: 1,
+              duration: 1.35,
+              ease: "power3.out",
+              force3D: true,
+            },
+          );
+      } else {
+        // Mobile: trigger on the portrait itself so the animation fires as it
+        // enters the viewport, not after the panel is already well in view.
+        gsap
+          .timeline({
+            scrollTrigger: {
+              trigger: portrait,
+              start: "top 92%",
+              toggleActions: "play none none reverse",
+            },
+          })
+          .fromTo(
+            portrait,
+            { y: 60, scale: 0.85 },
+            {
+              y: 0,
+              scale: 1,
+              duration: 1.1,
+              ease: "power3.out",
+              force3D: true,
+            },
+          );
+      }
     }, section);
 
     return () => ctx.revert();
@@ -82,7 +108,7 @@ export default function LegacyOfLeadership() {
 
         <div
           ref={panelRef}
-          className="relative mt-34 pt-[20.5rem] md:mt-28 md:block md:min-h-[58rem] md:pt-0 lg:mt-[7.125rem] lg:min-h-0 lg:flex-1"
+          className="relative mt-24 pt-[20.5rem] md:mt-28 md:block md:min-h-[58rem] md:pt-0 lg:mt-[7.125rem] lg:min-h-0 lg:flex-1"
         >
           <div className="absolute inset-y-0 -left-6 -right-6 overflow-hidden rounded-t-[3rem] sm:rounded-t-[2rem] md:inset-0 md:rounded-t-[1.5rem]">
             <div aria-hidden className="absolute inset-0">

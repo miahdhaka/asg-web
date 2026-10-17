@@ -193,8 +193,8 @@ export default function ConcernProcessing({
   }, [isDragging, normalizeLoop]);
 
   return (
-    <section id={sectionId} className="w-full pt-10 lg:pt-[5em]">
-      <h2 className="px-4 font-archivo-black uppercase text-2xl sm:text-4xl text-neutral-800 sm:px-6 lg:px-[5rem] lg:text-[3em] lg:leading-[1]">
+    <section id={sectionId} className="w-full pt-8 lg:pt-[5em]">
+      <h2 className="px-4 font-archivo-black uppercase text-lg sm:text-4xl text-neutral-800 sm:px-6 lg:px-[5rem] lg:text-[3em] lg:leading-[1.2]">
         {title.split("\n").map((line, i) => (
           <Fragment key={line}>
             {i > 0 && <br />}

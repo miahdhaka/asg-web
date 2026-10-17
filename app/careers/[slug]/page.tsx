@@ -243,7 +243,7 @@ export default async function JobDetailPage({
           <button
             type="button"
             aria-label="Share on LinkedIn"
-            className="group relative flex size-9 sm:size-10 cursor-pointer items-center justify-center rounded-full bg-gray-100 transition-colors duration-500 ease-in-out hover:border-transparent before:absolute before:inset-0 before:rounded-full before:bg-[image:var(--primary-gradient)] before:opacity-0 before:transition-opacity before:duration-500 before:ease-in-out hover:before:opacity-100"
+            className="group relative flex size-9 sm:size-10 cursor-pointer items-center justify-center rounded-full bg-white transition-colors duration-500 ease-in-out hover:border-transparent before:absolute before:inset-0 before:rounded-full before:bg-[image:var(--primary-gradient)] before:opacity-0 before:transition-opacity before:duration-500 before:ease-in-out hover:before:opacity-100"
           >
             <Image
               src="/icons/social-icon/linkedin.png"
@@ -258,7 +258,7 @@ export default async function JobDetailPage({
           <button
             type="button"
             aria-label="Share on Facebook"
-            className="group relative flex size-9 sm:size-10 cursor-pointer items-center justify-center rounded-full bg-gray-100 transition-colors duration-500 ease-in-out hover:border-transparent before:absolute before:inset-0 before:rounded-full before:bg-[image:var(--primary-gradient)] before:opacity-0 before:transition-opacity before:duration-500 before:ease-in-out hover:before:opacity-100"
+            className="group relative flex size-9 sm:size-10 cursor-pointer items-center justify-center rounded-full bg-white transition-colors duration-500 ease-in-out hover:border-transparent before:absolute before:inset-0 before:rounded-full before:bg-[image:var(--primary-gradient)] before:opacity-0 before:transition-opacity before:duration-500 before:ease-in-out hover:before:opacity-100"
           >
             <Image
               src="/icons/social-icon/facebook.png"
@@ -273,7 +273,7 @@ export default async function JobDetailPage({
           <button
             type="button"
             aria-label="Share on Instagram"
-            className="group relative flex size-9 sm:size-10 cursor-pointer items-center justify-center rounded-full bg-gray-100 transition-colors duration-500 ease-in-out hover:border-transparent before:absolute before:inset-0 before:rounded-full before:bg-[image:var(--primary-gradient)] before:opacity-0 before:transition-opacity before:duration-500 before:ease-in-out hover:before:opacity-100"
+            className="group relative flex size-9 sm:size-10 cursor-pointer items-center justify-center rounded-full bg-white transition-colors duration-500 ease-in-out hover:border-transparent before:absolute before:inset-0 before:rounded-full before:bg-[image:var(--primary-gradient)] before:opacity-0 before:transition-opacity before:duration-500 before:ease-in-out hover:before:opacity-100"
           >
             <Image
               src="/icons/social-icon/instagram.png"

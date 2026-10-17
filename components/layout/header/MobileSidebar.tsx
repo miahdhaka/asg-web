@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { X, ChevronRight, Search as SearchIcon } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -10,6 +11,22 @@ import { navCategories } from "./navData";
 import type { NavCategory } from "./types";
 
 gsap.registerPlugin(useGSAP);
+
+/* Gradient text applied to whichever sidebar entry matches the current page.
+   Mobile drawer only — the desktop nav keeps its own active treatment. */
+const gradientTextStyle = {
+  background: "var(--primary-gradient)",
+  WebkitBackgroundClip: "text",
+  backgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+} as const;
+
+/* A link is the current page on an exact match or when the path nests under it
+   (e.g. /board-of-directors/chairman is active for /board-of-directors). */
+function isRouteActive(pathname: string, href?: string) {
+  if (!href) return false;
+  return pathname === href || pathname.startsWith(href + "/");
+}
 
 interface MobileSidebarProps {
   isOpen: boolean;
@@ -24,11 +41,13 @@ function SidebarMenuItem({
   isExpanded,
   onToggle,
   onClose,
+  pathname,
 }: {
   category: NavCategory;
   isExpanded: boolean;
   onToggle: () => void;
   onClose: () => void;
+  pathname: string;
 }) {
   const subListRef = useRef<HTMLDivElement>(null);
   const chevronRef = useRef<HTMLSpanElement>(null);
@@ -83,16 +102,23 @@ function SidebarMenuItem({
 
   // Plain link (no subcategories) — e.g. "Contact"
   if (items.length === 0 && category.href) {
+    const active = isRouteActive(pathname, category.href);
     return (
       <Link
         href={category.href}
         onClick={onClose}
         className="flex items-center justify-between border-b border-neutral-200 py-5 font-neue-montreal text-base font-medium text-neutral-900 transition-colors duration-200 active:bg-neutral-50"
+        style={active ? gradientTextStyle : undefined}
       >
         {category.label}
       </Link>
     );
   }
+
+  // The category label lights up when it or any child is the current page.
+  const categoryActive =
+    isRouteActive(pathname, category.href) ||
+    items.some((item) => isRouteActive(pathname, item.href));
 
   return (
     <div className="border-b border-neutral-200">
@@ -102,7 +128,7 @@ function SidebarMenuItem({
         onClick={onToggle}
         className="flex w-full cursor-pointer items-center justify-between py-5 font-neue-montreal text-base font-medium text-neutral-900 transition-colors duration-200"
       >
-        <span>{category.label}</span>
+        <span style={categoryActive ? gradientTextStyle : undefined}>{category.label}</span>
         <span ref={chevronRef} className="flex items-center">
           <ChevronRight className="size-5 text-neutral-500" />
         </span>
@@ -118,16 +144,20 @@ function SidebarMenuItem({
           ref={itemsWrapRef}
           className="flex flex-col pb-1"
         >
-          {items.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              onClick={onClose}
-              className="border-b border-neutral-100 py-3.5 font-neue-montreal text-[15px] text-neutral-700 transition-colors duration-200 last:border-b-0 active:bg-neutral-50"
-            >
-              {item.label}
-            </Link>
-          ))}
+          {items.map((item) => {
+            const itemActive = isRouteActive(pathname, item.href);
+            return (
+              <Link
+                key={item.label}
+                href={item.href}
+                onClick={onClose}
+                className="border-b border-neutral-100 py-3.5 font-neue-montreal text-[15px] text-neutral-700 transition-colors duration-200 last:border-b-0 active:bg-neutral-50"
+                style={itemActive ? gradientTextStyle : undefined}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </div>
       </div>
     </div>
@@ -138,6 +168,7 @@ function SidebarMenuItem({
 export default function MobileSidebar({ isOpen, onClose, onSearchOpen }: MobileSidebarProps) {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const tweenRef = useRef<gsap.core.Tween | null>(null);
+  const pathname = usePathname();
 
   // Track which menu is currently expanded — only one at a time
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
@@ -261,6 +292,7 @@ export default function MobileSidebar({ isOpen, onClose, onSearchOpen }: MobileS
             key={category.label}
             category={category}
             isExpanded={activeMenu === category.label}
+            pathname={pathname}
             onToggle={() =>
               setActiveMenu((prev) =>
                 prev === category.label ? null : category.label,

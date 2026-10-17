@@ -21,10 +21,10 @@ export default function CsrEducationBanner() {
 
         {/* Caption — wider column, bottom-left */}
         <div className="absolute bottom-4 sm:bottom-8 left-4 sm:left-8 right-8 z-10 flex max-w-[56rem] flex-col gap-3 sm:bottom-12 sm:left-12 sm:gap-4">
-          <h2 className="font-archivo-black text-white text-2xl lg:text-[2.5rem] lg:leading-[3rem]">
+          <h2 className="font-archivo-black text-white text-lg lg:text-[2.5rem] lg:leading-[3rem]">
             {csrEducationBanner.title}
           </h2>
-          <p className="font-neue-montreal text-sm leading-6 sm:text-lg sm:leading-7 lg:text-xl lg:leading-8 text-white tracking-wider">
+          <p className="font-neue-montreal text-sm leading-5 sm:text-lg sm:leading-7 lg:text-xl lg:leading-8 text-white tracking-wider">
             {csrEducationBanner.description}
           </p>
         </div>

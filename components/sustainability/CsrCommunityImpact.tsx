@@ -22,10 +22,10 @@ export default function CsrCommunityImpact() {
         {/* Overlapping caption card — 684px wide, 12px radius */}
         <div className="md:relative z-10 mx-auto -mt-[30px] md:-mt-[55px] w-full max-w-[58rem] rounded-xl bg-white px-6 py-6 sm:px-16 lg:py-[2.25rem]">
           <div className="flex flex-col gap-3 mt-8">
-            <h2 className="font-archivo-black text-[#1A1A1A] text-2xl lg:text-[2.5rem] lg:leading-[2.5rem] mb-2">
+            <h2 className="font-archivo-black text-[#262626] text-xl lg:text-[2.5rem] lg:leading-[2.5rem] mb-0 sm:mb-2">
               {csrCommunityImpact.title}
             </h2>
-            <p className="text-base leading-6 sm:text-lg sm:leading-7 lg:text-[21px] lg:leading-[2rem] text-[#1A1A1A] tracking-wider">
+            <p className="text-[15px] leading-5.5 sm:text-lg sm:leading-7 lg:text-[21px] lg:leading-[2rem] text-[#1A1A1A] tracking-wider">
               {csrCommunityImpact.description}
             </p>
           </div>

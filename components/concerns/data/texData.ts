@@ -6,7 +6,7 @@ import type { CoreValueCard } from "@/components/concerns/common/ConcernCoreValu
 
 /* ── Hero ── */
 export const texHero = {
-  title: "Specialized Chemicals For\nHigh-Performance Textile",
+  title: "Specialized Chemicals \nFor High-Performance Textile",
   subtitle: "Your end-to-end textile chemical solution for every processing need",
   imgSrc: "/images/concerns/amanat-shah-tex-solution/hero-tex-banner.avif",
   alt: "Amanat Shah Tex Solution overview",
@@ -33,7 +33,7 @@ export const texIntroParagraphs = [
 
 export const texIntroStats: StatItem[] = [
   { value: 2025, label: "ESTABLISHMENT" },
-  { value: 600, unit: "MT/Month", label: "PRODUCTION CAPACITY" },
+  { value: 600, unit: " MT/Month", label: "PRODUCTION CAPACITY" },
   { value: 99.8, suffix: "%", decimals: 1, label: "TECHNICAL COMPLIANCE RATE" },
   { value: 50, suffix: "+", label: "EMPLOYEES" },
 ];

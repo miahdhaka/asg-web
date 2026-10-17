@@ -118,7 +118,7 @@ export default function ConcernIntro({
     >
       {/* ── Identity row: logo + company name, website CTA on the right ── */}
       <div
-        className={`${COLUMN} flex flex-col items-center gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-[2em]`}
+        className={`${COLUMN} flex flex-col items-center gap-5 lg:flex-row lg:items-center lg:justify-between lg:gap-[2em]`}
       >
         <div>
           <Image

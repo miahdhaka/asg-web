@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import Header from "@/components/layout/header/Header";
 import Footer from "@/components/layout/footer/Footer";
+import ScrollToTop from "@/components/layout/ScrollToTop";
 import "./globals.css";
 
 const neueMontreal = localFont({
@@ -73,6 +74,7 @@ export default function RootLayout({
         <link rel="preload" as="image" href="/logo/ASG-logo.png" />
       </head>
       <body className={`${neueMontreal.variable} ${tiemposFine.variable} ${archivoBlack.variable} ${spaceMono.variable} min-h-screen flex flex-col font-neue-montreal`}>
+        <ScrollToTop />
         <Header />
         {/* Opaque content layer — paints over the footer's fixed -z-10
             wordmark band so it stays hidden until the end-of-page reveal.

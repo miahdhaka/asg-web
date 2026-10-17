@@ -70,7 +70,7 @@ export const weavingCoreValues = {
 
 /* ── Processing strip ── */
 export const weavingProcessing = {
-  title: "Amanat Shah Weaving Processing\nExcellence",
+  title: "Amanat Shah Weaving \nProcessing Excellence",
   slides: [1, 2, 3, 4].map((n) => ({
     src: `/images/concerns/amanat-shah-weaving-processing/processing-${n}.webp`,
     alt: "Weaving looms and fabric processing at the Amanat Shah Weaving Processing facility",

@@ -28,10 +28,10 @@ export const fabricsIntroParagraphs = [
 ];
 
 export const fabricsIntroStats: StatItem[] = [
-  { value: 2.2, suffix: "K", decimals: 1, unit: "Ton/Month", label: "Yarn" },
-  { value: 1.6, suffix: "M", decimals: 1, unit: "Yard/Month", label: "Weaving" },
-  { value: 3.2, suffix: "M", decimals: 1, unit: "Yard/Month", label: "Dyeing / Printing / Finishing" },
-  { value: 1.2, suffix: "K+", decimals: 1, unit: "Skilled & Happy", label: "Employees" },
+  { value: 2.2, suffix: "K", decimals: 1, unit: " Ton/Month", label: "Yarn" },
+  { value: 1.6, suffix: "M", decimals: 1, unit: " Yard/Month", label: "Weaving" },
+  { value: 3.2, suffix: "M", decimals: 1, unit: " Yard/Month", label: "Dyeing / Printing / Finishing" },
+  { value: 1.2, suffix: "K+", decimals: 1, unit: " Skilled & Happy", label: "Employees" },
 ];
 
 /* ── Core values (capabilities) ── */
@@ -65,7 +65,7 @@ export const fabricsCoreValues = {
 
 /* ── Processing strip ── */
 export const fabricsProcessing = {
-  title: "Amanat Shah Fabrics Processing\nExcellence",
+  title: "Amanat Shah Fabrics \nProcessing Excellence",
   slides: [1, 2, 3, 4].map((n) => ({
     src: `/images/concerns/amanat-shah-fabrics/processing-${n}.webp`,
     alt: "Fabric processing at the Amanat Shah Fabrics facility",

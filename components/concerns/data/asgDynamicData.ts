@@ -6,7 +6,7 @@ import type { CoreValueCard } from "@/components/concerns/common/ConcernCoreValu
 
 /* ── Hero ─ */
 export const dynamicHero = {
-  title: "Technology-Driven Consulting For\nBusiness Transformation",
+  title: "Technology-Driven Consulting \nFor Business Transformation",
   subtitle: "Innovative IT solutions, custom software and enterprise systems for modern businesses",
   videoSrc: "/videos/concerns/asg update.webm",
   alt: "ASG Dynamic overview footage",

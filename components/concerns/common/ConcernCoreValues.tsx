@@ -16,9 +16,9 @@ type ConcernCoreValuesProps = {
   cards: CoreValueCard[];
 };
 
-function ValueCard({ card }: { card: CoreValueCard }) {
+function ValueCard({ card, corners }: { card: CoreValueCard; corners?: string }) {
   return (
-    <div className="card-gradient-hover group relative flex flex-col overflow-hidden rounded-2xl border border-[#F5F5F5] bg-background p-5 lg:overflow-visible lg:rounded-none lg:bg-white lg:w-[29.33em] lg:p-[2em]">
+    <div className={`card-gradient-hover group relative flex flex-col overflow-hidden rounded-2xl border border-[#F5F5F5] bg-background p-5 lg:overflow-visible lg:rounded-none lg:bg-white lg:w-[29.33em] lg:p-[2em] ${corners ?? ""}`}>
       <div className="relative flex h-12 w-12 items-center justify-center lg:h-[4.17em] lg:w-[4.17em]">
         {/* Neutral icon — shown by default, fades out on hover */}
         <Image
@@ -46,7 +46,7 @@ function ValueCard({ card }: { card: CoreValueCard }) {
           }}
         />
       </div>
-      <h3 className="relative mt-4 font-archivo-black text-base font-medium text-neutral-800 lg:mt-[1.33em] lg:max-w-[13.67em] lg:text-[1.5em] lg:leading-[1.56]">
+      <h3 className="relative mt-4 font-archivo-black text-base font-medium text-neutral-800 lg:mt-[1.33em] lg:max-w-[13.67em] lg:text-[1.5em] lg:leading-[1.2]">
         {card.title}
       </h3>
       <p className="relative mt-2 text-[13px] text-neutral-800 sm:text-sm lg:mt-[0.67em] lg:max-w-[23.92em] lg:text-[1.17em] lg:leading-[1.43] tracking-wider">
@@ -77,12 +77,12 @@ export default function ConcernCoreValues({
         {/* Staggered card grid — right column sits 69px lower than the left */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-0 lg:flex lg:w-[58.67em] lg:shrink-0">
           <div className="flex flex-col gap-4 sm:gap-0">
-            <ValueCard card={cards[0]} />
-            <ValueCard card={cards[2]} />
+            <ValueCard card={cards[0]} corners="lg:rounded-tl-2xl lg:rounded-tr-2xl" />
+            <ValueCard card={cards[2]} corners="lg:rounded-bl-2xl" />
           </div>
           <div className="flex flex-col gap-4 sm:gap-0 lg:mt-[5.75em]">
-            <ValueCard card={cards[1]} />
-            <ValueCard card={cards[3]} />
+            <ValueCard card={cards[1]} corners="lg:rounded-tr-2xl" />
+            <ValueCard card={cards[3]} corners="lg:rounded-bl-2xl lg:rounded-br-2xl" />
           </div>
         </div>
 
