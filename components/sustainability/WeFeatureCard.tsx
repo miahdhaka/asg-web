@@ -40,13 +40,13 @@ export default function WeFeatureCard({ data, side, divider }: WeFeatureCardProp
             }`}
           >
             <div className="flex h-full flex-col justify-center gap-1.5 sm:gap-3">
-              <p className="text-sm font-medium text-neutral-800 tracking-wide lg:text-lg">
+              <p className="text-sm font-medium text-[#262626] tracking-wide lg:text-lg">
                 {data.label}
               </p>
               <h2 className="font-archivo-black text-[#262626] text-[1.125rem] leading-[1.3] sm:text-[2.375rem] sm:leading-[1.15] lg:text-[3rem] lg:leading-[3.25rem] max-w-none sm:max-w-[70%]">
                 {data.title}
               </h2>
-              <p className="font-neue-montreal text-sm leading-5.5 text-[#1A1A1A] lg:text-xl lg:leading-8 mt-3 sm:mt-0">
+              <p className="font-neue-montreal text-sm leading-5.5 text-[#1A1A1A] lg:text-[1.3rem] lg:leading-8 mt-3 sm:mt-1.5">
                 {data.body}
               </p>
             </div>

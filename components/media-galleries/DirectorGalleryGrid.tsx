@@ -18,7 +18,7 @@ export function DirectorCard({
 }) {
   return (
     <div
-      className={`group flex flex-col gap-4 rounded-md bg-neutral-100 p-3 sm:bg-transparent sm:p-0 ${onSelect ? "cursor-pointer" : ""}`}
+      className={`flex flex-col gap-4 rounded-md bg-neutral-100 p-3 sm:bg-transparent sm:p-0 ${onSelect ? "cursor-pointer" : ""}`}
       onClick={onSelect}
       role={onSelect ? "button" : undefined}
       tabIndex={onSelect ? 0 : undefined}
@@ -33,14 +33,14 @@ export function DirectorCard({
           : undefined
       }
     >
-      <div className="card-gradient-target card-gradient-fast relative aspect-[429/257] w-full overflow-hidden bg-gray-50 rounded-[1.25rem]">
+      <div className="relative aspect-[429/257] w-full overflow-hidden bg-gray-50 rounded-[1.25rem]">
         <Image
           src={card.image}
           alt={card.name}
           fill
           sizes="(min-width: 1024px) 33vw, 100vw"
           draggable={false}
-          className="pointer-events-none object-contain grayscale transition-[filter] duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:grayscale-0"
+          className="pointer-events-none object-contain"
           quality={90}
         />
       </div>

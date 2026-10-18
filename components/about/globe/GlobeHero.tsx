@@ -306,7 +306,10 @@ export default function GlobeHero() {
   return (
     <section
       ref={sectionRef}
-      className="relative isolate min-h-[100svh] w-full overflow-hidden bg-[#04130f] text-white"
+      /* Mobile gets ~15% more height so the globe, which is framed low (cy 0.68
+         of the section height), drops clear of the top-anchored description copy.
+         Desktop keeps the plain full-viewport box. */
+      className="relative isolate min-h-[100svh] max-md:min-h-[105svh] w-full overflow-hidden bg-[#04130f] text-white"
       aria-label="ASG Corporate — global reach"
     >
       {/* static fallback / loading backdrop */}

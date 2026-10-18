@@ -31,7 +31,7 @@ export default function MessageBody({
         </h2>
 
         {lead && (
-          <p className="mt-2 lg:mt-[1em] text-xl lg:text-[1.5em] lg:leading-[1.56] text-neutral-800">
+          <p className="mt-2 lg:mt-[1em] text-lg lg:text-[1.5em] lg:leading-[1.56] text-neutral-800">
             {lead}
           </p>
         )}
@@ -47,16 +47,16 @@ export default function MessageBody({
 
         {/* Sign-off */}
         <div className="mt-5 lg:mt-[1.33em]">
-          <p className="text-xl lg:text-[1.33em] lg:leading-[1.5] text-neutral-800 tracking-wide">
+          <p className="text-lg lg:text-[1.33em] lg:leading-[1.5] text-neutral-800 tracking-wide">
             Sincerely,
           </p>
-          <p className="font-archivo-black mt-0.5 font-medium text-[22px] lg:text-[1.67em] lg:leading-[1.4] text-neutral-800">
+          <p className="font-archivo-black mt-0.5 font-medium text-xl lg:text-[1.67em] lg:leading-[1.4] text-neutral-800">
             {signOff.name}
           </p>
           <p className="mt-1 text-base lg:text-[1.17em] lg:leading-[1.43] text-neutral-700 tracking-wider">
             {signOff.role}
           </p>
-          <p className="mt-5 lg:mt-[1em] text-xl lg:text-[1.33em] lg:leading-[1.5] text-neutral-800 tracking-wider">
+          <p className="mt-4 lg:mt-[1em] text-lg lg:text-[1.33em] lg:leading-[1.5] text-neutral-800 tracking-wider">
             {signOff.org}
           </p>
         </div>

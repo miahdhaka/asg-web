@@ -18,7 +18,7 @@ export function PhotoCard({
 }) {
   return (
     <div
-      className={`group flex flex-col gap-2 sm:gap-4 rounded-md bg-neutral-100 p-3 sm:bg-transparent sm:p-0 ${onSelect ? "cursor-pointer" : ""}`}
+      className={`flex flex-col gap-2 sm:gap-4 rounded-md bg-neutral-100 p-3 sm:bg-transparent sm:p-0 ${onSelect ? "cursor-pointer" : ""}`}
       onClick={onSelect}
       role={onSelect ? "button" : undefined}
       tabIndex={onSelect ? 0 : undefined}
@@ -42,11 +42,6 @@ export function PhotoCard({
           draggable={false}
           className="pointer-events-none object-cover"
           quality={80}
-        />
-        {/* Hover overlay */}
-        <div
-          aria-hidden
-          className="absolute inset-0 overlay-image-hover opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100"
         />
       </div>
       <p className="font-archivo-black text-base sm:text-[1.125rem] leading-[1.5rem] text-neutral-800 lg:text-[1.5rem] lg:leading-[1.75rem]">

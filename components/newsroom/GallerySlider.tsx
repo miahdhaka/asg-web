@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useRef, type PointerEvent as ReactPointerEvent } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import gsap from "gsap";
 
 interface GallerySliderProps {
   images: string[];
@@ -13,19 +12,18 @@ interface GallerySliderProps {
 /**
  * Full-bleed gallery slider — cards run edge-to-edge with no horizontal
  * padding, so the cards on both sides are clipped by the viewport. Arrows
- * sit on the left/right edges and advance exactly one card with a smooth
- * GSAP glide (same scroll/arrow behaviour as GreenerFuture).
+ * sit on the left/right edges and advance exactly one card with native smooth
+ * scrolling; the track follows a free 1:1 pointer drag (certification-strip
+ * sliding mechanic).
  */
 export default function GallerySlider({ images, heading }: GallerySliderProps) {
   const trackRef = useRef<HTMLDivElement>(null);
-  // The GSAP tween currently gliding the track — every arrow slide animates
-  // with GSAP for a consistent, interruptible ease (matches GreenerFuture).
-  const slideTween = useRef<gsap.core.Tween | null>(null);
-  // Mouse-drag state: dragging scrubs the track 1:1 (same pattern as GreenerFuture).
-  const dragRef = useRef({ down: false, startX: 0, scrollLeft: 0 });
+  // Drag bookkeeping (refs — no re-render per move), mirroring the
+  // certification strip: a 1:1 pointer scrub that follows the cursor freely.
+  const dragRef = useRef({ down: false, startX: 0, startPos: 0 });
 
   // Width of one card step and of one full image copy (measured from the DOM
-  // so gaps never skew the wrap seam) — same loop engine as GreenerFuture.
+  // so gaps never skew the wrap seam).
   const pitches = (track: HTMLDivElement) => {
     const els = track.children;
     const step =
@@ -41,7 +39,8 @@ export default function GallerySlider({ images, heading }: GallerySliderProps) {
     return { step, pitch };
   };
 
-  // Keep the position normalized within the first copy [0, pitch).
+  // Keep the position normalized within the first copy [0, pitch). Content is
+  // identical one copy away, so wrapping the position is invisible.
   const wrap = (track: HTMLDivElement, value: number) => {
     const { pitch } = pitches(track);
     if (pitch <= 0) return value;
@@ -51,77 +50,66 @@ export default function GallerySlider({ images, heading }: GallerySliderProps) {
     return v;
   };
 
-  // Re-base into the first copy — visually identical, but guarantees there is
-  // always another full copy ahead in the step direction.
-  const rebase = (track: HTMLDivElement) => {
-    const wrapped = wrap(track, track.scrollLeft);
-    if (wrapped !== track.scrollLeft) track.scrollLeft = wrapped;
-  };
-
-  // Arrows advance exactly one card with a GSAP glide — a single, smooth,
-  // interruptible ease (power2.inOut) — wrapping over the copy seam so the
-  // loop stays infinite in both directions.
+  // Arrow paging that always lands a full card flush to the edge you're
+  // scrolling toward, so no trailing half-card peeks in beyond it:
+  //   • next  → the card clipped at the right edge becomes fully visible,
+  //             aligned to the viewport's right edge (nothing after it peeks);
+  //   • prev  → the card clipped at the left edge becomes fully visible,
+  //             aligned to the viewport's left edge.
+  // The position is first re-based into the first copy so the doubled list
+  // keeps the loop seamless in both directions.
   const scrollByCard = (direction: 1 | -1) => {
     const track = trackRef.current;
     if (!track) return;
     const { step, pitch } = pitches(track);
     if (step <= 0 || pitch <= 0) return;
 
-    rebase(track);
-    let target = track.scrollLeft + direction * step;
-    if (target < 0) {
-      track.scrollLeft += pitch;
-      target += pitch;
+    // Re-base into the first copy (invisible — the copies are identical).
+    const start = wrap(track, track.scrollLeft);
+    if (start !== track.scrollLeft) track.scrollLeft = start;
+
+    const card = track.firstElementChild as HTMLElement | null;
+    const cardW = card ? card.offsetWidth : step;
+    const cw = track.clientWidth;
+
+    let target: number;
+    if (direction === 1) {
+      // scrollLeft where a card's right edge meets the viewport's right edge,
+      // just ahead of the current position.
+      target =
+        (Math.floor((start + cw - cardW) / step) + 1) * step + cardW - cw;
+      if (target <= start) target += step;
+    } else {
+      // Snap the left-clipped card's left edge to the viewport's left edge.
+      target = (Math.ceil(start / step) - 1) * step;
+      if (target < 0) {
+        track.scrollLeft = start + pitch;
+        target += pitch;
+      }
     }
-    slideTween.current?.kill();
-    slideTween.current = gsap.to(track, {
-      scrollLeft: target,
-      duration: 0.6,
-      ease: "power2.inOut",
-      overwrite: true,
-    });
+
+    track.scrollTo({ left: target, behavior: "smooth" });
   };
 
+  // --- Pointer drag-to-scroll (same mechanic as the certification strip) ---
+  // Scrub for any pointer (mouse, pen, touch). `touch-pan-y` on the track
+  // disables the browser's native horizontal pan so JS scrolling never fights
+  // it; the track simply follows the cursor and stays where it is released.
   const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
     const track = trackRef.current;
-    if (!track || e.pointerType !== "mouse") return;
-    // Stop any in-flight glide so the manual scrub takes immediate control.
-    slideTween.current?.kill();
-    dragRef.current = { down: true, startX: e.clientX, scrollLeft: track.scrollLeft };
+    if (!track) return;
+    dragRef.current = { down: true, startX: e.clientX, startPos: track.scrollLeft };
   };
 
   const onPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
     const track = trackRef.current;
     if (!track || !dragRef.current.down) return;
     const dx = e.clientX - dragRef.current.startX;
-    const next = dragRef.current.scrollLeft - dx;
-    const wrapped = wrap(track, next);
-    if (wrapped !== next) {
-      // Crossed the copy seam: jump instantly and shift the drag base by the
-      // same amount so the scrub stays continuous.
-      track.scrollLeft = wrapped;
-      dragRef.current.scrollLeft += wrapped - next;
-    } else {
-      track.scrollLeft = wrapped;
-    }
+    track.scrollLeft = wrap(track, dragRef.current.startPos - dx);
   };
 
   const endDrag = () => {
-    const track = trackRef.current;
-    if (!track || !dragRef.current.down) return;
     dragRef.current.down = false;
-    // Settle onto the nearest card boundary with a smooth GSAP glide —
-    // matching GreenerFuture — so a released drag never rests mid-card.
-    const { step } = pitches(track);
-    if (step <= 0) return;
-    const target = Math.round(track.scrollLeft / step) * step;
-    slideTween.current?.kill();
-    slideTween.current = gsap.to(track, {
-      scrollLeft: target,
-      duration: 0.5,
-      ease: "power2.out",
-      overwrite: true,
-    });
   };
 
   return (
@@ -133,7 +121,7 @@ export default function GallerySlider({ images, heading }: GallerySliderProps) {
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
         onPointerLeave={endDrag}
-        className="flex cursor-grab active:cursor-grabbing gap-2 overflow-x-auto sm:gap-4 lg:gap-[1.5rem] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex cursor-grab touch-pan-y select-none gap-2 overflow-x-auto overscroll-x-none active:cursor-grabbing sm:gap-4 lg:gap-[1.5rem] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {/* Rendered twice so the one-card stepping can wrap seamlessly */}
         {[...images, ...images].map((src, i) => (

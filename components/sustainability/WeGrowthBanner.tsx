@@ -27,7 +27,7 @@ export default function WeGrowthBanner() {
           <h2 className="font-archivo-black text-white text-[1.125rem] leading-[1.4] sm:text-[2.625rem] sm:leading-[1.15] lg:text-[3rem] lg:leading-[3.25rem]">
             {weGrowth.title}
           </h2>
-          <p className="font-neue-montreal text-sm leading-5.5 text-neutral-200 lg:text-[1.125rem] lg:leading-8 mt-1.5 sm:mt-0">
+          <p className="font-neue-montreal text-sm leading-5.5 text-neutral-200 lg:text-[1.3rem] lg:leading-8 mt-1.5">
             {weGrowth.body}
           </p>
         </div>
