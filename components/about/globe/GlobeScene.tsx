@@ -559,8 +559,8 @@ function CameraRig({
     const mobile = W < 820;
     const cx = mobile ? 0.5 : 0.7;
     // Vertical centre as a fraction of the viewport. On mobile the copy sits at
-    // the top and the brand marquee at the bottom, so the globe is centred in the
-    // band between them (cy 0.68) to keep the gaps above and below it equal;
+    // the top and the brand marquee at the bottom, so the globe is framed lowish
+    // (cy 0.68) to keep clear of the description text above it;
     // desktop keeps it centred.
     const cy = mobile ? 0.68 : 0.5;
     // Globe size as a fraction of the viewport. On mobile it is kept large enough

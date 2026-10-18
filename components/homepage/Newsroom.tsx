@@ -189,7 +189,7 @@ export default function Newsroom() {
             className="absolute inset-x-0 top-0 flex h-full items-center justify-center whitespace-nowrap transition-[top] duration-500 ease-in-out group-hover:top-full"
           >
             <span
-              className="bg-clip-text pr-2 text-transparent tracking-wider lg:pr-4"
+              className="bg-clip-text text-transparent tracking-wider"
               style={{ backgroundImage: "var(--primary-gradient)" }}
             >
               More news
@@ -202,7 +202,7 @@ export default function Newsroom() {
             className="absolute inset-x-0 -top-full flex h-full items-center justify-center whitespace-nowrap text-white transition-[top] duration-500 ease-in-out group-hover:top-0"
             style={{ background: "var(--primary-gradient)" }}
           >
-            <span className="pr-2 tracking-wider lg:pr-4">More news</span>
+            <span className="tracking-wider">More news</span>
           </span>
         </Link>
       </div>

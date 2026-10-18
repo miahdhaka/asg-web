@@ -18,7 +18,7 @@ export function LogoCard({
 }) {
   return (
     <div
-      className={`group flex flex-col gap-2 sm:gap-4 rounded-md bg-neutral-100 p-3 sm:bg-transparent sm:p-0 ${onSelect ? "cursor-pointer" : ""}`}
+      className={`flex flex-col gap-2 sm:gap-4 rounded-md bg-neutral-100 p-3 sm:bg-transparent sm:p-0 ${onSelect ? "cursor-pointer" : ""}`}
       onClick={onSelect}
       role={onSelect ? "button" : undefined}
       tabIndex={onSelect ? 0 : undefined}
@@ -33,14 +33,14 @@ export function LogoCard({
           : undefined
       }
     >
-      <div className="card-gradient-target card-gradient-fast flex aspect-[429/257] w-full items-center justify-center bg-gray-50 rounded-[1.25rem]">
+      <div className="flex aspect-[429/257] w-full items-center justify-center bg-gray-50 rounded-[1.25rem]">
         <Image
           src={card.image}
           alt={card.label}
           width={261}
           height={129}
           draggable={false}
-          className="pointer-events-none object-contain grayscale transition-[filter] duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:grayscale-0"
+          className="pointer-events-none object-contain"
           quality={100}
         />
       </div>

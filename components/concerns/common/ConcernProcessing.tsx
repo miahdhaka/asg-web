@@ -1,8 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
-import gsap from "gsap";
+import { Fragment, useRef } from "react";
 
 type ConcernProcessingProps = {
   /** Optional anchor id for the section (e.g. "helal-processing"). */
@@ -12,9 +11,9 @@ type ConcernProcessingProps = {
   slides: { src: string; alt: string }[];
 };
 
-/* The track renders three copies of the image set and keeps the scroll
-   position inside the middle copy, so the strip loops endlessly both ways. */
-const COPIES = [0, 1, 2] as const;
+/* The track renders two copies of the image set and wraps scrollLeft within
+   the first copy, so it loops seamlessly in both directions — exactly like the
+   homepage Certifications strip. */
 
 /**
  * "<Concern> Processing Excellence" — heading over a full-bleed,
@@ -28,169 +27,92 @@ export default function ConcernProcessing({
   slides,
 }: ConcernProcessingProps) {
   const trackRef = useRef<HTMLDivElement>(null);
-  /* The GSAP tween currently gliding the track — every slide animates with
-     GSAP for a consistent, interruptible ease */
-  const slideTween = useRef<gsap.core.Tween | null>(null);
-  // Mouse-drag bookkeeping (refs — no re-render needed per move)
-  const drag = useRef({
-    active: false,
-    moved: false,
-    startX: 0,
-    startScrollLeft: 0,
-    /* Flick sampling: previous scroll position, its timestamp, and the
-       resulting velocity in px per ms (positive = advancing) */
-    lastScroll: 0,
-    lastTime: 0,
-    vx: 0,
-  });
-  const [isDragging, setIsDragging] = useState(false);
+  // Drag bookkeeping (refs — no re-render per move), mirroring the
+  // certification strip: a 1:1 pointer scrub that follows the cursor freely.
+  const dragRef = useRef({ down: false, startX: 0, startPos: 0 });
 
+  // Two copies so the track can loop endlessly in both directions.
+  const loopedSlides = [...slides, ...slides];
+
+  // Card width = one slide step
   const cardStep = (track: HTMLDivElement) => {
     const card = track.firstElementChild as HTMLElement | null;
     return card ? card.offsetWidth : track.clientWidth;
   };
 
-  // Teleport by one whole copy when nearing either end — content is
-  // identical one set away, so the jump is invisible
-  const isNormalizing = useRef(false);
-  const normalizeLoop = useCallback(
-    (track: HTMLDivElement) => {
-      if (isNormalizing.current) return;
-      const step = cardStep(track);
-      const setWidth = step * slides.length;
-      if (!setWidth) return;
-      const maxScroll = track.scrollWidth - track.clientWidth;
-      let delta = 0;
-      if (track.scrollLeft < step) delta = setWidth;
-      else if (track.scrollLeft > maxScroll - step) delta = -setWidth;
-      if (delta) {
-        isNormalizing.current = true;
-        // Disable snap during teleport to prevent jitter
-        track.style.scrollSnapType = "none";
-        track.scrollLeft += delta;
-        if (drag.current.active) drag.current.startScrollLeft += delta;
-        // Restore snap on next frame
-        requestAnimationFrame(() => {
-          track.style.scrollSnapType = "";
-          isNormalizing.current = false;
-        });
-      }
-    },
-    [slides.length]
-  );
-
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-    // Start at the middle copy so both directions have room immediately
-    track.scrollLeft = cardStep(track) * slides.length;
-    const onScroll = () => normalizeLoop(track);
-    track.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      track.removeEventListener("scroll", onScroll);
-      slideTween.current?.kill();
-    };
-  }, [normalizeLoop, slides.length]);
-
-  // GSAP glide to an absolute scrollLeft — smooth and interruptible
-  const glideTo = (
-    track: HTMLDivElement,
-    left: number,
-    duration = 0.6,
-    ease = "power2.inOut"
-  ) => {
-    slideTween.current?.kill();
-    slideTween.current = gsap.to(track, {
-      scrollLeft: left,
-      duration,
-      ease,
-      overwrite: true,
-    });
+  // Keep scrollLeft normalized within the first copy [0, halfWidth). Content
+  // is identical one set away, so wrapping the position is invisible.
+  const wrap = (el: HTMLDivElement, value: number) => {
+    const half = el.scrollWidth / 2;
+    if (half <= 0) return value;
+    let v = value;
+    while (v < 0) v += half;
+    while (v >= half) v -= half;
+    return v;
   };
 
+  // Arrow paging that always lands a full card flush to the edge you're
+  // scrolling toward, so no trailing half-card peeks in beyond it:
+  //   • next → the card clipped at the right edge becomes fully visible,
+  //            aligned to the viewport's right edge (nothing after it peeks);
+  //   • prev → the card clipped at the left edge becomes fully visible,
+  //            aligned to the viewport's left edge.
+  // The position is first re-based into the first copy so the doubled list
+  // keeps the loop seamless in both directions.
   const scrollByCard = (dir: 1 | -1) => {
     const track = trackRef.current;
     if (!track) return;
-    normalizeLoop(track);
-    glideTo(track, track.scrollLeft + dir * cardStep(track));
+    const step = cardStep(track);
+    if (step <= 0) return;
+    const half = track.scrollWidth / 2;
+
+    // Re-base into the first copy (invisible — the copies are identical).
+    const start = wrap(track, track.scrollLeft);
+    if (start !== track.scrollLeft) track.scrollLeft = start;
+
+    const card = track.firstElementChild as HTMLElement | null;
+    const cardW = card ? card.offsetWidth : step;
+    const cw = track.clientWidth;
+
+    let target: number;
+    if (dir === 1) {
+      // scrollLeft where a card's right edge meets the viewport's right edge,
+      // just ahead of the current position.
+      target =
+        (Math.floor((start + cw - cardW) / step) + 1) * step + cardW - cw;
+      if (target <= start) target += step;
+    } else {
+      // Snap the left-clipped card's left edge to the viewport's left edge.
+      target = (Math.ceil(start / step) - 1) * step;
+      if (target < 0) {
+        track.scrollLeft = start + half;
+        target += half;
+      }
+    }
+
+    track.scrollTo({ left: target, behavior: "smooth" });
   };
 
-  // --- Mouse drag-to-scroll (touch keeps native scrolling) ---
+  // --- Pointer drag-to-scroll (same mechanic as the certification strip) ---
+  // Scrub for any pointer (mouse, pen, touch). `touch-pan-y` on the track
+  // disables the browser's native horizontal pan so JS scrolling never fights
+  // it; the track simply follows the cursor and stays where it is released.
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType !== "mouse" || e.button !== 0) return;
     const track = trackRef.current;
     if (!track) return;
-    slideTween.current?.kill();
-    normalizeLoop(track);
-    drag.current = {
-      active: true,
-      moved: false,
-      startX: e.clientX,
-      startScrollLeft: track.scrollLeft,
-      lastScroll: track.scrollLeft,
-      lastTime: e.timeStamp,
-      vx: 0,
-    };
-    setIsDragging(true);
+    dragRef.current = { down: true, startX: e.clientX, startPos: track.scrollLeft };
   };
 
-  useEffect(() => {
-    if (!isDragging) return;
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const track = trackRef.current;
+    if (!track || !dragRef.current.down) return;
+    const dx = e.clientX - dragRef.current.startX;
+    track.scrollLeft = wrap(track, dragRef.current.startPos - dx);
+  };
 
-    const onMove = (e: PointerEvent) => {
-      const track = trackRef.current;
-      if (!track || !drag.current.active) return;
-      const dx = e.clientX - drag.current.startX;
-      if (Math.abs(dx) > 5) drag.current.moved = true;
-      track.scrollLeft = drag.current.startScrollLeft - dx;
-      /* Keep a smoothed velocity of the track itself. A gap of more than
-         ~80ms means the pointer paused, so the flick is treated as none. */
-      const dt = e.timeStamp - drag.current.lastTime;
-      if (dt > 0 && dt < 80) {
-        const instant = (track.scrollLeft - drag.current.lastScroll) / dt;
-        drag.current.vx = drag.current.vx * 0.5 + instant * 0.5;
-      } else {
-        drag.current.vx = 0;
-      }
-      drag.current.lastScroll = track.scrollLeft;
-      drag.current.lastTime = e.timeStamp;
-      // Keep looping even mid-drag (adjusts startScrollLeft alongside)
-      normalizeLoop(track);
-    };
-
-    const onUp = () => {
-      const track = trackRef.current;
-      if (!track || !drag.current.active) return;
-      drag.current.active = false;
-      if (!drag.current.moved) {
-        setIsDragging(false);
-        return;
-      }
-      /* Free-scroll release: let the flick carry the track (capped at 2½
-         cards), settle on the nearest card, and ease out rather than stop */
-      const step = cardStep(track);
-      const carry = Math.max(
-        -2.5 * step,
-        Math.min(2.5 * step, drag.current.vx * 150)
-      );
-      const target = Math.round((track.scrollLeft + carry) / step) * step;
-      const duration = Math.min(
-        0.9,
-        0.45 + (Math.abs(target - track.scrollLeft) / step) * 0.18
-      );
-      glideTo(track, target, duration, "power3.out");
-      setIsDragging(false);
-    };
-
-    window.addEventListener("pointermove", onMove);
-    window.addEventListener("pointerup", onUp);
-    window.addEventListener("pointercancel", onUp);
-    return () => {
-      window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerup", onUp);
-      window.removeEventListener("pointercancel", onUp);
-    };
-  }, [isDragging, normalizeLoop]);
+  const endDrag = () => {
+    dragRef.current.down = false;
+  };
 
   return (
     <section id={sectionId} className="w-full pt-8 lg:pt-[5em]">
@@ -208,24 +130,25 @@ export default function ConcernProcessing({
         <div
           ref={trackRef}
           onPointerDown={onPointerDown}
-          className="flex overflow-x-auto no-scrollbar cursor-grab active:cursor-grabbing"
+          onPointerMove={onPointerMove}
+          onPointerUp={endDrag}
+          onPointerLeave={endDrag}
+          className="flex cursor-grab touch-pan-y select-none overflow-x-auto overscroll-x-none no-scrollbar active:cursor-grabbing"
         >
-          {COPIES.map((copy) =>
-            slides.map((slide, i) => (
-              <Image
-                key={`${copy}-${slide.src}`}
-                src={slide.src}
-                alt={copy === 0 ? slide.alt : ""}
-                aria-hidden={copy === 0 ? undefined : true}
-                width={608}
-                height={250}
-                quality={90}
-                draggable={false}
-                priority={copy === 1 && i < 3}
-                className="pointer-events-none w-[70%] shrink-0 object-cover h-[8rem] sm:w-[45%] sm:h-[16rem] lg:h-[20.83em] lg:w-[50.67em]"
-              />
-            ))
-          )}
+          {loopedSlides.map((slide, index) => (
+            <Image
+              key={`${index}-${slide.src}`}
+              src={slide.src}
+              alt={index < slides.length ? slide.alt : ""}
+              aria-hidden={index < slides.length ? undefined : true}
+              width={608}
+              height={250}
+              quality={90}
+              draggable={false}
+              priority={index < 3}
+              className="pointer-events-none w-[70%] shrink-0 object-cover h-[8rem] sm:w-[45%] sm:h-[16rem] lg:h-[20.83em] lg:w-[50.67em]"
+            />
+          ))}
         </div>
 
         {/* Edge chevrons */}

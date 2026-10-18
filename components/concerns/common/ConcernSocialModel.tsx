@@ -126,7 +126,7 @@ export default function ConcernSocialModel({
                 />
               </div>
               <div className={`relative lg:absolute lg:mt-0 ${pillar.frameClass}`}>
-                <h3 className="font-archivo-black text-lg text-neutral-800 lg:text-[1.5em] lg:leading-[1.56]">
+                <h3 className="font-archivo-black text-lg text-neutral-800 lg:text-[1.5em] lg:leading-[1.4]">
                   {pillar.title}
                 </h3>
                 <p className="mt-1 text-sm leading-6 text-neutral-800 lg:mt-[0.33em] lg:text-[1em] lg:leading-[1.33]">

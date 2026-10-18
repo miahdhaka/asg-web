@@ -193,7 +193,7 @@ export type LocationTab = (typeof locationTabs)[number];
 export const locationCards: Record<LocationTab, OfficeCardData[]> = {
   Office: [
     {
-      title: "Corporate Headquarter",
+      title: "Corporate Headquarters (HQ)",
       image: OFFICE_IMG,
       address:
         "House-232, Lane-03, DOHS, Baridhara,\nDhaka-1206, Bangladesh",

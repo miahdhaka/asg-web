@@ -196,7 +196,7 @@ export default function CertificationsCompliance() {
           onPointerMove={onPointerMove}
           onPointerUp={endDrag}
           onPointerLeave={endDrag}
-          className="no-scrollbar flex cursor-grab touch-pan-y items-stretch overflow-x-auto overscroll-x-none active:cursor-grabbing"
+          className="no-scrollbar flex cursor-grab touch-pan-y select-none items-stretch overflow-x-auto overscroll-x-none active:cursor-grabbing"
         >
           {loopedLogos.map((logo, index) => (
             <div
@@ -221,13 +221,13 @@ export default function CertificationsCompliance() {
                 }}
               />
 
-              {/* Bottom edge — static gradient hairline (replaces flicker-prone border-image) */}
+              {/* Bottom edge — reverse of the top: gradient on the left fading to white on the right */}
               <span
                 aria-hidden
-                className="pointer-events-none absolute inset-x-0 bottom-0 h-[1.55px]"
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-[1.25px] opacity-45"
                 style={{
                   background:
-                    "linear-gradient(120.96deg, rgba(255, 255, 255, 0.75) 0.39%, rgba(26, 161, 121, 0.75) 44.92%, rgba(255, 255, 255, 0.75) 102.76%)",
+                    "linear-gradient(90deg, rgba(26, 161, 121, 0.75) 0%, rgba(26, 161, 121, 0.75) 50%, rgba(26, 161, 121, 0.08) 100%)",
                 }}
               />
 
