@@ -481,18 +481,26 @@ function BrandMarquee() {
   }, []);
 
   // Gentle constant drift, wrapped into the first list so it runs forever.
+  // Uses a float accumulator because browsers round scrollLeft to an integer:
+  // at 30px/sec each frame is ~0.5px which never crosses the 1px threshold on
+  // Mac (consistent rAF timing), leaving the strip visually frozen.
   useEffect(() => {
-    const track = containerRef.current;
-    if (!track) return;
+    const el = containerRef.current;
+    if (!el) return;
     let raf = 0;
     let last = performance.now();
+    let pos = el.scrollLeft; // carry over any drag-applied offset
     const tick = (now: number) => {
       const dt = Math.min(now - last, 50);
       last = now;
       const { perCopy } = metrics.current;
       if (perCopy > 0 && !drag.current.down && !hover.current) {
-        track.scrollLeft += (dt / 1000) * AUTO_PX_PER_SEC;
-        if (track.scrollLeft >= perCopy) track.scrollLeft -= perCopy;
+        pos += (dt / 1000) * AUTO_PX_PER_SEC;
+        if (pos >= perCopy) pos -= perCopy;
+        el.scrollLeft = pos;
+      } else {
+        // Keep in sync when user drags or hovers
+        pos = el.scrollLeft;
       }
       raf = requestAnimationFrame(tick);
     };

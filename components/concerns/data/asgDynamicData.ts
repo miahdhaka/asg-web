@@ -8,7 +8,7 @@ import type { CoreValueCard } from "@/components/concerns/common/ConcernCoreValu
 export const dynamicHero = {
   title: "Technology-Driven Consulting \nFor Business Transformation",
   subtitle: "Innovative IT solutions, custom software and enterprise systems for modern businesses",
-  videoSrc: "/videos/concerns/asg update.webm",
+  videoSrc: "/videos/concerns/coding_out.webm",
   alt: "ASG Dynamic overview footage",
 };
 
