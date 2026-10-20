@@ -41,7 +41,7 @@ export const navCategories: NavCategory[] = [
     megaMenu: true,
     megaItems: [
       { label: "News & Stories", href: "/newsroom", image: "/images/navbar/media-press-clr-1.png" },
-      // { label: "Media Gallery", href: "/media-galleries", image: "/images/navbar/media-press-clr-2.png" },
+      { label: "Media Gallery", href: "/media-galleries", image: "/images/navbar/media-press-clr-2.png" },
     ],
   },
   {

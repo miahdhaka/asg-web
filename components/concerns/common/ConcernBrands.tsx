@@ -36,6 +36,21 @@ function BrandRow({ title, description, images, textSide }: BrandRowData) {
   // Two copies so the track can loop endlessly in both directions.
   const loopedImages = [...images, ...images];
 
+  // One-card step = card width + gap. Measured from the DOM (offsetLeft diff
+  // between the first two children) so the doubled-list seam stays clean —
+  // the duplicated list has 2N cards and 2N-1 gaps, so `scrollWidth / 2` isn't
+  // the true pitch once a gap is present.
+  const cardStep = (track: HTMLDivElement) => {
+    const els = track.children;
+    if (els.length > 1) {
+      return (
+        (els[1] as HTMLElement).offsetLeft - (els[0] as HTMLElement).offsetLeft
+      );
+    }
+    const card = track.firstElementChild as HTMLElement | null;
+    return card ? card.offsetWidth : track.clientWidth;
+  };
+
   // Keep scrollLeft normalized within the first copy [0, halfWidth). Content
   // is identical one set away, so wrapping the position is invisible.
   const wrap = (el: HTMLDivElement, value: number) => {
@@ -45,6 +60,49 @@ function BrandRow({ title, description, images, textSide }: BrandRowData) {
     while (v < 0) v += half;
     while (v >= half) v -= half;
     return v;
+  };
+
+  // Arrow paging that always lands a full card flush to the edge you're
+  // scrolling toward, so no trailing half-card peeks in beyond it:
+  //   • next → the card clipped at the right edge becomes fully visible,
+  //            aligned to the viewport's right edge (nothing after it peeks);
+  //   • prev → the card clipped at the left edge becomes fully visible,
+  //            aligned to the viewport's left edge.
+  // The position is first re-based into the first copy so the doubled list
+  // keeps the loop seamless in both directions. Identical mechanic to the
+  // Processing Excellence strip.
+  const scrollByCard = (dir: 1 | -1) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const step = cardStep(track);
+    if (step <= 0) return;
+    const half = track.scrollWidth / 2;
+
+    // Re-base into the first copy (invisible — the copies are identical).
+    const start = wrap(track, track.scrollLeft);
+    if (start !== track.scrollLeft) track.scrollLeft = start;
+
+    const card = track.firstElementChild as HTMLElement | null;
+    const cardW = card ? card.offsetWidth : step;
+    const cw = track.clientWidth;
+
+    let target: number;
+    if (dir === 1) {
+      // scrollLeft where a card's right edge meets the viewport's right edge,
+      // just ahead of the current position.
+      target =
+        (Math.floor((start + cw - cardW) / step) + 1) * step + cardW - cw;
+      if (target <= start) target += step;
+    } else {
+      // Snap the left-clipped card's left edge to the viewport's left edge.
+      target = (Math.ceil(start / step) - 1) * step;
+      if (target < 0) {
+        track.scrollLeft = start + half;
+        target += half;
+      }
+    }
+
+    track.scrollTo({ left: target, behavior: "smooth" });
   };
 
   // --- Pointer drag-to-scroll (same mechanic as the certification strip) ---
@@ -108,6 +166,28 @@ function BrandRow({ title, description, images, textSide }: BrandRowData) {
             />
           ))}
         </div>
+
+        {/* Edge chevrons — same styling as the Processing Excellence strip */}
+        <button
+          type="button"
+          aria-label="Previous brand image"
+          onClick={() => scrollByCard(-1)}
+          className="absolute left-0 top-1/2 z-10 -translate-y-1/2 p-2 text-[1.375em] text-white cursor-pointer lg:left-[2rem] lg:p-2.5 lg:text-[2.375em]"
+        >
+          <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" aria-hidden>
+            <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          aria-label="Next brand image"
+          onClick={() => scrollByCard(1)}
+          className="absolute right-0 top-1/2 z-10 -translate-y-1/2 p-2 text-[1.375em] text-white cursor-pointer lg:right-[2rem] lg:p-2.5 lg:text-[2.375em]"
+        >
+          <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" aria-hidden>
+            <path d="M9 6L15 12L9 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
       </div>
     </div>
   );

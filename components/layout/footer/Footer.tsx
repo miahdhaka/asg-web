@@ -127,13 +127,13 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="grid min-h-[27rem] lg:grid-cols-[27.25%_1fr]">
+        <div className="grid min-h-[27rem] lg:grid-cols-[30.25%_1fr]">
           <div className="border-b border-white/10 px-4 sm:px-6 md:px-12 lg:border-r lg:border-b-0 lg:px-20 py-6 sm:py-12 lg:py-[4.25rem]">
             <div className="flex items-center gap-4 sm:gap-5">
               <span className="flex size-11 shrink-0 items-center justify-center rounded bg-[#252525]">
                 <MapPin className="size-5" strokeWidth={1.8} />
               </span>
-              <h3 className="text-base sm:text-lg font-medium uppercase">Head Office</h3>
+              <h3 className="text-base sm:text-lg font-medium uppercase">Corporate Headquarters  (HQ)</h3>
             </div>
 
             <address className="mt-3 max-w-[22rem] text-sm sm:text-base md:text-lg leading-[1.6] text-white/80 not-italic tracking-wider">

@@ -581,6 +581,10 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
       };
 
       const tick = (_time?: number, delta?: number) => {
+        // A ticker frame can slip in after React detaches the refs on unmount
+        // but before the cleanup below removes the ticker; gsap.set([null, …])
+        // then throws reading `._gsap`. Skip those stray frames.
+        if (!sectionRef.current) return;
         // Frame-rate independent smoothing: scale the follow by how long this
         // frame actually took vs a 60fps baseline. A fixed per-frame factor makes
         // high-refresh displays lerp in uneven micro-steps (the flutter); this

@@ -14,7 +14,6 @@ import {
   dotsFrag, dotsVert, earthFrag, earthVert,
 } from "./shaders";
 import { ARC_DESTINATIONS, type TourStop } from "./content";
-
 /* ───────────────────────────── public types ───────────────────────────── */
 
 export type Anchor = { el: HTMLElement; lat: number; lon: number; dx: number; dy: number };
@@ -130,6 +129,7 @@ function World(props: GlobeSceneProps & { bus: React.MutableRefObject<Bus> }) {
       <Earth mask={mask} hover={props.hover} />
       <CityDots mask={mask} />
       <ArcField hub={props.hub} />
+      <BangladeshHoverMap hub={props.hub} hover={props.hover} />
       <DestinationMarkers onOrder={props.onOrder} autoHold={autoHold} />
       <Orders bus={props.bus} onOrder={props.onOrder} autoHold={autoHold} />
     </>
@@ -378,6 +378,121 @@ function ArcField({ hub }: { hub: { lat: number; lon: number } }) {
   });
 
   return <mesh geometry={geometry} material={material} frustumCulled={false} renderOrder={2} />;
+}
+
+/* ──────────── Bangladesh hover map ───────────── */
+
+function BangladeshHoverMap({
+  hub,
+  hover,
+}: {
+  hub: { lat: number; lon: number };
+  hover: React.MutableRefObject<boolean>;
+}) {
+  const groupRef = useRef<THREE.Group>(null);
+  const meshRef = useRef<THREE.Mesh>(null);
+  // Hover intensity: 0 = hidden, 1 = fully risen. Driven by pointer proximity
+  // to the hub and the global hover flag.
+  const intensity = useRef(0);
+  const isOverHub = useRef(false);
+
+  // Simplified Bangladesh outline in lat/lon (approximate border points).
+  const bdOutline = useMemo(
+    () => [
+      [26.6, 88.1], [26.4, 88.5], [26.1, 89.0], [25.8, 89.5],
+      [25.2, 89.9], [24.6, 90.4], [24.3, 90.8], [24.0, 91.2],
+      [23.6, 91.6], [23.2, 92.0], [22.8, 92.3], [22.4, 92.1],
+      [21.8, 92.0], [21.4, 91.8], [21.0, 91.5], [20.7, 91.0],
+      [20.9, 90.5], [21.2, 90.0], [21.6, 89.5], [22.0, 89.0],
+      [22.5, 88.6], [23.0, 88.3], [23.5, 88.1], [24.0, 88.0],
+      [24.6, 88.0], [25.2, 88.0], [25.8, 88.0], [26.3, 88.0],
+    ],
+    []
+  );
+
+  // Build the shape geometry: convert lat/lon to local tangent-plane coords
+  // centered on the hub.
+  const { geometry, material } = useMemo(() => {
+    const shape = new THREE.Shape();
+    const hubRad = 1.008; // slightly above surface
+    const center = latLonToVec3(hub.lat, hub.lon, hubRad, new THREE.Vector3());
+    const up = center.clone().normalize();
+    // Build a tangent basis at the hub.
+    const north = latLonToVec3(hub.lat + 1, hub.lon, hubRad, new THREE.Vector3())
+      .sub(center)
+      .normalize();
+    const east = new THREE.Vector3().crossVectors(up, north).normalize();
+    const north2 = new THREE.Vector3().crossVectors(east, up).normalize();
+
+    bdOutline.forEach(([lat, lon], i) => {
+      const p = latLonToVec3(lat, lon, hubRad, new THREE.Vector3());
+      const local = p.clone().sub(center);
+      const x = local.dot(east);
+      const y = local.dot(north2);
+      if (i === 0) shape.moveTo(x, y);
+      else shape.lineTo(x, y);
+    });
+    shape.closePath();
+
+    const geom = new THREE.ShapeGeometry(shape);
+    const mat = new THREE.MeshBasicMaterial({
+      color: 0x8bc34a,
+      transparent: true,
+      opacity: 0,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+    return { geometry: geom, material: mat };
+  }, [hub, bdOutline]);
+
+  useFrame(() => {
+    if (!groupRef.current || !meshRef.current) return;
+
+    // Smoothly animate intensity: rise when over hub, fall when away.
+    const target = isOverHub.current && hover.current ? 1 : 0;
+    intensity.current += (target - intensity.current) * 0.08;
+    const v = intensity.current;
+
+    // Position the group at the hub, oriented tangent to the surface.
+    const hubPos = latLonToVec3(hub.lat, hub.lon, 1.008, new THREE.Vector3());
+    groupRef.current.position.copy(hubPos);
+    groupRef.current.lookAt(0, 0, 0);
+    groupRef.current.rotateX(Math.PI / 2);
+
+    // Rise up: lift the map away from the surface (local Z in the rotated frame).
+    const rise = v * 0.15; // max 0.15 units above surface
+    meshRef.current.position.z = rise;
+    // Scale up slightly as it rises.
+    const scale = 1 + v * 0.3;
+    meshRef.current.scale.set(scale, scale, 1);
+    // Fade in/out.
+    material.opacity = v * 0.6;
+  });
+
+  return (
+    <group renderOrder={3}>
+      {/* Invisible hit-sphere at the hub to detect hover */}
+      <mesh
+        position={latLonToVec3(hub.lat, hub.lon, 1.01, new THREE.Vector3())}
+        onPointerOver={() => {
+          isOverHub.current = true;
+          document.body.style.cursor = "pointer";
+        }}
+        onPointerOut={() => {
+          isOverHub.current = false;
+          document.body.style.cursor = "";
+        }}
+      >
+        <sphereGeometry args={[0.08, 16, 16]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+      </mesh>
+      {/* The Bangladesh outline map */}
+      <group ref={groupRef}>
+        <mesh ref={meshRef} geometry={geometry} material={material} frustumCulled={false} />
+      </group>
+    </group>
+  );
 }
 
 /* ───────────────── "order placed" pop-ups (pure data, UI is DOM) ───────────────── */

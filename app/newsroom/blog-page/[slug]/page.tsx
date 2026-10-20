@@ -147,7 +147,7 @@ export default async function BlogDetailPage({
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-3 sm:gap-5">
             {post.exclusiveEvents.items.map((item, i) => (
               <div
-                key={item.caption}
+                key={`${item.caption}-${i}`}
                 className={`flex flex-col gap-4 lg:gap-[1.5rem] ${
                   i === 1 ? "lg:mt-[4rem]" : ""
                 }`}

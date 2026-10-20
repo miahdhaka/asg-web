@@ -198,14 +198,15 @@ void main(){
   float d = vAge - vT;                       // distance behind the head
   if (vAge < 0.0 || vAge > 2.05 || d < 0.0) discard;
 
+  // smooth continuous fade — no noise chunks, just a clean gradient dissolve
   float trail = 1.0 - smoothstep(0.25, 1.65, d);
-  // noise dissolve – grows more broken as the trail ages
-  float n = hash12(vec2(floor(vT * 230.0), vSeed * 91.7));
-  float keep = step(n, trail * 1.25);
   float head = exp(-d * 16.0);
 
   float edge = 1.0 - smoothstep(0.35, 1.0, abs(vSide));
-  float a = keep * trail * edge;
+  // destination-side soft fade: as the arc reaches the city (vT → 1) during
+  // the fade-out phase, melt gracefully into the city dot.
+  float destFade = 1.0 - smoothstep(0.88, 1.0, vT) * smoothstep(1.0, 1.5, vAge);
+  float a = trail * edge * destFade;
   if (a < 0.01) discard;
 
   vec3 c = vec3(0.86, 1.0, 0.95) * (0.9 + head * 2.4);

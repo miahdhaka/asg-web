@@ -61,7 +61,7 @@ export default async function PressReleaseDetailPage({
         </div>
 
         {/* Title */}
-        <h1 className="mt-2 sm:mt-4 font-serif text-[1.25rem] sm:text-[2.2rem] leading-[2rem] sm:leading-[3rem] font-normal text-black">
+        <h1 className="mt-2 sm:mt-4 font-archivo-black text-[1.25rem] sm:text-[2.2rem] leading-[2rem] sm:leading-[3rem] font-normal text-black">
           {article.title}
         </h1>
       </div>

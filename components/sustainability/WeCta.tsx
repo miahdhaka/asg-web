@@ -19,7 +19,7 @@ export default function WeCta() {
 
         {/* Pill button — 1px gradient ring (dual-background technique;
             border-image can't follow radius) + slide-in flip hover */}
-        <a
+        {/* <a
           href="#"
           className="group relative mt-[2rem] inline-flex w-fit cursor-pointer items-center justify-center overflow-hidden rounded-full border border-transparent px-5 py-3 text-sm font-medium leading-none sm:px-7 sm:py-5 sm:text-base"
           style={{
@@ -27,13 +27,11 @@ export default function WeCta() {
               "linear-gradient(var(--background)) padding-box, var(--primary-gradient) border-box",
           }}
         >
-          {/* Invisible spacer — preserves the button's intrinsic width/height */}
           <span className="invisible inline-flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
             {weCta.buttonText}
             <Download className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={2} />
           </span>
 
-          {/* Default: gradient text — slides down and out on hover */}
           <span
             aria-hidden
             className="absolute inset-0 flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap text-[#1AA179] transition-transform duration-500 ease-in-out group-hover:translate-y-full"
@@ -47,7 +45,6 @@ export default function WeCta() {
             <Download className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={2} />
           </span>
 
-          {/* Hover: gradient fill + white text — slides in from the top */}
           <span
             aria-hidden
             className="absolute inset-0 flex -translate-y-full items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap text-white transition-transform duration-500 ease-in-out group-hover:translate-y-0"
@@ -56,7 +53,7 @@ export default function WeCta() {
             {weCta.buttonText}
             <Download className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={2} />
           </span>
-        </a>
+        </a> */}
       </div>
     </section>
   );

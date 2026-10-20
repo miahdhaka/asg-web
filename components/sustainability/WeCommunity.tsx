@@ -36,7 +36,7 @@ export default function WeCommunity() {
                 {weCommunity.title}
               </h2>
             </div>
-            <p className="max-w-[38rem] text-[#1A1A1A] font-neue-montreal text-sm leading-5.5 lg:text-lg lg:leading-8 mt-3 sm:mt-0">
+            <p className="max-w-[38rem] text-white font-neue-montreal text-sm leading-5.5 lg:text-lg lg:leading-8 mt-3 sm:mt-0">
               {weCommunity.body}
             </p>
           </div>
