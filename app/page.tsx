@@ -14,12 +14,6 @@ import AboutUs from "@/components/homepage/AboutUs";
 import GlobeHero from "@/components/about/globe/GlobeHero";
 
 export default function HomePage() {
-  // Clean up residual ScrollTrigger state from a previous visit
-  // (e.g. browser back button). useGSAP in child components handles their own
-  // tween cleanup; ScrollTrigger may leave pinned styles on <html>/<body>.
-  // NOTE: do NOT call gsap.globalTimeline.clear() here — it kills ALL
-  // animations globally, including the Header's mega-close tween that is
-  // mid-flight when the user navigates away, leaving the panel stuck open.
   useLayoutEffect(() => {
     return () => {
       ScrollTrigger.getAll().forEach(st => st.kill());
@@ -32,8 +26,7 @@ export default function HomePage() {
   }, []);
 
   const [splashDone, setSplashDone] = useState(false);
-  // Keep SplashScreen mounted during its fade-out so the overlay dissolves
-  // smoothly into the homepage — no abrupt unmount flash
+  // Keep SplashScreen mounted during its fade-out so the overlay dissolves smoothly into the homepage — no abrupt unmount flash
   const [splashMounted, setSplashMounted] = useState(true);
   // Defer main content mount so the logo animation has the main thread
   const [mainMounted, setMainMounted] = useState(false);
@@ -49,10 +42,6 @@ export default function HomePage() {
     heroSlideChangeRef.current?.(concernIdx);
   }, []);
 
-  // Wrapper handed to ASGHighlight so its cover phase can drive About Us's
-  // slow, eased rise over the still-pinned section. The z-20 sits on the
-  // wrapper (not just the section) because the transform ASGHighlight applies
-  // makes this a stacking context — it has to outrank the pinned section.
   const aboutRiseRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -90,9 +79,6 @@ export default function HomePage() {
           <div
             ref={aboutRiseRef}
             className="relative z-20"
-            // Own GPU layer — ASGHighlight writes this transform every frame
-            // during the cover, and compositing it keeps the glide from
-            // re-rasterizing the whole section.
             style={{ transform: "translateZ(0)", willChange: "transform" }}
           >
             <AboutUs />

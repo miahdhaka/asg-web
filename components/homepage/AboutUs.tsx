@@ -35,10 +35,11 @@ export default function AboutUs() {
     mm.add("(min-width: 1024px)", () => {
       gsap.fromTo(
         imageRef.current,
-        { scale: 1 },
+        { scale: 1, force3D: true },
         {
           scale: 0.85,
           ease: "none",
+          force3D: true,
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top 15%",
@@ -129,6 +130,7 @@ export default function AboutUs() {
         <div
           ref={imageRef}
           className="mt-10 sm:mt-12 lg:mt-[3em] overflow-hidden rounded-[0.75rem] lg:rounded-[1.2rem]"
+          style={{ willChange: "transform", backfaceVisibility: "hidden" }}
         >
           <Image
             src="/images/about-us/home-about-us.png"
