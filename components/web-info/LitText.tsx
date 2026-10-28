@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, type ElementType } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -10,8 +10,9 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 interface LitTextProps {
   /** Text whose words brighten one-by-one as you scroll through it. */
   text: string;
-  /** Element/tag to render. Default "p" */
-  as?: ElementType;
+  /** Element/tag to render. Default "p" (typed as `any` so the rendered tag
+   *  accepts a concrete ref and children without JSX union errors) */
+  as?: any;
   className?: string;
   /** Opacity of an unlit word. Default 0.16 (reference `.lw`) */
   dim?: number;
