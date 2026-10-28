@@ -1,6 +1,12 @@
 "use client";
 
-import { useRef, type ElementType } from "react";
+import {
+  useRef,
+  type ComponentType,
+  type ElementType,
+  type HTMLAttributes,
+  type Ref,
+} from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -38,7 +44,7 @@ interface SplitRevealProps {
  */
 export default function SplitReveal({
   text,
-  as: Tag = "h2",
+  as = "h2",
   className,
   by = "word",
   duration,
@@ -47,6 +53,13 @@ export default function SplitReveal({
 }: SplitRevealProps) {
   const ref = useRef<HTMLElement>(null);
   const units = by === "word" ? text.trim().split(/\s+/) : [...text];
+
+  // `ElementType` on its own leaves ref/className/children resolving to `never`
+  // (TS can't pick one prop type across the whole tag union), and parameterizing
+  // it explodes the union complexity. Bind the tag to a single ComponentType
+  // with concrete props so JSX accepts the ref and mapped children; a string tag
+  // like "h2" still renders as an intrinsic element at runtime.
+  const Tag = as as ComponentType<HTMLAttributes<HTMLElement> & { ref?: Ref<HTMLElement> }>;
 
   useGSAP(
     () => {
