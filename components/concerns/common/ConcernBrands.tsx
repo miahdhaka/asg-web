@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import { useRef } from "react";
+import SplitReveal from "@/components/web-info/SplitReveal";
+import RevealOnScroll from "@/components/web-info/RevealOnScroll";
 
 export type BrandRowData = {
   title: string;
@@ -226,14 +228,18 @@ export default function ConcernBrands({
       className="w-full px-4 pt-10 sm:px-6 lg:px-[5em] lg:pt-[5em] pb-6"
     >
       <div className="flex flex-col gap-2 sm:gap-4 lg:flex-row lg:justify-between">
-        <h2 className="font-archivo-black text-2xl sm:text-4xl lg:text-[3em] uppercase text-neutral-800 lg:leading-[1]">
-          {heading}
-        </h2>
+        <SplitReveal
+          as="h2"
+          className="font-archivo-black text-2xl sm:text-4xl lg:text-[3em] uppercase text-neutral-800 lg:leading-[1]"
+          text={heading}
+        />
         {/* Measure tuned so this copy always breaks into 4 lines; both the type
             size and the width are em, so the break point holds at any lg width */}
-        <p className="text-sm text-neutral-800 lg:mr-[14em] lg:w-[30em] lg:text-[1.17em] lg:leading-[1.43]">
-          {intro}
-        </p>
+        <RevealOnScroll y={20} delay={0.25}>
+          <p className="text-sm text-neutral-800 lg:mr-[14em] lg:w-[30em] lg:text-[1.17em] lg:leading-[1.43]">
+            {intro}
+          </p>
+        </RevealOnScroll>
       </div>
 
       <div className="mt-10 lg:mt-[2.67em] lg:ml-[7.58em]">
@@ -242,12 +248,14 @@ export default function ConcernBrands({
             {index > 0 && (
               <div aria-hidden className="my-8 border-t border-neutral-200 lg:my-[4em]" />
             )}
-            <BrandRow
-              title={row.title}
-              description={row.description}
-              images={row.images}
-              textSide={row.textSide}
-            />
+            <RevealOnScroll y={26}>
+              <BrandRow
+                title={row.title}
+                description={row.description}
+                images={row.images}
+                textSide={row.textSide}
+              />
+            </RevealOnScroll>
           </div>
         ))}
       </div>

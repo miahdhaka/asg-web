@@ -68,6 +68,18 @@ export const esgZld = {
   heading: "Contamination-free\nIndustrialization",
   paragraph:
     "Ensuring water recovery and eliminating wastewater discharge with a ZLD system. Known as ZERO LIQUID DISCHARGE. Manufacturing a greener system for a greener future, combining human expertise, quality and efficiency at every level.",
-  image: "/images/sustainability/esg/card-zld.webp",
-  alt: "Aerial view of Zero Liquid Discharge treatment tanks",
+  images: [
+    {
+      src: "/images/sustainability/esg/zld-1.png",
+      alt: "Aerial view of Zero Liquid Discharge treatment tanks",
+    },
+    {
+      src: "/images/sustainability/esg/zld-2.png",
+      alt: "Water recycling ponds with treatment infrastructure",
+    },
+    {
+      src: "/images/sustainability/esg/zld-3.png",
+      alt: "Circular water treatment tank with aerator bridge",
+    },
+  ],
 };

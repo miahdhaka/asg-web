@@ -5,6 +5,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import ImageReveal from "@/components/web-info/ImageReveal";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -23,7 +24,7 @@ export const milestones: Milestone[] = [
     title: "The first chapter",
     description:
       "The journey began as a family-run workshop, founded by the first generation with a vision of producing quality textiles on traditional looms.",
-    image: "/images/our-history/history-milestone-1.png",
+    image: "/images/our-history/history-milestone.avif",
     imageAlt: "The founding workshop, 1896",
   },
   {
@@ -136,7 +137,6 @@ export const milestones: Milestone[] = [
 function MilestoneEntry({ milestone, index }: { milestone: Milestone; index: number }) {
   const entryRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -172,16 +172,6 @@ function MilestoneEntry({ milestone, index }: { milestone: Milestone; index: num
             { y: 60, autoAlpha: 0 },
             { y: 0, autoAlpha: 1, duration: 0.8 },
             0.2,
-          );
-        }
-
-        // Image slides up + fades in (slightly delayed)
-        if (imageRef.current) {
-          tl.fromTo(
-            imageRef.current,
-            { y: 80, autoAlpha: 0 },
-            { y: 0, autoAlpha: 1, duration: 0.85 },
-            0.35,
           );
         }
       }, entry);
@@ -229,21 +219,22 @@ function MilestoneEntry({ milestone, index }: { milestone: Milestone; index: num
             </div>
           </div>
 
-          {/* Image block */}
-          <div
-            ref={imageRef}
-            className={`relative w-full overflow-hidden rounded-[0.8rem] lg:rounded-[1.2rem] opacity-0 ${index % 2 !== 0 ? "lg:order-first" : ""}`}
-            style={{ aspectRatio: "553 / 320" }}
+          {/* Image block — clip-open + zoom settle (web-info ImageReveal) */}
+          <ImageReveal
+            radius="0.8rem"
+            className={`relative w-full aspect-[553/320] rounded-[0.8rem] lg:rounded-[1.2rem] ${index % 2 !== 0 ? "lg:order-first" : ""}`}
           >
-            <Image
-              src={milestone.image}
-              alt={milestone.imageAlt}
-              fill
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              quality={85}
-              className="rounded-[0.8rem] lg:rounded-[1.2rem] object-cover"
-            />
-          </div>
+            <div className="absolute inset-0">
+              <Image
+                src={milestone.image}
+                alt={milestone.imageAlt}
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                quality={85}
+                className="rounded-[0.8rem] lg:rounded-[1.2rem] object-cover"
+              />
+            </div>
+          </ImageReveal>
         </div>
       </div>
     </div>

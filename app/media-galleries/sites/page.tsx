@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import PageHero from "@/components/common/PageHero";
 import PhotoGalleryGrid from "@/components/media-galleries/PhotoGalleryGrid";
 import type { GalleryCard } from "@/components/media-galleries/mediaGalleriesData";
+import RevealOnScroll from "@/components/web-info/RevealOnScroll";
+import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 export const metadata: Metadata = {
   title: "Sites Photo Tour | ASG - Amanat Shah Group",
@@ -47,6 +49,7 @@ const sitePhotos: GalleryCard[] = [
 export default function SitesPhotoTourPage() {
   return (
     <main className="flex flex-col">
+      <ScrollProgress />
       {/* ── Hero ──────────────────────────────────────────────────── */}
       <PageHero
         title="Sites Photo Tour"
@@ -57,9 +60,11 @@ export default function SitesPhotoTourPage() {
       />
 
       {/* ── Photo grid ────────────────────────────────────────────── */}
+      <RevealOnScroll selector=".grid > div" stagger={0.08} y={26}>
       <section className="flex w-full flex-col px-4 py-6 sm:px-6 sm:py-8 lg:px-[5rem] lg:py-[5rem]">
         <PhotoGalleryGrid cards={sitePhotos} />
       </section>
+      </RevealOnScroll>
     </main>
   );
 }

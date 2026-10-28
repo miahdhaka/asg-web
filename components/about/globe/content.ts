@@ -91,6 +91,19 @@ export const ARC_DESTINATIONS: ArcDestination[] = [
   { region: "Asia", city: "Jakarta", lat: -6.21, lon: 106.85, w: 5 },
 ];
 
+/** Second-class lanes drawn by the separate indigo-tinted arc field — these are
+ *  the lungi export routes, against which ARC_DESTINATIONS above carries the
+ *  fabric routes. The primary list is left untouched; this one only adds. */
+export const TRADE_DESTINATIONS: ArcDestination[] = [
+  { region: "Asia", city: "New Delhi", lat: 28.61, lon: 77.21, w: 8 },
+  { region: "Asia", city: "Dubai", lat: 25.2, lon: 55.27, w: 9 },
+  { region: "Asia", city: "Riyadh", lat: 24.71, lon: 46.68, w: 8 },
+  { region: "Asia", city: "Muscat", lat: 23.59, lon: 58.41, w: 6 },
+  { region: "Asia", city: "Kuala Lumpur", lat: 3.14, lon: 101.69, w: 7 },
+  { region: "Asia", city: "Yangon", lat: 16.87, lon: 96.2, w: 5 },
+  { region: "Asia", city: "Kuwait City", lat: 29.38, lon: 47.99, w: 6 },
+];
+
 export const TOUR: TourStop[] = [
   {
     name: "Europe",

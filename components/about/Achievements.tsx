@@ -3,6 +3,8 @@
 import Image from "next/image";
 import gsap from "gsap";
 import { useRef, type PointerEvent as ReactPointerEvent } from "react";
+import SplitReveal from "@/components/web-info/SplitReveal";
+import RevealOnScroll from "@/components/web-info/RevealOnScroll";
 
 const achievements = [
   {
@@ -75,10 +77,13 @@ export default function Achievements() {
 
   return (
     <section id="about-achievements" className="w-full px-4 sm:px-6 lg:px-[5em] py-16 lg:py-[5rem]">
-      <h2 className="font-archivo-black text-3xl sm:text-5xl lg:text-[3rem] leading-[1.1] text-[#262626] uppercase">
-        Achievement
-      </h2>
+      <SplitReveal
+        as="h2"
+        className="font-archivo-black text-3xl sm:text-5xl lg:text-[3rem] leading-[1.1] text-[#262626] uppercase"
+        text="Achievement"
+      />
 
+      <RevealOnScroll selector="[data-card]" stagger={0.1} y={26}>
       <div
         ref={trackRef}
         onPointerDown={onPointerDown}
@@ -122,6 +127,7 @@ export default function Achievements() {
           </div>
         ))}
       </div>
+      </RevealOnScroll>
     </section>
   );
 }

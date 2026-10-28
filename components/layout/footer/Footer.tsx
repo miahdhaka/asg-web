@@ -91,7 +91,7 @@ export default function Footer() {
           <h2 className="sm:max-w-[30rem] font-archivo-black text-[22px] leading-[1.08] uppercase sm:text-[2rem]">
             Manufacturing trust,
             <br />
-            since generations.
+            Over Generations.
           </h2>
 
           <Image

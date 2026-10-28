@@ -6,6 +6,8 @@ import CsrEducationBanner from "@/components/sustainability/CsrEducationBanner";
 import CsrPillars from "@/components/sustainability/CsrPillars";
 import CsrPartnerCta from "@/components/sustainability/CsrPartnerCta";
 import { csrHero } from "@/components/sustainability/csrData";
+import RevealOnScroll from "@/components/web-info/RevealOnScroll";
+import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 export const metadata: Metadata = {
   title: "Corporate Social Responsibility | ASG - Amanat Shah Group",
@@ -16,6 +18,7 @@ export const metadata: Metadata = {
 export default function CorporateSocialResponsibilityPage() {
   return (
     <main>
+      <ScrollProgress />
       <PageHeroFull
         title={csrHero.title}
         subtitle={csrHero.subtitle}
@@ -23,11 +26,21 @@ export default function CorporateSocialResponsibilityPage() {
         desktopSrc={csrHero.image}
         alt={csrHero.alt}
       />
-      <CsrCommunityImpact />
-      <CsrPeopleFirst />
-      <CsrEducationBanner />
-      <CsrPillars />
-      <CsrPartnerCta />
+      <RevealOnScroll>
+        <CsrCommunityImpact />
+      </RevealOnScroll>
+      <RevealOnScroll>
+        <CsrPeopleFirst />
+      </RevealOnScroll>
+      <RevealOnScroll>
+        <CsrEducationBanner />
+      </RevealOnScroll>
+      <RevealOnScroll>
+        <CsrPillars />
+      </RevealOnScroll>
+      <RevealOnScroll>
+        <CsrPartnerCta />
+      </RevealOnScroll>
     </main>
   );
 }

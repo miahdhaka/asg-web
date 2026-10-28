@@ -19,21 +19,21 @@ export interface SisterConcern {
 const sisterConcerns: SisterConcern[] = [
   {
     sector: "TEXTILE",
-    sectorDesc: "Trusted as a long term partner for consistent, brand-match quality, helping them to grow at global scale.",
+    sectorDesc: "Trusted as a long-term partner for consistent and brand-match quality, helping them to grow on a global scale.",
     concernDesc: "Consistent, high-quality yarn for reliable textile production.",
     logo: "/logo/sister-concern-update/spinning-mills-clr.png",
     link: "/concerns/hazrat-amanat-shah-spinning-mills",
   },
   {
     sector: "TEXTILE",
-    sectorDesc: "Trusted as a long term partner for consistent, brand-match quality, helping them to grow at global scale.",
+    sectorDesc: "Trusted as a long-term partner for consistent and brand-match quality, helping them to grow on a global scale.",
     concernDesc: "Precision weaving and processing for quality woven fabrics.",
     logo: "/logo/sister-concern-update/weaving-clr.png",
     link: "/concerns/amanat-shah-weaving-processing",
   },
   {
     sector: "TEXTILE",
-    sectorDesc: "Trusted as a long term partner for consistent, brand-match quality, helping them to grow at global scale.",
+    sectorDesc: "Trusted as a long-term partner for consistent and brand-match quality, helping them to grow on a global scale.",
     concernDesc: "Premium woven fabrics made for global fashion brands.",
     logo: "/logo/sister-concern-update/fabrics-clr.png",
     link: "/concerns/amanat-shah-fabrics",
@@ -223,6 +223,10 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
       const PER_SCROLL = videoEnd / 7; // ≈ 0.042857 progress per scroll
       const sideStart = PER_SCROLL * 2; // side content starts at exact 2nd scroll
       const sideEnd = 0.55; // side content fully risen (wide = slow)
+      // The card keeps gliding past the 7th scroll until here, so it is still
+      // settling as the panels land — the intro reads as one continuous motion
+      // instead of a shrink that stops dead followed by a rise.
+      const videoGone = 0.40;
 
       // Follow strength per 60fps frame. The lerp below is made frame-rate
       // independent (see tick) so a 120/144Hz display settles at the same speed
@@ -231,6 +235,9 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
       const SMOOTH = 0.1;
       // clearly visible from the 4th scroll) then decelerates smoothly to rest.
       const sideEase = gsap.parseEase("power2.out");
+      // The video shrink rides the same decelerating curve, so it eases into its
+      // resting size instead of hitting the clamp at constant speed.
+      const videoEase = gsap.parseEase("power2.out");
       let targetProgress = 0;
       let scrollProgress = 0; // smoothed progress used everywhere
 
@@ -580,6 +587,27 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         gsap.set(mobileSheetRef.current, { autoAlpha: 0 });
       };
 
+      // ── Desktop card geometry ──────────────────────────────────────────────
+      // The resting card is measured in whole CSS pixels, not percentages: a
+      // fractional width makes the edge, the rounded corners and the object-cover
+      // crop re-antialias every frame, which reads as a shake as the shrink
+      // settles. Sizes are also only written when a rounded value actually
+      // changes, so the ±1px scrollY oscillation from the pin hold repaints
+      // nothing at all. The box is re-measured on resize so px stay responsive.
+      let cardBoxW = 0;
+      let cardBoxH = 0;
+      const measureCardBox = () => {
+        const rect = sectionRef.current?.getBoundingClientRect();
+        cardBoxW = rect?.width || window.innerWidth;
+        cardBoxH = rect?.height || window.innerHeight;
+      };
+      measureCardBox();
+      window.addEventListener("resize", measureCardBox);
+      cleanups.push(() => window.removeEventListener("resize", measureCardBox));
+      let lastCardW = -1;
+      let lastCardH = -1;
+      let lastCardBr = -1;
+
       const tick = (_time?: number, delta?: number) => {
         // A ticker frame can slip in after React detaches the refs on unmount
         // but before the cleanup below removes the ticker; gsap.set([null, …])
@@ -620,19 +648,22 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         // can't release the pin before the shrink plays. On mobile `tick` only
         // fades the centre text (above); there is nothing else to do here.
         if (isDesktop) {
-          const vw = p <= videoEnd
-            ? 100 - (100 - 23) * (p / videoEnd)
-            : 23;
-          const vh = p <= videoEnd
-            ? 100 - (100 - 56) * (p / videoEnd)
-            : 56;
+          // Eased travel into the resting card (23% × 56% of the section box).
+          const vt = videoEase(Math.min(p, videoGone) / videoGone);
+          const vw = Math.round(cardBoxW * (1 - 0.77 * vt));
+          const vh = Math.round(cardBoxH * (1 - 0.44 * vt));
           // Square (0 radius) at full-screen; corners round in only as it shrinks.
-          const br = p <= videoEnd ? 28 * (p / videoEnd) : 28;
-          gsap.set(videoWrapRef.current, {
-            width: `${vw}%`,
-            height: `${vh}%`,
-            borderRadius: `${br}px`,
-          });
+          const br = Math.round(28 * vt);
+          if (vw !== lastCardW || vh !== lastCardH || br !== lastCardBr) {
+            lastCardW = vw;
+            lastCardH = vh;
+            lastCardBr = br;
+            gsap.set(videoWrapRef.current, {
+              width: `${vw}px`,
+              height: `${vh}px`,
+              borderRadius: `${br}px`,
+            });
+          }
 
           // Side content rises per scroll (slow) and reverse on scroll up.
           if (p <= sideStart) {

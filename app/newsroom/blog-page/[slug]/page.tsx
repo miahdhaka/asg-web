@@ -3,6 +3,9 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { blogPosts, getBlogPost } from "@/components/newsroom/blogData";
 import GallerySlider from "@/components/newsroom/GallerySlider";
+import SplitReveal from "@/components/web-info/SplitReveal";
+import RevealOnScroll from "@/components/web-info/RevealOnScroll";
+import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 /* ------------------------------------------------------------------ */
 /*  Static generation                                                  */
@@ -44,6 +47,7 @@ export default async function BlogDetailPage({
 
   return (
     <main className="w-full">
+      <ScrollProgress />
       <div className="mx-auto flex w-full max-w-[84rem] flex-col gap-8 px-4 pt-30 sm:pt-40 sm:px-6 lg:gap-[2.2rem] lg:px-[4.167rem] lg:pt-[11.8rem]">
         {/* ── Title block ───────────────────────────────────────────── */}
         <div className="w-full">
@@ -57,9 +61,11 @@ export default async function BlogDetailPage({
             </span>
           </div>
 
-          <h1 className="mt-2 font-archivo-black text-2xl sm:text-[3rem] leading-8 sm:leading-[3.3rem] font-normal text-black">
-            {post.title}
-          </h1>
+          <SplitReveal
+            as="h1"
+            className="mt-2 font-archivo-black text-2xl sm:text-[3rem] leading-8 sm:leading-[3.3rem] font-normal text-black"
+            text={post.title}
+          />
 
           <p className="mt-4 font-neue-montreal text-sm sm:text-[0.9rem] leading-[1.25rem] tracking-wider text-neutral-800">
             Published: {post.publishedAt}
@@ -67,6 +73,7 @@ export default async function BlogDetailPage({
         </div>
 
         {/* ── Single wide hero image ───────────────────────── */}
+        <RevealOnScroll y={26}>
         <div className="relative aspect-[328/214] w-full overflow-hidden bg-[#D9D9D9] sm:aspect-[915/520] rounded-[0.75rem] sm:rounded-[1.5rem]">
           <Image
             src={post.heroImages[0]}
@@ -79,12 +86,16 @@ export default async function BlogDetailPage({
             quality={90}
           />
         </div>
+        </RevealOnScroll>
 
         {/* ── Body paragraphs ───────────────────────────────────────── */}
+        <RevealOnScroll y={22}>
         <p className="font-archivo-black text-lg font-medium sm:text-[1.2rem] leading-[1.6] lg:text-[2rem]">
           {post.lead}
         </p>
+        </RevealOnScroll>
 
+        <RevealOnScroll y={22}>
         <div className="flex flex-col gap-4 lg:gap-[1.15rem]">
           {post.body.map((p, i) => (
             <p
@@ -95,12 +106,15 @@ export default async function BlogDetailPage({
             </p>
           ))}
         </div>
+        </RevealOnScroll>
 
         {/* ── "A look inside…" wide photo + gallery row ─────────────── */}
         <section className="flex flex-col gap-5 lg:gap-[1rem] mt-6 sm:mt-[2.2rem]">
-          <h2 className="font-archivo-black text-2xl sm:text-[3rem] leading-8 sm:leading-[3.3rem] font-normal text-black mb-0 sm:mb-4">
-            {post.eventSection.heading}
-          </h2>
+          <SplitReveal
+            as="h2"
+            className="font-archivo-black text-2xl sm:text-[3rem] leading-8 sm:leading-[3.3rem] font-normal text-black mb-0 sm:mb-4"
+            text={post.eventSection.heading}
+          />
 
           <div className="relative aspect-[328/214] w-full overflow-hidden rounded-[0.75rem] sm:rounded-[1.5rem] bg-[#D9D9D9] sm:aspect-[16/9]">
             {post.eventSection.wideVideo ? (
@@ -129,21 +143,26 @@ export default async function BlogDetailPage({
       </div>
 
       {/* ── Gallery slider — separate full-bleed section, no side padding ── */}
+      <RevealOnScroll y={26}>
       <div className="my-10 lg:my-[5.2rem] pl-4 md:pl-0">
         <GallerySlider
           images={post.eventSection.galleryImages}
           heading={post.eventSection.heading}
         />
       </div>
+      </RevealOnScroll>
 
       <div className="mx-auto flex w-full max-w-[84rem] flex-col gap-8 px-4 sm:px-6 lg:gap-[2.2rem] lg:px-[4.167rem]">
         {/* ── "EXCLUSIVE ASG EVENTS" 3-card grid ────────────────────── */}
         <section className="flex flex-col gap-6 lg:gap-[2.5rem] pb-5 sm:pb-[3rem]">
-          <h2 className="font-archivo-black text-2xl sm:text-[3rem] leading-8 sm:leading-[3.3rem] font-normal text-black max-w-[20rem] sm:max-w-[30rem] leading-[1.15] uppercase">
-            {post.exclusiveEvents.heading}
-          </h2>
+          <SplitReveal
+            as="h2"
+            className="font-archivo-black text-2xl sm:text-[3rem] leading-8 sm:leading-[3.3rem] font-normal text-black max-w-[20rem] sm:max-w-[30rem] leading-[1.15] uppercase"
+            text={post.exclusiveEvents.heading}
+          />
 
           {/* Staggered 3-card row — the middle column drops lower than the sides */}
+          <RevealOnScroll selector=".grid > div" stagger={0.08} y={26} delay={0.1}>
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-3 sm:gap-5">
             {post.exclusiveEvents.items.map((item, i) => (
               <div
@@ -169,9 +188,11 @@ export default async function BlogDetailPage({
               </div>
             ))}
           </div>
+          </RevealOnScroll>
         </section>
 
         {/* ── "The new MIAH collection" — full-bleed white band ──────── */}
+        <RevealOnScroll y={26}>
         <section className="relative left-1/2 w-screen -translate-x-1/2 bg-white py-12 sm:py-16 lg:py-20">
           <div className="mx-auto grid w-full max-w-[84rem] grid-cols-1 items-center gap-8 px-4 sm:px-6 lg:grid-cols-[1fr_1.5fr] lg:gap-[4rem] lg:px-[4.167rem]">
             <div className="flex flex-col gap-5 lg:gap-[1.25rem]">
@@ -196,6 +217,7 @@ export default async function BlogDetailPage({
             </div>
           </div>
         </section>
+        </RevealOnScroll>
       </div>
     </main>
   );

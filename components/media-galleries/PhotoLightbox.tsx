@@ -273,7 +273,7 @@ export default function PhotoLightbox({
 
         {/* ── Caption ───────────────────────────────────────────── */}
         <div ref={captionRef} className="flex flex-col items-center gap-0 sm:gap-1">
-          <h4 className="text-center font-test-tiempos-fine text-sm sm:text-[1.25rem] leading-[1.75rem] text-white lg:text-[1.5rem] tracking-wider">
+          <h4 className="text-center font-archivo-black text-sm sm:text-[1.25rem] leading-[1.75rem] text-white lg:text-[1.5rem] tracking-wider">
             {item.caption}
           </h4>
           {item.subCaption && (

@@ -13,7 +13,7 @@ import {
   arcFrag, arcVert, atmoFrag, atmoVert, bgFrag, bgVert,
   dotsFrag, dotsVert, earthFrag, earthVert,
 } from "./shaders";
-import { ARC_DESTINATIONS, type TourStop } from "./content";
+import { ARC_DESTINATIONS, TRADE_DESTINATIONS, type TourStop } from "./content";
 /* ───────────────────────────── public types ───────────────────────────── */
 
 export type Anchor = { el: HTMLElement; lat: number; lon: number; dx: number; dy: number };
@@ -128,7 +128,8 @@ function World(props: GlobeSceneProps & { bus: React.MutableRefObject<Bus> }) {
     <>
       <Earth mask={mask} hover={props.hover} />
       <CityDots mask={mask} />
-      <ArcField hub={props.hub} />
+      <ArcField hub={props.hub} destinations={ARC_DESTINATIONS} tint={FABRIC_TINT} hot={FABRIC_HOT} />
+      <ArcField hub={props.hub} destinations={TRADE_DESTINATIONS} tint={LUNGI_TINT} hot={LUNGI_HOT} rateScale={0.6} />
       <BangladeshHoverMap hub={props.hub} hover={props.hover} />
       <DestinationMarkers onOrder={props.onOrder} autoHold={autoHold} />
       <Orders bus={props.bus} onOrder={props.onOrder} autoHold={autoHold} />
@@ -264,7 +265,31 @@ function CityDots({ mask }: { mask: LandMask }) {
 const CAP = 240; // max simultaneous arcs
 const SEG = 72; // segments per arc ribbon
 
-function ArcField({ hub }: { hub: { lat: number; lon: number } }) {
+// The two ribbons are two product lanes, so each colour is picked to read as
+// the goods themselves:
+//   FABRIC  → warm ivory, the undyed cotton/silk shade of a fabric roll.
+//   LUNGI   → deep indigo, the dye a lungi is actually coloured with.
+// Ivory and indigo sit far apart in both hue and brightness, so the lanes stay
+// distinguishable even where they cross over the hub.
+const FABRIC_TINT = new THREE.Vector3(1.0, 0.92, 0.74);
+const FABRIC_HOT = new THREE.Vector3(1.0, 0.98, 0.9);
+const LUNGI_TINT = new THREE.Vector3(0.11, 0.24, 0.78);
+const LUNGI_HOT = new THREE.Vector3(0.28, 0.46, 1.0);
+
+function ArcField({
+  hub,
+  destinations,
+  tint,
+  hot,
+  rateScale = 1,
+}: {
+  hub: { lat: number; lon: number };
+  destinations: { lat: number; lon: number; w: number }[];
+  tint: THREE.Vector3;
+  hot: THREE.Vector3;
+  /** spawn-rate multiplier, so a smaller secondary list doesn't flood the sky */
+  rateScale?: number;
+}) {
   const { geometry, material, attrs } = useMemo(() => {
     const g = new THREE.InstancedBufferGeometry();
 
@@ -304,7 +329,12 @@ function ArcField({ hub }: { hub: { lat: number; lon: number } }) {
     const m = new THREE.ShaderMaterial({
       vertexShader: arcVert,
       fragmentShader: arcFrag,
-      uniforms: { uTime: { value: 0 }, uWidth: { value: 0.0056 } },
+      uniforms: {
+        uTime: { value: 0 },
+        uWidth: { value: 0.0056 },
+        uTint: { value: tint },
+        uHot: { value: hot },
+      },
       transparent: true,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
@@ -317,10 +347,10 @@ function ArcField({ hub }: { hub: { lat: number; lon: number } }) {
   const hubVec = useMemo(() => latLonToVec3(hub.lat, hub.lon), [hub]);
   // Destination unit vectors plus the weight total the biased pick below needs.
   const dest = useMemo(() => {
-    const vecs = ARC_DESTINATIONS.map((d) => latLonToVec3(d.lat, d.lon));
-    const total = ARC_DESTINATIONS.reduce((sum, d) => sum + d.w, 0);
+    const vecs = destinations.map((d) => latLonToVec3(d.lat, d.lon));
+    const total = destinations.reduce((sum, d) => sum + d.w, 0);
     return { vecs, total };
-  }, []);
+  }, [destinations]);
 
   useFrame(({ clock }, rawDt) => {
     const dt = Math.min(rawDt, 0.5);
@@ -331,7 +361,7 @@ function ArcField({ hub }: { hub: { lat: number; lon: number } }) {
     // Ribbons per second. At 9 the field read as a firework — new arcs kept
     // appearing faster than the eye could follow one. With the longer durations
     // below this still leaves roughly 20 arcs alive at any moment.
-    s.acc += dt * 3;
+    s.acc += dt * 3 * rateScale;
     let dirty = false;
 
     while (s.acc >= 1) {
@@ -342,8 +372,8 @@ function ArcField({ hub }: { hub: { lat: number; lon: number } }) {
       const a = hubVec;
       let left = Math.random() * dest.total;
       let bi = dest.vecs.length - 1;
-      for (let i = 0; i < ARC_DESTINATIONS.length; i++) {
-        left -= ARC_DESTINATIONS[i].w;
+      for (let i = 0; i < destinations.length; i++) {
+        left -= destinations[i].w;
         if (left <= 0) {
           bi = i;
           break;

@@ -6,6 +6,8 @@ import WeFeatureCard from "@/components/sustainability/WeFeatureCard";
 import WeCommunity from "@/components/sustainability/WeCommunity";
 import WeCta from "@/components/sustainability/WeCta";
 import { weHero, weWellbeing, weCapacity } from "@/components/sustainability/weData";
+import RevealOnScroll from "@/components/web-info/RevealOnScroll";
+import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 export const metadata: Metadata = {
   title: "Women Empowerment | ASG - Amanat Shah Group",
@@ -16,6 +18,7 @@ export const metadata: Metadata = {
 export default function WomenEmpowermentPage() {
   return (
     <main>
+      <ScrollProgress />
       <PageHeroFull
         title={weHero.title}
         subtitle={weHero.subtitle}
@@ -23,12 +26,24 @@ export default function WomenEmpowermentPage() {
         desktopSrc={weHero.image}
         alt={weHero.alt}
       />
-      <WeVision />
-      <WeGrowthBanner />
-      <WeFeatureCard data={weWellbeing} side="right" />
-      <WeFeatureCard data={weCapacity} side="left" divider />
-      <WeCommunity />
-      <WeCta />
+      <RevealOnScroll>
+        <WeVision />
+      </RevealOnScroll>
+      <RevealOnScroll>
+        <WeGrowthBanner />
+      </RevealOnScroll>
+      <RevealOnScroll>
+        <WeFeatureCard data={weWellbeing} side="right" />
+      </RevealOnScroll>
+      <RevealOnScroll>
+        <WeFeatureCard data={weCapacity} side="left" divider />
+      </RevealOnScroll>
+      <RevealOnScroll>
+        <WeCommunity />
+      </RevealOnScroll>
+      <RevealOnScroll>
+        <WeCta />
+      </RevealOnScroll>
     </main>
   );
 }

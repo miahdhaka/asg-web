@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PageHero from "@/components/common/PageHero";
 import HistoryTimeline from "@/components/our-history/HistoryTimeline";
 import HistoryYearNav from "@/components/our-history/HistoryYearNav";
+import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 export const metadata: Metadata = {
   title: "Our History | ASG - Amanat Shah Group",
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
 export default function OurHistoryPage() {
   return (
     <main>
+      <ScrollProgress />
       <PageHero
         title="Our History"
         subtitle="At A Glance into The History of Amanat Shah Group"

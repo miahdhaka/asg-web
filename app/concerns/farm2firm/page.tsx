@@ -3,6 +3,7 @@ import PageHeroFull from "@/components/common/PageHeroFull";
 import ConcernIntro from "@/components/concerns/common/ConcernIntro";
 import ConcernCoreValues from "@/components/concerns/common/ConcernCoreValues";
 import ConcernProcessing from "@/components/concerns/common/ConcernProcessing";
+import ScrollProgress from "@/components/web-info/ScrollProgress";
 import {
   farmHero,
   farmCompany,
@@ -21,6 +22,7 @@ export const metadata: Metadata = {
 export default function Farm2FirmPage() {
   return (
     <main>
+      <ScrollProgress />
       <PageHeroFull
         title={farmHero.title}
         subtitle={farmHero.subtitle}

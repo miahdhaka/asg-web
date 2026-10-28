@@ -3,11 +3,11 @@ import Link from "next/link";
 export default function NotFound() {
   return (
     <main className="flex min-h-[calc(100dvh-var(--header-height))] items-center justify-center px-4 py-12 sm:px-8 lg:px-[5rem]">
-      <div className="flex w-full max-w-[72rem] flex-col items-center gap-10 lg:flex-row lg:items-stretch lg:gap-0">
+      <div className="flex w-full max-w-[80rem] flex-col items-center gap-10 lg:flex-row lg:items-stretch lg:gap-0">
         {/* Left — oversized 404 */}
-        <div className="flex flex-1 flex-col items-center justify-center lg:items-start">
+        <div className="flex flex-1 flex-col items-center justify-center lg:items-start lg:pr-12">
           <span
-            className="font-test-tiempos-fine text-[7rem] font-medium leading-none sm:text-[10rem] lg:text-[18rem]"
+            className="font-archivo-black text-[7rem] font-medium leading-none sm:text-[10rem] lg:text-[18rem]"
             style={{
               background: "var(--primary-gradient)",
               WebkitBackgroundClip: "text",
@@ -25,11 +25,11 @@ export default function NotFound() {
         />
 
         {/* Right — content */}
-        <div className="flex flex-1 flex-col justify-center lg:pl-12">
+        <div className="flex flex-1 flex-col justify-center lg:pl-12 lg:py-5">
           <span className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-400">
             Page not found
           </span>
-          <h2 className="font-test-tiempos-fine mt-4 text-2xl leading-snug text-neutral-800 sm:text-3xl lg:text-[2.5rem]">
+          <h2 className="font-archivo-black mt-4 text-2xl leading-snug text-neutral-800 sm:text-3xl lg:text-[2.5rem]">
             The page you&apos;re looking
             <br className="hidden sm:block" /> for doesn&apos;t exist.
           </h2>
@@ -40,7 +40,12 @@ export default function NotFound() {
           <Link
             href="/"
             data-label="Back to Home"
-            className="primary-btn-flip-gradient mt-8 w-fit px-8 py-3 text-sm font-medium lg:mt-10 lg:px-[2rem] lg:py-[1.4rem] lg:text-[1.1667rem]"
+            className="primary-btn-flip-gradient mt-8 w-fit cursor-pointer rounded-full px-8 py-3 text-sm font-medium lg:mt-10 lg:px-[2rem] lg:py-[1.4rem] lg:text-[1.1667rem]"
+            style={{
+              borderImage: "none",
+              background:
+                "linear-gradient(var(--background), var(--background)) padding-box, var(--primary-gradient) border-box",
+            }}
           >
             Back to Home
           </Link>

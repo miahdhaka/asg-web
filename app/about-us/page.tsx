@@ -5,6 +5,8 @@ import AboutStats from "@/components/about/AboutStats";
 import VisionMission from "@/components/about/VisionMission";
 import Achievements from "@/components/about/Achievements";
 import ValueCardsSection, { ValueCardItem } from "@/components/about/ValueCardsSection";
+import RevealOnScroll from "@/components/web-info/RevealOnScroll";
+import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 export const metadata: Metadata = {
   title: "About Us | ASG - Amanat Shah Group",
@@ -80,6 +82,7 @@ const coreCompetencies: ValueCardItem[] = [
 export default function AboutUsPage() {
   return (
     <main>
+      <ScrollProgress />
       <PageHeroFull
         id="about-hero"
         title="House of Trust"
@@ -90,11 +93,17 @@ export default function AboutUsPage() {
         imagePosition="center"
       />
       <AboutIntro />
-      <AboutStats />
+      <RevealOnScroll>
+        <AboutStats />
+      </RevealOnScroll>
       <VisionMission />
       <Achievements />
-      <ValueCardsSection id="core-values" heading="Core Values" items={coreValues} variant="light" />
-      <ValueCardsSection id="core-competency" heading="Core Competency" items={coreCompetencies} variant="muted" />
+      <RevealOnScroll selector=".grid > div" stagger={0.08}>
+        <ValueCardsSection id="core-values" heading="Core Values" items={coreValues} variant="light" />
+      </RevealOnScroll>
+      <RevealOnScroll selector=".grid > div" stagger={0.08}>
+        <ValueCardsSection id="core-competency" heading="Core Competency" items={coreCompetencies} variant="muted" />
+      </RevealOnScroll>
     </main>
   );
 }

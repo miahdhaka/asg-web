@@ -4,6 +4,7 @@ import ConcernIntro from "@/components/concerns/common/ConcernIntro";
 import ConcernSocialModel from "@/components/concerns/common/ConcernSocialModel";
 import ConcernBrands from "@/components/concerns/common/ConcernBrands";
 import ConcernProcessing from "@/components/concerns/common/ConcernProcessing";
+import ScrollProgress from "@/components/web-info/ScrollProgress";
 import {
   helalHero,
   helalCompany,
@@ -25,6 +26,7 @@ export const metadata: Metadata = {
 export default function HelalBrothersPage() {
   return (
     <main>
+      <ScrollProgress />
       <PageHeroFull
         title={helalHero.title}
         subtitle={helalHero.subtitle}

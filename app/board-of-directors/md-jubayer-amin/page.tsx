@@ -3,6 +3,7 @@ import MemberMessageHero from "@/components/board/MemberMessageHero";
 import MessageBody from "@/components/board/MessageBody";
 import OtherBoardMembers from "@/components/board/OtherBoardMembers";
 import { otherMembersFor } from "@/components/board/boardRoster";
+import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 export const metadata: Metadata = {
   title: "Message from the Miah Director | ASG - Amanat Shah Group",
@@ -19,6 +20,7 @@ const messageParagraphs = [
 export default function MdJubayerAminPage() {
   return (
     <main>
+      <ScrollProgress />
       <MemberMessageHero
         id="miah-director-hero"
         name="Md. Jubayer Amin"
