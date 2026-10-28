@@ -1,4 +1,6 @@
 import Image from "next/image";
+import SplitReveal from "@/components/web-info/SplitReveal";
+import RevealOnScroll from "@/components/web-info/RevealOnScroll";
 
 export type CoreValueCard = {
   icon: string;
@@ -75,6 +77,7 @@ export default function ConcernCoreValues({
     >
       <div className="flex flex-col-reverse gap-4 sm:gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-[5em]">
         {/* Staggered card grid — right column sits 69px lower than the left */}
+        <RevealOnScroll selector=".grid > div" stagger={0.1} y={28} className="lg:shrink-0">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-0 lg:flex lg:w-[58.67em] lg:shrink-0">
           <div className="flex flex-col gap-4 sm:gap-0">
             <ValueCard card={cards[0]} corners="lg:rounded-tl-2xl lg:rounded-tr-2xl" />
@@ -85,15 +88,20 @@ export default function ConcernCoreValues({
             <ValueCard card={cards[3]} corners="lg:rounded-bl-2xl lg:rounded-br-2xl" />
           </div>
         </div>
+        </RevealOnScroll>
 
         {/* Section heading */}
         <div className="lg:w-[35.92em]">
-          <h2 className="font-archivo-black text-2xl text-neutral-800 sm:text-3xl lg:max-w-[10em] lg:text-[3em] lg:leading-[1.11]">
-            {heading}
-          </h2>
-          <p className="mt-1 sm:mt-3 text-sm text-neutral-800 lg:mt-[1.14em] lg:w-[27.79em] lg:text-[1.17em] lg:leading-[1.43]">
-            {description}
-          </p>
+          <SplitReveal
+            as="h2"
+            className="font-archivo-black text-2xl text-neutral-800 sm:text-3xl lg:max-w-[10em] lg:text-[3em] lg:leading-[1.11]"
+            text={heading}
+          />
+          <RevealOnScroll y={20} delay={0.25}>
+            <p className="mt-1 sm:mt-3 text-sm text-neutral-800 lg:mt-[1.14em] lg:w-[27.79em] lg:text-[1.17em] lg:leading-[1.43]">
+              {description}
+            </p>
+          </RevealOnScroll>
         </div>
       </div>
     </section>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PageHeroFull from "@/components/common/PageHeroFull";
 import ConcernIntro from "@/components/concerns/common/ConcernIntro";
 import ConcernCoreValues from "@/components/concerns/common/ConcernCoreValues";
+import ScrollProgress from "@/components/web-info/ScrollProgress";
 import {
   dynamicHero,
   dynamicCompany,
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
 export default function AsgDynamicPage() {
   return (
     <main>
+      <ScrollProgress />
       <PageHeroFull
         title={dynamicHero.title}
         subtitle={dynamicHero.subtitle}

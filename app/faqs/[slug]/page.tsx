@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import PageHero from "@/components/common/PageHero";
 import FaqAccordion from "@/components/faq/FaqAccordion";
 import { faqCategories, getFaqCategory } from "@/components/faq/faqData";
+import RevealOnScroll from "@/components/web-info/RevealOnScroll";
+import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 /** Pre-render one page per category at build time */
 export function generateStaticParams() {
@@ -33,6 +35,7 @@ export default async function FaqCategoryPage({
 
   return (
     <main>
+      <ScrollProgress />
       <PageHero
         title="FAQ's"
         subtitle="Family business legacy for more than 130 years."
@@ -40,7 +43,9 @@ export default async function FaqCategoryPage({
         desktopSrc="/images/faq/hero.webp"
         alt="ASG Group shipping and logistics operations"
       />
-      <FaqAccordion title={category.title} items={category.faqs} />
+      <RevealOnScroll>
+        <FaqAccordion title={category.title} items={category.faqs} />
+      </RevealOnScroll>
     </main>
   );
 }

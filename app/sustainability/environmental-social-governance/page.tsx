@@ -6,6 +6,8 @@ import EsgStatCards from "@/components/sustainability/EsgStatCards";
 import EsgZld from "@/components/sustainability/EsgZld";
 import { esgHero } from "@/components/sustainability/esgData";
 import CertificationsCompliance from "@/components/homepage/CertificationsCompliance";
+import RevealOnScroll from "@/components/web-info/RevealOnScroll";
+import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 export const metadata: Metadata = {
   title: "Environmental & Social Governance | ASG - Amanat Shah Group",
@@ -16,6 +18,7 @@ export const metadata: Metadata = {
 export default function EnvironmentalSocialGovernancePage() {
   return (
     <main>
+      <ScrollProgress />
       <PageHeroFull
         title={esgHero.title}
         subtitle={esgHero.subtitle}
@@ -23,11 +26,21 @@ export default function EnvironmentalSocialGovernancePage() {
         desktopSrc={esgHero.image}
         alt={esgHero.alt}
       />
-      <EsgRenewable />
-      <EsgWater />
-      <EsgStatCards />
-      <EsgZld />
-      <CertificationsCompliance />
+      <RevealOnScroll>
+        <EsgRenewable />
+      </RevealOnScroll>
+      <RevealOnScroll>
+        <EsgWater />
+      </RevealOnScroll>
+      <RevealOnScroll>
+        <EsgStatCards />
+      </RevealOnScroll>
+      <RevealOnScroll>
+        <EsgZld />
+      </RevealOnScroll>
+      <RevealOnScroll>
+        <CertificationsCompliance />
+      </RevealOnScroll>
     </main>
   );
 }

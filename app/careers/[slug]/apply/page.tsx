@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getJob } from "@/components/career/careerData";
 import CareerApplicationForm from "@/components/career/CareerApplicationForm";
+import RevealOnScroll from "@/components/web-info/RevealOnScroll";
+import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 /* ------------------------------------------------------------------ */
 /*  Metadata                                                           */
@@ -39,7 +41,10 @@ export default async function ApplyPage({
 
   return (
     <main className="mx-auto mt-[3rem] sm:mt-[7rem] w-full max-w-[59rem] px-5 pt-[2rem] pb-16">
-      <CareerApplicationForm jobTitle={job.title} department={job.department} location={job.location} />
+      <ScrollProgress />
+      <RevealOnScroll y={24}>
+        <CareerApplicationForm jobTitle={job.title} department={job.department} location={job.location} />
+      </RevealOnScroll>
     </main>
   );
 }

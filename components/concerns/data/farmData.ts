@@ -31,9 +31,9 @@ export const farmIntroParagraphs = [
 ];
 
 export const farmIntroStats: StatItem[] = [
-  { value: 420, suffix: "K", grouped: true, unit: " Annually", label: "Tea Leaves Processed Annually" },
-  { value: 955, unit: "", label: "Aces Land Area" },
-  { value: 420, unit: "", label: "Employees" },
+  { value: 400, suffix: "K", grouped: true, unit: " Annually", label: "Tea Leaves Processed Annually" },
+  { value: 875, unit: "", label: "Aces Land Area" },
+  { value: 714, unit: "", label: "Employees" },
   { value: 1955, unit: "", label: "Establishment" },
 ];
 

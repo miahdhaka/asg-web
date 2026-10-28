@@ -1,5 +1,9 @@
 import Image from "next/image";
 import { useId } from "react";
+import SplitReveal from "@/components/web-info/SplitReveal";
+import RevealOnScroll from "@/components/web-info/RevealOnScroll";
+import ImageReveal from "@/components/web-info/ImageReveal";
+import LitText from "@/components/web-info/LitText";
 
 export type SocialPillar = {
   icon: string;
@@ -46,7 +50,8 @@ export default function ConcernSocialModel({
       <div className="flex flex-col gap-10 px-4 py-10 sm:px-6 lg:flex-row lg:justify-between lg:px-[5em] lg:py-[5em]">
         {/* Sustainability wheel — free-form absolute layout on desktop,
             simple stacked cards on mobile */}
-        <div className="relative order-2 flex flex-col gap-4 lg:order-1 lg:mt-[1.25em] lg:flex-none lg:h-[40.92em] lg:w-[61.92em] lg:shrink-0 lg:gap-0">
+        <RevealOnScroll className="order-2 lg:order-1 lg:flex-none lg:shrink-0" y={26} delay={0.1}>
+        <div className="relative flex flex-col gap-4 lg:mt-[1.25em] lg:h-[40.92em] lg:w-[61.92em] lg:gap-0">
           {/* Dashed gradient ring + core circle (desktop only) */}
           <div className="hidden lg:block">
             <svg
@@ -75,12 +80,12 @@ export default function ConcernSocialModel({
                 className="absolute inset-0 rounded-full opacity-10"
                 style={{ background: "var(--primary-gradient)" }}
               />
-              <span
-                className="relative w-[6em] bg-clip-text text-center text-[1.17em] font-medium leading-[1.43] text-transparent"
-                style={{ backgroundImage: "var(--primary-gradient)" }}
-              >
-                {coreText}
-              </span>
+              <LitText
+                as="span"
+                className="relative w-[6em] bg-[image:var(--primary-gradient)] bg-clip-text text-center text-[1.17em] font-medium leading-[1.43] text-transparent"
+                text={coreText}
+                dim={0.25}
+              />
             </div>
           </div>
 
@@ -136,24 +141,34 @@ export default function ConcernSocialModel({
             </div>
           ))}
         </div>
+        </RevealOnScroll>
 
         {/* Copy + photograph */}
         <div className="order-1 lg:order-2 lg:w-[42.08em] lg:shrink-0">
           {/* Design widths ÷ own font-size: 390px/24 and 423px/14 */}
-          <h2 className="font-archivo-black text-xl text-neutral-800 sm:text-2xl lg:w-[16.25em] lg:text-[2em] lg:leading-[1.33]">
-            {heading}
-          </h2>
-          <p className="mt-2 text-sm text-neutral-800 lg:mt-[0.67em] lg:w-[30.21em] lg:text-[1.17em] lg:leading-[1.43]">
-            {description}
-          </p>
-          <Image
-            src={photoSrc}
-            alt={photoAlt}
-            width={534}
-            height={330}
-            quality={90}
-            className="mt-4 w-full rounded-[1.25rem] object-cover lg:mt-[2em] lg:h-[27.42em] lg:w-[42.08em]"
+          <SplitReveal
+            as="h2"
+            className="font-archivo-black text-xl text-neutral-800 sm:text-2xl lg:w-[16.25em] lg:text-[2em] lg:leading-[1.33]"
+            text={heading}
           />
+          <RevealOnScroll y={22} delay={0.25}>
+            <p className="mt-2 text-sm text-neutral-800 lg:mt-[0.67em] lg:w-[30.21em] lg:text-[1.17em] lg:leading-[1.43]">
+              {description}
+            </p>
+          </RevealOnScroll>
+          <ImageReveal
+            radius="1.25rem"
+            className="mt-4 w-full lg:mt-[2em] lg:h-[27.42em] lg:w-[42.08em]"
+          >
+            <Image
+              src={photoSrc}
+              alt={photoAlt}
+              width={534}
+              height={330}
+              quality={90}
+              className="block h-auto w-full rounded-[1.25rem] object-cover lg:h-full lg:w-full"
+            />
+          </ImageReveal>
         </div>
       </div>
     </section>

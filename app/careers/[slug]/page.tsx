@@ -8,6 +8,8 @@ import {
   getWorkplaceLabel,
   getJobDetailBlocks,
 } from "@/components/career/careerData";
+import RevealOnScroll from "@/components/web-info/RevealOnScroll";
+import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 /* ------------------------------------------------------------------ */
 /*  Static generation                                                  */
@@ -47,6 +49,8 @@ export default async function JobDetailPage({
 
   return (
     <main className="mx-auto mt-[4rem] sm:mt-[8rem] w-full max-w-[59rem] px-4 pt-8 pb-16 sm:px-5 sm:pt-[3.5rem]">
+      <ScrollProgress />
+      <RevealOnScroll y={24}>
       {/* ── Title row ── */}
       <div className="flex flex-col gap-4 sm:gap-6 lg:hidden">
         {/* 1. Department badge */}
@@ -55,7 +59,7 @@ export default async function JobDetailPage({
         </span>
 
         {/* 2. Job title */}
-        <h1 className="order-2 font-test-tiempos-fine text-2xl lg:text-[2rem] text-neutral-800 font-medium">
+        <h1 className="order-2 font-archivo-black text-2xl lg:text-[2rem] text-neutral-800 font-medium">
           {job.title}
         </h1>
 
@@ -107,8 +111,10 @@ export default async function JobDetailPage({
           </p>
         </div>
       </div>
+      </RevealOnScroll>
 
       {/* Desktop: original left-column + right-button layout */}
+      <RevealOnScroll y={24}>
       <div className="hidden lg:flex lg:flex-row lg:items-start lg:justify-between lg:gap-6">
         <div className="flex min-w-0 flex-col gap-4">
           <div className="flex flex-col gap-3">
@@ -173,8 +179,10 @@ export default async function JobDetailPage({
           </span>
         </a>
       </div>
+      </RevealOnScroll>
 
       {/* Job description */}
+      <RevealOnScroll y={24}>
       <div className="flex flex-col gap-4.5 mt-8 sm:mt-12">
         <h2 className="font-archivo-black text-xl lg:text-[2rem] text-neutral-800 font-medium">
           Job description
@@ -229,11 +237,13 @@ export default async function JobDetailPage({
           ))}
         </div>
       </div>
+      </RevealOnScroll>
 
       {/* ── Divider ──────────────────────────────────────────────── */}
       <hr className="mt-6 sm:mt-10 border-0 border-t border-gray-100" />
 
       {/* ── Share ────────────────────────────────────────────────── */}
+      <RevealOnScroll y={24}>
       <div className="mt-6 sm:mt-8 flex flex-col gap-4 sm:gap-6">
         <h2 className="font-archivo-black text-xl lg:text-[2rem] text-neutral-800 font-medium">
           Share with your friends
@@ -286,6 +296,7 @@ export default async function JobDetailPage({
           </button>
         </div>
       </div>
+      </RevealOnScroll>
     </main>
   );
 }

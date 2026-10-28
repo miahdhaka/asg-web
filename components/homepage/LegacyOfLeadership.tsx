@@ -186,8 +186,8 @@ export default function LegacyOfLeadership() {
               />
             </svg>
 
-            <p className="text-lg sm:text-xl leading-7 lg:text-[1.7rem] lg:leading-9">
-              ASG's leadership is rooted in a founding family's 130-year entrepreneurial legacy — carried forward today by a management team focused on manufacturing discipline, product innovation and long-term partnership with global brands.
+            <p className="text-lg sm:text-xl leading-7 lg:text-[1.4rem] lg:leading-8">
+              ASG stands for cohesive eco-conscious manufacturing good practices and Research & Development pursuit for constant improvement. Maintained through global fashion compliance at every step of craftsmanship, caring for ultimate end-customer satisfaction at every level.
             </p>
           </div>
         </div>

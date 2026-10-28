@@ -1,4 +1,6 @@
 import Image from "next/image";
+import SplitReveal from "@/components/web-info/SplitReveal";
+import RevealOnScroll from "@/components/web-info/RevealOnScroll";
 
 export type MemberMessageHeroProps = {
   id: string;
@@ -62,19 +64,23 @@ export default function MemberMessageHero({
 
         {/* Name / role / divider / group — shows after portrait on mobile */}
         <div className="mt-4 sm:mt-6 lg:absolute lg:bottom-[3em] lg:left-[22.5em] lg:mt-0 lg:w-[51.25em]">
-          <h1 className="font-archivo-black font-medium text-[1.65rem] sm:text-4xl lg:text-[3em] lg:leading-[1.11] text-neutral-800">
-            {name}
-          </h1>
-          <p className="mt-[0.33em] tracking-wider text-[1.125rem] sm:text-[1.33em] lg:leading-[1.5] text-neutral-800">
-            {role}
-          </p>
-          <div
-            aria-hidden
-            className="mt-3 sm:mt-4 border-b border-neutral-100 sm:border-neutral-200 lg:mt-[1.33em]"
+          <SplitReveal
+            as="h1"
+            className="font-archivo-black font-medium text-[1.65rem] sm:text-4xl lg:text-[3em] lg:leading-[1.11] text-neutral-800"
+            text={name}
           />
-          <p className="mt-3 sm:mt-4 text-base sm:text-base lg:mt-[1em] lg:text-[1.33em] lg:leading-[1.5] text-neutral-800 tracking-wider">
-            {org}
-          </p>
+          <RevealOnScroll delay={0.25} y={20}>
+            <p className="mt-[0.33em] tracking-wider text-[1.125rem] sm:text-[1.33em] lg:leading-[1.5] text-neutral-800">
+              {role}
+            </p>
+            <div
+              aria-hidden
+              className="mt-3 sm:mt-4 border-b border-neutral-100 sm:border-neutral-200 lg:mt-[1.33em]"
+            />
+            <p className="mt-3 sm:mt-4 text-base sm:text-base lg:mt-[1em] lg:text-[1.33em] lg:leading-[1.5] text-neutral-800 tracking-wider">
+              {org}
+            </p>
+          </RevealOnScroll>
         </div>
       </div>
     </section>

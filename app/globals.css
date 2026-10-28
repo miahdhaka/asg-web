@@ -36,8 +36,6 @@
 
   /* Custom Fonts */
   --font-sans: var(--font-neue-montreal);
-  --font-serif: var(--font-test-tiempos-fine);
-  --font-heading: var(--font-test-tiempos-fine);
   --font-mono: var(--font-space-mono);
 
   /* Gray scale */
@@ -254,9 +252,6 @@ html.asg-touch-lock * {
 @layer utilities {
   .font-neue-montreal {
     font-family: var(--font-neue-montreal), sans-serif;
-  }
-  .font-test-tiempos-fine {
-    font-family: var(--font-test-tiempos-fine), serif;
   }
   .font-archivo-black {
     font-family: var(--font-archivo-black), sans-serif;

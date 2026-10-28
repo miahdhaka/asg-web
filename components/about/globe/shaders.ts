@@ -188,6 +188,11 @@ varying float vAge;
 varying float vSeed;
 varying float vSide;
 
+// Ribbon body colour. The primary field keeps the classic mint-white; a second
+// ArcField instance overrides these with a warmer hue for its own lanes.
+uniform vec3 uTint;
+uniform vec3 uHot;
+
 float hash12(vec2 p){
   vec3 p3 = fract(vec3(p.xyx) * 0.1031);
   p3 += dot(p3, p3.yzx + 33.33);
@@ -209,6 +214,9 @@ void main(){
   float a = trail * edge * destFade;
   if (a < 0.01) discard;
 
-  vec3 c = vec3(0.86, 1.0, 0.95) * (0.9 + head * 2.4);
+  // Body ramp matches the original exactly (0.86,1.0,0.95 × 0.9 + hot × 2.4 for
+  // the primary field). uHot lets a saturated secondary field keep a coloured
+  // head instead of washing out to white under the same boost.
+  vec3 c = uTint * 0.9 + uHot * head * 2.4;
   gl_FragColor = vec4(c, a);
 }`;

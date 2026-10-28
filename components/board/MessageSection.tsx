@@ -1,5 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
+import SplitReveal from "@/components/web-info/SplitReveal";
+import RevealOnScroll from "@/components/web-info/RevealOnScroll";
+import ImageReveal from "@/components/web-info/ImageReveal";
 
 export type MessageSectionProps = {
   id: string;
@@ -115,25 +118,32 @@ export default function MessageSection({
 
           {/* Name / role / divider / org label — left */}
           <div className={`relative z-30 border-t border-current/20 px-0 sm:px-6 pt-8 md:px-10 lg:absolute lg:inset-x-auto lg:top-1/2 lg:left-[5rem] lg:border-t-0 lg:px-0 lg:pt-0 lg:-translate-y-1/2 lg:w-[18.375rem] ${textClass}`}>
-            <h3 className="font-archivo-black text-3xl leading-[1.08] uppercase lg:text-[2rem]">
-              {name}
-            </h3>
-            <p className="mt-4 sm:mt-6 leading-6 text-[1.25rem]">{role}</p>
-            <p className="mt-4 block sm:hidden font-archivo-black text-base leading-5 uppercase lg:text-[1.1rem] mb-5">
-              {orgLabel}
-            </p>
-            <div className="my-4 sm:my-6 h-px w-full bg-current/20" style={{ maskImage: 'linear-gradient(to right, black 75%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to right, black 75%, transparent 100%)' }} />
-            <p className="hidden sm:block font-archivo-black text-base leading-5 uppercase lg:text-[1.1rem]">
-              {orgLabel}
-            </p>
+            <SplitReveal
+              as="h3"
+              className="font-archivo-black text-3xl leading-[1.08] uppercase lg:text-[2rem]"
+              text={name}
+            />
+            <RevealOnScroll delay={0.15} y={20}>
+              <p className="mt-4 sm:mt-6 leading-6 text-[1.25rem]">{role}</p>
+              <p className="mt-4 block sm:hidden font-archivo-black text-base leading-5 uppercase lg:text-[1.1rem] mb-5">
+                {orgLabel}
+              </p>
+              <div className="my-4 sm:my-6 h-px w-full bg-current/20" style={{ maskImage: 'linear-gradient(to right, black 75%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to right, black 75%, transparent 100%)' }} />
+              <p className="hidden sm:block font-archivo-black text-base leading-5 uppercase lg:text-[1.1rem]">
+                {orgLabel}
+              </p>
+            </RevealOnScroll>
           </div>
 
           {/* Bio + CTA — right, left-aligned */}
           <div className={`relative z-30 mt-5 sm:mt-8 flex flex-col gap-8 px-0 sm:px-6 text-left md:px-10 lg:absolute lg:inset-x-auto lg:right-[5rem] lg:top-1/2 lg:bottom-auto lg:mt-0 lg:px-0 lg:w-[36rem] lg:-translate-y-1/2 lg:gap-[2.5rem] pb-[2rem] sm:pb-0 ${textClass}`}>
-            <p className="text-lg sm:text-xl leading-7 lg:text-[1.7rem] lg:leading-9">
-              {bio}
-            </p>
+            <RevealOnScroll delay={0.3} y={24}>
+              <p className="text-lg sm:text-xl leading-7 lg:text-[1.7rem] lg:leading-9">
+                {bio}
+              </p>
+            </RevealOnScroll>
             {href && (
+              <RevealOnScroll delay={0.5} y={20}>
               <Link
                 href={href}
                 className="group relative inline-flex w-fit shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full px-[1.5em] py-[0.9em] text-[1.05rem] font-medium leading-none lg:text-[1.1rem]"
@@ -179,6 +189,7 @@ export default function MessageSection({
                   Read full bio
                 </span>
               </Link>
+              </RevealOnScroll>
             )}
           </div>
         </div>

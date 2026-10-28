@@ -61,6 +61,7 @@ function getCurrentPageLabel(pathname: string): string {
   if (pathname.startsWith("/media-galleries")) return "Media & Press";
   if (pathname.startsWith("/contact-us")) return "Contact";
   if (pathname.startsWith("/careers")) return "Careers";
+  if (pathname.startsWith("/certificates")) return "All Certificate";
   if (pathname.startsWith("/faqs")) return "FAQs";
   if (pathname.startsWith("/privacy-policy")) return "Privacy";
   if (pathname.startsWith("/terms-of-use")) return "Terms";
@@ -245,11 +246,7 @@ export default function Header() {
           duration: 0.5,
           ease: "power1.inOut",
         }, 0.4);
-        // Always start a rebuilt timeline CLOSED. If the rebuild fires on the
-        // same tick that expanded turned true (web fonts finishing late change
-        // the measured widths right when the first hover happens), jumping it
-        // to progress(1) would SNAP the pill open — starting at 0 lets the
-        // expand branch below play the fresh timeline smoothly.
+
         tl.progress(0);
         swapTlRef.current = tl;
       }

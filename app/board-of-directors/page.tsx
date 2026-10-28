@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PageHero from "@/components/common/PageHero";
 import MessageSection from "@/components/board/MessageSection";
 import OtherBoardMembers from "@/components/board/OtherBoardMembers";
+import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 export const metadata: Metadata = {
   title: "Board of Directors | ASG - Amanat Shah Group",
@@ -18,6 +19,7 @@ const managingDirectorBio =
 export default function BoardOfDirectorsPage() {
   return (
     <main>
+      <ScrollProgress />
       <PageHero
         id="board-hero"
         title="Board of Directors"

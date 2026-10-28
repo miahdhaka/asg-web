@@ -21,21 +21,21 @@ export const texCompany = {
 };
 
 export const texIntroParagraphs = [
-  "To strengthen the textile value chain and support consistent international product quality, Amanat Shah Tex Solution was established as a trusted textile-chemicals partner in 2025.",
+  "To strengthen the textile value chain and support consistent international product quality, Amanat Shah Tex Solution was established as a trusted textile-chemicals partner in 2024.",
   "As part of ASG’s textile innovation ecosystem, ASTS delivers reliable, high-performance and cost-effective chemical solutions for textile manufacturers.",
   "Starting from specialized manufacturing to customized formulations, ASTS combines both research and development. Whether its quality assurance or technical operation all run under one centralized system.",
   "Every solution is developed with a focus on performance and consistency. And specific textile applications.",
   "Which is built from understanding traditional to modern consumers needs,",
   "developing right solutions and delivery with precision.",
-  "With a monthly production capacity of 600 metric tons and a team of 50+ employees, ASTS is expanding the capabilities to support growing textile-chemical requirements.",
+  "With a monthly production capacity of 100 metric tons and a team of 5+ employees, ASTS is expanding the capabilities to support growing textile-chemical requirements.",
   "Built on ASG’s heritage of textile excellence, ASTS carries the legacy forward through chemistry, innovation and experts' decisions."
 ];
 
 export const texIntroStats: StatItem[] = [
-  { value: 2025, label: "ESTABLISHMENT" },
-  { value: 600, unit: " MT/Month", label: "PRODUCTION CAPACITY" },
+  { value: 2024, label: "ESTABLISHMENT" },
+  { value: 100, unit: " MT/Month", label: "PRODUCTION CAPACITY" },
   { value: 99.8, suffix: "%", decimals: 1, label: "TECHNICAL COMPLIANCE RATE" },
-  { value: 50, suffix: "+", label: "EMPLOYEES" },
+  { value: 5, suffix: "+", label: "EMPLOYEES" },
 ];
 
 /* ── Core values (capabilities) ── */

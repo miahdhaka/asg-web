@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import PageHero from "@/components/common/PageHero";
 import DirectorGalleryGrid from "@/components/media-galleries/DirectorGalleryGrid";
 import { directorCards } from "@/components/media-galleries/mediaGalleriesData";
+import RevealOnScroll from "@/components/web-info/RevealOnScroll";
+import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 export const metadata: Metadata = {
   title: "Board of Directors | ASG - Amanat Shah Group",
@@ -16,6 +18,7 @@ export const metadata: Metadata = {
 export default function BoardOfDirectorsGalleryPage() {
   return (
     <main className="flex flex-col">
+      <ScrollProgress />
       {/* ── Hero ──────────────────────────────────────────────────── */}
       <PageHero
         title="Board of Directors"
@@ -26,9 +29,11 @@ export default function BoardOfDirectorsGalleryPage() {
       />
 
       {/* ── Director grid ─────────────────────────────────────────── */}
+      <RevealOnScroll selector=".grid > div" stagger={0.08} y={26}>
       <section className="flex w-full flex-col px-4 py-6 sm:px-6 sm:py-8 lg:px-[5rem] lg:py-[5rem]">
         <DirectorGalleryGrid cards={directorCards} />
       </section>
+      </RevealOnScroll>
     </main>
   );
 }

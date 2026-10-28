@@ -3,6 +3,7 @@ import MemberMessageHero from "@/components/board/MemberMessageHero";
 import MessageBody from "@/components/board/MessageBody";
 import OtherBoardMembers from "@/components/board/OtherBoardMembers";
 import { otherMembersFor } from "@/components/board/boardRoster";
+import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 export const metadata: Metadata = {
   title: "Message from Mohammad Kamrul Islam | ASG - Amanat Shah Group",
@@ -21,6 +22,7 @@ const messageParagraphs = [
 export default function MohammadKamrulIslamPage() {
   return (
     <main>
+      <ScrollProgress />
       <MemberMessageHero
         id="mohammad-kamrul-islam-hero"
         name="Mohammad Kamrul Islam"

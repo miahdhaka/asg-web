@@ -10,7 +10,7 @@ const SLIDES = [
   {
     number: 130,
     icon: "/icons/employee_experience.png",
-    titleLine1: "YEARS",
+    titleLine1: "YEARS OF",
     titleLine2: "EXPERIENCE",
     description: "Carrying Bangladesh's textile trust to global landscapes and lifestyles, built on 130 years of experience.",
     concernIdx: 0,
@@ -20,7 +20,7 @@ const SLIDES = [
     icon: "/icons/employee.png",
     titleLine1: "EMPLOYEE",
     titleLine2: "",
-    description: "Our 15,000+ employees lead the Group's legacy forward, decade after decade, as a trusted family.",
+    description: "Our 15,000+ employees lead the Group's legacy forward, decade after decades, as a trusted family.",
     concernIdx: 1,
   },
   {
@@ -36,7 +36,7 @@ const SLIDES = [
     icon: "/icons/fun-world.png",
     titleLine1: "COUNTRIES",
     titleLine2: "REACHED",
-    description: "From Bangladesh to 17+ countries, delivering quality products and reliable service to customers worldwide.",
+    description: "From Bangladesh to 17+ countries, delivering quality fashion and regular textile products and reliable service to customers worldwide.",
     concernIdx: 6,
   },
 ];

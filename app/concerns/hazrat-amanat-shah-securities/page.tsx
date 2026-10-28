@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PageHeroFull from "@/components/common/PageHeroFull";
 import ConcernIntro from "@/components/concerns/common/ConcernIntro";
 import ConcernCoreValues from "@/components/concerns/common/ConcernCoreValues";
+import ScrollProgress from "@/components/web-info/ScrollProgress";
 import {
   securitiesHero,
   securitiesCompany,
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
 export default function HasslPage() {
   return (
     <main>
+      <ScrollProgress />
       <PageHeroFull
         title={securitiesHero.title}
         subtitle={securitiesHero.subtitle}

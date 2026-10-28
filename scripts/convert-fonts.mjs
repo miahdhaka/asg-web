@@ -21,19 +21,6 @@ const fontsToConvert = [
   'neue-montreal/NeueMontreal-MediumItalic.otf',
   'neue-montreal/NeueMontreal-Bold.otf',
   'neue-montreal/NeueMontreal-BoldItalic.otf',
-  // Tiempos Fine (12 files)
-  'tiempos/TestTiemposFine-Light-BF66457a5102792.otf',
-  'tiempos/TestTiemposFine-LightItalic-BF66457a50eb132.otf',
-  'tiempos/TestTiemposFine-Regular-BF66457a50e8bc9.otf',
-  'tiempos/TestTiemposFine-RegularItalic-BF66457a50e36f9.otf',
-  'tiempos/TestTiemposFine-Medium-BF66457a50e62cd.otf',
-  'tiempos/TestTiemposFine-MediumItalic-BF66457a511be83.otf',
-  'tiempos/TestTiemposFine-Semibold-BF66457a50f016a.otf',
-  'tiempos/TestTiemposFine-SemiboldItalic-BF66457a50b0e18.otf',
-  'tiempos/TestTiemposFine-Bold-BF66457a510211b.otf',
-  'tiempos/TestTiemposFine-BoldItalic-BF66457a50b8568.otf',
-  'tiempos/TestTiemposFine-Black-BF66457a508fe8f.otf',
-  'tiempos/TestTiemposFine-BlackItalic-BF66457a510424a.otf',
   // Archivo Black (1 file)
   'archivo-black/ArchivoBlack-Regular.ttf',
   // Space Mono (4 files)

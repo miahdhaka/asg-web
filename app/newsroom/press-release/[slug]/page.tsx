@@ -3,6 +3,10 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { SquareArrowOutUpRight } from "lucide-react";
 import { newsArticles, getNewsArticle } from "@/components/newsroom/newsData";
+import SplitReveal from "@/components/web-info/SplitReveal";
+import RevealOnScroll from "@/components/web-info/RevealOnScroll";
+import ImageReveal from "@/components/web-info/ImageReveal";
+import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 /* ------------------------------------------------------------------ */
 /*  Static generation                                                  */
@@ -44,6 +48,7 @@ export default async function PressReleaseDetailPage({
 
   return (
     <main className="flex flex-col w-full max-w-[80rem] mx-auto pt-2 sm:pt-[3.5rem] mt-[6rem] px-4 sm:px-5">
+      <ScrollProgress />
       {/* Meta + Title */}
       <div className="w-full">
         {/* Category / label row */}
@@ -61,12 +66,15 @@ export default async function PressReleaseDetailPage({
         </div>
 
         {/* Title */}
-        <h1 className="mt-2 sm:mt-4 font-archivo-black text-[1.25rem] sm:text-[2.2rem] leading-[2rem] sm:leading-[3rem] font-normal text-black">
-          {article.title}
-        </h1>
+        <SplitReveal
+          as="h1"
+          className="mt-2 sm:mt-4 font-archivo-black text-[1.25rem] sm:text-[2.2rem] leading-[2rem] sm:leading-[3rem] font-normal text-black"
+          text={article.title}
+        />
       </div>
 
       {/* Info row */}
+      <RevealOnScroll y={22} delay={0.25}>
       <div className="flex w-full flex-wrap items-center justify-between sm:justify-start gap-4 sm:gap-6 mt-6 sm:mt-10">
         {/* Published date */}
         <span className="font-neue-montreal text-xs sm:text-[1rem] leading-[1.25rem] tracking-wider text-neutral-800">
@@ -196,13 +204,14 @@ export default async function PressReleaseDetailPage({
           </span>
         </a>
       </div>
+      </RevealOnScroll>
 
       {/* ── Divider ───────────────────────────────────────────────── */}
       <hr className="my-[2.5rem] border-0 border-t border-neutral-200" />
 
       {/* ── Hero image ────────────────────────────────────────────── */}
       <div className="w-full">
-        <div className="relative aspect-[915/520] w-full overflow-hidden rounded-[1.25rem] bg-[#D9D9D9]">
+        <ImageReveal radius="1.25rem" className="relative aspect-[915/520] w-full bg-[#D9D9D9]">
           <Image
             src={article.image}
             alt={article.title}
@@ -213,10 +222,11 @@ export default async function PressReleaseDetailPage({
             className="pointer-events-none object-cover"
             quality={90}
           />
-        </div>
+        </ImageReveal>
       </div>
 
       {/* ── Article body ──────────────────────────────────────────── */}
+      <RevealOnScroll y={22}>
       <div className="flex flex-col gap-4 w-full tracking-wider pb-8 sm:pb-16 mt-6 sm:mt-8">
         {/* Paragraphs */}
         {article.body.map((p, i) => (
@@ -261,6 +271,7 @@ export default async function PressReleaseDetailPage({
           </div>
         ))}
       </div>
+      </RevealOnScroll>
     </main>
   );
 }

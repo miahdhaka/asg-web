@@ -242,7 +242,7 @@ export default function GreenerFuture() {
         </h2>
 
         <p className="text-base text-[#555] md:text-[1.25rem] lg:max-w-[40%] lg:pt-2">
-          ASG stands behind eco-conscious manufacturing. Maintained through global fashion compliance at every step of craftsmanship, caring for end-customer satisfaction at every level.
+          ASG stands for cohesive eco-conscious manufacturing good practices and Research & Development pursuit for constant improvement. Maintained through global fashion compliance at every step of craftsmanship, caring for ultimate end-customer satisfaction at every level.
         </p>
       </div>
 

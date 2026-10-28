@@ -23,15 +23,15 @@ export const dynamicCompany = {
 export const dynamicIntroParagraphs = [
   "ASG Dynamic is a technology-driven consulting and software development firm established in 2018 as a strategic initiative of the Amanat Shah Group.",
   "We combine deep industry expertise with modern engineering practices to help organizations design, build and scale reliable digital products.",
-  "Our team of 24+ professionals delivers customized solutions across software development, IT consulting, digital transformation and enterprise systems.",
-  "With 40+ successful projects across 8+ countries, ASG Dynamic partners with clients to turn complex business challenges into measurable outcomes.",
+  "Our team of 16+ professionals delivers customized solutions across software development, IT consulting, digital transformation and enterprise systems.",
+  "With 22+ successful projects across 4 core service areas, ASG Dynamic partners with clients to turn complex business challenges into measurable outcomes.",
   "Backed by the Amanat Shah Group's heritage of excellence, we bring trust, technical rigor and long-term value to every engagement.",
 ];
 
 export const dynamicIntroStats: StatItem[] = [
-  { value: 40, suffix: "+", label: "Projects" },
-  { value: 24, suffix: "+", label: "Professionals" },
-  { value: 8, suffix: "+", label: "Countries Presence" },
+  { value: 22, suffix: "+", label: "Projects" },
+  { value: 16, suffix: "+", label: "Professionals" },
+  { value: 4, suffix: "+", label: "Core Service Areas" },
   { value: 2018, label: "Established" },
 ];
 

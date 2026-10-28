@@ -19,24 +19,6 @@ const neueMontreal = localFont({
   variable: "--font-neue-montreal",
 });
 
-const tiemposFine = localFont({
-  src: [
-    { path: "../public/fonts/tiempos/TestTiemposFine-Light-BF66457a5102792.woff2", weight: "300", style: "normal" },
-    { path: "../public/fonts/tiempos/TestTiemposFine-LightItalic-BF66457a50eb132.woff2", weight: "300", style: "italic" },
-    { path: "../public/fonts/tiempos/TestTiemposFine-Regular-BF66457a50e8bc9.woff2", weight: "400", style: "normal" },
-    { path: "../public/fonts/tiempos/TestTiemposFine-RegularItalic-BF66457a50e36f9.woff2", weight: "400", style: "italic" },
-    { path: "../public/fonts/tiempos/TestTiemposFine-Medium-BF66457a50e62cd.woff2", weight: "500", style: "normal" },
-    { path: "../public/fonts/tiempos/TestTiemposFine-MediumItalic-BF66457a511be83.woff2", weight: "500", style: "italic" },
-    { path: "../public/fonts/tiempos/TestTiemposFine-Semibold-BF66457a50f016a.woff2", weight: "600", style: "normal" },
-    { path: "../public/fonts/tiempos/TestTiemposFine-SemiboldItalic-BF66457a50b0e18.woff2", weight: "600", style: "italic" },
-    { path: "../public/fonts/tiempos/TestTiemposFine-Bold-BF66457a510211b.woff2", weight: "700", style: "normal" },
-    { path: "../public/fonts/tiempos/TestTiemposFine-BoldItalic-BF66457a50b8568.woff2", weight: "700", style: "italic" },
-    { path: "../public/fonts/tiempos/TestTiemposFine-Black-BF66457a508fe8f.woff2", weight: "900", style: "normal" },
-    { path: "../public/fonts/tiempos/TestTiemposFine-BlackItalic-BF66457a510424a.woff2", weight: "900", style: "italic" },
-  ],
-  variable: "--font-test-tiempos-fine",
-});
-
 const archivoBlack = localFont({
   src: [
     { path: "../public/fonts/archivo-black/ArchivoBlack-Regular.woff2", weight: "400", style: "normal" },
@@ -73,7 +55,7 @@ export default function RootLayout({
         {/* Preload splash logo so it's decoded before the animation starts */}
         <link rel="preload" as="image" href="/logo/ASG-logo.png" />
       </head>
-      <body className={`${neueMontreal.variable} ${tiemposFine.variable} ${archivoBlack.variable} ${spaceMono.variable} min-h-screen flex flex-col font-neue-montreal`}>
+      <body className={`${neueMontreal.variable} ${archivoBlack.variable} ${spaceMono.variable} min-h-screen flex flex-col font-neue-montreal`}>
         <ScrollToTop />
         <Header />
         {/* Opaque content layer — paints over the footer's fixed -z-10

@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useRef } from "react";
@@ -110,7 +109,6 @@ export default function AboutUs() {
                 >
                   More about us
                 </span>
-                <ArrowRight className="h-4 w-4" color="#1AA179" />
               </span>
 
               {/* Hover: gradient fill + white text — slides in from the top */}
@@ -126,20 +124,34 @@ export default function AboutUs() {
           </div>
         </div>
 
-        {/* Building image */}
+        {/* Building video — mobile cut on short 4/3 frame, desktop keeps the tall max-h-[75vh] frame */}
         <div
           ref={imageRef}
           className="mt-10 sm:mt-12 lg:mt-[3em] overflow-hidden rounded-[0.75rem] lg:rounded-[1.2rem]"
           style={{ willChange: "transform", backfaceVisibility: "hidden" }}
         >
-          <Image
-            src="/images/about-us/home-about-us.png"
-            alt="Amanat Shah Group building"
-            width={1400}
-            height={500}
-            className="block w-full object-cover aspect-[4/3] lg:aspect-auto lg:h-auto lg:max-h-[75vh]"
-            priority={false}
-          />
+          <video
+            aria-hidden
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            className="block w-full object-cover aspect-[4/3] lg:hidden"
+          >
+            <source src="/videos/about-us/mobile.webm" type="video/webm" />
+          </video>
+          <video
+            aria-hidden
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            className="hidden w-full object-cover lg:block lg:h-auto lg:max-h-[75vh]"
+          >
+            <source src="/videos/about-us/desktop.webm" type="video/webm" />
+          </video>
         </div>
       </div>
     </section>
