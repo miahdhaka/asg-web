@@ -5,7 +5,6 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import ImageReveal from "@/components/web-info/ImageReveal";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -136,7 +135,6 @@ export const milestones: Milestone[] = [
 /* ── Single milestone entry ── */
 function MilestoneEntry({ milestone, index }: { milestone: Milestone; index: number }) {
   const entryRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -145,6 +143,8 @@ function MilestoneEntry({ milestone, index }: { milestone: Milestone; index: num
       if (!entry) return;
 
       const ctx = gsap.context(() => {
+        /* Text/image use the site-wide .rv* classes (RevealRunner); only the
+         * centre dot keeps this page's signature spring pop. */
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: entry,
@@ -162,16 +162,6 @@ function MilestoneEntry({ milestone, index }: { milestone: Milestone; index: num
             { scale: 0, autoAlpha: 0 },
             { scale: 1, autoAlpha: 1, duration: 0.5 },
             0,
-          );
-        }
-
-        // Text block slides up + fades in
-        if (textRef.current) {
-          tl.fromTo(
-            textRef.current,
-            { y: 60, autoAlpha: 0 },
-            { y: 0, autoAlpha: 1, duration: 0.8 },
-            0.2,
           );
         }
       }, entry);
@@ -200,30 +190,26 @@ function MilestoneEntry({ milestone, index }: { milestone: Milestone; index: num
 
       {/* ── Two-column content — alternates text/image sides ── */}
       <div className="mx-auto max-w-[115rem] pl-8 pr-4 lg:pl-20 lg:pr-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-[12rem] items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-[12rem] items-center" data-rv-scope>
           {/* Text block */}
           <div
-            ref={textRef}
-            className={`flex flex-col gap-2 lg:gap-4 opacity-0 max-w-[32.5rem] ${index % 2 !== 0 ? "lg:order-last" : "lg:justify-self-end"}`}
+            className={`flex flex-col gap-2 lg:gap-4 max-w-[32.5rem] ${index % 2 !== 0 ? "lg:order-last" : "lg:justify-self-end"}`}
           >
-            <span className="font-archivo-black font-medium text-[2.75rem] sm:text-[5rem] leading-[1.167] text-neutral-800">
+            <span className="font-archivo-black font-medium text-[2.75rem] sm:text-[5rem] leading-[1.167] text-neutral-800 rv-split">
               {milestone.year}
             </span>
             <div className="flex flex-col gap-3">
-              <h3 className="font-archivo-black font-medium text-xl sm:text-[2rem] leading-8 lg:leading-[1.3] text-neutral-800">
+              <h3 className="font-archivo-black font-medium text-xl sm:text-[2rem] leading-8 lg:leading-[1.3] text-neutral-800 rv-split">
                 {milestone.title}
               </h3>
-              <p className="text-sm sm:text-base text-neutral-800 font-neue-montreal leading-5 sm:leading-6.5 tracking-wide max-w-[25.4375rem] lg:max-w-[35rem]">
+              <p className="text-sm sm:text-base text-neutral-800 font-neue-montreal leading-5 sm:leading-6.5 tracking-wide max-w-[25.4375rem] lg:max-w-[35rem] rv">
                 {milestone.description}
               </p>
             </div>
           </div>
 
           {/* Image block — clip-open + zoom settle (web-info ImageReveal) */}
-          <ImageReveal
-            radius="0.8rem"
-            className={`relative w-full aspect-[553/320] rounded-[0.8rem] lg:rounded-[1.2rem] ${index % 2 !== 0 ? "lg:order-first" : ""}`}
-          >
+          <div className={`relative w-full aspect-[553/320] rounded-[0.8rem] lg:rounded-[1.2rem] ${index % 2 !== 0 ? "lg:order-first" : ""} rv-img overflow-hidden`}>
             <div className="absolute inset-0">
               <Image
                 src={milestone.image}
@@ -234,7 +220,7 @@ function MilestoneEntry({ milestone, index }: { milestone: Milestone; index: num
                 className="rounded-[0.8rem] lg:rounded-[1.2rem] object-cover"
               />
             </div>
-          </ImageReveal>
+          </div>
         </div>
       </div>
     </div>

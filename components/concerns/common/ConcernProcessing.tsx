@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { Fragment, useRef } from "react";
-import RevealOnScroll from "@/components/web-info/RevealOnScroll";
 
 type ConcernProcessingProps = {
   /** Optional anchor id for the section (e.g. "helal-processing"). */
@@ -117,7 +116,7 @@ export default function ConcernProcessing({
 
   return (
     <section id={sectionId} className="w-full pt-8 lg:pt-[5em]">
-      <RevealOnScroll y={20}>
+      <div className="rv">
         <h2 className="px-4 font-archivo-black uppercase text-lg sm:text-4xl text-neutral-800 sm:px-6 lg:px-[5rem] lg:text-[3em] lg:leading-[1.2]">
           {title.split("\n").map((line, i) => (
             <Fragment key={line}>
@@ -126,11 +125,11 @@ export default function ConcernProcessing({
             </Fragment>
           ))}
         </h2>
-      </RevealOnScroll>
+      </div>
 
       {/* Reveal as one block, same as the other slider sections — the strip
           itself keeps its own drag/arrow mechanics untouched. */}
-      <RevealOnScroll y={26} delay={0.15}>
+      <div className="rv">
       <div className="relative mt-6 lg:mt-[2.67em]">
         <div
           ref={trackRef}
@@ -178,7 +177,7 @@ export default function ConcernProcessing({
           </svg>
         </button>
       </div>
-      </RevealOnScroll>
+      </div>
     </section>
   );
 }

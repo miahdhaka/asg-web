@@ -19,7 +19,7 @@ export default function FaqAccordion({ title, items }: FaqAccordionProps) {
       className="px-4 py-10 sm:px-8 lg:px-20 lg:py-20"
     >
       <div className="mx-auto w-full max-w-[72.75rem]">
-        <h1 className="font-archivo-black uppercase text-xl font-normal text-neutral-800 lg:text-[2.75rem] lg:leading-[3rem]">
+        <h1 className="font-archivo-black uppercase text-xl font-normal text-neutral-800 lg:text-[2.75rem] lg:leading-[3rem] rv-split">
           {title}
         </h1>
 
@@ -39,7 +39,7 @@ export default function FaqAccordion({ title, items }: FaqAccordionProps) {
                   type="button"
                   onClick={() => setOpenIndex(isOpen ? null : index)}
                   aria-expanded={isOpen}
-                  className="group flex w-full cursor-pointer items-center gap-[0.8333rem] px-4 py-4 text-left lg:p-[2rem] rounded-[1.5rem] transition-colors duration-300 ease-in-out hover:bg-gray-50"
+                  className="group rv flex w-full cursor-pointer items-center gap-[0.8333rem] px-4 py-4 text-left lg:p-[2rem] rounded-[1.5rem] transition-colors duration-300 ease-in-out hover:bg-gray-50"
                 >
                   <span
                     className={`flex shrink-0 items-center justify-center p-2 transition-colors duration-500 ease-in-out lg:p-[0.6667rem] ${

@@ -690,3 +690,26 @@ html.asg-touch-lock * {
   .gstar { animation: none; opacity: 0.7; }
   .gcard, .gcard-inner { transition: none; }
 }
+
+/* ───────── split-reveal: pre-hydration start state ─────────
+   GSAP only applies its `fromTo` start values once the client component
+   hydrates, so server-rendered words painted in their FINAL position for a
+   beat and then jumped down before rising — the title "showed before the
+   animation". This rule puts the pieces in the same start position up front,
+   where the overflow-hidden mask clips them.
+   The `:not([data-split-armed])` guard is what keeps this safe: SplitReveal
+   arms every piece the instant it creates its tween, so from then on CSS is
+   completely out of the game and only GSAP controls visibility — exactly the
+   behaviour the site had before. If GSAP never runs, the guard is what stops
+   a heading from being locked invisible by a stylesheet rule. Values come
+   from per-instance variables, so word mode (118% + tilt) and char mode
+   (60%) share one rule; both start faded out, because tight leading lets the
+   glyph ink overflow the mask and a pure clip would leave a slice of the caps
+   showing. Reduced-motion users never match it. */
+@media (prefers-reduced-motion: no-preference) {
+  [data-split-piece]:not([data-split-armed]) {
+    transform: translateY(var(--split-from-y, 118%)) rotate(var(--split-from-rot, 0deg));
+    transform-origin: 0 100%;
+    opacity: var(--split-from-opacity, 0);
+  }
+}

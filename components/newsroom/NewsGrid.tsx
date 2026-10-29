@@ -1,49 +1,43 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
 import { newsArticles, type NewsItem } from "./newsData";
-import { blogPosts } from "./blogData";
-
-gsap.registerPlugin(useGSAP);
+import { requestRevealRescan } from "@/components/web-info/RevealRunner";
 
 const featured = newsArticles[0];
 const sideCard = newsArticles[1];
 /** Small-card pool (everything after featured + side) */
 const smallCards = newsArticles.slice(2);
 
-/** Static blog slug — all small cards link here until per-card mapping exists */
-const blogSlug = blogPosts[0]?.slug ?? "global-heritage-bangladeshi-lungi";
-
 const INITIAL_SMALL_COUNT = 6;
 const LOAD_MORE_COUNT = 6;
 
 function CardMeta({ date, category }: { date: string; category: string }) {
   return (
-    <div className="flex items-center gap-2">
-      <span className="font-neue-montreal text-sm sm:text-[1rem] leading-[1.25rem] text-neutral-600">
-        {date}
-      </span>
-      <span
-        aria-hidden
-        className="h-3 w-px rotate-[30deg] bg-neutral-600"
-      />
-      <span className="font-neue-montreal text-sm sm:text-[1rem] leading-[1.25rem] text-neutral-600">
-        {category}
-      </span>
-    </div>
+    // <div className="flex items-center gap-2">
+    //   <span className="font-neue-montreal text-sm sm:text-[1rem] leading-[1.25rem] text-neutral-600">
+    //     {date}
+    //   </span>
+    //   <span
+    //     aria-hidden
+    //     className="h-3 w-px rotate-[30deg] bg-neutral-600"
+    //   />
+    //   <span className="font-neue-montreal text-sm sm:text-[1rem] leading-[1.25rem] text-neutral-600">
+    //     {category}
+    //   </span>
+    // </div>
+    <></>
   );
 }
 
 /** Small card — image on top, meta + title below */
 function SmallCard({ item }: { item: NewsItem }) {
   return (
-    <Link href={`/newsroom/blog-page/${blogSlug}`} data-news-card className="group flex flex-col gap-4 border-b border-neutral-200 pb-4 sm:border-b-0 sm:pb-0">
+    <Link href={`/newsroom/press-release/${item.slug}`} data-news-card className="group flex flex-col gap-4 border-b border-neutral-200 pb-4 sm:border-b-0 sm:pb-0">
       {/* Image */}
-      <div className="relative h-80 sm:h-[28rem] w-full overflow-hidden bg-[#D9D9D9] rounded-[1.25rem]">
+      <div className="relative h-80 sm:h-[28rem] w-full overflow-hidden bg-[#D9D9D9] rounded-[1.25rem] rv-img">
         <Image
           src={item.image}
           alt={item.title}
@@ -65,7 +59,7 @@ function SmallCard({ item }: { item: NewsItem }) {
         <CardMeta date={item.date} category={item.category} />
 
         {/* Title */}
-        <h3 className="max-w-[26.5625rem] text-left font-archivo-black text-lg tracking-wide sm:text-[1.8rem] leading-[1.5rem] sm:leading-[2.2rem] text-neutral-800">
+        <h3 className="lg:max-w-[90%] text-left font-archivo-black text-lg tracking-wide sm:text-[1.8rem] leading-[1.5rem] sm:leading-[2.2rem] text-neutral-800 rv-split">
           {item.title}
         </h3>
       </div>
@@ -78,7 +72,7 @@ function FeaturedCard({ item }: { item: NewsItem }) {
   return (
     <Link href={`/newsroom/press-release/${item.slug}`} className="group flex flex-col gap-4 border-b border-neutral-200 pb-4 sm:border-b-0 sm:pb-0">
       {/* Image */}
-      <div className="relative h-80 sm:h-[28rem] w-full overflow-hidden bg-[#D9D9D9] rounded-[1.25rem]">
+      <div className="relative h-80 sm:h-[28rem] w-full overflow-hidden bg-[#D9D9D9] rounded-[1.25rem] rv-img">
         <Image
           src={item.image}
           alt={item.title}
@@ -97,7 +91,7 @@ function FeaturedCard({ item }: { item: NewsItem }) {
 
       <div className="flex flex-col gap-1">
         <CardMeta date={item.date} category={item.category} />
-        <h3 className="max-w-[25.5625rem] text-left font-archivo-black text-lg sm:text-[1.5rem] leading-[2rem] sm:leading-[2rem] text-neutral-800">
+        <h3 className="lg:max-w-[90%] text-left font-archivo-black text-lg tracking-wide sm:text-[1.8rem] leading-[1.5rem] sm:leading-[2.2rem] text-neutral-800 rv-split">
           {item.title}
         </h3>
       </div>
@@ -110,7 +104,20 @@ function FeaturedCard({ item }: { item: NewsItem }) {
 export default function NewsGrid() {
   const [visibleCount, setVisibleCount] = useState(INITIAL_SMALL_COUNT);
   const [loading, setLoading] = useState(false);
-  const newCardsRef = useRef<HTMLDivElement>(null);
+  const firstRender = useRef(true);
+
+  /* Bind the reveal runner over freshly loaded cards AFTER React has
+     committed them to the DOM (an rAF here could fire before the commit,
+     leaving the new cards unbound and animation-free). The initial mount
+     is skipped — the runner already binds the whole page on navigation,
+     and its data-rv-bound guard keeps everything idempotent. */
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    requestRevealRescan();
+  }, [visibleCount]);
 
   const hasMore = smallCards.length - visibleCount >= 6;
   const visibleSmall = smallCards.slice(0, visibleCount);
@@ -120,34 +127,15 @@ export default function NewsGrid() {
     visibleRows.push(visibleSmall.slice(i, i + 3));
   }
 
-  /* GSAP stagger animation when new cards appear */
-  const { contextSafe } = useGSAP();
-
-  const handleLoadMore = contextSafe(() => {
+  const handleLoadMore = () => {
     setLoading(true);
     const nextCount = Math.min(visibleCount + LOAD_MORE_COUNT, smallCards.length);
-    const addedCount = nextCount - visibleCount;
 
     setTimeout(() => {
       setVisibleCount(nextCount);
       setLoading(false);
-
-      /* Wait a tick for React to mount the new DOM nodes */
-      requestAnimationFrame(() => {
-        const allCards = newCardsRef.current?.querySelectorAll("[data-news-card]");
-        if (!allCards?.length) return;
-        /* Only animate the newly added cards (last N in the container) */
-        const newCards = Array.from(allCards).slice(-addedCount);
-        gsap.from(newCards, {
-          y: 40,
-          opacity: 0,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: "power3.out",
-        });
-      });
     }, 400);
-  });
+  };
 
   return (
     <section className="flex w-full flex-col flex w-full flex-col gap-6 lg:gap-[3rem] px-4 sm:px-6 lg:px-[4.167rem] py-6 sm:py-9 lg:py-[4rem] px-4 sm:px-6 lg:px-[4.167rem] py-6 sm:py-9 lg:py-[4rem]">
@@ -158,7 +146,7 @@ export default function NewsGrid() {
       </div>
 
       {/* Small-card rows */}
-      <div ref={newCardsRef} className="flex flex-col gap-x-10 sm:gap-x-4 gap-y-6 lg:gap-y-[3rem]">
+      <div className="flex flex-col gap-x-10 sm:gap-x-4 gap-y-6 lg:gap-y-[3rem]">
         {visibleRows.map((row, ri) => (
           <div key={`row-${ri}`} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 sm:gap-x-5 gap-y-6 lg:gap-y-[3rem]">
             {row.map((item, i) => (

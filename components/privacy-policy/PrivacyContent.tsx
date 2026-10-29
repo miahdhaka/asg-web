@@ -102,7 +102,7 @@ function BlockRender({ block }: { block: PolicyBlock }) {
 
 function PolicySectionBlock({ section }: { section: PolicySection }) {
   return (
-    <section className="flex flex-col gap-2.5">
+    <section className="flex flex-col gap-2.5 rv">
       <h2 className="text-base lg:text-[1.4rem] font-medium text-neutral-800">
         {section.heading}
       </h2>
@@ -125,7 +125,7 @@ export default function PrivacyContent() {
     <section className="mx-auto mt-[3rem] sm:mt-[7rem] w-full max-w-[59rem] px-5 pt-[3.5rem] pb-16">
       <div className="flex flex-col gap-5 sm:gap-7">
         <div className="flex flex-col gap-3">
-          <h1 className="font-archivo-black text-[26px] lg:text-[3rem] text-neutral-800">
+          <h1 className="font-archivo-black text-[26px] lg:text-[3rem] text-neutral-800 rv-split">
             {policyTitle}
           </h1>
           <p className="text-sm lg:text-[1.05rem] font-medium text-neutral-500">
@@ -136,7 +136,7 @@ export default function PrivacyContent() {
         {policyIntro.map((paragraph, index) => (
           <p
             key={index}
-            className="text-justify text-sm lg:text-[1.1rem] leading-6.5 text-neutral-600"
+            className="rv text-justify text-sm lg:text-[1.1rem] leading-6.5 text-neutral-600"
           >
             {parseInline(paragraph)}
           </p>
@@ -152,18 +152,18 @@ export default function PrivacyContent() {
         <hr className="border-0 border-t border-gray-100" />
 
         <div className="flex flex-col gap-4">
-          <h2 className="font-archivo-black text-2xl lg:text-[2rem] text-neutral-800">
+          <h2 className="font-archivo-black text-2xl lg:text-[2rem] text-neutral-800 rv-split">
             Contact Us
           </h2>
-          <p className="text-justify text-sm lg:text-[1.1rem] leading-5 sm:leading-6.5 text-neutral-600">
+          <p className="rv text-justify text-sm lg:text-[1.1rem] leading-5 sm:leading-6.5 text-neutral-600">
             {parseInline(
               "For questions about this policy, or to request your personal information, please use our [Contact Us](/contact-us) page or the details below.",
             )}
           </p>
-          <p className="text-sm lg:text-[1.1rem] font-semibold text-neutral-800">
+          <p className="rv text-sm lg:text-[1.1rem] font-semibold text-neutral-800">
             Amanat Shah Group (ASG)
           </p>
-          <ul className="flex flex-col gap-2.5">
+          <ul className="flex flex-col gap-2.5 rv">
             <li className="flex items-center gap-[0.6875rem]">
               <BulletIcon />
               <p className="text-justify text-sm lg:text-[1.1rem] leading-5 sm:leading-6.5 text-neutral-600">
@@ -195,13 +195,13 @@ export default function PrivacyContent() {
               </p>
             </li>
           </ul>
-          <p className="text-justify text-sm lg:text-[1.1rem] leading-5 sm:leading-6.5 text-neutral-600">
+          <p className="rv text-justify text-sm lg:text-[1.1rem] leading-5 sm:leading-6.5 text-neutral-600">
             {parseInline(
               "To learn more about the group, visit [About ASG](/about-us).",
             )}
           </p>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 rv">
             {socials.map((social) => (
               <a
                 key={social.label}

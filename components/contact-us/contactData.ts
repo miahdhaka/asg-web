@@ -44,10 +44,9 @@ export const formTabFields: Record<FormTab, FormTabFields> = {
     dropdownPlaceholder: "Select Product...",
     messagePlaceholder: "Write down your message",
     dropdownOptions: [
-      "Home Textile Bangladesh",
-      "Home Textile International",
       "Fabrics",
       "Yarn",
+      "Others",
     ],
   },
   Investor: {
@@ -197,18 +196,18 @@ export const locationCards: Record<LocationTab, OfficeCardData[]> = {
       image: OFFICE_IMG,
       address:
         "House-232, Lane-03, DOHS, Baridhara,\nDhaka-1206, Bangladesh",
-      phones: ["+(88)09643226699", "+(88)029578403"],
+      phones: ["+(88)09643226699"],
       email: "info@asg-bd.com",
-      coordinates: { lat: 23.7806, lng: 90.4074 },
+      coordinates: { lat: 23.814306, lng: 90.412028 },
     },
     {
       title: "Corporate Office",
       image: OFFICE_IMG,
       address:
         "City Center (level-24), 900/1 Motijheel C/A,\nDhaka-1000, Bangladesh",
-      phones: ["+(88)09643226699", "+(88)029578403"],
+      phones: ["+(88)02223357949"],
       email: "",
-      coordinates: { lat: 23.7104, lng: 90.4074 },
+      coordinates: { lat: 23.72944140625588, lng: 90.4173378569164 },
     },
   ],
   Factory: [
@@ -217,9 +216,9 @@ export const locationCards: Record<LocationTab, OfficeCardData[]> = {
       image: OFFICE_IMG,
       address:
         "Bhatpara, Maijdee Road 1603, Pachdona,\nNarshingdi, Bangladesh",
-      phones: ["+(88)09643226699", "+(88)029578403"],
-      email: "",
-      coordinates: { lat: 23.685, lng: 90.51 },
+      phones: ["+(88)01321118200"],
+      email: "info@amanatshahfabrics.com",
+      coordinates: { lat: 23.910028, lng: 90.663917 },
     },
     {
       title: "Hazrat Amanat Shah Spinning Mills Ltd.",
@@ -227,26 +226,34 @@ export const locationCards: Record<LocationTab, OfficeCardData[]> = {
       address:
         "Bhatpara, Maijdee Road 1603, Pachdona,\nNarshingdi, Bangladesh",
       phones: ["+(88)01313767544"],
-      email: "info@hassml.com",
-      coordinates: { lat: 23.685, lng: 90.51 },
+      email: "",
+      coordinates: { lat: 23.912194, lng: 90.662806 },
     },
     {
       title: "Amanat Shah Weaving Processing Ltd",
       image: OFFICE_IMG,
       address:
         "Bhatpara, Maijdee Road 1603, Pachdona,\nNarshingdi, Bangladesh",
-      phones: ["+(88)09643226699", "+(88)029578403"],
+      phones: ["+(88)01321118231"],
       email: "",
-      coordinates: { lat: 23.685, lng: 90.51 },
+      coordinates: { lat: 23.92675, lng: 90.712528 },
     },
     {
       title: "Trust Knitwear LTD.",
       image: OFFICE_IMG,
       address: "Indrapur Road, Bhabanipur,\nGazipur-1740, Bangladesh",
-      phones: ["+88 01711 11 43 66"],
+      phones: ["+(88)01711114366"],
       email: "info@trustknitwear.com",
-      coordinates: { lat: 23.995, lng: 90.42 },
+      coordinates: { lat: 24.152361, lng: 90.404611 },
     },
+    {
+      title: "Farm 2 Farm",
+      image: OFFICE_IMG,
+      address: "Baikunthapur, Habiganj,\nSylhet, Bangladesh",
+      phones: ["+(88)01313767480"],
+      email: "",
+      coordinates: { lat: 24.160797, lng: 91.364478 },
+    }
   ],
   "Sales Point": [
     {
@@ -254,16 +261,16 @@ export const locationCards: Record<LocationTab, OfficeCardData[]> = {
       image: OFFICE_IMG,
       address:
         "Amanat Shah Tower, Shekherchar,\nNarsingdi - 1604, Bangladesh",
-      phones: ["+(88)09643226699", "+(88)029578403"],
+      phones: ["+(88)01313767501"],
       email: "",
-      coordinates: { lat: 23.8953, lng: 90.6683 },
+      coordinates: { lat: 23.870611, lng: 90.668889 },
     },
     {
       title: "Amanat Shah Lungi (Islampur)",
       image: OFFICE_IMG,
       address: "87 M.A. TOWER, 87 Islampur Rd,\nDhaka-1100, Bangladesh",
-      phones: ["+(88)01313767544"],
-      email: "info@hassml.com",
+      phones: ["+(88)01321118241"],
+      email: "",
       coordinates: { lat: 23.7104, lng: 90.4074 },
     },
   ],

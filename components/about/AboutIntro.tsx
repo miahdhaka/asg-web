@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import SplitReveal from "@/components/web-info/SplitReveal";
-import RevealOnScroll from "@/components/web-info/RevealOnScroll";
 
 const paragraphs = [
   "For generations, we have remained committed to one direction: building a sustainable, skilled, creative and technology-driven organization for the next generation.",
@@ -27,16 +25,12 @@ export default function AboutIntro() {
       <div className="mx-auto max-w-[1080px]">
         {/* Title block */}
         <div className="flex flex-col gap-4 max-w-[700px]">
-          <SplitReveal
-            as="h2"
-            className="font-archivo-black text-2xl sm:text-[1.85rem] lg:text-[2.1rem] leading-tight text-[#262626]"
-            text="A Traditional Clothing Heritage Growing Generation After Generation."
-          />
+          <h2 className="font-archivo-black text-2xl sm:text-[1.85rem] lg:text-[2.1rem] leading-tight text-[#262626] rv-split">A Traditional Clothing Heritage Growing Generation After Generation.</h2>
           <div className="border-b border-[#EAEAEA]" />
         </div>
 
         {/* Body paragraphs */}
-        <RevealOnScroll delay={0.15} y={24}>
+        <div className="rv" data-delay="0.15">
         <div className="mt-6">
           <div className="flex flex-col gap-4">
             {paragraphs.slice(0, 2).map((text, i) => (
@@ -103,7 +97,7 @@ export default function AboutIntro() {
             </div>
           </div>
         </div>
-        </RevealOnScroll>
+        </div>
       </div>
     </section>
   );

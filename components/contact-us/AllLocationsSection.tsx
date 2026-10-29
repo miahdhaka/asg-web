@@ -25,18 +25,18 @@ export default function AllLocationsSection() {
   return (
     <section className="flex flex-col px-4 sm:px-8 lg:px-[5rem] pt-10 sm:pt-16 lg:pt-[5rem] pb-10 sm:pb-16 lg:pb-[5rem] bg-white">
       {/* Centered heading */}
-      <h2 className="text-center text-2xl sm:text-3xl lg:text-[2.7rem] leading-tight text-neutral-900 font-archivo-black uppercase">
+      <h2 className="text-center text-2xl sm:text-3xl lg:text-[2.7rem] leading-tight text-neutral-900 font-archivo-black uppercase rv-split">
         ASG All Location
       </h2>
 
       {/* Subtitle */}
-      <p className="mt-3 sm:mt-4 text-center text-sm lg:text-[1.1rem] text-neutral-600 max-w-[24rem] mx-auto leading-relaxed">
+      <p className="mt-3 sm:mt-4 text-center text-sm lg:text-[1.1rem] text-neutral-600 max-w-[24rem] mx-auto leading-relaxed rv">
         Connect with Amanat Shah Group through our corporate offices and business locations.
       </p>
 
       {/* Content: Map left + Tabs/Cards right — on desktop the grid rows keep the
           map's top edge aligned exactly with the first card under the tabs */}
-      <div className="mt-8 sm:mt-10 lg:mt-16 flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-x-10 lg:gap-y-6">
+      <div className="mt-8 sm:mt-10 lg:mt-16 flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-x-10 lg:gap-y-6 rv">
         {/* Map */}
         <div className="relative order-3 w-full h-[280px] sm:h-[350px] rounded-xl overflow-hidden border border-gray-200 bg-[#D9D9D9] lg:order-none lg:col-start-1 lg:row-start-2 lg:h-[420px]">
           {/* Open in Maps link */}

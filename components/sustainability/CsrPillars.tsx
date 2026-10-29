@@ -13,7 +13,7 @@ function PillarColumn({
 }) {
   return (
     <div
-      className={`flex flex-col gap-3 lg:pr-8 ${divider ? "lg:border-l lg:border-gray-200 lg:pl-8" : ""} ${offsetClass}`}
+      className={`flex rv flex-col gap-3 lg:pr-8 ${divider ? "lg:border-l lg:border-gray-200 lg:pl-8" : ""} ${offsetClass}`}
     >
       <h3 className="font-archivo-black text-neutral-800 text-xl sm:text-[1.75rem] leading-[1.15] md:text-[2.3rem] lg:leading-[1.1]">
         {pillar.value ? (
@@ -55,11 +55,11 @@ export default function CsrPillars() {
       <div className="mx-auto w-full max-w-[80rem]">
         <hr className="border-0 border-t border-gray-200" />
 
-        <h2 className="mt-8 max-w-[36rem] font-archivo-black uppercase text-[#1A1A1A] text-xl sm:text-4xl lg:mt-[4.8rem] lg:text-[2.75rem] lg:leading-[3.25rem]">
+        <h2 className="mt-8 max-w-[36rem] font-archivo-black uppercase text-[#1A1A1A] text-xl sm:text-4xl lg:mt-[4.8rem] lg:text-[2.75rem] lg:leading-[3.25rem] rv-split">
           {csrPillarsHeading}
         </h2>
 
-        <div className="mt-8 grid grid-cols-1 gap-10 lg:grid-cols-3 lg:gap-0">
+        <div className="mt-8 grid grid-cols-1 gap-10 lg:grid-cols-3 lg:gap-0" data-rv-scope>
           <PillarColumn pillar={csrPillars[0]} offsetClass="" divider={false} />
           <PillarColumn
             pillar={csrPillars[1]}

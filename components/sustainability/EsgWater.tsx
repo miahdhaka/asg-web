@@ -26,13 +26,13 @@ export default function EsgWater() {
 
       {/* Content — mobile left-aligned compact band, tablet/desktop centered */}
       <div className="relative z-10 mx-auto flex w-full max-w-[61rem] flex-col items-start gap-2 px-4 py-24 text-left sm:items-center sm:py-72 sm:text-center lg:py-[16.5rem]">
-        <h2 className="font-archivo-black text-white text-[1.5rem] leading-tight sm:text-[3.25rem] lg:text-[4rem]">
+        <h2 className="font-archivo-black text-white text-[1.5rem] leading-tight sm:text-[3.25rem] lg:text-[4rem] rv-split">
           {esgWater.heading}
         </h2>
-        <p className="font-archivo-black text-white text-[2.25rem] leading-none sm:text-[5rem] lg:text-[6rem]">
+        <p className="font-archivo-black text-white text-[2.25rem] leading-none sm:text-[5rem] lg:text-[6rem] rv">
           {esgWater.value}
         </p>
-        <p className="max-w-[36rem] pt-1 font-neue-montreal text-lg text-white/85 lg:text-2xl">
+        <p className="max-w-[36rem] pt-1 font-neue-montreal text-lg text-white/85 lg:text-2xl tracking-wider rv">
           {esgWater.caption}
         </p>
       </div>

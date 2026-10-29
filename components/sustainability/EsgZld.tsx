@@ -36,11 +36,11 @@ export default function EsgZld() {
       <div className="mx-auto flex w-full max-w-[80rem] flex-col gap-8 lg:gap-12">
         <hr className="border-0 border-t border-gray-200" />
 
-        <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
-          <h2 className="whitespace-pre-line font-archivo-black uppercase text-neutral-900 text-2xl sm:text-3xl lg:text-[2.5rem] leading-[1.1] lg:max-w-[55%]">
+        <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between lg:gap-16" data-rv-scope>
+          <h2 className="whitespace-pre-line font-archivo-black uppercase text-neutral-900 text-2xl sm:text-3xl lg:text-[2.5rem] leading-[1.1] lg:max-w-[55%] rv">
             {esgZld.heading}
           </h2>
-          <p className="font-neue-montreal text-lg md:text-[1.25rem] lg:max-w-[52%] lg:pt-2 text-[#1A1A1A]">
+          <p className="font-neue-montreal text-lg md:text-[1.25rem] lg:max-w-[52%] lg:pt-2 text-[#1A1A1A] rv">
             {esgZld.paragraph}
           </p>
         </div>
@@ -53,11 +53,12 @@ export default function EsgZld() {
           onPointerUp={endDrag}
           onPointerLeave={endDrag}
           className="no-scrollbar flex cursor-grab select-none gap-3 overflow-x-auto touch-auto pb-2 active:cursor-grabbing sm:grid sm:grid-cols-[1.15fr_1fr] sm:grid-rows-[1fr_1fr] sm:gap-4 sm:overflow-visible sm:pb-0 sm:cursor-default sm:select-auto"
+          data-rv-scope
         >
           {esgZld.images.map((img, index) => (
             <div
               key={img.src}
-              className={`relative w-[85vw] max-w-[22rem] shrink-0 overflow-hidden rounded-[1rem] bg-[#D9D9D9] sm:w-auto sm:max-w-none sm:shrink sm:rounded-[1.5rem] ${
+              className={`relative w-[85vw] max-w-[22rem] shrink-0 overflow-hidden rounded-[1rem] bg-[#D9D9D9] sm:w-auto sm:max-w-none sm:shrink sm:rounded-[1.5rem] rv-img ${
                 index === 0
                   ? "aspect-[3/2] sm:aspect-auto sm:h-auto sm:row-span-2 sm:self-stretch"
                   : "aspect-[3/2] sm:aspect-[2/1]"

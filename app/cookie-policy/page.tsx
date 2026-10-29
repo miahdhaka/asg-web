@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import CookieContent from "@/components/cookie-policy/CookieContent";
-import RevealOnScroll from "@/components/web-info/RevealOnScroll";
 import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 export const metadata: Metadata = {
@@ -13,9 +12,7 @@ export default function CookiePolicyPage() {
   return (
     <main>
       <ScrollProgress />
-      <RevealOnScroll y={20}>
-        <CookieContent />
-      </RevealOnScroll>
+      <CookieContent />
     </main>
   );
 }

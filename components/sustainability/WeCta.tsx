@@ -6,14 +6,14 @@ import { weCta } from "./weData";
 export default function WeCta() {
   return (
     <section className="pb-10 lg:pb-[4.8rem]">
-      <div className="mx-auto flex w-full max-w-[44rem] flex-col items-center px-4 text-center">
-        <h2 className="font-archivo-black text-neutral-800 text-lg sm:text-3xl lg:text-[1.875rem] lg:leading-[2.25rem]">
+      <div className="mx-auto flex w-full max-w-[44rem] flex-col items-center px-4 text-center" data-rv-scope>
+        <h2 className="font-archivo-black text-neutral-800 text-lg sm:text-3xl lg:text-[1.875rem] lg:leading-[2.25rem] rv-split">
           {weCta.title}
         </h2>
-        <p className="font-archivo-black text-neutral-800 text-[2rem] leading-[1.1] sm:text-[2.875rem] lg:text-[3.875rem] lg:leading-[4rem]">
+        <p className="font-archivo-black text-neutral-800 text-[2rem] leading-[1.1] sm:text-[2.875rem] lg:text-[3.875rem] lg:leading-[4rem] rv">
           {weCta.highlight}
         </p>
-        <p className="mt-[1.4rem] max-w-[32rem] font-neue-montreal text-base leading-6 text-[#1A1A1A] sm:text-lg sm:leading-7">
+        <p className="mt-[1.4rem] max-w-[32rem] font-neue-montreal text-base leading-6 text-[#1A1A1A] sm:text-lg sm:leading-7 rv">
           {weCta.description}
         </p>
 

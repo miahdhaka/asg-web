@@ -8,7 +8,6 @@ import {
   getWorkplaceLabel,
   getJobDetailBlocks,
 } from "@/components/career/careerData";
-import RevealOnScroll from "@/components/web-info/RevealOnScroll";
 import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 /* ------------------------------------------------------------------ */
@@ -50,7 +49,6 @@ export default async function JobDetailPage({
   return (
     <main className="mx-auto mt-[4rem] sm:mt-[8rem] w-full max-w-[59rem] px-4 pt-8 pb-16 sm:px-5 sm:pt-[3.5rem]">
       <ScrollProgress />
-      <RevealOnScroll y={24}>
       {/* ── Title row ── */}
       <div className="flex flex-col gap-4 sm:gap-6 lg:hidden">
         {/* 1. Department badge */}
@@ -59,7 +57,7 @@ export default async function JobDetailPage({
         </span>
 
         {/* 2. Job title */}
-        <h1 className="order-2 font-archivo-black text-2xl lg:text-[2rem] text-neutral-800 font-medium">
+        <h1 className="order-2 font-archivo-black text-2xl lg:text-[2rem] text-neutral-800 font-medium rv-split">
           {job.title}
         </h1>
 
@@ -111,17 +109,15 @@ export default async function JobDetailPage({
           </p>
         </div>
       </div>
-      </RevealOnScroll>
 
       {/* Desktop: original left-column + right-button layout */}
-      <RevealOnScroll y={24}>
       <div className="hidden lg:flex lg:flex-row lg:items-start lg:justify-between lg:gap-6">
         <div className="flex min-w-0 flex-col gap-4">
           <div className="flex flex-col gap-3">
             <span className="w-fit bg-white rounded-md text-[1rem] text-neutral-800 tracking-wide px-2.5 py-1">
               {job.department}
             </span>
-            <h1 className="font-archivo-black text-[2rem] text-neutral-800 font-medium">
+            <h1 className="font-archivo-black text-[2rem] text-neutral-800 font-medium rv-split">
               {job.title}
             </h1>
           </div>
@@ -179,18 +175,16 @@ export default async function JobDetailPage({
           </span>
         </a>
       </div>
-      </RevealOnScroll>
 
-      {/* Job description */}
-      <RevealOnScroll y={24}>
+      {/* Job description — vertical content, items cascade naturally */}
       <div className="flex flex-col gap-4.5 mt-8 sm:mt-12">
-        <h2 className="font-archivo-black text-xl lg:text-[2rem] text-neutral-800 font-medium">
+        <h2 className="font-archivo-black text-xl lg:text-[2rem] text-neutral-800 font-medium rv-split">
           Job description
         </h2>
 
         <div className="flex flex-col gap-6">
           {blocks.map((block) => (
-            <div key={block.heading} className="flex flex-col gap-2.5">
+            <div key={block.heading} className="flex flex-col gap-2.5 rv">
               <p className="text-base lg:text-[1.4rem] font-medium text-neutral-800">
                 {block.heading}
               </p>
@@ -237,19 +231,17 @@ export default async function JobDetailPage({
           ))}
         </div>
       </div>
-      </RevealOnScroll>
 
       {/* ── Divider ──────────────────────────────────────────────── */}
       <hr className="mt-6 sm:mt-10 border-0 border-t border-gray-100" />
 
-      {/* ── Share ────────────────────────────────────────────────── */}
-      <RevealOnScroll y={24}>
-      <div className="mt-6 sm:mt-8 flex flex-col gap-4 sm:gap-6">
-        <h2 className="font-archivo-black text-xl lg:text-[2rem] text-neutral-800 font-medium">
+      {/* ── Share — heading and icons reveal together ─────────────── */}
+      <div className="mt-6 sm:mt-8 flex flex-col gap-4 sm:gap-6" data-rv-scope>
+        <h2 className="font-archivo-black text-xl lg:text-[2rem] text-neutral-800 font-medium rv-split">
           Share with your friends
         </h2>
 
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-3 sm:gap-4 rv">
           <button
             type="button"
             aria-label="Share on LinkedIn"
@@ -296,7 +288,6 @@ export default async function JobDetailPage({
           </button>
         </div>
       </div>
-      </RevealOnScroll>
     </main>
   );
 }

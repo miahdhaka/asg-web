@@ -2,11 +2,11 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
-import gsap from "gsap";
 import { BriefcaseBusiness, X } from "lucide-react";
 import { departments, jobs, locations } from "./careerData";
 import JobCard from "./JobCard";
 import SearchableSelect from "./SearchableSelect";
+import { requestRevealRescan } from "@/components/web-info/RevealRunner";
 
 export default function CareerBoard() {
   const [query, setQuery] = useState("");
@@ -34,29 +34,24 @@ export default function CareerBoard() {
     return () => clearTimeout(loadingTimeout.current);
   }, [query, location, department]);
 
-  // Animate cards on filter change
+  // Cards reveal themselves via the shared rv runner (each card its own trigger,
+  // title uses the word-rise header effect). The runner binds once per navigation,
+  // so after a filter re-mounts the grid we rescan to bind the fresh cards.
   useEffect(() => {
-    if (!gridRef.current) return;
-    const cards = gridRef.current.querySelectorAll("[data-job-card]");
-    if (cards.length === 0) return;
-
-    gsap.fromTo(
-      cards,
-      { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: "power3.out" }
-    );
-  }, [filtered]);
+    if (loading) return;
+    requestRevealRescan();
+  }, [filtered, loading]);
 
   return (
     <section id="career-board" className="bg-background">
-      {/* Heading + search controls */}
-      <div className="relative z-10 w-full max-w-[70rem] mx-auto pt-10 lg:pt-[5rem] px-4 sm:px-8">
-        <h2 className="text-center font-archivo-black text-neutral-800 text-2xl sm:text-3xl lg:text-[2.5rem] lg:leading-[3rem]">
+      {/* Heading + search controls — one scoped group so they reveal together */}
+      <div className="relative z-10 w-full max-w-[70rem] mx-auto pt-10 lg:pt-[5rem] px-4 sm:px-8" data-rv-scope>
+        <h2 className="text-center font-archivo-black text-neutral-800 text-2xl sm:text-3xl lg:text-[2.5rem] lg:leading-[3rem] rv">
           AVAILABLE JOBS - {filtered.length}
         </h2>
 
         {/* Search bar with embedded gradient button */}
-        <div className="mt-5 lg:mt-[1.3333rem]">
+        <div className="mt-5 lg:mt-[1.3333rem] rv">
           <div className="input-gradient-border-hover rounded-xl bg-white">
             <div className="flex items-stretch h-[3.25rem] sm:h-[3.25rem] lg:h-[3.65rem]">
               {/* Input area */}
@@ -101,7 +96,7 @@ export default function CareerBoard() {
         </div>
 
         {/* Location + department filters */}
-        <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:justify-center lg:mt-[2.6667rem] lg:gap-[1.3333rem]">
+        <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:justify-center lg:mt-[2.6667rem] lg:gap-[1.3333rem] rv">
           <SearchableSelect
             label="Location"
             placeholder="Select your location"

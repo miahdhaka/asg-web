@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*  Certificate data — shared by the homepage "Certifications and        */
-/*  Compliance" strip and the /certificates listing page.               */
+/*  Compliance" strip and the /all-certificates listing page.           */
 /* ------------------------------------------------------------------ */
 
 export interface CertLogo {

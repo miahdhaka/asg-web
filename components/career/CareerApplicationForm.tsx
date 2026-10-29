@@ -524,9 +524,9 @@ export default function CareerApplicationForm({
         onSubmit={handleSubmit}
         className="w-full sm:pb-[70px] "
       >
-        <h1 className="font-archivo-black text-xl lg:text-[2rem] font-medium text-neutral-800">{jobTitle}</h1>
+        <h1 className="font-archivo-black text-xl lg:text-[2rem] font-medium text-neutral-800 rv-split">{jobTitle}</h1>
 
-        <div className="flex flex-col gap-2 sm:gap-4 rounded-2xl bg-[#EAF4FF] px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:mt-6 lg:mt-[2rem] lg:px-[1.5rem] lg:py-[1.4rem] mt-4">
+        <div className="flex flex-col gap-2 sm:gap-4 rounded-2xl bg-[#EAF4FF] px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:mt-6 lg:mt-[2rem] lg:px-[1.5rem] lg:py-[1.4rem] mt-4 rv">
           <div>
             <p className="text-base lg:text-[1.3rem] text-neutral-800">
               Autofill with LinkedIn
@@ -554,7 +554,7 @@ export default function CareerApplicationForm({
         </div>
 
         {/* Personal Information */}
-        <section className="rounded-2xl bg-gray-50 px-3 sm:px-4 py-5 sm:py-6 mt-8 sm:mt-10 sm:px-6 sm:py-8 lg:px-8 lg:mt-12">
+        <section className="rounded-2xl bg-gray-50 px-3 sm:px-4 py-5 sm:py-6 mt-8 sm:mt-10 sm:px-6 sm:py-8 lg:px-8 lg:mt-12 rv">
           <h2 className="font-archivo-black text-lg lg:text-[1.5rem] font-medium text-neutral-800">Personal information</h2>
 
           <div className="grid grid-cols-1 gap-x-4 gap-y-5 md:grid-cols-2 mt-6 sm:mt-12">
@@ -568,7 +568,7 @@ export default function CareerApplicationForm({
         </section>
 
         {/* Experience Information */}
-        <section className="rounded-2xl bg-gray-50 px-4 py-6 mt-8 sm:mt-10 sm:px-6 sm:py-8 lg:px-8 lg:mt-12">
+        <section className="rounded-2xl bg-gray-50 px-4 py-6 mt-8 sm:mt-10 sm:px-6 sm:py-8 lg:px-8 lg:mt-12 rv">
           <div className="flex h-12 items-center justify-between border-b border-gray-200 pb-5 sm:h-14 sm:pb-7 lg:h-14 lg:pb-7">
             <div className="flex items-center gap-2">
               <Building2
@@ -706,7 +706,7 @@ export default function CareerApplicationForm({
         </section>
 
         {/* Education Information */}
-        <section className="rounded-2xl bg-gray-50 px-4 py-6 mt-8 sm:mt-10 sm:px-6 sm:py-8 lg:px-8 lg:mt-12">
+        <section className="rounded-2xl bg-gray-50 px-4 py-6 mt-8 sm:mt-10 sm:px-6 sm:py-8 lg:px-8 lg:mt-12 rv">
           <div className="flex h-12 items-center justify-between border-b border-gray-200 pb-5 sm:h-14 sm:pb-7 lg:h-14 lg:pb-7">
             <div className="flex items-center gap-2">
               <GraduationCap
@@ -849,7 +849,7 @@ export default function CareerApplicationForm({
         </section>
 
         {/* Profiles Information */}
-        <section className="mt-6 sm:mt-8 rounded-2xl bg-[#f8f9fa] px-4 py-4 sm:px-5 sm:py-5">
+        <section className="mt-6 sm:mt-8 rounded-2xl bg-[#f8f9fa] px-4 py-4 sm:px-5 sm:py-5 rv">
           <h2 className="mb-3 font-archivo-black text-lg lg:text-[1.5rem] font-medium text-neutral-800">Your profiles</h2>
 
           <label className={labelClass}>LinkedIn</label>
@@ -875,7 +875,7 @@ export default function CareerApplicationForm({
         </section>
 
         {/* Upload CV/Resume Information */}
-        <section className="rounded-2xl bg-gray-50 px-4 py-6 mt-8 sm:mt-10 sm:px-6 sm:py-8 lg:px-8 lg:mt-12">
+        <section className="rounded-2xl bg-gray-50 px-4 py-6 mt-8 sm:mt-10 sm:px-6 sm:py-8 lg:px-8 lg:mt-12 rv">
           <h2 className="font-archivo-black text-lg lg:text-[1.5rem] font-medium text-neutral-800">Upload your CV or resume</h2>
 
           <div

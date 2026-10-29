@@ -3,7 +3,6 @@ import PageHero from "@/components/common/PageHero";
 import ContactInfo from "@/components/contact-us/ContactInfo";
 import ContactForm from "@/components/contact-us/ContactForm";
 import AllLocationsSection from "@/components/contact-us/AllLocationsSection";
-import RevealOnScroll from "@/components/web-info/RevealOnScroll";
 import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 export const metadata: Metadata = {
@@ -24,28 +23,25 @@ export default function ContactUsPage() {
         alt="ASG Group contact us"
       />
 
-      {/* Contact info + form section — split by a vertical divider */}
-      <RevealOnScroll y={26}>
-      <section className="lg:grid lg:grid-cols-[36.4rem_1fr]">
+      {/* Contact info + form section — split by a vertical divider.
+          Scoped so the two side-by-side columns reveal together. */}
+      <section className="lg:grid lg:grid-cols-[36.4rem_1fr]" data-rv-scope>
         {/* Left column — HQ info + hours */}
         <div className="border-b lg:border-b-0 lg:border-r border-gray-200 pl-4 sm:pl-8 lg:pl-[5rem] pt-6 sm:pt-10 lg:pt-[5rem] pb-6 sm:pb-16 lg:pb-[4.5rem]">
           <ContactInfo />
         </div>
 
         {/* Right column — form */}
-        <div className="px-4 sm:px-8 lg:px-[5rem] pt-6 sm:pt-10 lg:pt-[5rem] pb-10 sm:pb-16 lg:pb-[5.5rem]">
+        <div className="px-4 sm:px-8 lg:px-[5rem] pt-6 sm:pt-10 lg:pt-[5rem] pb-10 sm:pb-16 lg:pb-[5.5rem] rv">
           <ContactForm />
         </div>
       </section>
-      </RevealOnScroll>
 
       {/* Divider */}
       <hr className="border-t border-gray-200" />
 
       {/* ASG All Location section */}
-      <RevealOnScroll y={26}>
-        <AllLocationsSection />
-      </RevealOnScroll>
+      <AllLocationsSection />
     </main>
   );
 }

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import PrivacyContent from "@/components/privacy-policy/PrivacyContent";
-import RevealOnScroll from "@/components/web-info/RevealOnScroll";
 import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 export const metadata: Metadata = {
@@ -12,9 +11,7 @@ export default function PrivacyPolicyPage() {
   return (
     <main>
       <ScrollProgress />
-      <RevealOnScroll y={20}>
-        <PrivacyContent />
-      </RevealOnScroll>
+      <PrivacyContent />
     </main>
   );
 }

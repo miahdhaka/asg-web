@@ -3,6 +3,7 @@
 import {
   useRef,
   type ComponentType,
+  type CSSProperties,
   type ElementType,
   type HTMLAttributes,
   type Ref,
@@ -27,9 +28,9 @@ interface SplitRevealProps {
    * Default "word"
    */
   by?: "word" | "char";
-  /** Seconds per piece. Defaults: word 1.1, char 1.2 */
+  /** Seconds per piece. Defaults: word 1.25, char 1.35 */
   duration?: number;
-  /** Delay between pieces in seconds. Defaults: word 0.055, char 0.045 */
+  /** Delay between pieces in seconds. Defaults: word 0.055, char 0.05 */
   stagger?: number;
   /** Extra delay before the reveal starts, in seconds. Default 0 */
   delay?: number;
@@ -39,8 +40,11 @@ interface SplitRevealProps {
  * Reveals text piece-by-piece on scroll. Word mode: every word sits in an
  * overflow-hidden mask and rises from below with a slight rotation (the
  * reference site's `[data-split]` header effect). Char mode: every letter
- * rises and fades (its `.f-word` wordmark effect). GSAP ScrollTrigger,
- * plays once, reduced-motion safe (renders as plain text immediately).
+ * rises and fades (its `.f-word` wordmark effect). Both modes also fade
+ * through `autoAlpha`, because a mask alone cannot be trusted to hide the
+ * piece: with tight leading the glyph ink overflows the line box, so the
+ * start position leaves a slice of the caps poking out of the slit.
+ * GSAP ScrollTrigger, plays once, reduced-motion safe (plain text immediately).
  */
 export default function SplitReveal({
   text,
@@ -61,6 +65,15 @@ export default function SplitReveal({
   // like "h2" still renders as an intrinsic element at runtime.
   const Tag = as as ComponentType<HTMLAttributes<HTMLElement> & { ref?: Ref<HTMLElement> }>;
 
+  // The same start values GSAP will tween from, published as CSS variables so
+  // globals.css can pre-position the pieces during server render. Without them
+  // the words paint finished for a beat, jump down on hydration and then rise.
+  const fromVars = {
+    "--split-from-y": by === "word" ? "118%" : "60%",
+    "--split-from-rot": by === "word" ? "4deg" : "0deg",
+    "--split-from-opacity": "0",
+  } as CSSProperties;
+
   useGSAP(
     () => {
       // Re-measure trigger positions once post-hydration layout shifts settle.
@@ -69,14 +82,24 @@ export default function SplitReveal({
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
         const spans = gsap.utils.toArray<HTMLElement>("[data-split-piece]", ref.current);
-        const dur = duration ?? (by === "word" ? 1.15 : 1.25);
-        const step = stagger ?? (by === "word" ? 0.05 : 0.045);
+
+        // Hand ownership of the start position to GSAP. The globals.css rule
+        // only pre-positions pieces that are still unarmed, so marking them
+        // here makes CSS step back the moment a tween exists — GSAP's own
+        // from-state then drives the hidden look until the trigger plays.
+        // If GSAP never runs at all, the heading is never locked invisible.
+        spans.forEach((span) => span.setAttribute("data-split-armed", ""));
+
+        const dur = duration ?? (by === "word" ? 1.25 : 1.35);
+        const step = stagger ?? (by === "word" ? 0.055 : 0.05);
         const from =
           by === "word"
-            ? { yPercent: 105, rotation: 4 }
+            ? { yPercent: 118, rotation: 4, autoAlpha: 0 }
             : { yPercent: 60, autoAlpha: 0 };
         const to =
-          by === "word" ? { yPercent: 0, rotation: 0 } : { yPercent: 0, autoAlpha: 1 };
+          by === "word"
+            ? { yPercent: 0, rotation: 0, autoAlpha: 1 }
+            : { yPercent: 0, autoAlpha: 1 };
 
         gsap.fromTo(spans, from, {
           ...to,
@@ -101,7 +124,7 @@ export default function SplitReveal({
   const maskClass = "inline-block overflow-hidden align-top pb-[0.08em] -mb-[0.08em]";
 
   return (
-    <Tag ref={ref} className={className}>
+    <Tag ref={ref} className={className} style={fromVars}>
       {by === "word"
         ? units.map((unit, i) => (
             <span key={i} className={maskClass}>

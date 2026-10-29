@@ -6,7 +6,6 @@ import EsgStatCards from "@/components/sustainability/EsgStatCards";
 import EsgZld from "@/components/sustainability/EsgZld";
 import { esgHero } from "@/components/sustainability/esgData";
 import CertificationsCompliance from "@/components/homepage/CertificationsCompliance";
-import RevealOnScroll from "@/components/web-info/RevealOnScroll";
 import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 export const metadata: Metadata = {
@@ -26,21 +25,16 @@ export default function EnvironmentalSocialGovernancePage() {
         desktopSrc={esgHero.image}
         alt={esgHero.alt}
       />
-      <RevealOnScroll>
-        <EsgRenewable />
-      </RevealOnScroll>
-      <RevealOnScroll>
-        <EsgWater />
-      </RevealOnScroll>
-      <RevealOnScroll>
-        <EsgStatCards />
-      </RevealOnScroll>
-      <RevealOnScroll>
-        <EsgZld />
-      </RevealOnScroll>
-      <RevealOnScroll>
+      {/* Section internals animate themselves (rv classes inside each
+          component); only CertificationsCompliance — shared with the homepage
+          and untouched internally — keeps a page-level reveal wrapper. */}
+      <EsgRenewable />
+      <EsgWater />
+      <EsgStatCards />
+      <EsgZld />
+      <div className="rv">
         <CertificationsCompliance />
-      </RevealOnScroll>
+      </div>
     </main>
   );
 }

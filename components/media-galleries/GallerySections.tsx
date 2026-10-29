@@ -62,11 +62,13 @@ function ViewMoreButton({ href }: { href?: string }) {
 
 function SectionHeading({ title, href }: { title: string; href?: string }) {
   return (
-    <div className="flex items-end justify-between gap-3 sm:gap-4">
-      <h2 className="font-archivo-black text-neutral-800 text-xl sm:text-[2rem] lg:text-[3rem] sm:leading-[2.5rem] lg:leading-[3rem]">
+    <div className="flex items-end justify-between gap-3 sm:gap-4" data-rv-scope>
+      <h2 className="font-archivo-black text-neutral-800 text-xl sm:text-[2rem] lg:text-[3rem] sm:leading-[2.5rem] lg:leading-[3rem] rv-split">
         {title}
       </h2>
-      <ViewMoreButton href={href} />
+      <span className="rv inline-flex shrink-0">
+        <ViewMoreButton href={href} />
+      </span>
     </div>
   );
 }

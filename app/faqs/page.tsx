@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/common/PageHero";
 import FaqCategories from "@/components/faq/FaqCategories";
-import RevealOnScroll from "@/components/web-info/RevealOnScroll";
 import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 export const metadata: Metadata = {
@@ -20,9 +19,8 @@ export default function FaqsPage() {
         desktopSrc="/images/faq/hero.webp"
         alt="ASG Group shipping and logistics operations"
       />
-      <RevealOnScroll>
-        <FaqCategories />
-      </RevealOnScroll>
+      {/* Category cards animate themselves (rv classes inside) */}
+      <FaqCategories />
     </main>
   );
 }

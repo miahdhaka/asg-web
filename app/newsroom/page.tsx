@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/common/PageHero";
 import NewsGrid from "@/components/newsroom/NewsGrid";
-import RevealOnScroll from "@/components/web-info/RevealOnScroll";
 import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 export const metadata: Metadata = {
@@ -21,9 +20,8 @@ export default function NewsroomPage() {
         alt="ASG Group news releases"
         objectPosition="top"
       />
-      <RevealOnScroll>
-        <NewsGrid />
-      </RevealOnScroll>
+      {/* Cards animate themselves (rv class on each card) */}
+      <NewsGrid />
     </main>
   );
 }

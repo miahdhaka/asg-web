@@ -33,7 +33,7 @@ export function PhotoCard({
           : undefined
       }
     >
-      <div className="relative aspect-[429/257] w-full overflow-hidden bg-[#D9D9D9] rounded-[1.25rem]">
+      <div className="relative aspect-[429/257] w-full overflow-hidden bg-[#D9D9D9] rounded-[1.25rem] rv-img">
         <Image
           src={card.image}
           alt={card.label}
@@ -44,7 +44,7 @@ export function PhotoCard({
           quality={80}
         />
       </div>
-      <p className="font-archivo-black text-base sm:text-[1.125rem] leading-[1.5rem] text-neutral-800 lg:text-[1.5rem] lg:leading-[1.75rem]">
+      <p className="font-archivo-black text-base sm:text-[1.125rem] leading-[1.5rem] text-neutral-800 lg:text-[1.5rem] lg:leading-[1.75rem] rv-split">
         {card.label}
       </p>
     </div>

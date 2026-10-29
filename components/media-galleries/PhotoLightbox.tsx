@@ -191,7 +191,7 @@ export default function PhotoLightbox({
   return (
     <div
       ref={rootRef}
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-2 py-4 sm:px-4 sm:py-8 backdrop-blur-sm"
+      className="fixed inset-0 z-[100] flex cursor-pointer items-center justify-center bg-black/80 px-2 py-4 sm:px-4 sm:py-8 backdrop-blur-sm"
       onClick={dismiss}
       role="dialog"
       aria-modal="true"

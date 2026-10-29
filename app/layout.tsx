@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import Header from "@/components/layout/header/Header";
 import Footer from "@/components/layout/footer/Footer";
 import ScrollToTop from "@/components/layout/ScrollToTop";
+import RevealRunner from "@/components/web-info/RevealRunner";
 import "./globals.css";
 
 const neueMontreal = localFont({
@@ -65,6 +66,9 @@ export default function RootLayout({
         <div className="flex flex-1 flex-col bg-background">
           {children}
         </div>
+        {/* Class-driven scroll animations (.rv, .rv-split, .rv-img, .rv-items,
+            .rv-lit) — bound site-wide so pages need no animation components. */}
+        <RevealRunner />
         <Footer />
       </body>
     </html>

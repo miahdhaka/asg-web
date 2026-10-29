@@ -6,7 +6,6 @@ import CsrEducationBanner from "@/components/sustainability/CsrEducationBanner";
 import CsrPillars from "@/components/sustainability/CsrPillars";
 import CsrPartnerCta from "@/components/sustainability/CsrPartnerCta";
 import { csrHero } from "@/components/sustainability/csrData";
-import RevealOnScroll from "@/components/web-info/RevealOnScroll";
 import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 export const metadata: Metadata = {
@@ -26,21 +25,13 @@ export default function CorporateSocialResponsibilityPage() {
         desktopSrc={csrHero.image}
         alt={csrHero.alt}
       />
-      <RevealOnScroll>
-        <CsrCommunityImpact />
-      </RevealOnScroll>
-      <RevealOnScroll>
-        <CsrPeopleFirst />
-      </RevealOnScroll>
-      <RevealOnScroll>
-        <CsrEducationBanner />
-      </RevealOnScroll>
-      <RevealOnScroll>
-        <CsrPillars />
-      </RevealOnScroll>
-      <RevealOnScroll>
-        <CsrPartnerCta />
-      </RevealOnScroll>
+      {/* Section internals animate themselves (rv classes inside each
+          component), same as the About Us / ESG pages. */}
+      <CsrCommunityImpact />
+      <CsrPeopleFirst />
+      <CsrEducationBanner />
+      <CsrPillars />
+      <CsrPartnerCta />
     </main>
   );
 }
