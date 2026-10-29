@@ -57,11 +57,11 @@ function getCurrentPageLabel(pathname: string): string {
     const slug = pathname.split("/").filter(Boolean)[1];
     return (slug && SUSTAINABILITY_LABELS[slug]) || "Sustainability";
   }
-  if (pathname.startsWith("/newsroom")) return "Media & Press";
-  if (pathname.startsWith("/media-galleries")) return "Media & Press";
+  if (pathname.startsWith("/newsroom")) return "News & Stories";
+  if (pathname.startsWith("/media-galleries")) return "Media Gallery";
   if (pathname.startsWith("/contact-us")) return "Contact";
   if (pathname.startsWith("/careers")) return "Careers";
-  if (pathname.startsWith("/certificates")) return "All Certificate";
+  if (pathname.startsWith("/all-certificates")) return "All Certificate";
   if (pathname.startsWith("/faqs")) return "FAQs";
   if (pathname.startsWith("/privacy-policy")) return "Privacy";
   if (pathname.startsWith("/terms-of-use")) return "Terms";

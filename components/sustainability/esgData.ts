@@ -27,9 +27,9 @@ export const esgRenewable = {
 /* Water Conservation — dark full-bleed band */
 export const esgWater = {
   heading: "Water Conservation",
-  value: "220 m³/hour.",
+  value: "210 m³/hour.",
   caption:
-    "High-end Water Recycling To Reuse Capacity.",
+    "water treatment capacity in our ETP",
   image: "/images/sustainability/esg/esg-water.jpg",
   alt: "Water conservation — rain on glass",
 };

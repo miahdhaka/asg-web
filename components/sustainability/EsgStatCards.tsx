@@ -6,7 +6,7 @@ import { esgStatCards, type EsgStatCard } from "./esgData";
 
 function StatCard({ card }: { card: EsgStatCard }) {
   return (
-    <div className="relative aspect-[320/420] w-[320px] shrink-0 overflow-hidden rounded-[1rem] bg-[#D9D9D9] sm:w-auto">
+    <div className="relative aspect-[320/420] w-[320px] shrink-0 overflow-hidden rounded-[1rem] bg-[#D9D9D9] sm:w-auto rv-img">
       <Image
         src={card.image}
         alt={card.alt}
@@ -71,6 +71,7 @@ export default function EsgStatCards() {
         onPointerUp={endDrag}
         onPointerLeave={endDrag}
         className="no-scrollbar mx-auto flex w-full max-w-[80rem] cursor-grab gap-3 overflow-x-auto pb-2 active:cursor-grabbing sm:grid sm:cursor-default sm:grid-cols-3 sm:select-auto sm:overflow-visible sm:pb-0"
+        data-rv-scope
       >
         {esgStatCards.map((card) => (
           <StatCard key={card.value} card={card} />

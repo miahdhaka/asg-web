@@ -1,5 +1,3 @@
-import SplitReveal from "@/components/web-info/SplitReveal";
-import RevealOnScroll from "@/components/web-info/RevealOnScroll";
 
 export type MessageBodyProps = {
   id: string;
@@ -29,30 +27,26 @@ export default function MessageBody({
       className="w-full bg-background px-4 sm:px-6 lg:px-[5em] py-10 sm:py-14 lg:py-[4em]"
     >
       <div className="mx-auto w-full max-w-full lg:w-[74.1em]">
-        <SplitReveal
-          as="h2"
-          className="font-archivo-black font-medium text-xl sm:text-2xl lg:text-[2em] lg:leading-[1.33] text-neutral-800"
-          text={heading}
-        />
+        <h2 className="font-archivo-black font-medium text-xl sm:text-2xl lg:text-[2em] lg:leading-[1.33] text-neutral-800 rv-split">{heading}</h2>
 
         {lead && (
-          <RevealOnScroll delay={0.2} y={20}>
+          <div className="rv">
             <p className="mt-2 lg:mt-[1em] text-lg lg:text-[1.5em] lg:leading-[1.56] text-neutral-800">
               {lead}
             </p>
-          </RevealOnScroll>
+          </div>
         )}
 
         {paragraphs.map((paragraph) => (
-          <RevealOnScroll key={paragraph.slice(0, 40)} y={20}>
+          <div key={paragraph.slice(0, 40)} className="rv">
             <p className="mt-4 lg:mt-[1.33em] text-base lg:text-[1.17em] lg:leading-[1.43] text-justify text-neutral-500 tracking-wider">
               {paragraph}
             </p>
-          </RevealOnScroll>
+          </div>
         ))}
 
         {/* Sign-off */}
-        <RevealOnScroll y={20}>
+        <div className="rv">
         <div className="mt-5 lg:mt-[1.33em]">
           <p className="text-lg lg:text-[1.33em] lg:leading-[1.5] text-neutral-800 tracking-wide">
             Sincerely,
@@ -67,7 +61,7 @@ export default function MessageBody({
             {signOff.org}
           </p>
         </div>
-        </RevealOnScroll>
+        </div>
       </div>
     </section>
   );

@@ -6,9 +6,9 @@ import { csrPeopleFirst } from "./csrData";
 export default function CsrPeopleFirst() {
   return (
     <section className="bg-white px-4 sm:px-8 lg:px-0 py-10 lg:py-[4.8rem]">
-      <div className="mx-auto flex w-full max-w-[80rem] flex-col items-center gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-[5rem]">
+      <div className="mx-auto flex w-full max-w-[80rem] flex-col items-center gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-[5rem]" data-rv-scope>
         {/* Photo — 634×423, 16px radius. Below the text on mobile, left on desktop */}
-        <div className="relative order-2 aspect-[634/423] w-full overflow-hidden rounded-2xl bg-[#D9D9D9] lg:order-1 lg:w-[50rem] lg:shrink-0">
+        <div className="relative order-2 aspect-[634/423] w-full overflow-hidden rounded-2xl bg-[#D9D9D9] lg:order-1 lg:w-[50rem] lg:shrink-0 rv-img">
           <Image
             src={csrPeopleFirst.image}
             alt={csrPeopleFirst.alt}
@@ -21,12 +21,14 @@ export default function CsrPeopleFirst() {
 
         {/* Text column — above the photo on mobile, right on desktop */}
         <div className="order-1 flex w-full flex-col gap-3 lg:order-2 lg:max-w-[26rem] lg:shrink-0">
-          <h2 className="font-archivo-black text-[#262626] text-xl sm:text-[1.75rem] lg:text-[2.85rem] lg:leading-[3.125rem] max-w-[14rem] sm:max-w-full">
+          <h2 className="font-archivo-black text-[#262626] text-xl sm:text-[1.75rem] lg:text-[2.85rem] lg:leading-[3.125rem] max-w-[14rem] sm:max-w-full rv-split">
             {csrPeopleFirst.title}
           </h2>
+          <div className="rv">
           <p className="text-[15px] lg:text-[21px] leading-5.5 lg:leading-[2rem] text-[#1A1A1A] tracking-wide">
             {csrPeopleFirst.description}
           </p>
+          </div>
         </div>
       </div>
     </section>

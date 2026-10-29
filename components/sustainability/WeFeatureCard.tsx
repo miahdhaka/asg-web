@@ -19,7 +19,7 @@ export default function WeFeatureCard({ data, side, divider }: WeFeatureCardProp
           <hr className="border-0 border-t border-gray-200 mb-8 sm:mb-12 lg:mb-[5rem]" />
         )}
 
-        <div className="relative overflow-hidden rounded-3xl bg-[#D9D9D9]">
+        <div className="relative overflow-hidden rounded-3xl bg-[#D9D9D9] rv-img" data-rv-scope>
           {/* Image */}
           <div className="relative aspect-[3/2] w-full lg:aspect-[1055/440]">
             <Image
@@ -40,13 +40,13 @@ export default function WeFeatureCard({ data, side, divider }: WeFeatureCardProp
             }`}
           >
             <div className="flex h-full flex-col justify-center gap-1.5 sm:gap-3">
-              <p className="text-sm font-medium text-[#262626] tracking-wide lg:text-lg">
+              <p className="text-sm font-medium text-[#262626] tracking-wide lg:text-lg rv">
                 {data.label}
               </p>
-              <h2 className="font-archivo-black text-[#262626] text-[1.125rem] leading-[1.3] sm:text-[2.375rem] sm:leading-[1.15] lg:text-[3rem] lg:leading-[3.25rem] max-w-none sm:max-w-[70%]">
+              <h2 className="font-archivo-black text-[#262626] text-[1.125rem] leading-[1.3] sm:text-[2.375rem] sm:leading-[1.15] lg:text-[3rem] lg:leading-[3.25rem] max-w-none sm:max-w-[70%] rv-split">
                 {data.title}
               </h2>
-              <p className="font-neue-montreal text-sm leading-5.5 text-[#1A1A1A] lg:text-[1.3rem] lg:leading-8 mt-3 sm:mt-1.5">
+              <p className="font-neue-montreal text-sm leading-5.5 text-[#1A1A1A] lg:text-[1.3rem] lg:leading-8 mt-3 sm:mt-1.5 rv">
                 {data.body}
               </p>
             </div>

@@ -3,9 +3,9 @@ import Image from "next/image";
 export default function InternshipSection() {
   return (
     <section id="career-internship" className="bg-white py-10 sm:py-12 lg:py-[5rem]">
-      <div className="mx-auto flex w-full max-w-[98.5rem] flex-col items-center gap-8 px-4 sm:px-8 lg:flex-row lg:gap-[4rem] lg:px-[5rem]">
+      <div className="mx-auto flex w-full max-w-[98.5rem] flex-col items-center gap-8 px-4 sm:px-8 lg:flex-row lg:gap-[4rem] lg:px-[5rem]" data-rv-scope>
         {/* Photo */}
-        <div className="relative aspect-[547/356] w-full shrink-0 overflow-hidden rounded-[1.25rem] lg:h-[29.6667rem] lg:w-[45.5833rem] lg:aspect-auto">
+        <div className="relative aspect-[547/356] w-full shrink-0 overflow-hidden rounded-[1.25rem] lg:h-[29.6667rem] lg:w-[45.5833rem] lg:aspect-auto rv-img">
           <Image
             src="/images/career/internship.webp"
             alt="ASG interns collaborating at the office"
@@ -20,20 +20,20 @@ export default function InternshipSection() {
         <div className="w-full lg:w-[35rem]">
           <div className="flex flex-col gap-5 sm:gap-6">
             <div className="flex flex-col gap-6">
-              <h2 className="font-archivo-black text-2xl sm:text-3xl lg:text-[3rem] leading-8 text-neutral-800 lg:leading-[3.3333rem]">
+              <h2 className="font-archivo-black text-2xl sm:text-3xl lg:text-[3rem] leading-8 text-neutral-800 lg:leading-[3.3333rem] rv-split">
                 Join the Internship Program at
               </h2>
-              <p className="text-xl leading-7.5 font-medium text-neutral-800 lg:text-[1.5rem] lg:leading-[2rem] tracking-wide">
+              <p className="text-xl leading-7.5 font-medium text-neutral-800 lg:text-[1.5rem] lg:leading-[2rem] tracking-wide rv">
                 Start your career journey with hands-on experience, mentorship, and a global platform
               </p>
             </div>
-            <p className="text-base leading-5 text-neutral-800 lg:text-[1.1667rem] lg:leading-[1.6667rem] tracking-wide">
+            <p className="text-base leading-5 text-neutral-800 lg:text-[1.1667rem] lg:leading-[1.6667rem] tracking-wide rv">
               Your Career Journey with Hands-on Experience, mentorship, and a global platform.Your Career Journey with Hands-on Experience, mentorship, and a global platform.Your Career Journey with Hands-on Experience, mentorship, and a global platform.Your Career Journey with Hands-on Experience, mentorship, and a global platform.
             </p>
           </div>
           <a
             href="#"
-            className="group relative mt-8 inline-flex w-fit items-center justify-center overflow-hidden rounded-full border border-transparent px-4.5 py-4 text-base font-medium leading-none lg:mt-[2rem] lg:px-[2rem] lg:py-[1.4rem] lg:text-[1.1667rem]"
+            className="group rv relative mt-8 inline-flex w-fit items-center justify-center overflow-hidden rounded-full border border-transparent px-4.5 py-4 text-base font-medium leading-none lg:mt-[2rem] lg:px-[2rem] lg:py-[1.4rem] lg:text-[1.1667rem]"
             style={{
               background:
                 "linear-gradient(white) padding-box, var(--primary-gradient) border-box",

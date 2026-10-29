@@ -7,21 +7,21 @@ export default function WeVision() {
   return (
     <section className="px-4 sm:px-8 lg:px-0 pt-12 pb-6 lg:pt-[5.5rem] lg:pb-[5rem]">
       {/* Text block — left-aligned copy inside a centred column */}
-      <div className="mx-auto flex w-full max-w-[46rem] flex-col gap-2 sm:gap-1">
-        <p className="text-sm font-medium text-[#262626] tracking-wide lg:text-lg">
+      <div className="mx-auto flex w-full max-w-[46rem] flex-col gap-2 sm:gap-1" data-rv-scope>
+        <p className="text-sm font-medium text-[#262626] tracking-wide lg:text-lg rv">
           {weVision.label}
         </p>
-        <h2 className="font-archivo-black text-[#262626] text-[1.5rem] leading-[1.15] sm:text-[2.625rem] lg:text-[4rem] lg:leading-[3.75rem]">
+        <h2 className="font-archivo-black text-[#262626] text-[1.5rem] leading-[1.15] sm:text-[2.625rem] lg:text-[4rem] lg:leading-[3.75rem] rv-split">
           {weVision.title}
         </h2>
-        <p className="font-neue-montreal text-sm leading-5.5 text-[#1A1A1A] lg:text-[1.3rem] lg:leading-8 mt-1.5 sm:mt-8">
+        <p className="font-neue-montreal text-sm leading-5.5 text-[#1A1A1A] lg:text-[1.3rem] lg:leading-8 mt-1.5 sm:mt-8 rv">
           {weVision.body}
         </p>
       </div>
 
       {/* Wide rounded image */}
       <div className="mx-auto mt-8 w-full max-w-[80rem] lg:mt-[2rem]">
-        <div className="relative aspect-[3/2] w-full overflow-hidden rounded-3xl bg-[#D9D9D9] lg:aspect-[1056/429]">
+        <div className="relative aspect-[3/2] w-full overflow-hidden rounded-3xl bg-[#D9D9D9] lg:aspect-[1056/429] rv-img">
           <Image
             src={weVision.image}
             alt={weVision.alt}

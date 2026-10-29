@@ -57,7 +57,7 @@ export default function CertificateGallery() {
   return (
     <>
       <div className="relative">
-        <div className={`grid ${COLUMNS}`}>
+        <div className={`grid ${COLUMNS} rv-items`} data-stagger="0">
         {certLogos.map((cert, i) => {
           const previewable = Boolean(cert.pdf);
           return (

@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import { SquareArrowOutUpRight } from "lucide-react";
 import gsap from "gsap";
 import StatGrid, { type StatItem } from "@/components/common/StatGrid";
-import RevealOnScroll from "@/components/web-info/RevealOnScroll";
 
 type ConcernIntroProps = {
   /** Optional anchor id for the section (e.g. "helal-intro"). */
@@ -118,7 +117,7 @@ export default function ConcernIntro({
       className="w-full px-4 sm:px-6 lg:px-[5em] py-6 sm:py-10 lg:py-[5em]"
     >
       {/* ── Identity row: logo + company name, website CTA on the right ── */}
-      <RevealOnScroll y={24}>
+      <div className="rv">
       <div
         className={`${COLUMN} flex flex-col items-center gap-5 lg:flex-row lg:items-center lg:justify-between lg:gap-[2em]`}
       >
@@ -181,14 +180,14 @@ export default function ConcernIntro({
           </span>
         </a>
       </div>
-      </RevealOnScroll>
+      </div>
 
       {/* Rule under the identity row */}
       <div className={`${COLUMN} h-px bg-gray-200 mt-[1em]`} />
 
       {/* ── Copy column — the tail is height-animated, so all paragraphs stay
           in the DOM; the gradient “…more” toggle rides along inline ── */}
-      <RevealOnScroll y={24} delay={0.15}>
+      <div className="rv">
       <div className={`${COLUMN} mt-6 lg:mt-[2.2em]`}>
         <div className="flex flex-col gap-4 lg:gap-[1.15em]">
           {(isDesktop ? paragraphs : paragraphs.slice(0, collapsedCount)).map(
@@ -229,14 +228,14 @@ export default function ConcernIntro({
           </div>
         )}
       </div>
-      </RevealOnScroll>
+      </div>
 
       {/* ── Stat cards ── */}
-      <RevealOnScroll selector=".grid > div" stagger={0.08} y={26}>
+      <div className="rv-items" data-stagger="0">
       <div className="mt-6 lg:mt-[5em]">
         <StatGrid stats={stats} columns={4} />
       </div>
-      </RevealOnScroll>
+      </div>
     </section>
   );
 }

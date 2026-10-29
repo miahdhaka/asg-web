@@ -14,6 +14,8 @@ export interface SisterConcern {
   concernDesc: string;
   logo: string;
   link: string;
+  /** Renders this concern's logo slightly larger than the rest. */
+  largeLogo?: boolean;
 }
 
 const sisterConcerns: SisterConcern[] = [
@@ -23,6 +25,7 @@ const sisterConcerns: SisterConcern[] = [
     concernDesc: "Consistent, high-quality yarn for reliable textile production.",
     logo: "/logo/sister-concern-update/spinning-mills-clr.png",
     link: "/concerns/hazrat-amanat-shah-spinning-mills",
+    largeLogo: true,
   },
   {
     sector: "TEXTILE",
@@ -30,6 +33,7 @@ const sisterConcerns: SisterConcern[] = [
     concernDesc: "Precision weaving and processing for quality woven fabrics.",
     logo: "/logo/sister-concern-update/weaving-clr.png",
     link: "/concerns/amanat-shah-weaving-processing",
+    largeLogo: true,
   },
   {
     sector: "TEXTILE",
@@ -67,6 +71,7 @@ const sisterConcerns: SisterConcern[] = [
     concernDesc: "Trusted investment services for confident capital market decisions.",
     logo: "/logo/sister-concern-update/securities-clr.png",
     link: "/concerns/hazrat-amanat-shah-securities",
+    largeLogo: true,
   },
   {
     sector: "AGRICULTURE",
@@ -636,7 +641,9 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
           gsap.set(textRef.current, {
             y: `${-35 * t}vh`,
             opacity: 1 - t,
-            scale: 1 - 0.5 * t,
+            // Shrink front-loaded: the headline scales down faster at the start
+            // of the lift (pow < 1) so it eases small early rather than linearly.
+            scale: 1 - 0.5 * Math.pow(t, 0.55),
           });
         }
 
@@ -972,7 +979,11 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
             <img
               src={sisterConcerns[activeConcern]?.logo ?? ""}
               alt="Sister concern"
-              className="h-10 w-36 object-contain sm:h-14 sm:w-44 lg:h-[5rem] lg:w-56"
+              className={
+                sisterConcerns[activeConcern]?.largeLogo
+                  ? "h-10 w-36 object-contain sm:h-14 sm:w-52 lg:h-[7rem] lg:w-72"
+                  : "h-10 w-36 object-contain sm:h-14 sm:w-44 lg:h-[5rem] lg:w-56"
+              }
             />
             <p className="w-full font-neue-montreal text-xs sm:text-sm lg:text-[1.15rem] text-[var(--neutral-600)] mt-1 lg:w-[90%]">
               {sisterConcerns[activeConcern]?.concernDesc ?? ""}
@@ -1108,7 +1119,11 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
             <img
               src={sisterConcerns[activeConcern]?.logo ?? ""}
               alt="Sister concern"
-              className="h-18 w-64 object-contain"
+              className={
+                sisterConcerns[activeConcern]?.largeLogo
+                  ? "h-16 w-52 object-contain"
+                  : "h-12 w-40 object-contain"
+              }
             />
 
             {/* Concern description — always shown under the logo */}

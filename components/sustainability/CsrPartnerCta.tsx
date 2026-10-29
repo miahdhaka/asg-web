@@ -8,16 +8,20 @@ export default function CsrPartnerCta() {
     <section className="pb-10 lg:pb-[4.8rem]">
       <hr className="border-0 border-t border-gray-200" />
 
-      <div className="mx-auto mt-10 flex w-full max-w-[56rem] flex-col items-center px-4 text-center lg:mt-[4.8rem]">
-        <h2 className="font-archivo-black text-neutral-800 text-lg sm:text-3xl lg:text-[2.5rem] lg:leading-[3rem]">
+      <div className="mx-auto mt-10 flex w-full max-w-[56rem] flex-col items-center px-4 text-center lg:mt-[4.8rem]" data-rv-scope>
+        <h2 className="font-archivo-black text-neutral-800 text-lg sm:text-3xl lg:text-[2.5rem] lg:leading-[3rem] rv-split">
           {csrCta.title}
         </h2>
+        <div className="rv">
         <p className="mt-[0.5625rem] font-archivo-black text-neutral-800 text-[2rem] leading-[1.1] sm:text-[2.875rem] lg:text-[3.875rem] lg:leading-[4rem]">
           {csrCta.highlight}
         </p>
+        </div>
+        <div className="rv">
         <p className="mt-[1.4rem] max-w-[36rem] font-neue-montreal text-base leading-5 text-[#1A1A1A] sm:text-lg sm:leading-7 lg:text-[1.375rem] lg:leading-[2rem] tracking-wider">
           {csrCta.description}
         </p>
+        </div>
 
         {/* Pill button — 1px gradient ring (dual-background technique;
             border-image can't follow radius) + slide-in flip hover */}

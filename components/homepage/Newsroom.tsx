@@ -3,38 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
+import { newsArticles } from "@/components/newsroom/newsData";
 
-interface NewsItem {
-  slug: string;
-  date: string;
-  category: string;
-  title: string;
-  image: string;
-}
-
-const news: NewsItem[] = [
-  {
-    slug: "presidents-industrial-development-award-2024-1",
-    date: "3 June, 2026",
-    category: "Corporate",
-    title: "President's industrial development award -2024",
-    image: "/images/newsroom/news_1.webp",
-  },
-  {
-    slug: "presidents-industrial-development-award-2024-2",
-    date: "3 June, 2026",
-    category: "Corporate",
-    title: "President's industrial development award -2024",
-    image: "/images/newsroom/news_2.webp",
-  },
-  {
-    slug: "news-article-3",
-    date: "3 June, 2026",
-    category: "Corporate",
-    title: "President's industrial development award -2024",
-    image: "/images/newsroom/news_3.webp",
-  },
-];
+/* The three latest published news items, straight from the news data — the
+   section never hardcodes its own list, so it always matches /newsroom. */
+const news = newsArticles.slice(0, 3);
 
 export default function Newsroom() {
   // Infinite draggable strip, mirroring the OurBusiness carousel: the

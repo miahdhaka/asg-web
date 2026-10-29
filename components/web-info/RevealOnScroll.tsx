@@ -14,7 +14,7 @@ interface RevealOnScrollProps {
   className?: string;
   /** Distance in px the section rises from while hidden. Default 34 */
   y?: number;
-  /** Tween duration in seconds once triggered. Default 1.15 */
+  /** Tween duration in seconds once triggered. Default 1.25 */
   duration?: number;
   /** Extra stagger (seconds) applied to the targets when > 0. Default 0 */
   stagger?: number;
@@ -40,7 +40,7 @@ export default function RevealOnScroll({
   children,
   className,
   y = 34,
-  duration = 1.15,
+  duration = 1.25,
   stagger = 0,
   selector,
   delay = 0,

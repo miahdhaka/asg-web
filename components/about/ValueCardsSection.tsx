@@ -1,5 +1,4 @@
 import Image from "next/image";
-import SplitReveal from "@/components/web-info/SplitReveal";
 
 export type ValueCardItem = {
   icon: string;
@@ -20,11 +19,7 @@ export default function ValueCardsSection({ id, heading, items, variant }: Value
 
   return (
     <section id={id} className={`w-full px-4 sm:px-6 lg:px-[5em] py-16 lg:py-[5rem] ${variant === "muted" ? "" : "bg-white"}`}>
-      <SplitReveal
-        as="h2"
-        className="font-archivo-black text-3xl sm:text-5xl lg:text-[3rem] leading-[1.1] text-[#262626] uppercase"
-        text={heading}
-      />
+      <h2 className="font-archivo-black text-3xl sm:text-5xl lg:text-[3rem] leading-[1.1] text-[#262626] uppercase rv-split">{heading}</h2>
 
       <div className="mt-8 sm:mt-10 lg:mt-[3.5rem] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {items.map((item) => (

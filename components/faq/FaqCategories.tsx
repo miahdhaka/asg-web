@@ -14,6 +14,7 @@ export default function FaqCategories() {
             key={category.slug}
             href={`/faqs/${category.slug}`}
             className="group relative flex h-[15rem] sm:h-[21.5rem] lg:h-[28.6667rem] flex-col justify-between overflow-hidden rounded-[1.5rem] bg-gray-50 p-5 lg:p-6"
+            data-rv-scope
           >
             {/* Hover state layer — soft brand-gradient wash */}
             <div
@@ -52,7 +53,7 @@ export default function FaqCategories() {
                 hover-overlay fills this box (inset-0 + mask contain) so it
                 cross-fades without any size jump. */}
             <div
-              className={`relative z-10 ${
+              className={`rv relative z-10 ${
                 category.wideIcon
                   ? "h-[3rem] w-[6rem] lg:h-[4.75rem] lg:w-[9.5rem]"
                   : "size-14 lg:size-[4.5rem]"
@@ -87,10 +88,10 @@ export default function FaqCategories() {
             </div>
 
             <div className="relative z-10 flex flex-col gap-2 sm:gap-3 lg:gap-4">
-              <h2 className="font-archivo-black text-xl sm:text-2xl leading-8 text-neutral-800 lg:text-[2rem] lg:leading-[2.6667rem]">
+              <h2 className="font-archivo-black text-xl sm:text-2xl leading-8 text-neutral-800 lg:text-[2rem] lg:leading-[2.6667rem] rv-split">
                 {category.title}
               </h2>
-              <p className="font-neue-montreal text-[0.9375rem] sm:text-base lg:text-[1.3333rem] leading-6 text-neutral-800 lg:leading-8">
+              <p className="font-neue-montreal text-[0.9375rem] sm:text-base lg:text-[1.3333rem] leading-6 text-neutral-800 lg:leading-8 rv">
                 {category.description}
               </p>
             </div>

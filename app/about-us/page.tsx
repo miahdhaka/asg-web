@@ -5,7 +5,6 @@ import AboutStats from "@/components/about/AboutStats";
 import VisionMission from "@/components/about/VisionMission";
 import Achievements from "@/components/about/Achievements";
 import ValueCardsSection, { ValueCardItem } from "@/components/about/ValueCardsSection";
-import RevealOnScroll from "@/components/web-info/RevealOnScroll";
 import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 export const metadata: Metadata = {
@@ -93,17 +92,17 @@ export default function AboutUsPage() {
         imagePosition="center"
       />
       <AboutIntro />
-      <RevealOnScroll>
+      <div className="rv">
         <AboutStats />
-      </RevealOnScroll>
+      </div>
       <VisionMission />
       <Achievements />
-      <RevealOnScroll selector=".grid > div" stagger={0.08}>
+      <div className="rv-items">
         <ValueCardsSection id="core-values" heading="Core Values" items={coreValues} variant="light" />
-      </RevealOnScroll>
-      <RevealOnScroll selector=".grid > div" stagger={0.08}>
+      </div>
+      <div className="rv-items">
         <ValueCardsSection id="core-competency" heading="Core Competency" items={coreCompetencies} variant="muted" />
-      </RevealOnScroll>
+      </div>
     </main>
   );
 }

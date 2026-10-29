@@ -173,7 +173,7 @@ export default function CertificationsCompliance() {
             hover as the Newsroom "More news" button — linking to the full
             certificates page. */}
         <Link
-          href="/certificates"
+          href="/all-certificates"
           aria-label="View All Certificates"
           className="group relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-transparent self-start px-3.5 py-3.5 text-[0.75rem] font-medium leading-none sm:mt-1 sm:px-[1.4rem] sm:py-3 sm:text-[0.95rem] lg:py-4 lg:text-[1.05rem]"
           style={{

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import PageHero from "@/components/common/PageHero";
 import CareerBoard from "@/components/career/CareerBoard";
 import InternshipSection from "@/components/career/InternshipSection";
-import RevealOnScroll from "@/components/web-info/RevealOnScroll";
 import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 export const metadata: Metadata = {
@@ -22,12 +21,9 @@ export default function CareersPage() {
         desktopSrc="/images/career/hero.webp"
         alt="ASG Group team members at work"
       />
-      <RevealOnScroll>
-        <CareerBoard />
-      </RevealOnScroll>
-      <RevealOnScroll>
-        <InternshipSection />
-      </RevealOnScroll>
+      {/* Board + internship animate themselves (rv classes inside) */}
+      <CareerBoard />
+      <InternshipSection />
     </main>
   );
 }

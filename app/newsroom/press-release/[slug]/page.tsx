@@ -3,9 +3,6 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { SquareArrowOutUpRight } from "lucide-react";
 import { newsArticles, getNewsArticle } from "@/components/newsroom/newsData";
-import SplitReveal from "@/components/web-info/SplitReveal";
-import RevealOnScroll from "@/components/web-info/RevealOnScroll";
-import ImageReveal from "@/components/web-info/ImageReveal";
 import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 /* ------------------------------------------------------------------ */
@@ -33,6 +30,41 @@ export async function generateMetadata({
 }
 
 /* ------------------------------------------------------------------ */
+/*  Bullet list — shared by structured sections and bulleted blocks    */
+/* ------------------------------------------------------------------ */
+
+function ArticleBullets({ items }: { items: string[] }) {
+  return (
+    <div className="flex flex-col gap-2">
+      {items.map((item, i) => (
+        <div key={i} className="flex items-start gap-[0.6875rem]">
+          {/* Check icon */}
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
+            aria-hidden
+            className="mt-[0.35rem] shrink-0"
+          >
+            <path
+              d="M11.667 3.5L5.25 9.917 2.333 7"
+              stroke="#525252"
+              strokeWidth="1.167"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span className="font-neue-montreal text-sm sm:text-[1.08rem] leading-[1.5rem] text-neutral-600">
+            {item}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  Page                                                               */
 /* ------------------------------------------------------------------ */
 
@@ -49,10 +81,10 @@ export default async function PressReleaseDetailPage({
   return (
     <main className="flex flex-col w-full max-w-[80rem] mx-auto pt-2 sm:pt-[3.5rem] mt-[6rem] px-4 sm:px-5">
       <ScrollProgress />
-      {/* Meta + Title */}
-      <div className="w-full">
+      {/* Meta + Title — one shared trigger so the header block lands together */}
+      <div className="w-full" data-rv-scope>
         {/* Category / label row */}
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2 rv">
           <span className="font-neue-montreal text-xs sm:text-[1rem] tracking-wide leading-[1.25rem] text-neutral-800">
             {article.label}
           </span>
@@ -63,155 +95,145 @@ export default async function PressReleaseDetailPage({
           <span className="font-neue-montreal text-xs sm:text-[1rem] tracking-wide leading-[1.25rem] text-neutral-800">
             {article.category}
           </span>
-        </div>
+        </div> */}
 
         {/* Title */}
-        <SplitReveal
-          as="h1"
-          className="mt-2 sm:mt-4 font-archivo-black text-[1.25rem] sm:text-[2.2rem] leading-[2rem] sm:leading-[3rem] font-normal text-black"
-          text={article.title}
-        />
+        <h1 className="mt-2 sm:mt-4 font-archivo-black text-[1.25rem] sm:text-[2.2rem] leading-[2rem] sm:leading-[3rem] font-normal text-black rv-split">{article.title}</h1>
       </div>
 
-      {/* Info row */}
-      <RevealOnScroll y={22} delay={0.25}>
-      <div className="flex w-full flex-wrap items-center justify-between sm:justify-start gap-4 sm:gap-6 mt-6 sm:mt-10">
-        {/* Published date */}
-        <span className="font-neue-montreal text-xs sm:text-[1rem] leading-[1.25rem] tracking-wider text-neutral-800">
-          Published: {article.publishedAt}
-        </span>
-
-        {/* Newspaper source icon */}
-        <div className="bg-white rounded-lg p-2 sm:p-3">
-          <Image
-            src="/images/newsroom/prothom-alo.png"
-            alt="Prothom Alo"
-            width={1920}
-            height={1080}
-            priority
-            quality={90}
-            className="w-[5rem] sm:w-[5rem] object-contain"
-          />
-        </div>
-
-
-        {/* Spacer pushes social + button to the right */}
-        <div className="flex-1" />
-
-        {/* Social share */}
-        <div className="flex items-center gap-2">
-          {/* Facebook */}
-          <button
-            type="button"
-            aria-label="Share on Facebook"
-            className="flex h-[2rem] sm:h-[2.5rem] w-[2rem] sm:w-[2.5rem] cursor-pointer items-center justify-center rounded-full bg-[#1877F2] transition-all duration-300 ease-out hover:ring-2 hover:ring-[#1877F2] hover:ring-offset-2"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden
-            >
-              <path
-                d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
-                fill="#fff"
-              />
-            </svg>
-          </button>
-
-          {/* Instagram */}
-          <button
-            type="button"
-            aria-label="Share on Instagram"
-            className="flex h-[2rem] sm:h-[2.5rem] w-[2rem] sm:w-[2.5rem] cursor-pointer items-center justify-center rounded-full transition-all duration-300 ease-out hover:ring-2 hover:ring-[#E4405F] hover:ring-offset-2"
-            style={{ background: "linear-gradient(45deg, #FFD521 14.64%, #FFD020 18.53%, #FEC01E 23.41%, #FCA71B 28.79%, #FA8316 34.59%, #F85510 40.67%, #F51E09 46.89%, #F30005 50%, #F20007 50.21%, #E1003B 56.86%, #D30067 63.29%, #C70088 69.52%, #BF00A0 75.39%, #BB00AF 80.83%, #B900B4 85.36%)" }}
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden
-            >
-              <rect x="2" y="2" width="20" height="20" rx="5" stroke="#fff" strokeWidth="2" />
-              <circle cx="12" cy="12" r="5" stroke="#fff" strokeWidth="2" />
-              <circle cx="17.5" cy="6.5" r="1.5" fill="#fff" />
-            </svg>
-          </button>
-
-          {/* LinkedIn */}
-          <button
-            type="button"
-            aria-label="Share on LinkedIn"
-            className="flex h-[2rem] sm:h-[2.5rem] w-[2rem] sm:w-[2.5rem] cursor-pointer items-center justify-center rounded-full bg-[#0A66C2] transition-all duration-300 ease-out hover:ring-2 hover:ring-[#0A66C2] hover:ring-offset-2"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden
-            >
-              <path
-                d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"
-                fill="#fff"
-              />
-              <rect x="2" y="9" width="4" height="12" fill="#fff" />
-              <circle cx="4" cy="4" r="2" fill="#fff" />
-            </svg>
-          </button>
-        </div>
-
-        {/* "Read full article" button — rounded pill with a 1px gradient ring
-            (dual-background technique; border-image can't follow radius) */}
-        <a
-          href="#"
-          className="group relative inline-flex w-fit items-center justify-center self-start overflow-hidden rounded-full border border-transparent px-6 py-3 text-sm font-medium leading-none lg:px-[2em] lg:py-[1em] lg:text-[1.17em]"
-          style={{
-            background:
-              "linear-gradient(var(--background)) padding-box, var(--primary-gradient) border-box",
-          }}
-        >
-          {/* Invisible spacer — preserves the button's intrinsic width/height */}
-          <span className="invisible inline-flex items-center gap-1 whitespace-nowrap lg:gap-[0.33em]">
-            Read full article
-            <SquareArrowOutUpRight className="h-4 w-4" />
+      {/* Commented for later */}
+      {/* <div className="rv">
+        <div className="flex w-full flex-wrap items-center justify-between sm:justify-start gap-4 sm:gap-6 mt-6 sm:mt-10">
+          Published date
+          <span className="font-neue-montreal text-xs sm:text-[1rem] leading-[1.25rem] tracking-wider text-neutral-800">
+            Published: {article.publishedAt}
           </span>
 
-          {/* Default: gradient text — slides down and out on hover */}
-          <span
-            aria-hidden
-            className="absolute inset-0 flex items-center justify-center gap-1 whitespace-nowrap text-[#1AA179] transition-transform duration-500 ease-in-out group-hover:translate-y-full lg:gap-[0.33em]"
+          Newspaper source icon
+          <div className="bg-white rounded-lg p-2 sm:p-3">
+            <Image
+              src="/images/newsroom/prothom-alo.png"
+              alt="Prothom Alo"
+              width={1920}
+              height={1080}
+              priority
+              quality={90}
+              className="w-[5rem] sm:w-[5rem] object-contain"
+            />
+          </div>
+
+          Spacer pushes social + button to the right
+          <div className="flex-1" />
+
+          Social share
+          <div className="flex items-center gap-2">
+            Facebook
+            <button
+              type="button"
+              aria-label="Share on Facebook"
+              className="flex h-[2rem] sm:h-[2.5rem] w-[2rem] sm:w-[2.5rem] cursor-pointer items-center justify-center rounded-full bg-[#1877F2] transition-all duration-300 ease-out hover:ring-2 hover:ring-[#1877F2] hover:ring-offset-2"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden
+              >
+                <path
+                  d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+                  fill="#fff"
+                />
+              </svg>
+            </button>
+
+            Instagram
+            <button
+              type="button"
+              aria-label="Share on Instagram"
+              className="flex h-[2rem] sm:h-[2.5rem] w-[2rem] sm:w-[2.5rem] cursor-pointer items-center justify-center rounded-full transition-all duration-300 ease-out hover:ring-2 hover:ring-[#E4405F] hover:ring-offset-2"
+              style={{ background: "linear-gradient(45deg, #FFD521 14.64%, #FFD020 18.53%, #FEC01E 23.41%, #FCA71B 28.79%, #FA8316 34.59%, #F85510 40.67%, #F51E09 46.89%, #F30005 50%, #F20007 50.21%, #E1003B 56.86%, #D30067 63.29%, #C70088 69.52%, #BF00A0 75.39%, #BB00AF 80.83%, #B900B4 85.36%)" }}
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden
+              >
+                <rect x="2" y="2" width="20" height="20" rx="5" stroke="#fff" strokeWidth="2" />
+                <circle cx="12" cy="12" r="5" stroke="#fff" strokeWidth="2" />
+                <circle cx="17.5" cy="6.5" r="1.5" fill="#fff" />
+              </svg>
+            </button>
+
+            LinkedIn
+            <button
+              type="button"
+              aria-label="Share on LinkedIn"
+              className="flex h-[2rem] sm:h-[2.5rem] w-[2rem] sm:w-[2.5rem] cursor-pointer items-center justify-center rounded-full bg-[#0A66C2] transition-all duration-300 ease-out hover:ring-2 hover:ring-[#0A66C2] hover:ring-offset-2"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden
+              >
+                <path
+                  d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"
+                  fill="#fff"
+                />
+                <rect x="2" y="9" width="4" height="12" fill="#fff" />
+                <circle cx="4" cy="4" r="2" fill="#fff" />
+              </svg>
+            </button>
+          </div>
+
+          <a
+            href="#"
+            className="group relative inline-flex w-fit items-center justify-center self-start overflow-hidden rounded-full border border-transparent px-6 py-3 text-sm font-medium leading-none lg:px-[2em] lg:py-[1em] lg:text-[1.17em]"
+            style={{
+              background:
+                "linear-gradient(var(--background)) padding-box, var(--primary-gradient) border-box",
+            }}
           >
+            <span className="invisible inline-flex items-center gap-1 whitespace-nowrap lg:gap-[0.33em]">
+              Read full article
+              <SquareArrowOutUpRight className="h-4 w-4" />
+            </span>
+
             <span
-              className="bg-clip-text text-transparent"
-              style={{ backgroundImage: "var(--primary-gradient)" }}
+              aria-hidden
+              className="absolute inset-0 flex items-center justify-center gap-1 whitespace-nowrap text-[#1AA179] transition-transform duration-500 ease-in-out group-hover:translate-y-full lg:gap-[0.33em]"
+            >
+              <span
+                className="bg-clip-text text-transparent"
+                style={{ backgroundImage: "var(--primary-gradient)" }}
+              >
+                Read full article
+              </span>
+              <SquareArrowOutUpRight className="h-4 w-4" />
+            </span>
+
+            <span
+              aria-hidden
+              className="absolute inset-0 flex -translate-y-full items-center justify-center gap-1 whitespace-nowrap text-white transition-transform duration-500 ease-in-out group-hover:translate-y-0 lg:gap-[0.33em]"
+              style={{ background: "var(--primary-gradient)" }}
             >
               Read full article
+              <SquareArrowOutUpRight className="h-4 w-4" />
             </span>
-            <SquareArrowOutUpRight className="h-4 w-4" />
-          </span>
-
-          {/* Hover: gradient fill + white text — slides in from the top */}
-          <span
-            aria-hidden
-            className="absolute inset-0 flex -translate-y-full items-center justify-center gap-1 whitespace-nowrap text-white transition-transform duration-500 ease-in-out group-hover:translate-y-0 lg:gap-[0.33em]"
-            style={{ background: "var(--primary-gradient)" }}
-          >
-            Read full article
-            <SquareArrowOutUpRight className="h-4 w-4" />
-          </span>
-        </a>
-      </div>
-      </RevealOnScroll>
+          </a>
+        </div>
+      </div> */}
 
       {/* ── Divider ───────────────────────────────────────────────── */}
       <hr className="my-[2.5rem] border-0 border-t border-neutral-200" />
 
       {/* ── Hero image ────────────────────────────────────────────── */}
       <div className="w-full">
-        <ImageReveal radius="1.25rem" className="relative aspect-[915/520] w-full bg-[#D9D9D9]">
+        <div className="relative aspect-[915/520] w-full bg-[#D9D9D9] rv-img overflow-hidden rounded-[1.25rem]">
           <Image
             src={article.image}
             alt={article.title}
@@ -222,11 +244,11 @@ export default async function PressReleaseDetailPage({
             className="pointer-events-none object-cover"
             quality={90}
           />
-        </ImageReveal>
+        </div>
       </div>
 
       {/* ── Article body ──────────────────────────────────────────── */}
-      <RevealOnScroll y={22}>
+      <div className="rv">
       <div className="flex flex-col gap-4 w-full tracking-wider pb-8 sm:pb-16 mt-6 sm:mt-8">
         {/* Paragraphs */}
         {article.body.map((p, i) => (
@@ -238,40 +260,37 @@ export default async function PressReleaseDetailPage({
           </p>
         ))}
 
+        {/* Structured sections — heading, paragraphs and list in article order */}
+        {article.sections?.map((section, i) => (
+          <div key={i} className="flex flex-col gap-3">
+            {section.heading && (
+              <p className="font-neue-montreal text-sm sm:text-[1.08rem] leading-[1.5rem] font-semibold text-neutral-900">
+                {section.heading}
+              </p>
+            )}
+            {section.paragraphs?.map((p, j) => (
+              <p
+                key={j}
+                className="font-neue-montreal text-sm sm:text-[1.08rem] text-neutral-800 font-medium text-justify text-left"
+              >
+                {p}
+              </p>
+            ))}
+            {section.bullets && <ArticleBullets items={section.bullets} />}
+          </div>
+        ))}
+
         {/* Bulleted sub-sections */}
         {article.bulletSections?.map((section) => (
           <div key={section.heading} className="flex flex-col gap-2">
             <p className="font-neue-montreal text-sm sm:text-[1.08rem] leading-[1.5rem] font-medium text-neutral-800">
               {section.heading}
             </p>
-            {section.items.map((item, i) => (
-              <div key={i} className="flex items-center gap-[0.6875rem]">
-                {/* Check icon */}
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                  fill="none"
-                  aria-hidden
-                  className="shrink-0"
-                >
-                  <path
-                    d="M11.667 3.5L5.25 9.917 2.333 7"
-                    stroke="#525252"
-                    strokeWidth="1.167"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <span className="font-neue-montreal text-sm sm:text-[1.08rem] leading-[1.5rem] text-neutral-600">
-                  {item}
-                </span>
-              </div>
-            ))}
+            <ArticleBullets items={section.items} />
           </div>
         ))}
       </div>
-      </RevealOnScroll>
+      </div>
     </main>
   );
 }

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import PageHeroFull from "@/components/common/PageHeroFull";
 import CertificateGallery from "@/components/certificates/CertificateGallery";
-import RevealOnScroll from "@/components/web-info/RevealOnScroll";
 import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 export const metadata: Metadata = {
@@ -26,11 +25,9 @@ export default function CertificatesPage() {
       />
 
       {/* ── Certificate grid ────────────────────────────────────────── */}
-      <RevealOnScroll>
       <section className="px-4 pt-10 pb-16 sm:px-6 md:px-12 lg:px-20 lg:pt-[6rem] lg:pb-[10rem]">
         <CertificateGallery />
       </section>
-      </RevealOnScroll>
     </main>
   );
 }

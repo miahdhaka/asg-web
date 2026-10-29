@@ -1,7 +1,4 @@
 import Image from "next/image";
-import SplitReveal from "@/components/web-info/SplitReveal";
-import ImageReveal from "@/components/web-info/ImageReveal";
-import RevealOnScroll from "@/components/web-info/RevealOnScroll";
 
 export default function VisionMission() {
   return (
@@ -19,28 +16,21 @@ export default function VisionMission() {
           {/* Text block */}
           <div className="flex flex-col gap-5 sm:gap-8 lg:w-[560px] shrink-0 z-10">
             <div className="flex items-center gap-2">
-              <SplitReveal
-                as="span"
-                className="font-archivo-black text-3xl sm:text-5xl lg:text-[3rem] leading-[1.1] text-[#262626] uppercase"
-                text="VISION"
-              />
-              <RevealOnScroll y={14} delay={0.1}>
+              <span className="font-archivo-black text-3xl sm:text-5xl lg:text-[3rem] leading-[1.1] text-[#262626] uppercase rv-split">VISION</span>
+              <div className="rv" data-delay="0.1">
                 <span className="block size-2 sm:size-2.5 rounded-full" style={{ background: "var(--primary-gradient)" }} />
-              </RevealOnScroll>
+              </div>
             </div>
-            <RevealOnScroll delay={0.3} y={24}>
+            <div className="rv" data-delay="0.1">
             <p className="font-neue-montreal text-base sm:text-2xl lg:text-[1.65rem] font-medium leading-6 sm:leading-9.5 text-[#262626]">
               Be the Benchmark and create sustainable value through Quality, System,
               Talent Empowerment, Innovation and Sustainability.
             </p>
-            </RevealOnScroll>
+            </div>
           </div>
 
           {/* Image */}
-          <ImageReveal
-            radius="1rem"
-            className="relative w-full lg:flex-1 lg:ml-auto lg:max-w-[920px] aspect-[697/465] rounded-2xl"
-          >
+          <div className="relative w-full lg:flex-1 lg:ml-auto lg:max-w-[920px] aspect-[697/465] rounded-2xl rv-img overflow-hidden">
             <Image
               src="/images/about-us/vision.webp"
               alt="ASG vision"
@@ -53,7 +43,7 @@ export default function VisionMission() {
               className="absolute inset-0"
               style={{ background: "linear-gradient(0deg, rgba(12, 12, 12, 0.8) 0%, rgba(0, 0, 0, 0) 59%)" }}
             />
-          </ImageReveal>
+          </div>
         </div>
       </section>
 
@@ -72,29 +62,22 @@ export default function VisionMission() {
           {/* Text block */}
           <div className="flex flex-col gap-5 sm:gap-8 lg:w-[560px] shrink-0 z-10">
             <div className="flex items-center gap-2">
-              <SplitReveal
-                as="span"
-                className="font-archivo-black text-3xl sm:text-5xl lg:text-[3rem] leading-[1.1] text-white uppercase"
-                text="OUR MISSION"
-              />
-              <RevealOnScroll y={14} delay={0.1}>
+              <span className="font-archivo-black text-3xl sm:text-5xl lg:text-[3rem] leading-[1.1] text-white uppercase rv-split">OUR MISSION</span>
+              <div className="rv" data-delay="0.1">
                 <span className="block size-2 sm:size-2.5 rounded-full" style={{ background: "var(--primary-gradient)" }} />
-              </RevealOnScroll>
+              </div>
             </div>
-            <RevealOnScroll delay={0.3} y={24}>
+            <div className="rv" data-delay="0.1">
             <p className="font-neue-montreal text-base sm:text-2xl lg:text-[1.65rem] font-medium leading-6 sm:leading-9.5 text-white">
               To deliver excellent products and after-sales services through smart
               solutions and lean operations, talent attraction, Collaboration,
               Continuous Improvement and while driving sustainable global growth.
             </p>
-            </RevealOnScroll>
+            </div>
           </div>
 
           {/* Image */}
-          <ImageReveal
-            radius="1rem"
-            className="relative w-full lg:flex-1 lg:ml-auto lg:max-w-[920px] aspect-[697/465] rounded-2xl"
-          >
+          <div className="relative w-full lg:flex-1 lg:ml-auto lg:max-w-[920px] aspect-[697/465] rounded-2xl rv-img overflow-hidden">
             <Image
               src="/images/about-us/mission.webp"
               alt="ASG mission"
@@ -107,8 +90,8 @@ export default function VisionMission() {
               className="absolute inset-0"
               style={{ background: "linear-gradient(0deg, rgba(12, 12, 12, 0.8) 0%, rgba(0, 0, 0, 0) 59%)" }}
             />
-          </ImageReveal>
-        </div>
+          </div>
+         </div>
       </section>
     </>
   );

@@ -10,7 +10,7 @@ export default function WeCommunity() {
       <div className="mx-auto w-full max-w-[80rem]">
         <hr className="border-0 border-t border-gray-200 pt-8 sm:pt-12 lg:pt-[5rem]" />
 
-        <div className="relative overflow-hidden rounded-3xl bg-white">
+        <div className="relative overflow-hidden rounded-3xl bg-white rv-img" data-rv-scope>
           {/* Image — 3:2 on mobile, wide banner on desktop */}
           <div className="relative aspect-[3/2] w-full sm:aspect-[2/1]">
             <Image
@@ -29,14 +29,14 @@ export default function WeCommunity() {
           {/* Caption — below the image on mobile (dark text), overlaid on desktop (white) */}
           <div className="flex flex-col gap-1.5 sm:gap-3 p-6 text-neutral-800 sm:p-14 lg:absolute lg:inset-x-0 lg:bottom-0 lg:flex-row lg:items-end lg:justify-between lg:text-white">
             <div className="flex flex-col gap-1.5 sm:gap-3">
-              <p className="text-sm font-medium text-neutral-200 tracking-wide lg:text-lg">
+              <p className="text-sm font-medium text-neutral-200 tracking-wide lg:text-lg rv">
                 {weCommunity.label}
               </p>
-              <h2 className="font-archivo-black text-white text-[1.125rem] leading-[1.4] sm:text-[2.625rem] sm:leading-[1.15] lg:text-[3rem] lg:leading-[3.25rem]">
+              <h2 className="font-archivo-black text-white text-[1.125rem] leading-[1.4] sm:text-[2.625rem] sm:leading-[1.15] lg:text-[3rem] lg:leading-[3.25rem] rv-split">
                 {weCommunity.title}
               </h2>
             </div>
-            <p className="max-w-[38rem] text-white font-neue-montreal text-sm leading-5.5 lg:text-lg lg:leading-8 mt-3 sm:mt-0">
+            <p className="max-w-[38rem] text-white font-neue-montreal text-sm leading-5.5 lg:text-lg lg:leading-8 mt-3 sm:mt-0 rv">
               {weCommunity.body}
             </p>
           </div>

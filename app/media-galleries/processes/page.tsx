@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import PageHero from "@/components/common/PageHero";
 import PhotoGalleryGrid from "@/components/media-galleries/PhotoGalleryGrid";
 import { processCards } from "@/components/media-galleries/mediaGalleriesData";
-import RevealOnScroll from "@/components/web-info/RevealOnScroll";
 import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 export const metadata: Metadata = {
@@ -28,12 +27,10 @@ export default function ProcessesGalleryPage() {
         alt="ASG Group processes gallery"
       />
 
-      {/* ── Photo grid ────────────────────────────────────────────── */}
-      <RevealOnScroll selector=".grid > div" stagger={0.08} y={26}>
+      {/* ── Photo grid — cards self-animate (rv-img / rv-split) ────── */}
       <section className="flex w-full flex-col px-4 py-6 sm:px-6 sm:py-8 lg:px-[5rem] lg:py-[5rem]">
         <PhotoGalleryGrid cards={processCards} />
       </section>
-      </RevealOnScroll>
     </main>
   );
 }

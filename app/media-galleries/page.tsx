@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/common/PageHero";
 import GallerySections from "@/components/media-galleries/GallerySections";
-import RevealOnScroll from "@/components/web-info/RevealOnScroll";
 import ScrollProgress from "@/components/web-info/ScrollProgress";
 
 export const metadata: Metadata = {
@@ -21,9 +20,8 @@ export default function MediaGalleriesPage() {
         desktopSrc="/images/media-galleries/hero-bg.png"
         alt="ASG Group media galleries"
       />
-      <RevealOnScroll>
-        <GallerySections />
-      </RevealOnScroll>
+      {/* Gallery sections animate themselves (rv classes inside) */}
+      <GallerySections />
     </main>
   );
 }
