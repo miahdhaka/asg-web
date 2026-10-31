@@ -20,7 +20,7 @@ export default function CsrPeopleFirst() {
         </div>
 
         {/* Text column — above the photo on mobile, right on desktop */}
-        <div className="order-1 flex w-full flex-col gap-3 lg:order-2 lg:max-w-[26rem] lg:shrink-0">
+        <div className="order-1 flex w-full flex-col gap-3 lg:order-2 lg:max-w-[30rem] lg:shrink-0">
           <h2 className="font-archivo-black text-[#262626] text-xl sm:text-[1.75rem] lg:text-[2.85rem] lg:leading-[3.125rem] max-w-[14rem] sm:max-w-full rv-split">
             {csrPeopleFirst.title}
           </h2>

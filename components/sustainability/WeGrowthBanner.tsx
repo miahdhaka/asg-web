@@ -21,7 +21,7 @@ export default function WeGrowthBanner() {
 
         {/* Text column — above the photo on mobile, right on desktop */}
         <div className="order-1 flex w-full flex-col gap-2 sm:gap-3 lg:order-2 lg:max-w-[27rem]">
-          <p className="text-sm font-medium text-neutral-200 tracking-wide lg:text-lg rv">
+          <p className="text-sm font-medium text-neutral-200 tracking-wide lg:text-base rv">
             {weGrowth.label}
           </p>
           <h2 className="font-archivo-black text-white text-[1.125rem] leading-[1.4] sm:text-[2.625rem] sm:leading-[1.15] lg:text-[3rem] lg:leading-[3.25rem] rv-split">

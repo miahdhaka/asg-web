@@ -1,9 +1,10 @@
 import { Building2 } from "lucide-react";
-import { headquarters } from "./contactData";
+import { headquarters, telHref, mailHref, contactLinkClass } from "./contactData";
 
 /* ------------------------------------------------------------------ */
 /*  Main component                                                     */
 /* ------------------------------------------------------------------ */
+
 export default function ContactInfo() {
   return (
     <div className="flex flex-col gap-6 sm:gap-8">
@@ -36,14 +37,25 @@ export default function ContactInfo() {
             {headquarters.location}
           </p>
 
-          {/* Phones */}
+          {/* Phones — each number is its own tel: link, so a click hands the
+              dialer exactly one number. The comma separator is aria-hidden so
+              a screen reader doesn't read it as part of the number. */}
           <p>
-            {headquarters.phones.join(', ')}
+            {headquarters.phones.map((phone, i) => (
+              <span key={phone}>
+                <a href={telHref(phone)} className={contactLinkClass}>
+                  {phone}
+                </a>
+                {i < headquarters.phones.length - 1 && <span aria-hidden>, </span>}
+              </span>
+            ))}
           </p>
 
           {/* Email */}
           <p>
-            {headquarters.email}
+            <a href={mailHref(headquarters.email)} className={contactLinkClass}>
+              {headquarters.email}
+            </a>
           </p>
         </div>
       </div>

@@ -118,7 +118,6 @@ export default function AboutUs() {
                 style={{ background: "var(--primary-gradient)" }}
               >
                 More about us
-                <ArrowRight className="h-4 w-4" />
               </span>
             </Link>
           </div>

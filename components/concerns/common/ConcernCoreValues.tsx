@@ -89,10 +89,10 @@ export default function ConcernCoreValues({
         </div>
 
         {/* Section heading */}
-        <div className="lg:w-[35.92em]">
-          <h2 className="font-archivo-black text-2xl text-neutral-800 sm:text-3xl lg:max-w-[10em] lg:text-[3em] lg:leading-[1.11] rv-split">{heading}</h2>
+        <div>
+          <h2 className="font-archivo-black text-2xl text-neutral-800 sm:text-3xl lg:max-w-[13em] lg:text-[2.8em] lg:leading-[1.11] rv-split">{heading}</h2>
           <div className="rv">
-            <p className="mt-1 sm:mt-3 text-sm text-neutral-800 lg:mt-[1.14em] lg:w-[27.79em] lg:text-[1.17em] lg:leading-[1.43]">
+            <p className="mt-1 sm:mt-3 text-sm text-neutral-800 lg:mt-[1.14em] lg:w-[30em] lg:text-[1.17em] lg:leading-[1.43] ">
               {description}
             </p>
           </div>

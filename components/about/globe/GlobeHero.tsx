@@ -4,7 +4,7 @@
 import { MapPin } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 
 import { HERO, TOUR, type CardIcon, type GlobeCard } from "./content";
 import { mulberry32 } from "./geo";
@@ -221,41 +221,70 @@ function OrderToast({ order, register }: { order: OrderEvent | null; register: R
   );
 }
 
-/* ───────────────────── hub label: the Bangladesh origin pin ───────────────────── */
+/* ───────────────────── hub labels: pins anchored to the globe ───────────────────── */
 
-function HubLabel({ hub, register }: { hub: { name: string; lat: number; lon: number }; register: Register }) {
+/**
+ * A small mono chip anchored to one lat/lon on the globe — the same box the
+ * stat cards use, but permanently lit instead of tied to a tour stop. The rig
+ * drives `data-facing` from the anchor, so the label fades out with its point
+ * as the earth turns it to the far side.
+ *
+ * lat/lon/dx/dy are passed as plain numbers rather than objects so the effect
+ * below doesn't re-register on every render.
+ */
+function PinLabel({
+  id,
+  lat,
+  lon,
+  dx,
+  dy,
+  icon,
+  lead,
+  text,
+  register,
+}: {
+  id: string;
+  lat: number;
+  lon: number;
+  /** pixel offset from the projected anchor, applied to the box's top-left */
+  dx: number;
+  dy: number;
+  icon: ReactNode;
+  lead: string;
+  text: string;
+  register: Register;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    // Push the pill to the right and above the hub point so the origin (where
-    // the arc ribbons depart) stays visible to the left of the box.
-    register("hub", { el, lat: hub.lat, lon: hub.lon, dx: 40, dy: -54 });
-    return () => register("hub", null);
-  }, [hub, register]);
+    register(id, { el, lat, lon, dx, dy });
+    return () => register(id, null);
+  }, [id, lat, lon, dx, dy, register]);
 
-  // Always active: the rig flips data-facing as Dhaka rotates in/out of view, so
-  // the badge fades in over the hub and hides on the far side — same as the cards.
   return (
     <div ref={ref} className="gcard" data-active="true" data-facing="0">
       <div className="gcard-inner">
         <div className="gcard-box items-start text-left">
-          <span className="mt-[1px] text-[#3ddc97]">
-            {/* Bangladesh flag drawn inline (green field + red disc offset to the
-                hoist). Flag emoji render as bare "BD" letters on Windows, so a real
-                shape is the reliable choice. */}
-            <svg width="15" height="10" viewBox="0 0 15 10" aria-hidden className="block overflow-hidden rounded-[1px]">
-              <rect width="15" height="10" fill="#006a4e" />
-              <circle cx="6" cy="5" r="3.6" fill="#f42a41" />
-            </svg>
-          </span>
+          <span className="mt-[1px] text-[#3ddc97]">{icon}</span>
           <p className="text-left">
-            <span className="block text-[#cfdad5]">Bangladesh</span>
-            <span className="block text-[#3ddc97]">Where every order begins</span>
+            <span className="block text-[#cfdad5]">{lead}</span>
+            <span className="block text-[#3ddc97]">{text}</span>
           </p>
         </div>
       </div>
     </div>
+  );
+}
+
+/** Bangladesh drawn inline (green field + red disc offset to the hoist). Flag
+ *  emoji render as bare "BD" letters on Windows, so a real shape is reliable. */
+function BdFlag() {
+  return (
+    <svg width="15" height="10" viewBox="0 0 15 10" aria-hidden className="block overflow-hidden rounded-[1px]">
+      <rect width="15" height="10" fill="#006a4e" />
+      <circle cx="6" cy="5" r="3.6" fill="#f42a41" />
+    </svg>
   );
 }
 
@@ -378,7 +407,33 @@ export default function GlobeHero() {
             />
           )),
         )}
-        <HubLabel hub={HERO.hub} register={register} />
+        {/* Both hub chips hang off Dhaka's anchor, so they fade out together
+            when Bangladesh turns to the far side. The export one goes to the
+            LEFT of the hub — a negative dx puts the box's left edge a full box
+            width plus a gap before the anchor, so it clears the origin point
+            and its departing arcs instead of sitting under the other chip. */}
+        <PinLabel
+          id="hub"
+          lat={HERO.hub.lat}
+          lon={HERO.hub.lon}
+          dx={40}
+          dy={-54}
+          icon={<BdFlag />}
+          lead="Bangladesh"
+          text="Where every order begins"
+          register={register}
+        />
+        <PinLabel
+          id="hub-export"
+          lat={HERO.hub.lat}
+          lon={HERO.hub.lon}
+          dx={-270}
+          dy={-40}
+          icon={<Icon name="rocket" />}
+          lead="ASG"
+          text="Direct Export 8 Countries"
+          register={register}
+        />
         <OrderToast order={order} register={register} />
       </div>
 

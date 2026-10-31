@@ -118,7 +118,14 @@ function bind(): MatchMediaInstance {
         );
       });
 
-    /* .rv-split headings — word-by-word rise out of masks. */
+    /* .rv-split headings — word-by-word rise out of masks.
+     * yPercent 118 + autoAlpha, not a bare 105% shift: the mask is only
+     * line-height tall (plus its 0.08em descender padding), so a 105% drop
+     * leaves the top slice of the caps inside the slit — visible as a faint
+     * sliver of the heading before the trigger fires. The opacity half is the
+     * real guarantee, because with tight leading the glyph ink overflows the
+     * line box and no percentage is reliably large enough. Mirrors SplitReveal,
+     * which already solved this the same way. */
     document
       .querySelectorAll<HTMLElement>(".rv-split:not([data-rv-bound])")
       .forEach((el) => {
@@ -126,10 +133,11 @@ function bind(): MatchMediaInstance {
         splitWords(el, true);
         gsap.fromTo(
           el.querySelectorAll<HTMLElement>("[data-rv-piece]"),
-          { yPercent: 105, rotation: 4 },
+          { yPercent: 118, rotation: 4, autoAlpha: 0 },
           {
             yPercent: 0,
             rotation: 0,
+            autoAlpha: 1,
             transformOrigin: "0 100%",
             duration: TOKENS.split.duration,
             ease: "power3.out",

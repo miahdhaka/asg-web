@@ -188,9 +188,11 @@ varying float vAge;
 varying float vSeed;
 varying float vSide;
 
-// Ribbon body colour. The primary field keeps the classic mint-white; a second
-// ArcField instance overrides these with a warmer hue for its own lanes.
+// Ribbon body colour. The primary field passes the same value to uTint and
+// uTint2 (single colour); a gradient field lerps between the two endpoints
+// per ribbon, so the family reads as one brand gradient spread across lanes.
 uniform vec3 uTint;
+uniform vec3 uTint2;
 uniform vec3 uHot;
 
 float hash12(vec2 p){
@@ -215,8 +217,11 @@ void main(){
   if (a < 0.01) discard;
 
   // Body ramp matches the original exactly (0.86,1.0,0.95 × 0.9 + hot × 2.4 for
-  // the primary field). uHot lets a saturated secondary field keep a coloured
-  // head instead of washing out to white under the same boost.
-  vec3 c = uTint * 0.9 + uHot * head * 2.4;
+  // the primary field). uHot lets a coloured field keep a glowing head instead
+  // of washing out to white under the same boost. The per-ribbon seed picks its
+  // point on the uTint → uTint2 ramp, so a gradient field spreads one ramp
+  // across the whole lane family instead of every ribbon sharing one flat hue.
+  vec3 body = mix(uTint, uTint2, vSeed);
+  vec3 c = body * 0.9 + uHot * head * 2.4;
   gl_FragColor = vec4(c, a);
 }`;
