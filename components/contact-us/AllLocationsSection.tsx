@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ExternalLink } from "lucide-react";
 import OfficeMap from "./OfficeMap";
-import { locationTabs, locationCards } from "./contactData";
+import { locationTabs, locationCards, telHref, mailHref, contactLinkClass } from "./contactData";
 
 export default function AllLocationsSection() {
   const [activeTab, setActiveTab] = useState(0);
@@ -76,13 +76,21 @@ export default function AllLocationsSection() {
           ))}
         </div>
 
-        {/* Cards list */}
+        {/* Cards list */} 
         <div className="order-2 flex flex-col gap-4 max-h-[420px] overflow-y-auto pr-1 lg:order-none lg:col-start-2 lg:row-start-2 py-0.5">
           {cards.map((card, i) => (
-            <button
+            <div
               key={card.title}
+              role="button"
+              tabIndex={0}
               onClick={() => setActiveCard(i)}
-              className={`text-left cursor-pointer rounded-xl border-[1.5px] p-4 sm:p-5 transition-all duration-300 ease-in-out lg:h-[202px] ${
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setActiveCard(i);
+                }
+              }}
+              className={`cursor-pointer rounded-xl border-[1.5px] p-4 sm:p-5 transition-all duration-300 ease-in-out lg:h-[202px] ${
                 i === activeCard
                   ? "border-gray-100 bg-[linear-gradient(150deg,rgba(139,195,74,0.08)_0%,rgba(26,161,121,0.08)_81%)]"
                   : "border-gray-100 bg-white hover:border-gray-300"
@@ -95,18 +103,40 @@ export default function AllLocationsSection() {
                 <p className="mt-1.5 text-[1.05rem] sm:text-[1.25rem] text-neutral-600 leading-relaxed whitespace-pre-line">
                   {card.address}
                 </p>
+                {/* Phones — one tel: link per number, so a click hands the dialer
+                    exactly one number. The card itself is clickable to select, so
+                    stopPropagation keeps dialing from also flipping the marker. */}
                 {card.phones.length > 0 && (
                   <p className="mt-0.5 text-[1.05rem] sm:text-[1.25rem] text-neutral-600">
-                    {card.phones.join(", ")}
+                    {card.phones.map((phone, pi) => (
+                      <span key={phone}>
+                        <a
+                          href={telHref(phone)}
+                          onClick={(e) => e.stopPropagation()}
+                          className={contactLinkClass}
+                        >
+                          {phone}
+                        </a>
+                        {pi < card.phones.length - 1 && (
+                          <span aria-hidden>, </span>
+                        )}
+                      </span>
+                    ))}
                   </p>
                 )}
                 {card.email && (
                   <p className="text-[1.05rem] sm:text-[1.25rem] text-neutral-500">
-                    {card.email}
+                    <a
+                      href={mailHref(card.email)}
+                      onClick={(e) => e.stopPropagation()}
+                      className={contactLinkClass}
+                    >
+                      {card.email}
+                    </a>
                   </p>
                 )}
               </div>
-            </button>
+            </div>
           ))}
         </div>
       </div>

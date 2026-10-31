@@ -40,7 +40,7 @@ export default function WeFeatureCard({ data, side, divider }: WeFeatureCardProp
             }`}
           >
             <div className="flex h-full flex-col justify-center gap-1.5 sm:gap-3">
-              <p className="text-sm font-medium text-[#262626] tracking-wide lg:text-lg rv">
+              <p className="text-sm font-medium text-[#262626] tracking-wide lg:text-base rv">
                 {data.label}
               </p>
               <h2 className="font-archivo-black text-[#262626] text-[1.125rem] leading-[1.3] sm:text-[2.375rem] sm:leading-[1.15] lg:text-[3rem] lg:leading-[3.25rem] max-w-none sm:max-w-[70%] rv-split">

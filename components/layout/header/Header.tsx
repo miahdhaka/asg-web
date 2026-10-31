@@ -116,6 +116,11 @@ export default function Header() {
      has room and the header never collapses mid-interaction. */
   const expanded = hovered || searchOpen || activeMenu !== null;
 
+  /* The dropdown panel only appears once the user has actually typed. Clicking
+     the search icon shows just the input bar; results / "No Results Found"
+     expand below it on first keystroke (and collapse again when cleared). */
+  const searchPanelOpen = searchOpen && searchText.trim().length > 0;
+
   /* Publish the collapsed header-row height as --header-height so other
      sections (search panel, page offsets) stay stable regardless of whether
      the mega menu is expanded. */
@@ -282,13 +287,13 @@ export default function Header() {
       const content = megaContentRef.current;
       if (!wrap || !content) return;
 
-      const open = activeMenu !== null || searchOpen;
+      const open = activeMenu !== null || searchPanelOpen;
       if (!open && !wasOpenRef.current) return; // first mount while closed
 
       // One pseudo-key for the panel content: the mega category's label, or
       // a fixed id for the search results — lets open/switch/close all be
       // measured the same way regardless of which mode drove the change.
-      const key = activeMenu?.label ?? (searchOpen ? "__search__" : null);
+      const key = activeMenu?.label ?? (searchPanelOpen ? "__search__" : null);
 
       const comingFromClosed = !wasOpenRef.current;
       const switching =
@@ -331,7 +336,7 @@ export default function Header() {
       }
       megaTlRef.current = tl;
     },
-    { dependencies: [activeMenu, searchOpen] }
+    { dependencies: [activeMenu, searchPanelOpen] }
   );
 
   /* Hover-out grace: wait briefly before collapsing so edge jitter doesn't
@@ -353,15 +358,15 @@ export default function Header() {
      global gsap kill on route change), the wrap would be stuck at a non-zero
      height. Force-collapse after the 500 ms animation window. */
   useEffect(() => {
-    if (activeMenu || searchOpen) return;
+    if (activeMenu || searchPanelOpen) return;
     const id = setTimeout(() => {
       const wrap = megaWrapRef.current;
-      if (wrap && !activeMenu && !searchOpen && wrap.getBoundingClientRect().height > 1) {
+      if (wrap && !activeMenu && !searchPanelOpen && wrap.getBoundingClientRect().height > 1) {
         gsap.set(wrap, { height: 0 });
       }
     }, 600);
     return () => clearTimeout(id);
-  }, [activeMenu, searchOpen]);
+  }, [activeMenu, searchPanelOpen]);
 
   return (
     <>
@@ -535,7 +540,7 @@ export default function Header() {
                   onNavigate={() => setActiveMenu(null)}
                 />
               )}
-              {searchOpen && !activeMenu && (
+              {searchPanelOpen && !activeMenu && (
                 <div className="flex min-h-[60vh] flex-col items-center justify-center px-6 pb-12 text-center">
                   <h2 className="font-archivo-black text-4xl tracking-tight text-[#1F1F1F] md:text-6xl">
                     No Results Found

@@ -275,3 +275,31 @@ export const locationCards: Record<LocationTab, OfficeCardData[]> = {
     },
   ],
 };
+
+/* ------------------------------------------------------------------ */
+/*  Contact link helpers                                               */
+/* ------------------------------------------------------------------ */
+
+/** tel: hrefs only accept a dial plan, so the display formatting (spaces,
+ *  parens, dashes) has to be stripped: keep '+' and digits, drop everything
+ *  else. "+(88) 02-223357949" -> "+8802223357949". */
+export function telHref(phone: string) {
+  return `tel:${phone.replace(/[^\d+]/g, "")}`;
+}
+
+export function mailHref(email: string) {
+  return `mailto:${email}`;
+}
+
+/** Shared class for every phone/email link on the page, so hover treatment
+ *  stays consistent across ContactInfo, OfficeCard and AllLocationsSection.
+ *  `.gradient-text-hover` (globals.css) paints the brand gradient through the
+ *  glyphs on hover; its own transition list covers color/text-fill/background,
+ *  so no Tailwind transition utility is needed here. The decoration colour is
+ *  pinned because background-clip:text makes the fill transparent, which would
+ *  otherwise leave the hover underline invisible too. It's declared without a
+ *  variant as well, because Tailwind only emits the CSS for a decoration colour
+ *  if that rule exists statically — a hover-only class on its own has nothing
+ *  to modify, since text-decoration-color inherits by default. */
+export const contactLinkClass =
+  "cursor-pointer underline-offset-2 decoration-[#1AA179] gradient-text-hover hover:underline hover:decoration-[#1AA179]";

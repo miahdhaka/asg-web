@@ -946,9 +946,9 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
       {/* Left side content — desktop column only (mobile uses the sheet below) */}
       <div ref={leftContentRef} className="absolute left-4 right-4 top-0 bottom-0 z-20 hidden items-start pt-24 lg:flex lg:left-[4%] lg:right-auto lg:max-w-[28rem] lg:items-center lg:pt-0 text-[var(--neutral-800)]">
         <div className="lg:h-[20rem]">
-          <div className="text-sm sm:text-base inline-flex items-center gap-1 sm:gap-1.5 font-space-mono font-medium text-[var(--neutral-800)] uppercase tracking-wider mb-2 sm:mb-5">
+          <div className="text-sm inline-flex items-center gap-2.5 sm:gap-1.5 font-space-mono font-medium uppercase tracking-wider mb-4.5">
             <span>OUR BUSINESS</span>
-            <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: "var(--primary-gradient)" }} />
+            <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: "var(--primary-gradient)" }} />
           </div>
           <h2 className="font-archivo-black uppercase text-3xl lg:text-[3rem] leading-[1.05]">
             {["AN ECOSYSTEM", "NOT A FACTORY"].map((line, i) => (
@@ -974,7 +974,7 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
 
       {/* Right side content — desktop column only (mobile uses the sheet below) */}
       <div ref={rightContentRef} className="absolute left-4 right-4 top-0 bottom-0 z-20 hidden items-end pb-6 lg:flex lg:left-auto lg:right-[4%] lg:w-[28rem] lg:items-center lg:pb-0 text-[var(--neutral-800)]">
-        <div className="w-full text-left">
+        <div className="w-full text-left lg:h-[20rem]">
           <div ref={rightSlideRef}>
             <img
               src={sisterConcerns[activeConcern]?.logo ?? ""}
@@ -985,13 +985,13 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
                   : "h-10 w-36 object-contain sm:h-14 sm:w-44 lg:h-[5rem] lg:w-56"
               }
             />
-            <p className="w-full font-neue-montreal text-xs sm:text-sm lg:text-[1.15rem] text-[var(--neutral-600)] mt-1 lg:w-[90%]">
+            <p className="w-full font-neue-montreal text-xs sm:text-sm lg:text-[1.15rem] text-[var(--neutral-600)] lg:w-[90%] mt-1.5">
               {sisterConcerns[activeConcern]?.concernDesc ?? ""}
             </p>
           </div>
           <a
             href={sisterConcerns[activeConcern]?.link ?? "#"}
-            className="group relative inline-flex w-fit items-center justify-center self-start overflow-hidden rounded-full border border-transparent px-5 py-2.5 text-xs font-medium leading-none lg:self-auto lg:px-[1.75em] lg:py-[0.9em] lg:text-[1.08em] mt-10"
+            className="group relative inline-flex w-fit items-center justify-center self-start overflow-hidden rounded-full border border-transparent px-5 py-2.5 text-xs font-medium leading-none lg:self-auto lg:px-[1.75em] lg:py-[0.9em] lg:text-[1.08em] mt-8"
             style={{
               background:
                 "linear-gradient(#F3F3F1, #F3F3F1) padding-box, linear-gradient(97.37deg, #8BC34A 1.29%, #1AA179 92.01%) border-box",

@@ -29,7 +29,7 @@ export default function WeCommunity() {
           {/* Caption — below the image on mobile (dark text), overlaid on desktop (white) */}
           <div className="flex flex-col gap-1.5 sm:gap-3 p-6 text-neutral-800 sm:p-14 lg:absolute lg:inset-x-0 lg:bottom-0 lg:flex-row lg:items-end lg:justify-between lg:text-white">
             <div className="flex flex-col gap-1.5 sm:gap-3">
-              <p className="text-sm font-medium text-neutral-200 tracking-wide lg:text-lg rv">
+              <p className="text-sm font-medium text-neutral-200 tracking-wide lg:text-base rv">
                 {weCommunity.label}
               </p>
               <h2 className="font-archivo-black text-white text-[1.125rem] leading-[1.4] sm:text-[2.625rem] sm:leading-[1.15] lg:text-[3rem] lg:leading-[3.25rem] rv-split">

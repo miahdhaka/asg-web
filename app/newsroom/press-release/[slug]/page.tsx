@@ -248,13 +248,19 @@ export default async function PressReleaseDetailPage({
       </div>
 
       {/* ── Article body ──────────────────────────────────────────── */}
-      <div className="rv">
+      {/* One .rv per block, matching TermsContent/PrivacyContent: a single
+          wrapper around the whole article reveals every paragraph at once,
+          which is the "all at once" behaviour we don't want here. Each block
+          carries its own trigger now, so content rises as it reaches the line
+          while you read down the page. data-delay keeps a light cascade
+          rhythm between the paragraphs that land together. */}
       <div className="flex flex-col gap-4 w-full tracking-wider pb-8 sm:pb-16 mt-6 sm:mt-8">
         {/* Paragraphs */}
         {article.body.map((p, i) => (
           <p
             key={i}
-            className="font-neue-montreal text-sm sm:text-[1.08rem] text-neutral-800 font-medium text-justify text-left"
+            data-delay={((i % 3) * 0.12).toFixed(2)}
+            className="rv font-neue-montreal text-sm sm:text-[1.08rem] text-neutral-800 font-medium text-justify text-left"
           >
             {p}
           </p>
@@ -262,7 +268,7 @@ export default async function PressReleaseDetailPage({
 
         {/* Structured sections — heading, paragraphs and list in article order */}
         {article.sections?.map((section, i) => (
-          <div key={i} className="flex flex-col gap-3">
+          <div key={i} className="rv flex flex-col gap-3">
             {section.heading && (
               <p className="font-neue-montreal text-sm sm:text-[1.08rem] leading-[1.5rem] font-semibold text-neutral-900">
                 {section.heading}
@@ -282,14 +288,13 @@ export default async function PressReleaseDetailPage({
 
         {/* Bulleted sub-sections */}
         {article.bulletSections?.map((section) => (
-          <div key={section.heading} className="flex flex-col gap-2">
+          <div key={section.heading} className="rv flex flex-col gap-2">
             <p className="font-neue-montreal text-sm sm:text-[1.08rem] leading-[1.5rem] font-medium text-neutral-800">
               {section.heading}
             </p>
             <ArticleBullets items={section.items} />
           </div>
         ))}
-      </div>
       </div>
     </main>
   );

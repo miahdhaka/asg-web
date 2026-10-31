@@ -91,9 +91,9 @@ export const ARC_DESTINATIONS: ArcDestination[] = [
   { region: "Asia", city: "Jakarta", lat: -6.21, lon: 106.85, w: 5 },
 ];
 
-/** Second-class lanes drawn by the separate indigo-tinted arc field — these are
- *  the lungi export routes, against which ARC_DESTINATIONS above carries the
- *  fabric routes. The primary list is left untouched; this one only adds. */
+/** Second-class lanes drawn by the separate brand-gradient-tinted arc field —
+ *  these are the lungi export routes, against which ARC_DESTINATIONS above
+ *  carries the fabric routes. The primary list is left untouched; this adds. */
 export const TRADE_DESTINATIONS: ArcDestination[] = [
   { region: "Asia", city: "New Delhi", lat: 28.61, lon: 77.21, w: 8 },
   { region: "Asia", city: "Dubai", lat: 25.2, lon: 55.27, w: 9 },

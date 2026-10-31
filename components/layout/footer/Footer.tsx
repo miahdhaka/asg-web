@@ -2,8 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { MapPin } from "lucide-react";
 import FooterWordmark from "./FooterWordmark";
-import RevealOnScroll from "@/components/web-info/RevealOnScroll";
-import SplitReveal from "@/components/web-info/SplitReveal";
 
 interface FooterLink {
   label: string;
@@ -90,15 +88,23 @@ export default function Footer() {
   return (
     <>
       <footer id="site-footer" className="relative z-10 w-full shrink-0 bg-[#1A1A1A] font-neue-montreal text-white">
-        <div className="grid min-h-[10.25rem] gap-8 sm:gap-10 border-b border-white/10 px-4 sm:px-6 pt-10 pb-8 sm:pb-10 md:px-12 lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:px-20">
-          {/* Title — word-by-word mask rise, one masked block per line so the
-              hard break survives (splitting reads textContent, which drops <br/>). */}
+        {/* data-rv-scope makes everything inside fire from ONE shared trigger,
+            so the heading, logo and social row land together instead of one by
+            one as each crosses the line. The data-delay values recreate the
+            cascade the old per-block `delay` props gave. */}
+        <div
+          className="grid min-h-[10.25rem] gap-8 sm:gap-10 border-b border-white/10 px-4 sm:px-6 pt-10 pb-8 sm:pb-10 md:px-12 lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:px-20"
+          data-rv-scope
+        >
+          {/* Title — word-by-word mask rise. Two rv-split lines inside the h2
+              rather than one, because the splitter reads textContent, which
+              drops a <br/> and would collapse both lines into one mask run. */}
           <h2 className="sm:max-w-[30rem] font-archivo-black text-[22px] leading-[1.08] uppercase sm:text-[2rem]">
-            <SplitReveal as="span" className="block" text="Manufacturing trust," />
-            <SplitReveal as="span" className="block" text="Over Generations." delay={0.12} />
+            <span className="rv-split block">Manufacturing trust,</span>
+            <span className="rv-split block" data-delay="0.12">Over Generations.</span>
           </h2>
 
-          <RevealOnScroll delay={0.3} className="order-first lg:order-none">
+          <div className="order-first rv lg:order-none" data-delay="0.15">
             <Image
               src="/logo/ASG-logo-mixed.png"
               alt="Amanat Shah Group"
@@ -107,15 +113,9 @@ export default function Footer() {
               className="h-auto w-[9rem] object-contain lg:w-[10.5rem]"
               quality={100}
             />
-          </RevealOnScroll>
+          </div>
 
-          {/* Label first, then the icons pop one after the other. */}
-          <RevealOnScroll
-            selector="p, a"
-            stagger={0.07}
-            delay={0.35}
-            className="flex flex-col gap-2 sm:gap-3 lg:justify-self-end lg:pr-1"
-          >
+          <div className="rv flex flex-col gap-2 sm:gap-3 lg:justify-self-end lg:pr-1" data-delay="0.2">
             <p className="text-[15px] sm:text-base text-white/90 tracking-wider">Follow us</p>
             <div className="flex items-center gap-4 sm:gap-6">
               {socials.map((social) => (
@@ -136,43 +136,37 @@ export default function Footer() {
                 </Link>
               ))}
             </div>
-          </RevealOnScroll>
+          </div>
         </div>
 
         <div className="grid min-h-[27rem] lg:grid-cols-[30.25%_1fr]">
-          {/* HQ block — its three lines cascade in instead of moving as one. */}
-          <RevealOnScroll
-            selector="[data-hq-line]"
-            stagger={0.12}
-            className="border-b border-white/10 px-4 sm:px-6 md:px-12 lg:border-r lg:border-b-0 lg:px-20 py-6 sm:py-12 lg:py-[4.25rem]"
-          >
-            <div data-hq-line className="flex items-center gap-4 sm:gap-5">
+          {/* HQ block */}
+          <div className="rv border-b border-white/10 px-4 sm:px-6 md:px-12 lg:border-r lg:border-b-0 lg:px-20 py-6 sm:py-12 lg:py-[4.25rem]">
+            <div className="flex items-center gap-4 sm:gap-5">
               <span className="flex size-11 shrink-0 items-center justify-center rounded bg-[#252525]">
                 <MapPin className="size-5" strokeWidth={1.8} />
               </span>
               <h3 className="text-base sm:text-lg font-medium uppercase">Corporate Headquarters  (HQ)</h3>
             </div>
 
-            <address data-hq-line className="mt-3 max-w-[22rem] text-sm sm:text-base md:text-lg leading-[1.6] text-white/80 not-italic tracking-wider">
+            <address className="mt-3 max-w-[22rem] text-sm sm:text-base md:text-lg leading-[1.6] text-white/80 not-italic tracking-wider">
               House-232, Lane-03, DOHS, Baridhara,
               <br />
               Dhaka-1206, Bangladesh.
             </address>
 
-            <div data-hq-line className="mt-4 space-y-1 text-sm sm:text-base md:text-lg leading-[1.55] text-white/80 not-italic tracking-wider">
+            <div className="mt-4 space-y-1 text-sm sm:text-base md:text-lg leading-[1.55] text-white/80 not-italic tracking-wider">
               <p>+(88)09643226699 , +(88)029578403</p>
               <a className="transition-colors hover:text-white" href="mailto:info@asg-bd.com">
                 info@asg-bd.com
               </a>
             </div>
-          </RevealOnScroll>
+          </div>
 
-          {/* Link columns — each column rises after the previous one. */}
-          <RevealOnScroll
-            selector="[data-footer-col]"
-            stagger={0.09}
-            className="grid grid-cols-2 gap-x-6 sm:gap-x-8 gap-y-10 px-4 sm:px-6 md:px-12 lg:grid-cols-[0.8fr_1.2fr_1.05fr_0.75fr] lg:px-20 py-6 sm:py-12 lg:py-[4.25rem]"
-          >
+          {/* Link columns — rv-items + [data-footer-col] makes each column rise
+              after the previous one (the runner's own stagger, no wrapper tween)
+              instead of the whole grid moving as one block. */}
+          <div className="rv-items grid grid-cols-2 gap-x-6 sm:gap-x-8 gap-y-10 px-4 sm:px-6 md:px-12 lg:grid-cols-[0.8fr_1.2fr_1.05fr_0.75fr] lg:px-20 py-6 sm:py-12 lg:py-[4.25rem]">
             {footerColumns.map((column) => (
               <div key={column.title} data-footer-col>
                 <h3 className="text-base sm:text-lg font-medium uppercase">
@@ -192,14 +186,10 @@ export default function Footer() {
                 </ul>
               </div>
             ))}
-          </RevealOnScroll>
+          </div>
         </div>
 
-        <RevealOnScroll
-          y={24}
-          duration={1}
-          className="mt-8 sm:mt-0 flex min-h-[3.25rem] flex-col gap-2 sm:gap-4 rounded-t-[1.5rem] bg-gradient-to-r from-[#343434] via-[#292929] to-[#1c1c1c] px-4 sm:px-6 py-4 text-sm tracking-wider md:px-12 lg:flex-row lg:items-center lg:justify-between lg:px-20"
-        >
+        <div className="mt-8 sm:mt-0 rv flex min-h-[3.25rem] flex-col gap-2 sm:gap-4 rounded-t-[1.5rem] bg-gradient-to-r from-[#343434] via-[#292929] to-[#1c1c1c] px-4 sm:px-6 py-4 text-sm tracking-wider md:px-12 lg:flex-row lg:items-center lg:justify-between lg:px-20">
           <p className="text-center sm:text-left">© 2026 ASG</p>
           <nav aria-label="Footer legal navigation" className="flex flex-wrap items-center gap-x-4 sm:gap-x-10 gap-y-2 text-xs uppercase">
             <Link 
@@ -221,7 +211,7 @@ export default function Footer() {
               Cookie Policy
             </Link>
           </nav>
-        </RevealOnScroll>
+        </div>
 
       </footer>
 

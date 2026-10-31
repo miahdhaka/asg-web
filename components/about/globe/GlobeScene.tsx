@@ -129,7 +129,7 @@ function World(props: GlobeSceneProps & { bus: React.MutableRefObject<Bus> }) {
       <Earth mask={mask} hover={props.hover} />
       <CityDots mask={mask} />
       <ArcField hub={props.hub} destinations={ARC_DESTINATIONS} tint={FABRIC_TINT} hot={FABRIC_HOT} />
-      <ArcField hub={props.hub} destinations={TRADE_DESTINATIONS} tint={LUNGI_TINT} hot={LUNGI_HOT} rateScale={0.6} />
+      <ArcField hub={props.hub} destinations={TRADE_DESTINATIONS} tint={LUNGI_TINT} tint2={LUNGI_TINT2} hot={LUNGI_HOT} rateScale={0.6} />
       <BangladeshHoverMap hub={props.hub} hover={props.hover} />
       <DestinationMarkers onOrder={props.onOrder} autoHold={autoHold} />
       <Orders bus={props.bus} onOrder={props.onOrder} autoHold={autoHold} />
@@ -265,27 +265,42 @@ function CityDots({ mask }: { mask: LandMask }) {
 const CAP = 240; // max simultaneous arcs
 const SEG = 72; // segments per arc ribbon
 
-// The two ribbons are two product lanes, so each colour is picked to read as
-// the goods themselves:
-//   FABRIC  → warm ivory, the undyed cotton/silk shade of a fabric roll.
-//   LUNGI   → deep indigo, the dye a lungi is actually coloured with.
-// Ivory and indigo sit far apart in both hue and brightness, so the lanes stay
-// distinguishable even where they cross over the hub.
+// Two ribbon families, two colour stories:
+//   FABRIC  → warm ivory, the undyed cotton/silk shade of a fabric roll. Single
+//             flat colour, so tint2 mirrors tint.
+//   LUNGI   → the brand gradient itself (--primary-gradient: #8BC34A → #1AA179).
+//             Each ribbon samples a different point along it via iTime.z, so the
+//             Gulf/South-East Asian lanes read as one green ramp instead of the
+//             flat indigo that was washing into the ivory arcs.
 const FABRIC_TINT = new THREE.Vector3(1.0, 0.92, 0.74);
 const FABRIC_HOT = new THREE.Vector3(1.0, 0.98, 0.9);
-const LUNGI_TINT = new THREE.Vector3(0.11, 0.24, 0.78);
-const LUNGI_HOT = new THREE.Vector3(0.28, 0.46, 1.0);
+// Deepened stops of the brand gradient (--primary-gradient is #8BC34A →
+// #1AA179). The Canvas runs flat + linear so the CSS sRGB numbers go in
+// unconverted; these sit roughly two Material lightness steps below them, which
+// also drops the lanes under the Bloom luminance threshold (0.85) and stops the
+// body from glowing itself pale the way the full-strength stops did.
+const LUNGI_TINT = new THREE.Vector3(0.36, 0.58, 0.18); // deepened #8BC34A
+const LUNGI_TINT2 = new THREE.Vector3(0.05, 0.42, 0.32); // deepened #1AA179
+// The head glow is deliberately low-magnitude. The shader multiplies it by 2.4,
+// so a near-full-strength hot value clips red and blue along with green and
+// turns the tip white — the exact "merges into the ivory lanes" failure the
+// full-brightness indigo had. Trimmed further here so the deepened ramp keeps
+// its depth at the brightest point of the ribbon.
+const LUNGI_HOT = new THREE.Vector3(0.22, 0.36, 0.13);
 
 function ArcField({
   hub,
   destinations,
   tint,
+  tint2,
   hot,
   rateScale = 1,
 }: {
   hub: { lat: number; lon: number };
   destinations: { lat: number; lon: number; w: number }[];
   tint: THREE.Vector3;
+  /** ramp far end; omit for a flat-colour field (falls back to `tint`) */
+  tint2?: THREE.Vector3;
   hot: THREE.Vector3;
   /** spawn-rate multiplier, so a smaller secondary list doesn't flood the sky */
   rateScale?: number;
@@ -333,6 +348,7 @@ function ArcField({
         uTime: { value: 0 },
         uWidth: { value: 0.0056 },
         uTint: { value: tint },
+        uTint2: { value: tint2 ?? tint },
         uHot: { value: hot },
       },
       transparent: true,
