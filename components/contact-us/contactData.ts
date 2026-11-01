@@ -233,7 +233,7 @@ export const locationCards: Record<LocationTab, OfficeCardData[]> = {
       title: "Amanat Shah Weaving Processing Ltd",
       image: OFFICE_IMG,
       address:
-        "Bhatpara, Maijdee Road 1603, Pachdona,\nNarshingdi, Bangladesh",
+        "136, Bilashdi, Pachdona,\nNarshingdi, Bangladesh",
       phones: ["+(88)01321118231"],
       email: "",
       coordinates: { lat: 23.92675, lng: 90.712528 },

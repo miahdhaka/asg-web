@@ -33,7 +33,7 @@ export default function ManagingDirectorMessagePage() {
         role="Managing Director"
         org="AMANAT SHAH GROUP"
         portrait={{
-          src: "/images/board-of-directors/managing-director.webp",
+          src: "/images/board-of-directors/director.png",
           width: 1956,
           height: 2200,
         }}

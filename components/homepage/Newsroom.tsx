@@ -226,7 +226,7 @@ export default function Newsroom() {
 
                 <div className="flex flex-col gap-2 sm:gap-1">
                   {/* Meta — date / category */}
-                  <div className="flex items-center gap-2 mt-1">
+                  {/* <div className="flex items-center gap-2 mt-1">
                     <span className="font-neue-montreal text-sm lg:text-base text-neutral-600">
                       {item.date}
                     </span>
@@ -237,7 +237,7 @@ export default function Newsroom() {
                     <span className="font-neue-montreal text-sm lg:text-base text-neutral-600">
                       {item.category}
                     </span>
-                  </div>
+                  </div> */}
 
                   {/* Title */}
                   <h3 className="max-w-full lg:max-w-[90%] font-archivo-black text-xl sm:text-2xl lg:text-3xl leading-6 sm:leading-8 text-neutral-800">

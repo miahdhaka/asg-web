@@ -36,7 +36,7 @@ export default function BoardOfDirectorsPage() {
         href="/board-of-directors/chairman"
         mobileBgImage="/images/board-of-directors/chairman-mobile-bg.png"
         image={{
-          src: "/images/board-of-directors/chairman sir 2026.png",
+          src: "/images/board-of-directors/chairman.png",
           width: 530,
           height: 530,
         }}
@@ -53,7 +53,7 @@ export default function BoardOfDirectorsPage() {
         bgImage="/images/board-of-directors/director-bg.png"
         mobileBgImage="/images/board-of-directors/director-mobile-bg.png"
         image={{
-          src: "/images/board-of-directors/director.webp",
+          src: "/images/board-of-directors/director.png",
           width: 530,
           height: 530,
         }}
