@@ -27,7 +27,7 @@ export default function RezawanKabirShihabPage() {
         role="Director"
         org="AMANAT SHAH GROUP"
         portrait={{
-          src: "/images/board-of-directors/rezawan-kabir-shihab.webp",
+          src: "/images/board-of-directors/rezawan-kabir-shihab.png",
           width: 7236,
           height: 9848,
         }}
