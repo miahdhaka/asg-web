@@ -17,6 +17,11 @@ type MatchMediaInstance = ReturnType<typeof gsap.matchMedia>;
  *
  *   .rv        block fade + rise (optional data-delay="0.25" for cascade
  *              rhythm between sibling blocks)
+ *   .rv-lift   large-imagery entrance, mirroring the homepage "Legacy of
+ *              Leadership" portrait tween: rises from below while settling out
+ *              of a slight zoom, power3.out, and reverses when scrolled back
+ *              up. The fade still finishes early so the figure is solid while
+ *              it keeps travelling. No blur; it turns muddy on tall images.
  *   .rv-items  children stagger in — marks [data-card] / [data-member-card]
  *              descendants when present, otherwise the `.grid > div` cells
  *   .rv-split  heading words rise out of masks (text becomes spans client-side;
@@ -40,6 +45,11 @@ type MatchMediaInstance = ReturnType<typeof gsap.matchMedia>;
 const TOKENS = {
   start: "top 78%",
   block: { y: 26, duration: 1.0 },
+  /* Numbers copied from LegacyOfLeadership's desktop portrait tween (y 80,
+   * scale 0.94 -> 1, 1.35s, power3.out, trigger "top 82%", reverses on
+   * scroll-up). Travel still exceeds the h-24 bottom mask in MessageSection,
+   * so the figure never shows below the card while rising in. */
+  lift: { y: 80, scale: 0.94, duration: 1.35, fade: 0.45, start: "top 82%" },
   items: { y: 26, duration: 1.0, stagger: 0.06 },
   split: { duration: 1.0, stagger: 0.045 },
   image: { clip: 1.5, zoom: 1.9 },
@@ -115,6 +125,45 @@ function bind(): MatchMediaInstance {
               : { delay: parseFloat(el.dataset.delay || "0") }),
             scrollTrigger: { trigger: triggerOf(el), start: TOKENS.start, once: true },
           }
+        );
+      });
+
+    /* .rv-lift — tall imagery (board portraits, full-bleed figures) rises from
+     * below while its zoom settles out, the same motion the homepage Legacy of
+     * Leadership portrait uses. Two tracks on one timeline so the fade does not
+     * have to wait for the travel: the figure is fully opaque after
+     * TOKENS.lift.fade while still moving for the full duration. Shares
+     * .rv's [data-rv-scope] grouping, but plays and reverses with the scroll
+     * instead of firing once. */
+    document
+      .querySelectorAll<HTMLElement>(".rv-lift:not([data-rv-bound])")
+      .forEach((el) => {
+        el.dataset.rvBound = "1";
+        const tl = gsap.timeline({
+          delay: parseFloat(el.dataset.delay || "0"),
+          scrollTrigger: {
+            trigger: triggerOf(el),
+            start: TOKENS.lift.start,
+            toggleActions: "play none none reverse",
+          },
+        });
+        tl.fromTo(
+          el,
+          { autoAlpha: 0 },
+          { autoAlpha: 1, duration: TOKENS.lift.fade, ease: "power1.out" },
+          0
+        );
+        tl.fromTo(
+          el,
+          { y: TOKENS.lift.y, scale: TOKENS.lift.scale },
+          {
+            y: 0,
+            scale: 1,
+            duration: TOKENS.lift.duration,
+            ease: "power3.out",
+            force3D: true,
+          },
+          0
         );
       });
 

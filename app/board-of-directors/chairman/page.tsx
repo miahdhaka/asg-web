@@ -37,9 +37,6 @@ export default function ChairmanMessagePage() {
           width: 7236,
           height: 9848,
         }}
-        /* Sized to fill the hero height at this portrait's aspect ratio, with
-           the left edge aligned to the other detail pages. Mirrored horizontally. */
-        portraitClassName="lg:w-[31.37em] lg:right-[20.13em]"
       />
       <MessageBody
         id="chairman-full-message"

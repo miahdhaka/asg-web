@@ -31,9 +31,6 @@ export default function RezawanKabirShihabPage() {
           width: 7236,
           height: 9848,
         }}
-        /* Sized to fill the hero height at this portrait's aspect ratio, with
-           the left edge aligned to the other detail pages */
-        portraitClassName="lg:w-[31.37em] lg:right-[26.13em]"
       />
       <MessageBody
         id="director-full-message"
@@ -45,7 +42,9 @@ export default function RezawanKabirShihabPage() {
           org: "AMANAT SHAH GROUP",
         }}
       />
-      <OtherBoardMembers members={otherMembersFor("rezawan-kabir-shihab")} />
+      <div className="sm:mb-6">
+        <OtherBoardMembers members={otherMembersFor("rezawan-kabir-shihab")} />
+      </div>
     </main>
   );
 }
