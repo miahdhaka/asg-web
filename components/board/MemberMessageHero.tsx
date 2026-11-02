@@ -6,10 +6,10 @@ export type MemberMessageHeroProps = {
   role: string;
   org: string;
   portrait: { src: string; width: number; height: number };
-  /** Desktop size/position for the portrait. Bottom-anchored and sized to fill
-      the hero height at the source image's aspect ratio, so it differs per
-      member: width = 42.7em x (w / h), right = 120em - 62.5em - width. */
-  portraitClassName: string;
+  /** Optional extra desktop classes for the portrait. Size and horizontal
+      position are uniform for every member and live on the <Image> below, so
+      this is only for the rare page that needs a one-off tweak. */
+  portraitClassName?: string;
 };
 
 /**
@@ -48,8 +48,7 @@ export default function MemberMessageHero({
           quality={90}
           className="hidden sm:block lg:absolute lg:left-[22.5em] lg:top-[18.75em] lg:h-[13.35em] lg:w-[13.35em]"
         />
-
-        {/* Portrait — shows first on mobile, bottom-aligned on desktop */}
+        
         <Image
           src={portrait.src}
           alt={`${name} — ${role}`}
@@ -57,14 +56,14 @@ export default function MemberMessageHero({
           height={portrait.height}
           priority
           quality={90}
-          className={`rv-rise mx-auto w-[75%] sm:w-48 sm:mt-8 sm:w-72 lg:absolute lg:bottom-0 lg:mx-0 lg:mt-0 h-auto z-20 ${portraitClassName}`}
+          className={`rv-rise mx-auto w-[92%] sm:w-48 sm:mt-8 sm:w-88 lg:absolute lg:bottom-0 lg:right-[13.72em] lg:mx-0 lg:mt-0 h-auto lg:h-[38em] lg:w-[44em] lg:object-cover lg:object-bottom z-20 ${portraitClassName ?? ""}`}
         />
 
         {/* Name / role / divider / group — shows after portrait on mobile */}
-        <div className="mt-4 sm:mt-6 lg:absolute lg:bottom-[3em] lg:left-[22.5em] lg:mt-0 lg:w-[51.25em]" data-rv-scope>
-          <h1 className="font-archivo-black font-medium text-[1.65rem] sm:text-4xl lg:text-[3em] lg:leading-[1.11] text-neutral-800 rv-split">{name}</h1>
+        <div className="mt-2.5 sm:mt-6 lg:absolute lg:bottom-[3em] lg:left-[22.5em] lg:mt-0 lg:w-[51.25em]" data-rv-scope>
+          <h1 className="font-archivo-black font-medium text-[1.5rem] sm:text-4xl lg:text-[3em] lg:leading-[1.11] text-neutral-800 rv-split">{name}</h1>
           <div className="rv">
-            <p className="mt-[0.33em] tracking-wider text-[1.125rem] sm:text-[1.33em] lg:leading-[1.5] text-neutral-800">
+            <p className="mt-[0.33em] tracking-wider text-base sm:text-[1.33em] lg:leading-[1.5] text-neutral-800">
               {role}
             </p>
             <div

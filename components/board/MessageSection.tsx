@@ -60,8 +60,8 @@ export default function MessageSection({
     >
       <div className="flex flex-1 flex-col px-4 sm:px-6 pb-4 md:px-12 lg:px-20">
         <div
-          className={`relative pt-[22.5rem] md:pt-[27.5rem] lg:h-[36rem] lg:min-h-0 ${
-            reduceTopGap ? "mt-10 md:mt-12 lg:mt-[8.5rem]" : "mt-10 lg:mt-[7.125rem]"
+          className={`relative pt-[23rem] md:pt-[32rem] lg:h-[33rem] lg:min-h-0 ${
+            reduceTopGap ? "mt-24 lg:mt-[10rem]" : "mt-10 lg:mt-[6rem]"
           }`}
           data-rv-scope
         >
@@ -96,14 +96,27 @@ export default function MessageSection({
             )}
           </div>
 
-          {/* Portrait — same positioning as the legacy section. No hover. */}
-          <div className="absolute -top-16 left-1/2 z-20 h-[26.5rem] w-[86%] max-w-[30rem] -translate-x-1/2 md:-top-20 md:h-[32.5rem] lg:top-auto lg:bottom-0 lg:left-[25.87%] lg:h-[44rem] lg:w-[38%] lg:max-w-[31rem] lg:translate-x-0">
+          {/* Portrait — same positioning as the legacy section. No hover.
+              The img itself carries `.rv-lift` (slow rise from below): the
+              wrapper owns the mobile `-translate-x-1/2`, and GSAP writes an
+              inline transform, so animating the wrapper would knock the
+              portrait out of its horizontal centering.
+              Below lg the picture is drawn with `object-cover`: these PNGs are
+              landscape canvases with wide transparent margins, so `contain`
+              spent most of the box on empty space and the member looked small.
+              Cover crops the margins and scales the figure off the box height.
+              The `-top` offset and the container's `pt` stay in step (box
+              bottom = -top + h = 23rem), so the copy still starts exactly
+              where the figure ends: shrinking the figure only pulls the head
+              back down, it never moves the text. */}
+          <div className="absolute -top-[4.2rem] left-1/2 z-20 h-[27.2rem] w-[103%] max-w-[58rem] -translate-x-1/2 md:-top-[26rem] md:h-[58rem] md:w-[92%] lg:top-auto lg:bottom-0 lg:left-[17%] lg:h-[52rem] lg:w-[54%] lg:max-w-[52rem] lg:translate-x-0">
             <Image
               src={image.src}
               alt={`${name}, ${role} of Amanat Shah Group`}
               fill
-              sizes="(min-width: 1024px) 38vw, (min-width: 768px) 32rem, 86vw"
-              className="origin-bottom object-contain object-bottom transition-none"
+              sizes="(min-width: 1024px) 52rem, (min-width: 768px) 58rem, 103vw"
+              className="rv-lift origin-bottom object-contain object-bottom max-lg:object-cover transition-none"
+              data-delay="0.15"
               quality={90}
             />
           </div>
@@ -115,10 +128,10 @@ export default function MessageSection({
           />
 
           {/* Name / role / divider / org label — left */}
-          <div className={`relative z-30 border-t border-current/20 px-0 sm:px-6 pt-8 md:px-10 lg:absolute lg:inset-x-auto lg:top-1/2 lg:left-[5rem] lg:border-t-0 lg:px-0 lg:pt-0 lg:-translate-y-1/2 lg:w-[18.375rem] ${textClass}`}>
-            <h3 className="font-archivo-black text-3xl leading-[1.08] uppercase lg:text-[2rem] rv-split">{name}</h3>
+          <div className={`relative z-30 border-t border-current/20 px-0 sm:px-6 pt-6 md:px-10 lg:absolute lg:inset-x-auto lg:top-1/2 lg:left-[5rem] lg:border-t-0 lg:px-0 lg:pt-0 lg:-translate-y-1/2 lg:w-[18.375rem] ${textClass}`}>
+            <h3 className="font-archivo-black text-2xl sm:text-3xl leading-[1.08] uppercase lg:text-[2rem] rv-split">{name}</h3>
             <div className="rv">
-              <p className="mt-4 sm:mt-6 leading-6 text-[1.25rem]">{role}</p>
+              <p className="mt-2 sm:mt-4 sm:mt-6 leading-6 text-lg sm:text-[1.25rem]">{role}</p>
               <p className="mt-4 block sm:hidden font-archivo-black text-base leading-5 uppercase lg:text-[1.1rem] mb-5">
                 {orgLabel}
               </p>
@@ -132,7 +145,7 @@ export default function MessageSection({
           {/* Bio + CTA — right, left-aligned */}
           <div className={`relative z-30 mt-5 sm:mt-8 flex flex-col gap-8 px-0 sm:px-6 text-left md:px-10 lg:absolute lg:inset-x-auto lg:right-[5rem] lg:top-1/2 lg:bottom-auto lg:mt-0 lg:px-0 lg:w-[36rem] lg:-translate-y-1/2 lg:gap-[2.5rem] pb-[2rem] sm:pb-0 ${textClass}`}>
             <div className="rv">
-              <p className="text-lg sm:text-xl leading-7 lg:text-[1.7rem] lg:leading-9">
+              <p className="text-base sm:text-xl leading-6 lg:text-[1.7rem] lg:leading-9 tracking-wider">
                 {bio}
               </p>
             </div>

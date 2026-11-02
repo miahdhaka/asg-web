@@ -11,9 +11,6 @@ export const metadata: Metadata = {
     "Akm Azad, Entrepreneur on the Board of Amanat Shah Group.",
 };
 
-/* PLACEHOLDER COPY — the Figma file has no detail page for the entrepreneurs,
-   only their name and role on the carousel cards. Replace both paragraphs with
-   the member's approved biography before this page goes live. */
 const messageParagraphs = [
   "Mr. Akm Azad serves on the Board of Amanat Shah Group as an Entrepreneur.",
   "A full profile is being prepared and will be published here shortly.",
@@ -33,9 +30,6 @@ export default function AkmAzadPage() {
           width: 7236,
           height: 9848,
         }}
-        /* Sized to fill the hero height at this portrait's aspect ratio, with
-           the left edge aligned to the other detail pages */
-        portraitClassName="lg:w-[31.37em] lg:right-[26.13em]"
       />
       <MessageBody
         id="akm-azad-full-message"
@@ -47,7 +41,9 @@ export default function AkmAzadPage() {
           org: "AMANAT SHAH GROUP",
         }}
       />
-      <OtherBoardMembers members={otherMembersFor("akm-azad")} />
+      <div className="sm:mb-6">
+        <OtherBoardMembers members={otherMembersFor("akm-azad")} />
+      </div>
     </main>
   );
 }

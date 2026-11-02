@@ -41,6 +41,7 @@ export default function BoardOfDirectorsPage() {
           height: 530,
         }}
       />
+
       <MessageSection
         id="managing-director-message"
         name="Rezaul Karim"

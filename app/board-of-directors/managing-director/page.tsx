@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import MemberMessageHero from "@/components/board/MemberMessageHero";
 import MessageBody from "@/components/board/MessageBody";
@@ -34,12 +35,10 @@ export default function ManagingDirectorMessagePage() {
         org="AMANAT SHAH GROUP"
         portrait={{
           src: "/images/board-of-directors/director.png",
-          width: 1956,
-          height: 2200,
+          width: 7236,
+          height: 9848,
         }}
-        /* Sized to fill the hero height at this portrait's aspect ratio, with
-           the left edge aligned to the other detail pages */
-        portraitClassName="lg:w-[37.96em] lg:right-[19.54em]"
+        
       />
       <MessageBody
         id="managing-director-full-message"
@@ -52,7 +51,9 @@ export default function ManagingDirectorMessagePage() {
           org: "AMANAT SHAH GROUP",
         }}
       />
-      <OtherBoardMembers members={otherMembersFor("managing-director")} />
+      <div className="sm:mb-6">
+        <OtherBoardMembers members={otherMembersFor("managing-director")} />
+      </div>
     </main>
   );
 }

@@ -121,9 +121,9 @@ export default function OtherBoardMembers({
   if (layout === "grid") {
     const renderCard = (member: CarouselMember, key: string, slider: boolean) => {
       const cardContent = (
-        <div className="relative w-full aspect-[429/582]">
+        <div className="relative w-full aspect-[429/510]">
           <div className="absolute inset-x-0 top-0 z-10 flex flex-col items-center text-center px-4 pt-6 sm:pt-10 lg:pt-[5em]">
-            <h3 className="whitespace-pre-line font-archivo-black font-medium text-[1.2em] lg:text-[2em] text-neutral-800 leading-tight">
+            <h3 className="whitespace-pre-line font-archivo-black font-medium text-[1.1em] lg:text-[2em] text-neutral-800 leading-tight">
               {member.name}
             </h3>
             <p className="mt-0.5 sm:mt-1 text-[15px] lg:text-[1.2em] text-neutral-600 font-medium tracking-wider">
@@ -216,7 +216,7 @@ export default function OtherBoardMembers({
                 /* Fixed card ratio so the source image's dimensions never drive
                    the layout — otherwise a shorter portrait leaves dead space
                    below it once the flex row stretches every card to match */
-                <div className="relative w-full aspect-[429/582]">
+                <div className="relative w-full aspect-[429/510]">
                   <div className="absolute inset-x-0 top-0 z-10 flex flex-col items-center text-center px-4 pt-6 sm:pt-10 lg:pt-[5em]">
                     <h3 className="whitespace-pre-line font-archivo-black font-medium text-[1.2em] lg:text-[2em] text-neutral-800 leading-tight">
                       {member.name}
