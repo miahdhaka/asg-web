@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { MapPin } from "lucide-react";
 import FooterWordmark from "./FooterWordmark";
+import { telHref, mailHref, contactLinkClass } from "@/components/contact-us/contactData";
 
 interface FooterLink {
   label: string;
@@ -12,6 +13,11 @@ interface FooterColumn {
   title: string;
   links: FooterLink[];
 }
+
+/* HQ contact methods — same helpers the Contact Us page uses, so a phone opens
+   the dialer with exactly one number and the email opens the mail client. */
+const hqPhones = ["+(88)09643226699"];
+const hqEmail = "info@asg-bd.com";
 
 const footerColumns: FooterColumn[] = [
   {
@@ -88,31 +94,30 @@ export default function Footer() {
   return (
     <>
       <footer id="site-footer" className="relative z-10 w-full shrink-0 bg-[#1A1A1A] font-neue-montreal text-white">
-        {/* data-rv-scope makes everything inside fire from ONE shared trigger,
-            so the heading, logo and social row land together instead of one by
-            one as each crosses the line. The data-delay values recreate the
-            cascade the old per-block `delay` props gave. */}
         <div
           className="grid min-h-[10.25rem] gap-8 sm:gap-10 border-b border-white/10 px-4 sm:px-6 pt-10 pb-8 sm:pb-10 md:px-12 lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:px-20"
           data-rv-scope
         >
-          {/* Title — word-by-word mask rise. Two rv-split lines inside the h2
-              rather than one, because the splitter reads textContent, which
-              drops a <br/> and would collapse both lines into one mask run. */}
           <h2 className="sm:max-w-[30rem] font-archivo-black text-[22px] leading-[1.08] uppercase sm:text-[2rem]">
             <span className="rv-split block">Manufacturing trust,</span>
             <span className="rv-split block" data-delay="0.12">Over Generations.</span>
           </h2>
 
           <div className="order-first rv lg:order-none" data-delay="0.15">
-            <Image
-              src="/logo/ASG-logo-mixed.png"
-              alt="Amanat Shah Group"
-              width={320}
-              height={160}
-              className="h-auto w-[9rem] object-contain lg:w-[10.5rem]"
-              quality={100}
-            />
+            <Link
+              href="/"
+              aria-label="ASG Home"
+              className="inline-block origin-center transition-transform duration-300 ease-out hover:scale-[1.04]"
+            >
+              <Image
+                src="/logo/ASG-logo-mixed.png"
+                alt="Amanat Shah Group"
+                width={320}
+                height={160}
+                className="h-auto w-[9rem] object-contain lg:w-[10.5rem]"
+                quality={100}
+              />
+            </Link>
           </div>
 
           <div className="rv flex flex-col gap-2 sm:gap-3 lg:justify-self-end lg:pr-1" data-delay="0.2">
@@ -156,16 +161,24 @@ export default function Footer() {
             </address>
 
             <div className="mt-4 space-y-1 text-sm sm:text-base md:text-lg leading-[1.55] text-white/80 not-italic tracking-wider">
-              <p>+(88)09643226699 , +(88)029578403</p>
-              <a className="transition-colors hover:text-white" href="mailto:info@asg-bd.com">
-                info@asg-bd.com
-              </a>
+              <p>
+                {hqPhones.map((phone, i) => (
+                  <span key={phone}>
+                    <a href={telHref(phone)} className={contactLinkClass}>
+                      {phone}
+                    </a>
+                    {i < hqPhones.length - 1 && <span aria-hidden>{" , "}</span>}
+                  </span>
+                ))}
+              </p>
+              <p>
+                <a href={mailHref(hqEmail)} className={contactLinkClass}>
+                  {hqEmail}
+                </a>
+              </p>
             </div>
           </div>
 
-          {/* Link columns — rv-items + [data-footer-col] makes each column rise
-              after the previous one (the runner's own stagger, no wrapper tween)
-              instead of the whole grid moving as one block. */}
           <div className="rv-items grid grid-cols-2 gap-x-6 sm:gap-x-8 gap-y-10 px-4 sm:px-6 md:px-12 lg:grid-cols-[0.8fr_1.2fr_1.05fr_0.75fr] lg:px-20 py-6 sm:py-12 lg:py-[4.25rem]">
             {footerColumns.map((column) => (
               <div key={column.title} data-footer-col>
@@ -217,13 +230,13 @@ export default function Footer() {
 
       {/* Scroll room — extends the document past the footer so the last
           stretch of scrolling lifts the footer off the fixed band below. */}
-      <div aria-hidden className="h-[13rem] w-full shrink-0 lg:h-[15rem]" />
+      <div aria-hidden className="h-[8rem] sm:h-[13rem] w-full shrink-0 lg:h-[15rem]" />
 
       {/* Group wordmark band — pinned to the bottom of the viewport BEHIND
           all page content (-z-10). It never moves: the footer's opaque
           background covers it until the user scrolls to the very end,
           where the footer slides up and uncovers it. No animation. */}
-      <div className="pointer-events-none fixed inset-x-0 bottom-0 -z-10 flex h-[13rem] items-center justify-center overflow-hidden px-6 text-center lg:h-[15rem]">
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 -z-10 flex h-[8rem] sm:h-[13rem] items-center justify-center overflow-hidden px-6 text-center lg:h-[15rem]">
         <span
           aria-hidden
           className="absolute inset-0"

@@ -83,7 +83,7 @@ export default function LegacyOfLeadership() {
     <section
       ref={sectionRef}
       id="legacy-of-leadership"
-      className="relative flex w-full flex-col overflow-hidden bg-[#F3F3F1] py-16 sm:py-20 lg:min-h-[103vh]"
+      className="relative flex w-full flex-col overflow-hidden bg-[#F3F3F1] py-14 sm:py-22 lg:min-h-[103vh]"
     >
       <div className="flex flex-1 flex-col px-4 pb-0 md:pb-4 md:px-12 lg:px-20">
         <div className="flex flex-col">
@@ -94,12 +94,12 @@ export default function LegacyOfLeadership() {
             </span>
           </span> */}
 
-          <div className="text-sm inline-flex items-center gap-2.5 sm:gap-1.5 font-space-mono font-medium uppercase tracking-wider mb-4.5">
+          <div className="text-sm inline-flex items-center gap-2.5 sm:gap-1.5 font-space-mono font-medium uppercase tracking-wider mb-2.5 sm:mb-4.5">
             <span>Leadership</span>
             <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: "var(--primary-gradient)" }} />
           </div>
 
-          <h2 className="font-archivo-black uppercase text-[1.75rem] sm:text-4xl lg:text-[3rem] leading-[1.2] text-[var(--neutral-800)] word-space-4">
+          <h2 className="font-archivo-black uppercase text-[var(--neutral-800)] text-[1.8rem] sm:text-4xl lg:text-[3rem] leading-[1.2]">
             Legacy of
             <br />
             Leadership

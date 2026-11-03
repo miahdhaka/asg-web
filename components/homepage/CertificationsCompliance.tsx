@@ -150,19 +150,19 @@ export default function CertificationsCompliance() {
   return (
     <section
       id="certifications-compliance"
-      className="base-gradient relative w-full overflow-hidden pt-0 pb-16 lg:pt-22 lg:pb-22"
+      className="base-gradient relative w-full overflow-hidden pt-0 pb-14 lg:pt-22 lg:pb-22"
     >
       {/* Header — eyebrow + heading with the "View all" link top-right on
           wide screens; stacked (button below the heading) on mobile so the
           long single-word title never forces the pill to overflow/clip. */}
-      <div className="flex flex-col gap-4 px-4 sm:flex-row sm:items-start sm:justify-between sm:gap-4 sm:px-6 md:px-12 lg:px-20">
+      <div className="flex flex-col px-4 sm:flex-row sm:items-start sm:justify-between gap-5 sm:gap-6 sm:px-6 md:px-12 lg:px-20">
         <div className="flex flex-col lg:max-w-[55%]">
-          <div className="text-sm inline-flex items-center gap-2.5 sm:gap-1.5 font-space-mono font-medium uppercase tracking-wider mb-4.5">
+          <div className="text-sm inline-flex items-center gap-2.5 sm:gap-1.5 font-space-mono font-medium uppercase tracking-wider mb-2.5 sm:mb-4.5">
             <span>Our Certificate</span>
             <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: "var(--primary-gradient)" }} />
           </div>
 
-          <h2 className="font-archivo-black uppercase text-[1.75rem] sm:text-4xl lg:text-[3rem] leading-[1.2] text-[var(--neutral-800)] word-space-4">
+          <h2 className="font-archivo-black uppercase text-[var(--neutral-800)] text-[1.8rem] sm:text-4xl lg:text-[3rem] leading-[1.2]">
             Certifications
             <br />
             and Compliance
@@ -175,7 +175,7 @@ export default function CertificationsCompliance() {
         <Link
           href="/all-certificates"
           aria-label="View All Certificates"
-          className="group relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-transparent self-start px-3.5 py-3.5 text-[0.75rem] font-medium leading-none sm:mt-1 sm:px-[1.4rem] sm:py-3 sm:text-[0.95rem] lg:py-4 lg:text-[1.05rem]"
+          className="group relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-transparent self-start sm:self-end font-medium leading-none text-sm lg:text-[1.1em] px-4 sm:px-6 lg:px-[1.2em] py-3.5 lg:py-[0.8em] "
           style={{
             background:
               'linear-gradient(#F3F3F1, #F3F3F1) padding-box, linear-gradient(97.37deg, #8BC34A 1.29%, #1AA179 92.01%) border-box',
@@ -186,11 +186,6 @@ export default function CertificationsCompliance() {
             View All Certificates
           </span>
 
-          {/* Default: gradient text — slides down and out on hover.
-              Animated via `top` (not translate/transform): transform-animated
-              children get composited into their own layer, which makes
-              Chrome's rounded overflow clip degrade to a rectangle and the
-              panels visibly poke outside the pill mid-slide. */}
           <span
             aria-hidden
             className="absolute inset-x-0 top-0 flex h-full items-center justify-center whitespace-nowrap transition-[top] duration-500 ease-in-out group-hover:top-full"
@@ -216,7 +211,7 @@ export default function CertificationsCompliance() {
 
       {/* Full-bleed, very slow auto-scrolling logo strip */}
       <div
-        className="relative mt-4 sm:mt-12 py-5 lg:mt-16 lg:py-7"
+        className="relative mt-5 sm:mt-12 py-5 lg:mt-16 lg:py-7"
         onMouseEnter={() => {
           isHoveredRef.current = true;
         }}

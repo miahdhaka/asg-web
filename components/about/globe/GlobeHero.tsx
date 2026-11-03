@@ -223,15 +223,6 @@ function OrderToast({ order, register }: { order: OrderEvent | null; register: R
 
 /* ───────────────────── hub labels: pins anchored to the globe ───────────────────── */
 
-/**
- * A small mono chip anchored to one lat/lon on the globe — the same box the
- * stat cards use, but permanently lit instead of tied to a tour stop. The rig
- * drives `data-facing` from the anchor, so the label fades out with its point
- * as the earth turns it to the far side.
- *
- * lat/lon/dx/dy are passed as plain numbers rather than objects so the effect
- * below doesn't re-register on every render.
- */
 function PinLabel({
   id,
   lat,
@@ -277,8 +268,6 @@ function PinLabel({
   );
 }
 
-/** Bangladesh drawn inline (green field + red disc offset to the hoist). Flag
- *  emoji render as bare "BD" letters on Windows, so a real shape is reliable. */
 function BdFlag() {
   return (
     <svg width="15" height="10" viewBox="0 0 15 10" aria-hidden className="block overflow-hidden rounded-[1px]">
@@ -335,17 +324,12 @@ export default function GlobeHero() {
   return (
     <section
       ref={sectionRef}
-      /* Mobile gets ~15% more height so the globe, which is framed low (cy 0.68
-         of the section height), drops clear of the top-anchored description copy.
-         Desktop keeps the plain full-viewport box. */
       className="relative isolate min-h-[100svh] max-md:min-h-[105svh] w-full overflow-hidden bg-[#04130f] text-white"
       aria-label="ASG Corporate — global reach"
     >
       {/* static fallback / loading backdrop */}
       <div className="absolute inset-0 bg-[linear-gradient(180deg,#0d3a2c_0%,#07201a_55%,#030f0c_100%)]" />
 
-      {/* Short reveal: the globe is already at full spin rate behind this, so a
-          long fade just reads as "static for a moment, then it starts". */}
       <div className={`absolute inset-0 transition-opacity duration-500 ${ready ? "opacity-100" : "opacity-0"}`}>
         {webgl && (
           <GlobeScene
@@ -365,26 +349,11 @@ export default function GlobeHero() {
 
       <Stars />
 
-      {/* Bottom fade: buries the globe's lower limb in black and stops there.
-          Deliberately short and steep rather than tall and gentle — the upper
-          hemisphere and the terminator stay at full brightness, only the bottom
-          edge dissolves. The band tops out at the globe's vertical centre
-          (cy 0.5, diameter 0.68H → limb at 84%) so the upper half is never dimmed.
-          Sits above the canvas and the stars, below the cards, marquee and copy.
-          On mobile the globe drops low (cy 0.68) and shrinks, so the band is
-          shortened to 32% — its transparent top now lands at the mobile globe's
-          centre instead of near its top, keeping the whole disc from going dark. */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-[50%] max-md:h-[32%] bg-[linear-gradient(0deg,#030f0cff_0%,#030f0cfe_28%,#030f0cf2_46%,#030f0cb0_62%,#030f0c7a_76%,#030f0c2e_89%,#030f0c00_100%)]"
       />
 
-      {/* Extra weight over the lower-right, where the globe's limb sits (framed at
-          cx 0.69, cy 0.5 → the 45° point of the lower-right edge lands near 80% /
-          78% of the section). The horizontal band above fades evenly across the
-          full width, so it cannot bias one side; this elliptical layer does.
-          On mobile the globe is centred (cx 0.5), so the ellipse is re-centred
-          under it — otherwise the right-biased blob reads as an off-centre patch. */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 z-[5] bg-[radial-gradient(48%_44%_at_80%_80%,#030f0ce6_0%,#030f0cab_48%,#030f0c52_75%,#030f0c00_100%)] max-md:bg-[radial-gradient(58%_36%_at_50%_86%,#030f0ce6_0%,#030f0cab_48%,#030f0c52_75%,#030f0c00_100%)]"
@@ -407,11 +376,7 @@ export default function GlobeHero() {
             />
           )),
         )}
-        {/* Both hub chips hang off Dhaka's anchor, so they fade out together
-            when Bangladesh turns to the far side. The export one goes to the
-            LEFT of the hub — a negative dx puts the box's left edge a full box
-            width plus a gap before the anchor, so it clears the origin point
-            and its departing arcs instead of sitting under the other chip. */}
+
         <PinLabel
           id="hub"
           lat={HERO.hub.lat}
@@ -437,20 +402,14 @@ export default function GlobeHero() {
         <OrderToast order={order} register={register} />
       </div>
 
-      {/* Copy: the DESKTOP layout is exactly as committed (left column, vertically
-          centred, 12px wide-tracked mono eyebrow) — every mobile tweak below is
-          scoped to max-md, so nothing at ≥768px changes. On mobile the copy sits
-          at the top, left aligned, with the globe centred beneath it; the top
-          offset is anchored to the fixed header (--header-height) so the eyebrow
-          never hides behind it on short viewports. */}
-      <div className="pointer-events-none absolute inset-x-6 bottom-[16%] z-10 text-center max-md:top-[calc(var(--header-height)+1.25rem)] max-md:bottom-auto max-md:text-left md:inset-x-auto md:bottom-auto md:left-[6%] md:top-1/2 md:w-[min(34rem,42vw)] md:-translate-y-1/2 md:text-left">
+      <div className="pointer-events-auto absolute inset-x-4 bottom-[16%] z-10 text-center max-md:top-[calc(var(--header-height)-0.5rem)] max-md:bottom-auto max-md:text-left md:inset-x-auto md:bottom-auto md:left-[6%] md:top-1/2 md:w-[min(34rem,42vw)] md:-translate-y-1/2 md:text-left">
 
-        <div className="text-sm inline-flex items-center gap-2.5 sm:gap-1.5 font-space-mono font-medium uppercase tracking-wider mb-4.5">
+        <div className="text-sm inline-flex items-center gap-2.5 sm:gap-1.5 font-space-mono font-medium uppercase tracking-wider mb-2.5 sm:mb-4.5">
           <span>Global Reach</span>
           <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: "var(--primary-gradient)" }} />
         </div>
 
-        <h1 className="mb-6 font-archivo-black text-[1.75rem] uppercase leading-[1.1] text-white sm:text-4xl md:text-[2.6rem] lg:text-[3rem]">
+        <h1 className="font-archivo-black uppercase text-white text-[2rem] sm:text-4xl lg:text-[3rem] leading-[1.2] mb-3 sm:gap-10">
           {HERO.heading.map((l) => (
             <span key={l} className="block">
               {l}
@@ -462,18 +421,12 @@ export default function GlobeHero() {
         </p>
       </div>
 
-      {/* Brand logo marquee along the bottom. z-30 puts it above the bottom fade,
-          so the logos stay crisp while the globe's lower limb sinks into it. */}
       <BrandMarquee />
     </section>
   );
 }
 
 /* ─────────────────────────── brand logo marquee ─────────────────────────── */
-
-// Exactly the logos in /public/images/global-footprint/. Each entry carries its
-// true intrinsic width (all share a 264px height) so the aspect-ratio box matches
-// the decoded image, meaning no mid-animation reflow or jump.
 const brands: { src: string; width: number }[] = [
   { src: "/images/global-footprint/c&a.png", width: 660 },
   { src: "/images/global-footprint/celio.png", width: 648 },

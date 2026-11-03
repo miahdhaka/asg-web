@@ -679,7 +679,7 @@ function CameraRig({
 }: GlobeSceneProps & { bus: React.MutableRefObject<Bus> }) {
   const { camera, size, gl } = useThree();
 
-  const layout = useRef({ dist: 5, D: 700 });
+  const layout = useRef({ dist: 5, D: 700, cx: 0.5, cy: 0.5 });
   const rig = useRef({
     lat: BASE_LAT,
     lon: hub.lon,
@@ -721,19 +721,19 @@ function CameraRig({
     const cx = mobile ? 0.5 : 0.7;
     // Vertical centre as a fraction of the viewport. On mobile the copy sits at
     // the top and the brand marquee at the bottom, so the globe is framed lowish
-    // (cy 0.68) to keep clear of the description text above it;
+    // (cy 0.64) to keep clear of the description text above it;
     // desktop keeps it centred.
-    const cy = mobile ? 0.68 : 0.5;
+    const cy = mobile ? 0.64 : 0.5;
     // Globe size as a fraction of the viewport. On mobile it is kept large enough
     // that the DOM cards anchored to its surface stay on the disc, with a margin on
     // both side edges. On desktop it is sized close to the full viewport height.
     // The equal-gap centre (cy above) is independent of this radius, so trimming
     // the mobile globe leaves the top/bottom gaps balanced.
-    const D = mobile ? Math.min(W * 0.8, H * 0.44) : Math.min(H * 0.82, W * 0.54);
+    const D = mobile ? Math.min(W * 0.86, H * 0.48) : Math.min(H * 0.82, W * 0.54);
 
     cam.fov = 30;
     const k = (D / H) * Math.tan((cam.fov * DEG) / 2);
-    layout.current = { dist: 1 / Math.sin(Math.atan(k)), D };
+    layout.current = { dist: 1 / Math.sin(Math.atan(k)), D, cx, cy };
     cam.setViewOffset(W, H, (0.5 - cx) * W, (0.5 - cy) * H, W, H);
     cam.updateProjectionMatrix();
   }, [camera, size]);
@@ -744,6 +744,20 @@ function CameraRig({
     const s = rig.current;
 
     const down = (e: PointerEvent) => {
+      /* Touch only (mobile): start a rotate ONLY when the finger lands on the
+         globe disc. Anywhere else in the section the gesture is left to the
+         browser so the page scrolls normally. The globe's screen centre is the
+         (cx, cy) fraction the camera was view-offset to, and its radius is D/2,
+         both in CSS px matching the canvas rect. Mouse/pen (desktop) skip this
+         entirely, so desktop behaviour is unchanged. */
+      if (e.pointerType === "touch") {
+        const rect = el.getBoundingClientRect();
+        const { D, cx, cy } = layout.current;
+        const gx = e.clientX - rect.left - cx * rect.width;
+        const gy = e.clientY - rect.top - cy * rect.height;
+        const r = D / 2;
+        if (gx * gx + gy * gy > r * r) return;
+      }
       s.dragging = true;
       s.home = null; // grabbing the globe cancels an in-flight entry swing
       s.turn.active = false; // ...and an in-flight full-turn tween
@@ -751,7 +765,16 @@ function CameraRig({
       s.lastY = e.clientY;
       s.lastT = performance.now();
       s.vLat = s.vLon = 0;
-      el.setPointerCapture(e.pointerId);
+      /* Mouse/pen keep the capture, which is what lets a drag continue after
+         the cursor leaves the canvas.
+         Touch must NOT be captured: capturing a touch pointer overrides the
+         canvas's `touch-action: pan-y` and the browser stops scrolling the page
+         under the finger, so a vertical swipe only spun the globe (and the
+         rejected pan made the page snap back up). Left uncaptured, the browser
+         owns vertical pans — it fires `pointercancel` when it claims the
+         gesture, which ends the drag below — while a horizontal drag still
+         rotates the globe, since pan-y never allowed horizontal scrolling. */
+      if (e.pointerType !== "touch") el.setPointerCapture(e.pointerId);
     };
     const move = (e: PointerEvent) => {
       if (!s.dragging) return;
@@ -784,11 +807,23 @@ function CameraRig({
     el.addEventListener("pointermove", move);
     el.addEventListener("pointerup", up);
     el.addEventListener("pointercancel", up);
+    /* Without capture, a touch released outside the canvas would never deliver
+       pointerup to it and the globe would keep chasing the finger. Window-level
+       fallbacks end that drag; `up` ignores repeats because of its
+       `if (!s.dragging) return` guard. Touch only — the captured mouse path
+       already routes its events to the canvas. */
+    const windowUp = (e: PointerEvent) => {
+      if (e.pointerType === "touch") up(e);
+    };
+    window.addEventListener("pointerup", windowUp);
+    window.addEventListener("pointercancel", windowUp);
     return () => {
       el.removeEventListener("pointerdown", down);
       el.removeEventListener("pointermove", move);
       el.removeEventListener("pointerup", up);
       el.removeEventListener("pointercancel", up);
+      window.removeEventListener("pointerup", windowUp);
+      window.removeEventListener("pointercancel", windowUp);
     };
   }, [gl]);
 

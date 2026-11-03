@@ -518,8 +518,72 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
       // scroll the smoothed value lags behind, so a scroll triggered from it could
       // never cross `textEnd` before the pin released — the video then scrolled
       // away un-shrunk and visibly cut. Firing here sets `collapseRunning` in the
-      // same frame the real scroll reaches the point, so the hold catches it before
-      // the section can leave. Desktop never calls either function.
+      // same frame the real scroll reaches the point, so the lock below catches it
+      // before the section can leave. Desktop never calls either function.
+
+      // ── Mobile collapse scroll lock ────────────────────────────────────────
+      // When the shrink starts the page is frozen EXACTLY where the collapse
+      // fired and every further scroll input is consumed: new touch gestures are
+      // canceled at the source (capture-phase touchmove/wheel/keydown), and any
+      // scroll event that still slips through — momentum or a missed event — is
+      // re-anchored to the same frozen y, so no free scroll chunk can move the
+      // section mid-animation. The 1.1s shrink therefore always plays as one
+      // smooth time-based motion; the scroll gestures that arrived during it are
+      // simply absorbed, and the next gesture after the release continues into
+      // the sections below normally. The old clamp jumped to `end - 2` on every
+      // event while momentum kept slipping chunks in between — that alternation
+      // is what made the video shrink in chopped steps on a fast swipe.
+      let lockY: number | null = null;
+
+      const consumeMobileScroll = () => {
+        if (isDesktop || lockY === null) return;
+        if (Math.abs(window.scrollY - lockY) > 0.5) {
+          window.scrollTo(0, lockY);
+          // ScrollTrigger only updates when an event actually changes the
+          // position — nudge it so progress re-reads the frozen y.
+          ScrollTrigger.update();
+        }
+      };
+
+      const mobileLockCancel = (e: Event) => {
+        if (!isDesktop && lockY !== null) e.preventDefault();
+      };
+
+      const mobileKeyBlock = (e: KeyboardEvent) => {
+        if (
+          !isDesktop &&
+          lockY !== null &&
+          ["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " ", "Spacebar"].includes(e.key)
+        ) {
+          e.preventDefault();
+        }
+      };
+
+      const lockMobileScroll = () => {
+        if (lockY !== null) return;
+        // onLeave can fire the collapse while momentum has already overshot the
+        // pin — clamp inside so the re-anchor never parks the page past the pin.
+        const y = window.scrollY;
+        lockY = st && y > st.end - 2 ? st.end - 2 : y;
+      };
+
+      const unlockMobileScroll = () => {
+        if (lockY === null) return;
+        // Stay exactly where the shrink started — the user never left that spot.
+        window.scrollTo(0, lockY);
+        lockY = null;
+        ScrollTrigger.update();
+      };
+
+      document.addEventListener("touchmove", mobileLockCancel, { passive: false, capture: true });
+      document.addEventListener("wheel", mobileLockCancel, { passive: false, capture: true });
+      document.addEventListener("keydown", mobileKeyBlock, { passive: false, capture: true });
+      cleanups.push(() => {
+        document.removeEventListener("touchmove", mobileLockCancel, { capture: true });
+        document.removeEventListener("wheel", mobileLockCancel, { capture: true });
+        document.removeEventListener("keydown", mobileKeyBlock, { capture: true });
+      });
+
       const triggerMobileCollapse = () => {
         if (isDesktop || mobileCollapsed) return;
         mobileCollapsed = true;
@@ -528,6 +592,9 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         if (scrollProgress < textEnd) scrollProgress = textEnd;
         const g = mobileCardGeom();
         collapseRunning = true;
+        // Freeze the page at this exact y and consume every scroll input until
+        // the shrink ends, so the animation never fights touch momentum.
+        lockMobileScroll();
         // Freeze the sheet's resting offset ONCE here, before it fades in. It is
         // never recomputed while scrolling, so the concern block just sits under
         // the card instead of drifting up/down with the scroll.
@@ -546,6 +613,9 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
           overwrite: "auto",
           onComplete: () => {
             collapseRunning = false;
+            // Shrink finished — release the lock; the NEXT scroll gesture then
+            // travels on into the sections below.
+            unlockMobileScroll();
             gsap.set(videoWrapRef.current, { zIndex: "" });
           },
         });
@@ -562,6 +632,8 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         if (isDesktop || !mobileCollapsed) return;
         mobileCollapsed = false;
         collapseRunning = false;
+        // Never leave the lock armed if an expand ever races a collapse.
+        unlockMobileScroll();
         gsap.set(mobileSheetRef.current, { marginTop: 0 });
         // Same as collapse: stay above the fixed header bar while the video grows
         // back to fullscreen, then drop below it so the bar sits over the hero again.
@@ -718,14 +790,12 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         window.removeEventListener("resize", syncCard);
       });
 
-      // Hold the release: while the mobile collapse is mid-flight the page waits
-      // at the pin's end, so the section never scrolls away until the video has
-      // fully shrunk. When the animation completes the hold lifts and native
-      // scroll carries on into the next section on its own.
-      const holdRelease = () => {
-        if (isDesktop || !collapseRunning || !st) return;
-        if (window.scrollY > st.end - 2) window.scrollTo(0, st.end - 2);
-      };
+      // Consume the release: while the mobile collapse is mid-flight the page
+      // waits frozen at the exact y the shrink started, so no scroll chunk —
+      // momentum or otherwise — can move the section while the video shrinks.
+      // When the animation completes the lock lifts and native scroll carries on
+      // into the next section on its own.
+      const holdRelease = () => consumeMobileScroll();
       window.addEventListener("scroll", holdRelease, { passive: true });
       cleanups.push(() => window.removeEventListener("scroll", holdRelease));
 
@@ -760,15 +830,15 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
           }
         },
         // Block side-content changes while the Hero is off-screen below.
-        onLeave: (self) => {
+        onLeave: () => {
           pinLeft = true;
           // Fast-swipe safety: if the collapse is still playing (or somehow never
-          // fired), hold the scroll just inside the pin so the section can't
-          // scroll away with a half-shrunk / un-shrunk video. Once the shrink has
-          // finished this no longer pulls back, so leaving is instant.
+          // fired), hold the scroll frozen so the section can't scroll away with a
+          // half-shrunk / un-shrunk video. Once the shrink has finished the lock is
+          // gone, so leaving is instant.
           if (!isDesktop && (collapseRunning || !mobileCollapsed)) {
             if (!mobileCollapsed) triggerMobileCollapse();
-            window.scrollTo(0, self.end - 2);
+            consumeMobileScroll();
           }
         },
         // Keep the concern frozen from ASGHighlight's influence on re-entry.
@@ -946,7 +1016,7 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
       {/* Left side content — desktop column only (mobile uses the sheet below) */}
       <div ref={leftContentRef} className="absolute left-4 right-4 top-0 bottom-0 z-20 hidden items-start pt-24 lg:flex lg:left-[4%] lg:right-auto lg:max-w-[28rem] lg:items-center lg:pt-0 text-[var(--neutral-800)]">
         <div className="lg:h-[20rem]">
-          <div className="text-sm inline-flex items-center gap-2.5 sm:gap-1.5 font-space-mono font-medium uppercase tracking-wider mb-4.5">
+          <div className="text-sm inline-flex items-center gap-2.5 sm:gap-1.5 font-space-mono font-medium uppercase tracking-wider mb-2.5 sm:mb-4.5">
             <span>OUR BUSINESS</span>
             <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: "var(--primary-gradient)" }} />
           </div>
@@ -991,7 +1061,7 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
           </div>
           <a
             href={sisterConcerns[activeConcern]?.link ?? "#"}
-            className="group relative inline-flex w-fit items-center justify-center self-start overflow-hidden rounded-full border border-transparent px-5 py-2.5 text-xs font-medium leading-none lg:self-auto lg:px-[1.75em] lg:py-[0.9em] lg:text-[1.08em] mt-8"
+            className="group relative inline-flex w-fit items-center justify-center self-start overflow-hidden rounded-full border border-transparent px-4 sm:px-6 py-3.5 text-sm font-medium leading-none lg:self-auto lg:px-[1.2em] lg:py-[0.8em] lg:text-[1.1em] mt-8"
             style={{
               background:
                 "linear-gradient(#F3F3F1, #F3F3F1) padding-box, linear-gradient(97.37deg, #8BC34A 1.29%, #1AA179 92.01%) border-box",
@@ -1036,11 +1106,11 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
         ref={mobileHeaderRef}
         className="absolute left-4 right-4 top-[calc(var(--header-height)+1rem)] z-30 text-[var(--neutral-800)] lg:hidden mt-5 sm:mt-0 z-50"
       >
-        <div className="text-sm inline-flex items-center gap-2.5 sm:gap-1.5 font-space-mono font-medium uppercase tracking-wider mb-4.5">
+        <div className="text-sm inline-flex items-center gap-2.5 sm:gap-1.5 font-space-mono font-medium uppercase tracking-wider mb-2.5 sm:mb-4.5">
           <span>OUR BUSINESS</span>
           <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: "var(--primary-gradient)" }} />
         </div>
-        <h2 className="font-archivo-black uppercase text-[32px] leading-[1.05]">
+        <h2 className="font-archivo-black uppercase text-[var(--neutral-800)] text-[1.8rem] sm:text-4xl lg:text-[3rem] leading-[1.2]">
           {["AN ECOSYSTEM", "NOT A FACTORY"].map((line, i) => (
             <span className="block" key={i}>{line}</span>
           ))}
@@ -1133,7 +1203,7 @@ export default function Hero({ heroSlideChangeRef }: HeroProps) {
 
             <a
               href={sisterConcerns[activeConcern]?.link ?? "#"}
-              className="group relative mt-6 inline-flex w-fit items-center justify-center self-start overflow-hidden rounded-full border border-transparent px-6 py-3 text-base font-medium leading-none"
+              className="group relative mt-6 inline-flex w-fit items-center justify-center self-start overflow-hidden rounded-full border border-transparent px-4 sm:px-6 py-3.5 text-sm font-medium leading-none"
               style={{
                 background:
                   "linear-gradient(#F3F3F1, #F3F3F1) padding-box, linear-gradient(97.37deg, #8BC34A 1.29%, #1AA179 92.01%) border-box",
