@@ -8,14 +8,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/* Desktop-only scroll scale. The building image stays at FULL size while the
-   About Us section is in view and up to just before it leaves, then creeps
-   down to slightly smaller (0.85) gradually from when the section top passes
-   15% of the viewport until it has fully exited, linear so it never changes
-   all at once.
-   On mobile the image is short (aspect-[4/3]) so the scale is skipped entirely
-   — it stays full size — via matchMedia scoped to the same lg (1024px)
-   breakpoint where the tall desktop image (lg:max-h-[75vh]) kicks in. */
 export default function AboutUs() {
   const sectionRef = useRef<HTMLElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
@@ -23,14 +15,6 @@ export default function AboutUs() {
   useEffect(() => {
     const mm = gsap.matchMedia();
 
-    // Desktop-only, measured against the section's ~viewport+400px height:
-    // the image holds FULL size while the section is in view and right up to
-    // just before it leaves — the shrink only starts once the section top has
-    // scrolled past 15% of the viewport (a bit before it fully exits upward).
-    // From there it creeps down across the remaining exit stretch
-    // (top 15% → bottom top, ~1250px of scroll), so the change per scroll
-    // pixel stays tiny — never all at once. Scroll-up reverses it identically.
-    // Below lg this never runs, so mobile stays full size.
     mm.add("(min-width: 1024px)", () => {
       gsap.fromTo(
         imageRef.current,
@@ -53,17 +37,17 @@ export default function AboutUs() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative z-20 bg-background w-full px-4 py-16 md:px-12 lg:px-20 lg:py-22">
+    <section ref={sectionRef} className="relative z-20 bg-background w-full px-4 py-14 md:px-12 lg:px-20 lg:py-22">
       <div>
         {/* Top row: label + heading on left, description + CTA on right */}
-        <div className="flex flex-col gap-5 sm:gap-10 lg:flex-row lg:items-end lg:justify-between lg:max-w-[90%]">
+        <div className="flex flex-col gap-3 sm:gap-10 lg:flex-row lg:items-end lg:justify-between lg:max-w-[90%]">
           {/* Left column */}
-          <div className="flex flex-col gap-4.5 lg:max-w-[55%]">
+          <div className="flex flex-col gap-2.5 sm:gap-4.5 lg:max-w-[55%]">
             <div className="text-sm inline-flex items-center gap-2.5 sm:gap-1.5 font-space-mono font-medium uppercase tracking-wider">
               <span>About Us</span>
               <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: "var(--primary-gradient)" }} />
             </div>
-            <h2 className="font-archivo-black uppercase text-[1.9rem] sm:text-4xl lg:text-[3rem] leading-[1.2] text-[var(--neutral-800)] word-space-4">
+            <h2 className="font-archivo-black uppercase text-[var(--neutral-800)] text-[1.8rem] sm:text-4xl lg:text-[3rem] leading-[1.2]">
               <span className="hidden md:block">
                 One Thread.
                 <br />
@@ -81,7 +65,7 @@ export default function AboutUs() {
           </div>
 
           {/* Right column */}
-          <div className="flex flex-col items-start gap-6 lg:max-w-[35%] lg:pt-2">
+          <div className="flex flex-col items-start gap-5 sm:gap-6 lg:max-w-[35%] lg:pt-2">
             <p className="text-base text-[var(--neutral-800)] md:text-[1.25rem]">
               Amanat Shah Group is a diversified business group with strong concentration in the Textile-to-Fashion value chain supported by Finance, Chemicals, Technology, Agriculture. 
             </p>

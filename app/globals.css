@@ -650,16 +650,26 @@ html.asg-touch-lock * {
 }
 
 /* On mobile the globe shrinks and drops low, so the floating boxes crowd its
-   limb at desktop size. Tighten type, padding, gap and max-width so each card
-   reads as a compact chip. Scoped to the globe's own mobile breakpoint
-   (W < 820, see GlobeScene layout) so desktop is byte-for-byte unchanged. */
+   limb at desktop size. Rather than hide them, render a clearly smaller,
+   tighter chip: reduced type/line-height, trimmed padding/gap/max-width, a
+   slightly smaller radius, and a shrunken leading icon (height-locked so the
+   square icons and the BD-flag all keep their aspect). Scoped to the globe's
+   own mobile breakpoint (W < 820, see GlobeScene layout) so desktop is
+   byte-for-byte unchanged. */
 @media (max-width: 819px) {
   .gcard-box {
-    gap: 0.5rem;
-    max-width: 172px;
-    padding: 0.5rem 0.65rem;
-    font-size: 9px;
-    letter-spacing: 0.04em;
+    gap: 0.4rem;
+    max-width: 148px;
+    padding: 0.4rem 0.5rem;
+    border-radius: 5px;
+    font-size: 8px;
+    line-height: 1.35;
+    letter-spacing: 0.03em;
+  }
+  /* Lock the icon by height so width follows each glyph's own aspect ratio. */
+  .gcard-box svg {
+    height: 12px;
+    width: auto;
   }
 }
 

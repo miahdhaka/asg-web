@@ -39,7 +39,7 @@ export default function FooterWordmark() {
     <h2
       ref={textRef}
       className={[
-        "relative font-archivo-black uppercase leading-[1.05] text-[2rem] text-[#f2f2f0] sm:text-[2.75rem] lg:text-[5rem]",
+        "relative font-archivo-black uppercase leading-[1.05] text-[1.6rem] text-[#f2f2f0] sm:text-[2.75rem] lg:text-[5rem]",
         shown ? "animate__animated animate__zoomIn" : "opacity-0",
       ].join(" ")}
     >

@@ -219,11 +219,11 @@ export default function GreenerFuture() {
   return (
     <section
       id="greener-future"
-      className="relative w-full overflow-hidden py-18 lg:py-22"
+      className="relative w-full overflow-hidden py-14 lg:py-22"
     >
       {/* Header row — heavy uppercase title left, supporting copy right */}
-      <div className="flex flex-col gap-5 sm:gap-10 px-4 md:px-12 lg:flex-row lg:items-end lg:justify-between lg:max-w-[90%] lg:px-20">
-        <h2 className="font-archivo-black uppercase text-[1.75rem] sm:text-4xl lg:text-[3rem] leading-[1.2] text-[var(--neutral-800)] word-space-4">
+      <div className="flex flex-col gap-3 sm:gap-10 px-4 md:px-12 lg:flex-row lg:items-end lg:justify-between lg:max-w-[90%] lg:px-20">
+        <h2 className="font-archivo-black uppercase text-[var(--neutral-800)] text-[1.8rem] sm:text-4xl lg:text-[3rem] leading-[1.2]">
           <span className="hidden sm:block">
             Shaping a Greener
             <br />

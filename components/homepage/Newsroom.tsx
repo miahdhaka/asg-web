@@ -123,9 +123,9 @@ export default function Newsroom() {
       className="relative flex w-full flex-col overflow-hidden py-0 sm:py-6 lg:py-8 mb-14 sm:mb-6 lg:mb-8 lg:h-[calc(100vh-var(--header-height))]"
     >
       {/* Header — eyebrow + title left, button right */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between px-4 lg:px-20 gap-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between px-4 lg:px-20 gap-5 sm:gap-6">
         <div className="mt-2 flex flex-col lg:max-w-[55%]">
-          <div className="text-sm inline-flex items-center gap-2.5 sm:gap-1.5 font-space-mono font-medium uppercase tracking-wider mb-4.5">
+          <div className="text-sm inline-flex items-center gap-2.5 sm:gap-1.5 font-space-mono font-medium uppercase tracking-wider mb-2.5 sm:mb-4.5">
             <span>Newsroom</span>
             <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: "var(--primary-gradient)" }} />
           </div>
@@ -134,7 +134,7 @@ export default function Newsroom() {
               homepage section headings (AboutUs, GreenerFuture, etc.). */}
           <h2
             id="newsroom-title"
-            className="font-archivo-black uppercase text-[1.75rem] sm:text-4xl lg:text-[3rem] leading-[1.2] text-[var(--neutral-800)] word-space-4"
+            className="font-archivo-black uppercase text-[var(--neutral-800)] text-[1.8rem] sm:text-4xl lg:text-[3rem] leading-[1.2]"
           >
             Latest from ASG <br />newsroom
           </h2>
@@ -142,7 +142,7 @@ export default function Newsroom() {
 
         <Link
           href="/newsroom"
-          className="group relative inline-flex items-center justify-center overflow-hidden rounded-full border border-transparent px-4.5 sm:px-4 lg:px-6 py-3.5 sm:py-3 lg:py-4 text-sm sm:text-base lg:text-lg font-medium leading-none"
+          className="group relative inline-flex items-center justify-center overflow-hidden rounded-full border border-transparent px-4 sm:px-6 py-3.5 text-sm font-medium leading-none lg:px-[1.2em] lg:py-[0.8em] lg:text-[1.1em]"
           style={{
             background: 'linear-gradient(#F3F3F1, #F3F3F1) padding-box, linear-gradient(97.37deg, #8BC34A 1.29%, #1AA179 92.01%) border-box',
           }}

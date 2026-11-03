@@ -411,7 +411,7 @@ export default function Header() {
 
         <button
           type="button"
-          onClick={() => setMobileSearchOpen(true)}
+          onClick={() => { setSearchText(""); setMobileSearchOpen(true); }}
           className="cursor-pointer rounded-full p-1 transition-colors hover:bg-neutral-100"
           aria-label="Search"
         >
@@ -480,21 +480,36 @@ export default function Header() {
               </div>
 
               {/* Search mode: gradient-bordered input overlays the same zone
-                  the nav occupies — the pill is already fully expanded. */}
-              {searchOpen && (
-                <div className="absolute inset-0 z-20 flex items-center">
-                  <div className="flex h-12 w-full items-center rounded-full bg-[image:var(--primary-gradient)] p-[2px]">
-                    <input
-                      ref={searchInputRef}
-                      type="text"
-                      value={searchText}
-                      onChange={(e) => setSearchText(e.target.value)}
-                      placeholder="How can we help you today?"
-                      className="block h-full w-full rounded-full border-0 bg-white px-5 text-base md:text-lg font-neue-montreal text-neutral-800 placeholder:text-neutral-500 focus:outline-none"
-                    />
-                  </div>
+                  the nav occupies — the pill is already fully expanded.
+                  It stays mounted and is transitioned instead of mounted
+                  conditionally: unmounting kills the exit, so the field would
+                  vanish while the pill is still narrowing. Hidden = transparent,
+                  slid back to the left, out of the tab order and off the
+                  pointer. Timing matches the pill's own 0.8s width tween. */}
+              <div
+                aria-hidden={!searchOpen}
+                className={`absolute inset-0 z-20 flex items-center ${
+                  searchOpen ? "" : "pointer-events-none"
+                }`}
+              >
+                <div
+                  className={`flex h-12 w-full origin-left items-center rounded-full bg-[image:var(--primary-gradient)] p-[2px] transition-all duration-[650ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    searchOpen
+                      ? "translate-x-0 scale-100 opacity-100"
+                      : "-translate-x-3 scale-[0.96] opacity-0"
+                  }`}
+                >
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    tabIndex={searchOpen ? 0 : -1}
+                    placeholder="How can we help you today?"
+                    className="block h-full w-full rounded-full border-0 bg-white px-5 text-base md:text-lg font-neue-montreal text-neutral-800 placeholder:text-neutral-500 focus:outline-none"
+                  />
                 </div>
-              )}
+              </div>
             </div>
 
             {/* Mobile spacer pushes the right controls to the edge */}
@@ -559,13 +574,17 @@ export default function Header() {
       <MobileSidebar
         isOpen={sidebarOpen}
         onClose={closeSidebar}
-        onSearchOpen={() => setMobileSearchOpen(true)}
+        onSearchOpen={() => { setSearchText(""); setMobileSearchOpen(true); }}
       />
 
-      {/* Full-screen mobile search overlay */}
+      {/* Full-screen mobile search overlay — shares the desktop query state, so
+          the "results only once you type" rule is the same on both. Cleared on
+          open so each session starts at the bare field. */}
       <MobileSearch
         isOpen={mobileSearchOpen}
         onClose={() => setMobileSearchOpen(false)}
+        value={searchText}
+        onChange={setSearchText}
       />
     </>
   );

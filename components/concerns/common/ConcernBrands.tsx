@@ -132,7 +132,7 @@ function BrandRow({ title, description, images, textSide }: BrandRowData) {
         textSide === "left" ? "lg:w-[29.33em]" : "lg:w-[25em]"
       }`}
     >
-      <h3 className="font-archivo-black text-lg sm:text-2xl lg:text-[2em] tracking-[0.04em] text-neutral-800 lg:leading-[1.33]">
+      <h3 className="font-archivo-black text-lg sm:text-2xl lg:text-[2em] tracking-[0.04em] text-neutral-800 leading-[1.5] lg:leading-[1.33]">
         {title}
       </h3>
       <p className="mt-2 text-sm text-neutral-800 lg:mt-[0.67em] lg:text-[1.17em] lg:leading-[1.43]">
@@ -167,22 +167,22 @@ function BrandRow({ title, description, images, textSide }: BrandRowData) {
           ))}
         </div>
 
-        {/* Edge chevrons — same styling as the Processing Excellence strip */}
         <button
           type="button"
           aria-label="Previous brand image"
           onClick={() => scrollByCard(-1)}
-          className="absolute left-0 top-1/2 z-10 -translate-y-1/2 p-2 text-[1.375em] text-white cursor-pointer lg:left-[2rem] lg:p-2.5 lg:text-[2.375em]"
+          className="absolute left-0 top-1/2 z-10 -translate-y-1/2 grid size-12 place-items-center p-2 text-[1.375em] text-white cursor-pointer lg:left-[2rem] lg:size-auto lg:p-2.5 lg:text-[2.375em]"
         >
           <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" aria-hidden>
             <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
+
         <button
           type="button"
           aria-label="Next brand image"
           onClick={() => scrollByCard(1)}
-          className="absolute right-0 top-1/2 z-10 -translate-y-1/2 p-2 text-[1.375em] text-white cursor-pointer lg:right-[2rem] lg:p-2.5 lg:text-[2.375em]"
+          className="absolute right-0 top-1/2 z-10 -translate-y-1/2 grid size-12 place-items-center p-2 text-[1.375em] text-white cursor-pointer lg:right-[2rem] lg:size-auto lg:p-2.5 lg:text-[2.375em]"
         >
           <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" aria-hidden>
             <path d="M9 6L15 12L9 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -209,11 +209,6 @@ function BrandRow({ title, description, images, textSide }: BrandRowData) {
   );
 }
 
-/**
- * Section header plus mirrored brand carousels divided by hairlines
- * (Figma frame 2147227356). Sister-concern reusable version of HelalBrands —
- * design identical, heading/intro/rows all come from props.
- */
 export default function ConcernBrands({
   sectionId,
   heading,
@@ -227,8 +222,7 @@ export default function ConcernBrands({
     >
       <div className="flex flex-col gap-2 sm:gap-4 lg:flex-row lg:justify-between">
         <h2 className="font-archivo-black text-2xl sm:text-4xl lg:text-[3em] uppercase text-neutral-800 lg:leading-[1] rv-split">{heading}</h2>
-        {/* Measure tuned so this copy always breaks into 4 lines; both the type
-            size and the width are em, so the break point holds at any lg width */}
+
         <div className="rv">
           <p className="text-sm text-neutral-800 lg:mr-[14em] lg:w-[30em] lg:text-[1.17em] lg:leading-[1.43]">
             {intro}

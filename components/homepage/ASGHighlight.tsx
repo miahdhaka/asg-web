@@ -476,7 +476,7 @@ export default function ASGHighlight({ onSlideChange, nextSectionRef }: ASGHighl
       <div className="relative z-10 flex items-center justify-center h-full px-4 lg:px-[4%]">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-evenly lg:justify-center gap-5 lg:gap-32 h-full w-full pb-10 sm:pb-0">
           <div className="lg:flex-1 text-left mt-32 lg:mt-0">
-            <h2 className="font-archivo-black uppercase text-[2rem] sm:text-4xl lg:text-[3rem] leading-[1.2] text-[var(--neutral-800)] word-space-4">
+            <h2 className="font-archivo-black uppercase text-[var(--neutral-800)] text-[1.8rem] sm:text-4xl lg:text-[3rem] leading-[1.2]">
               <span className="text-nowrap block">ASG AT A</span>
               <span className="block">GLANCE</span>
             </h2>

@@ -197,7 +197,7 @@ export default function OtherBoardMembers({
       id={id}
       className="w-full pl-4 pr-0 sm:pl-6 sm:pr-0 lg:pl-[5em] lg:pr-0 py-10 sm:py-12 lg:py-[4em] mb-4 sm:mb-0"
     >
-      <h2 className="font-archivo-black uppercase text-[1.75rem] sm:text-3xl lg:text-[3em] text-neutral-800 rv-split">{heading}</h2>
+      <h2 className="font-archivo-black uppercase text-[1.75rem] sm:text-3xl lg:text-[3em] text-neutral-800 rv-split leading-tight">{heading}</h2>
 
       <div className="rv-items" data-stagger="0">
       <div className="relative mt-8 lg:mt-[2.5em]">
