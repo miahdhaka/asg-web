@@ -243,7 +243,7 @@ export default function MobileSearch({ isOpen, onClose, value, onChange }: Mobil
           <button
             type="button"
             onClick={onClose}
-            className="shrink-0 cursor-pointer rounded-full p-1.5 transition-colors hover:bg-white/60"
+            className="shrink-0 cursor-pointer rounded-full p-1.5 transition-all duration-200 hover:rotate-90 hover:opacity-70"
             aria-label="Close search"
           >
             <X className="size-6 text-neutral-700" strokeWidth={1.8} />

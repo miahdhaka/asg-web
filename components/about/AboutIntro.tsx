@@ -21,7 +21,7 @@ export default function AboutIntro() {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <section id="about-intro" className="w-ful px-4 sm:px-6 lg:px-[5em] pt-14 sm:pt-16 lg:pt-[5.5rem] pb-10 sm:pb-16 lg:pb-[2rem]">
+    <section id="about-intro" className="w-ful px-4 sm:px-6 lg:px-[5em] pt-14 sm:pt-16 lg:pt-[5.5rem] pb-6 sm:pb-16 lg:pb-[2rem]">
       <div className="mx-auto max-w-[1080px]">
         {/* Title block */}
         <div className="flex flex-col gap-4 max-w-[700px]">
