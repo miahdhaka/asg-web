@@ -18,7 +18,7 @@ export default function ValueCardsSection({ id, heading, items, variant }: Value
   const cardBg = variant === "muted" ? "bg-[#F9FAFB]" : "bg-gray-50";
 
   return (
-    <section id={id} className={`w-full px-4 sm:px-6 lg:px-[5em] py-16 lg:py-[5rem] ${variant === "muted" ? "" : "bg-white"}`}>
+    <section id={id} className={`w-full px-4 sm:px-6 lg:px-[5em] py-14 lg:py-[5rem] ${variant === "muted" ? "" : "bg-white"}`}>
       <h2 className="font-archivo-black text-3xl sm:text-5xl lg:text-[3rem] leading-[1.1] text-[#262626] uppercase rv-split">{heading}</h2>
 
       <div className="mt-8 sm:mt-10 lg:mt-[3.5rem] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -35,7 +35,7 @@ export default function ValueCardsSection({ id, heading, items, variant }: Value
 
             {/* Icon */}
             <div className="relative shrink-0 sm:p-4.5">
-              <div className="relative size-[55px] sm:size-[80px]">
+              <div className="relative size-12 sm:size-[80px]">
                 <Image
                   src={item.icon}
                   alt=""
@@ -76,10 +76,10 @@ export default function ValueCardsSection({ id, heading, items, variant }: Value
 
             {/* Text */}
             <div className="relative flex flex-col gap-2 sm:gap-3.5">
-              <h3 className="font-archivo-black text-[1.5rem] lg:text-[2rem] leading-9 text-[#262626]">
+              <h3 className="font-archivo-black text-[1.4rem] lg:text-[2rem] leading-9 text-[#262626]">
                 {item.title}
               </h3>
-              <p className="font-neue-montreal tracking-wide text-base sm:text-xl lg:text-[1.3rem] leading-7 sm:leading-8 text-[#262626] max-w-[90%]">
+              <p className="font-neue-montreal tracking-wide text-base sm:text-xl lg:text-[1.3rem] leading-6 sm:leading-8 text-[#262626] max-w-[90%]">
                 {item.description}
               </p>
             </div>
