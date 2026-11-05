@@ -64,7 +64,7 @@ export default function GlobeScene(props: GlobeSceneProps) {
     <Canvas
       className="cursor-grab active:cursor-grabbing"
       style={{ touchAction: "pan-y" }}
-      frameloop={props.running ? "always" : "never"}
+      frameloop={props.running ? "always" : "demand"}
       dpr={[1, 1.75]}
       flat
       linear
@@ -101,7 +101,7 @@ function Background() {
 /* ─────────────────────────────── world ─────────────────────────────── */
 
 function World(props: GlobeSceneProps & { bus: React.MutableRefObject<Bus> }) {
-  const { gl } = useThree();
+  const { gl, invalidate } = useThree();
   const [mask, setMask] = useState<LandMask | null>(null);
   const { onReady } = props;
   // Wall-clock (elapsed) time until which the auto-tour stays quiet after a
@@ -117,6 +117,10 @@ function World(props: GlobeSceneProps & { bus: React.MutableRefObject<Bus> }) {
       if (!alive) return;
       setMask(m);
       onReady();
+      /* The globe mounts off-screen while the loop is paused (frameloop="demand"),
+         so paint one frame here to reveal it instead of leaving a blank until the
+         user scrolls back in and the loop resumes to "always". */
+      invalidate();
     });
     return () => {
       alive = false;
@@ -677,7 +681,7 @@ function CameraRig({
   reducedMotion,
   onStop,
 }: GlobeSceneProps & { bus: React.MutableRefObject<Bus> }) {
-  const { camera, size, gl } = useThree();
+  const { camera, size, gl, invalidate } = useThree();
 
   const layout = useRef({ dist: 5, D: 700, cx: 0.5, cy: 0.5 });
   const rig = useRef({
@@ -705,9 +709,9 @@ function CameraRig({
 
   /* Re-arm the entry swing whenever the section comes back into view.
      This has to be an effect, not a check inside useFrame: while the section is
-     off-screen the canvas runs with frameloop="never", so useFrame stops firing
-     entirely and never gets a frame in which to observe that `running` went
-     false → true. The last frame before pausing always leaves running=true. */
+     off-screen the canvas runs paused (frameloop="demand"), so useFrame only
+     fires on an explicit invalidate and never naturally observes that `running`
+     went false → true. The last frame before pausing always leaves running=true. */
   useEffect(() => {
     if (running) rig.current.home = hub.lon;
   }, [running, hub.lon]);
@@ -721,22 +725,25 @@ function CameraRig({
     const cx = mobile ? 0.5 : 0.7;
     // Vertical centre as a fraction of the viewport. On mobile the copy sits at
     // the top and the brand marquee at the bottom, so the globe is framed lowish
-    // (cy 0.64) to keep clear of the description text above it;
+    // (cy 0.61) to keep clear of the description text above it;
     // desktop keeps it centred.
-    const cy = mobile ? 0.64 : 0.5;
+    const cy = mobile ? 0.63 : 0.5;
     // Globe size as a fraction of the viewport. On mobile it is kept large enough
     // that the DOM cards anchored to its surface stay on the disc, with a margin on
     // both side edges. On desktop it is sized close to the full viewport height.
     // The equal-gap centre (cy above) is independent of this radius, so trimming
     // the mobile globe leaves the top/bottom gaps balanced.
-    const D = mobile ? Math.min(W * 0.86, H * 0.48) : Math.min(H * 0.82, W * 0.54);
+    const D = mobile ? Math.min(W * 0.88, H * 0.5) : Math.min(H * 0.82, W * 0.54);
 
     cam.fov = 30;
     const k = (D / H) * Math.tan((cam.fov * DEG) / 2);
     layout.current = { dist: 1 / Math.sin(Math.atan(k)), D, cx, cy };
     cam.setViewOffset(W, H, (0.5 - cx) * W, (0.5 - cy) * H, W, H);
     cam.updateProjectionMatrix();
-  }, [camera, size]);
+    /* Repaint on resize/re-layout even while paused (demand loop), so an
+       off-screen viewport change doesn't leave the globe framed to the old size. */
+    invalidate();
+  }, [camera, size, invalidate]);
 
   // pointer drag
   useEffect(() => {

@@ -18,18 +18,23 @@ interface MobileSearchProps {
 }
 
 /**
- * Mobile search overlay — the same construction as the desktop in-pill search
- * (blurred backdrop + gradient-ringed input + a results zone), just stacked
- * vertically because there is no nav zone to grow into. The panel itself is
- * transparent: only the backdrop paints, so the field floats on the blur the
- * way it does on desktop.
+ * Mobile search — the same construction as the desktop in-pill search
+ * (gradient-ringed input + a results zone that grows downward once you type).
+ * The panel is styled like the mobile navbar and sits over it at top:0, so
+ * opening search reads as the navbar itself turning into the search bar rather
+ * than a separate sheet dropping from above.
  *
- * Slides down + fades in on open and reverses on close.
+ * Fades in place on open and reverses on close (no slide-down).
  */
 export default function MobileSearch({ isOpen, onClose, value, onChange }: MobileSearchProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  /* Results zone — collapses to height 0 and grows downward once a query is
+     typed, animated with the same GSAP height + fade/slide treatment the
+     desktop pill uses for its mega/search zone. */
+  const resultsWrapRef = useRef<HTMLDivElement>(null);
+  const resultsContentRef = useRef<HTMLDivElement>(null);
   /* Kept mounted through the exit tween so the close animation is visible. */
   const [mounted, setMounted] = useState(isOpen);
 
@@ -78,16 +83,18 @@ export default function MobileSearch({ isOpen, onClose, value, onChange }: Mobil
   // scroll gestures at the source while the overlay is up: a non-passive
   // touchmove/wheel preventDefault stops the page behind from scrolling, and
   // keeps wheel from reaching the homepage hero (which would change its content).
-  // Taps and typing still work — neither is a touchmove — and the overlay has no
-  // scrollable content of its own, so blocking here costs nothing.
+  // Registered in the CAPTURE phase so it runs before any inner handler can
+  // stopPropagation — otherwise a bubbled listener could be preempted and the
+  // page would still scroll. Taps/typing still work (neither is a touchmove).
   useEffect(() => {
     if (!mounted) return;
+    const opts = { passive: false, capture: true } as const;
     const block = (e: Event) => e.preventDefault();
-    document.addEventListener("touchmove", block, { passive: false });
-    document.addEventListener("wheel", block, { passive: false });
+    document.addEventListener("touchmove", block, opts);
+    document.addEventListener("wheel", block, opts);
     return () => {
-      document.removeEventListener("touchmove", block);
-      document.removeEventListener("wheel", block);
+      document.removeEventListener("touchmove", block, opts);
+      document.removeEventListener("wheel", block, opts);
     };
   }, [mounted]);
 
@@ -101,11 +108,10 @@ export default function MobileSearch({ isOpen, onClose, value, onChange }: Mobil
   }, [isOpen, onClose]);
 
   /* Dismiss on a press outside the bar — the same guard the desktop mega menu
-     uses. The backdrop catches most of that already, but it sits BELOW the
-     panel (z-75 vs z-80) and the panel is transparent yet still full width,
-     so its side gutters used to swallow the tap without closing anything.
-     mousedown (not click) so releasing a text-selection drag inside the field
-     doesn't count as an outside press. */
+     uses. A tap on the page below the navbar falls outside the panel and closes
+     here (the backdrop's own onClick also catches it). mousedown (not click) so
+     releasing a text-selection drag inside the field doesn't count as an
+     outside press. */
   useEffect(() => {
     if (!isOpen) return;
     const onDown = (e: MouseEvent) => {
@@ -123,9 +129,11 @@ export default function MobileSearch({ isOpen, onClose, value, onChange }: Mobil
     return () => cancelAnimationFrame(id);
   }, [isOpen]);
 
-  // Slide the panel down + fade in the blurred backdrop on open, reverse both
-  // and unmount on close. Keyed on isOpen and mounted so the tween runs once
-  // the panel is actually on screen.
+  // Fade the panel in place + fade the blurred backdrop on open, then reverse
+  // and unmount on close. There is NO slide-down-from-the-top: the panel sits
+  // over the navbar like the desktop in-pill search, so opening it reads as the
+  // navbar itself turning into the search bar. Keyed on isOpen and mounted so
+  // the tween runs once the panel is actually on screen.
   useGSAP(
     () => {
       const panel = panelRef.current;
@@ -137,22 +145,22 @@ export default function MobileSearch({ isOpen, onClose, value, onChange }: Mobil
           gsap.fromTo(
             backdrop,
             { opacity: 0 },
-            { opacity: 1, duration: 0.55, ease: "power2.out" },
+            { opacity: 1, duration: 0.4, ease: "power2.out" },
           );
         }
         gsap.fromTo(
           panel,
-          { y: "-100%" },
-          { y: "0%", duration: 0.65, ease: "power3.out" },
+          { opacity: 0 },
+          { opacity: 1, duration: 0.4, ease: "power2.out" },
         );
       } else {
         if (backdrop) {
-          gsap.to(backdrop, { opacity: 0, duration: 0.5, ease: "power2.in" });
+          gsap.to(backdrop, { opacity: 0, duration: 0.35, ease: "power2.in" });
         }
         gsap.to(panel, {
-          y: "-100%",
-          duration: 0.55,
-          ease: "power3.in",
+          opacity: 0,
+          duration: 0.35,
+          ease: "power2.in",
           onComplete: () => setMounted(false),
         });
       }
@@ -160,76 +168,110 @@ export default function MobileSearch({ isOpen, onClose, value, onChange }: Mobil
     { dependencies: [isOpen, mounted] },
   );
 
+  /* Grow the results zone downward when a query is typed and collapse it again
+     when cleared — the same GSAP height + fade/slide treatment the desktop pill
+     uses, so the "No Results Found" block eases in smoothly instead of popping.
+     Keyed on hasResults (empty ↔ non-empty) so typing more characters doesn't
+     retrigger it; the zone stays mounted so the collapse can animate too. */
+  const hasResults = value.trim().length > 0;
+
+  useGSAP(
+    () => {
+      const wrap = resultsWrapRef.current;
+      const content = resultsContentRef.current;
+      if (!wrap || !content) return;
+
+      if (hasResults) {
+        gsap.fromTo(
+          wrap,
+          { height: 0 },
+          { height: content.scrollHeight, duration: 0.5, ease: "power3.out" },
+        );
+        gsap.fromTo(
+          content,
+          { opacity: 0, y: 18 },
+          { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", delay: 0.1 },
+        );
+      } else {
+        gsap.to(content, { opacity: 0, y: 10, duration: 0.25, ease: "power2.in" });
+        gsap.to(wrap, { height: 0, duration: 0.4, ease: "power3.inOut" });
+      }
+    },
+    { dependencies: [hasResults, mounted] },
+  );
+
   if (!mounted) return null;
 
   return (
     <>
-      {/* Blurred backdrop behind the panel — same treatment as desktop search */}
+      {/* Blurred backdrop behind the panel — same treatment as desktop search.
+          touch-action:none so a drag starting here can't scroll the page behind. */}
       <div
         ref={backdropRef}
         onClick={onClose}
+        style={{ touchAction: "none" }}
         className="fixed inset-0 z-[75] cursor-pointer bg-white/10 backdrop-blur-md"
       />
 
-      {/* The panel is transparent but still covers the upper 80vh, so it owns
-          its own dismiss: a tap landing on the px-4 gutters beside the field,
-          or on the blank space under it, closes here rather than dying on the
-          non-interactive div. Taps on page content far below fall through to
-          the backdrop handler instead. */}
+      {/* The panel is styled exactly like the mobile navbar (opaque white, blur,
+          border-b, bottom radius, matching shadow) and sits at top:0 OVER it, so
+          opening search reads as the navbar itself turning into the search bar —
+          it does not drop in from above. Results grow the bar downward, the same
+          way the desktop pill expands its zone below the in-pill input. Dismiss
+          is handled by the backdrop, the X button, the outside-press listener and
+          Escape (no panel onClick, so a tap on the bar doesn't close it). */}
       <div
         ref={panelRef}
-        onClick={onClose}
-        className={`fixed inset-x-0 top-0 z-[80] flex h-[80vh] flex-col px-4 ${
-          value.trim().length > 0 ? "bg-white" : ""
-        }`}
+        style={{ touchAction: "none" }}
+        className="fixed inset-x-0 top-0 z-[80] flex flex-col rounded-b-[1.4rem] border-b border-neutral-200 bg-white/85 px-4 pt-4 pb-4 shadow-[0px_8px_24px_0px_#0000001a] backdrop-blur-[15px]"
       >
-      {/* Field row — gradient ring around a white pill input, exactly the
-          desktop treatment (p-[2px] ring, h-12 field, px-5 text-base). The
-          close button is the desktop toggle's closed state: icon only, no
-          border, tap to dismiss. stopPropagation keeps a tap on the field or
-          the X from also firing the panel's dismiss handler above. */}
-      <div
-        className="flex shrink-0 items-center gap-3 pt-4"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex h-12 flex-1 items-center rounded-full bg-[image:var(--primary-gradient)] p-[2px]">
-          <input
-            ref={inputRef}
-            type="text"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder="How can we help you today?"
-            className="block h-full w-full rounded-full border-0 bg-white px-5 text-base font-neue-montreal text-neutral-800 placeholder:text-neutral-500 focus:outline-none"
-          />
+        {/* Field row — gradient ring around a white pill input, exactly the
+            desktop treatment (p-[2px] ring, h-12 field, px-5 text-base), now
+            sitting inside the navbar bar itself. */}
+        <div className="flex shrink-0 items-center gap-3">
+          <div className="flex h-12 flex-1 items-center rounded-full bg-[image:var(--primary-gradient)] p-[2px]">
+            <input
+              ref={inputRef}
+              type="text"
+              value={value}
+              onChange={(e) => onChange(e.target.value)}
+              placeholder="How can we help you today?"
+              className="block h-full w-full rounded-full border-0 bg-white px-5 text-base font-neue-montreal text-neutral-800 placeholder:text-neutral-500 focus:outline-none"
+            />
+          </div>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="shrink-0 cursor-pointer rounded-full p-1.5 transition-colors hover:bg-white/60"
+            aria-label="Close search"
+          >
+            <X className="size-6 text-neutral-700" strokeWidth={1.8} />
+          </button>
         </div>
 
-        <button
-          type="button"
-          onClick={onClose}
-          className="shrink-0 cursor-pointer rounded-full p-1.5 transition-colors hover:bg-white/60"
-          aria-label="Close search"
+        {/* Results — stays mounted and collapses to height 0 (the static style
+            prop is constant across renders, so React never fights the GSAP
+            height tween). Typing grows it downward, clearing collapses it, the
+            same smooth expansion as the desktop pill's search zone. */}
+        <div
+          ref={resultsWrapRef}
+          className="overflow-hidden"
+          style={{ height: 0 }}
+          aria-hidden={!hasResults}
         >
-          <X className="size-6 text-neutral-700" strokeWidth={1.8} />
-        </button>
-      </div>
-
-      {/* Results zone — occupies the rest of the overlay and centres its
-          content, like the desktop panel's min-h-[60vh] block. Hidden until
-          the query is non-empty, so opening search shows only the field. The
-          whole panel is bg-white (matching the desktop pill), so the dark
-          "No Results" text stays readable. */}
-      <div className="flex flex-1 flex-col items-center justify-center px-2 text-center">
-        {value.trim().length > 0 && (
-          <>
-            <h2 className="font-archivo-black text-4xl tracking-tight text-[#1F1F1F]">
-              No Results Found
-            </h2>
-            <p className="mt-4 text-base font-neue-montreal text-neutral-700">
-              Please try again with a different search query.
-            </p>
-          </>
-        )}
-      </div>
+          <div ref={resultsContentRef}>
+            <div className="mt-4 border-t border-[#E9E9E9]/70" />
+            <div className="flex min-h-[45vh] flex-col items-center justify-center px-2 pb-6 text-center">
+              <h2 className="font-archivo-black text-4xl tracking-tight text-[#1F1F1F]">
+                No Results Found
+              </h2>
+              <p className="mt-4 text-base font-neue-montreal text-neutral-700">
+                Please try again with a different search query.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );

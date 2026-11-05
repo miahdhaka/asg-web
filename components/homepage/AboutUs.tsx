@@ -37,7 +37,7 @@ export default function AboutUs() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative z-20 bg-background w-full px-4 py-14 md:px-12 lg:px-20 lg:py-22">
+    <section ref={sectionRef} className="relative z-20 bg-background w-full px-4 py-12 md:px-12 lg:px-20 lg:py-22">
       <div>
         {/* Top row: label + heading on left, description + CTA on right */}
         <div className="flex flex-col gap-3 sm:gap-10 lg:flex-row lg:items-end lg:justify-between lg:max-w-[90%]">
@@ -107,7 +107,7 @@ export default function AboutUs() {
           </div>
         </div>
 
-        {/* Building video — mobile cut on short 4/3 frame, desktop keeps the tall max-h-[75vh] frame */}
+        {/* Building video — mobile shows the full natural frame, desktop keeps the tall max-h-[75vh] frame */}
         <div
           ref={imageRef}
           className="mt-10 sm:mt-12 lg:mt-[3em] overflow-hidden rounded-[0.75rem] lg:rounded-[1.2rem]"
@@ -120,9 +120,9 @@ export default function AboutUs() {
             muted
             playsInline
             preload="metadata"
-            className="block w-full object-cover aspect-[4/3] lg:hidden"
+            className="block h-auto w-full lg:hidden"
           >
-            <source src="/videos/about-us/mobile.webm" type="video/webm" />
+            <source src="/videos/about-us/about-us-mobile.webm" type="video/webm" />
           </video>
           <video
             aria-hidden
@@ -133,7 +133,7 @@ export default function AboutUs() {
             preload="metadata"
             className="hidden w-full object-cover lg:block lg:h-auto lg:max-h-[75vh]"
           >
-            <source src="/videos/about-us/desktop.webm" type="video/webm" />
+            <source src="/videos/about-us/about-us-desktop.webm" type="video/webm" />
           </video>
         </div>
       </div>
