@@ -126,7 +126,7 @@ function SidebarMenuItem({
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full cursor-pointer items-center justify-between py-5 font-neue-montreal text-base font-medium text-neutral-900 transition-colors duration-200"
+        className="flex w-full cursor-pointer items-center justify-between py-5 font-neue-montreal text-base font-medium text-neutral-900 tracking-wider transition-colors duration-200"
       >
         <span style={categoryActive ? gradientTextStyle : undefined}>{category.label}</span>
         <span ref={chevronRef} className="flex items-center">
@@ -151,7 +151,7 @@ function SidebarMenuItem({
                 key={item.label}
                 href={item.href}
                 onClick={onClose}
-                className="border-b border-neutral-100 py-3.5 font-neue-montreal text-[15px] text-neutral-700 transition-colors duration-200 last:border-b-0 active:bg-neutral-50"
+                className="border-b border-neutral-100 py-3.5 font-neue-montreal text-[15px] text-neutral-700 transition-colors duration-200  last:border-b-0 active:bg-neutral-50 tracking-wider"
                 style={itemActive ? gradientTextStyle : undefined}
               >
                 {item.label}
